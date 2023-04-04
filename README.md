@@ -1,14 +1,15 @@
 # Spartan
-tvOS file browser thrown together in swiftUI. supports 13.0+
+tvOS file browser thrown together in SwiftUI. Supports tvOS 13.0+
 
-what it currently lets you do:
+What it currently lets you do:
 
-1. browse file directory
+1. Browse file directory
+2. Read text files
 
 By default it's sandboxed, so you will need a tvOS jailbreak to use it. It's set to open / by default.
 
-To change path, manually input the path at the top - make sure to append a / to the end or opening files doesn't work right. currently can't read any file, just displays a blank window.
+To change path, manually input the path at the top - make sure to append a / to the end or opening files doesn't work (this will be done automatically later most likely). Can read most text files if they support UTF-8
 
-requires Xcode 14.3+ to edit
+Xcode project requires Xcode 14.3+
 
-yeah have fun
+Good luck have fun hopefully this isn't the only tvOS file browser ever
