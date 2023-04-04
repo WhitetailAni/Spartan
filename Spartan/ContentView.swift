@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct ContentView: View {
     @State var directory: String
@@ -13,14 +14,22 @@ struct ContentView: View {
     @State private var files: [String] = []
     @State private var selectedFile: FileInfo?
     @State private var textSuccess = false
+    @State var i = 0
     
     var body: some View {
         NavigationView {
             VStack {
                 HStack {
                     TextField("Input directory", text: $directory)
-                    Button(action: updateFiles) {
+                    Button(action: {
+                        updateFiles()
+                        i += 1
+                        print(i)
+                    }) {
                         Image(systemName: "arrow.clockwise")
+                    }
+                    if(i == 4){
+                        //summon credits
                     }
                 }
                 List {
@@ -28,7 +37,7 @@ struct ContentView: View {
                         goBack()
                     }) {
                         HStack {
-                            Image(systemName: "arrow.up.left")
+                            Image(systemName: "arrowshape.turn.up.backward")
                             Text("..")
                         }
                     }
@@ -106,6 +115,12 @@ struct ContentView: View {
             directory = "/"
         }
             updateFiles()
+    }
+}
+
+struct creditsView: View {
+    var body: some View {
+        //will put something here eventually
     }
 }
 
