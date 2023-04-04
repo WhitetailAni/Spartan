@@ -8,25 +8,34 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var directory: String = "/"
+    @State var directory: String
+    @State private var workingDir: String = "/"
     @State private var files: [String] = []
     @State private var selectedFile: FileInfo?
+    @State private var textSuccess = false
     
     var body: some View {
         NavigationView {
             VStack {
                 HStack {
-                    TextField("input directory", text: $directory)
+                    TextField("Input directory", text: $directory)
                     Button(action: updateFiles) {
-                        Text("refresh")
+                        Image(systemName: "arrow.clockwise")
                     }
                 }
                 List {
+                    Button(action: {
+                        goBack()
+                    }) {
+                        HStack {
+                            Image(systemName: "arrow.up.left")
+                            Text("..")
+                        }
+                    }
                     ForEach(files, id: \.self) { file in
                         Button(action: {
                             if file.hasSuffix("/") {
-                                let tempadd = "/" + file
-                                directory += tempadd
+                                directory += file
                                 selectedFile = nil
                                 updateFiles()
                             } else {
@@ -49,17 +58,27 @@ struct ContentView: View {
                     updateFiles()
                 }
                 .sheet(item: $selectedFile) { file in
-                    Text("coming soon")
+                    if(textSuccess){
+                        Text("**Text Editor**")
+                    }
                     Text(readFile(path: directory + file.name))
+                }
+                .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name(rawValue: "MenuPressedNotification"))) { _ in
+                    goBack()
                 }
             }
         }
     }
-    
+
     func updateFiles() {
         do {
             let contents = try FileManager.default.contentsOfDirectory(atPath: directory)
-            files = contents.map { $0 }
+            files = contents.map { file in
+                let filePath = "/" + directory + "/" + file
+                var isDirectory: ObjCBool = false
+                FileManager.default.fileExists(atPath: filePath, isDirectory: &isDirectory)
+                return isDirectory.boolValue ? "\(file)/" : file
+            }
         } catch {
             print("something broke: \(error.localizedDescription)")
         }
@@ -68,11 +87,25 @@ struct ContentView: View {
     func readFile(path: String) -> String {
         do {
             let content = try String(contentsOfFile: path, encoding: .utf8)
+            textSuccess = true
             return content
         } catch {
             print("something broke: \(error.localizedDescription)")
-            return ""
+            return "\(error.localizedDescription)"
         }
+    }
+    
+    func goBack() {
+        guard directory != "/" else { return }
+        var components = directory.split(separator: "/")
+    
+        if components.count > 1 {
+            components.removeLast()
+            directory = "/" + components.joined(separator: "/") + "/"
+        } else if components.count == 1 {
+            directory = "/"
+        }
+            updateFiles()
     }
 }
 
@@ -83,6 +116,6 @@ struct FileInfo: Identifiable {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(directory: "/")
     }
 }
