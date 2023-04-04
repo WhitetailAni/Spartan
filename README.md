@@ -7,6 +7,6 @@ what it currently lets you do:
 
 By default it's sandboxed, so you will need a tvOS jailbreak to use it. It's set to open / by default.
 
-To change path, manually input the path at the top - make sure to append a / to the end or opening files doesn't work right. currently can't read any file unless it's a UTF-8 text file.
+To change path, manually input the path at the top - make sure to append a / to the end or opening files doesn't work right. currently can't read any file, just displays a blank window.
 
 yeah have fun
