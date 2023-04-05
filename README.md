@@ -1,5 +1,6 @@
 # Spartan
-tvOS file browser thrown together in SwiftUI. Supports tvOS 13.0+
+tvOS file browser thrown together in SwiftUI. Supports tvOS 14.0+.
+I want it to support 13.0+ but ContextMenus are 14.0+. If you want to backport ContextMenus and make a pr, go ahead.
 
 What it currently lets you do:
 
