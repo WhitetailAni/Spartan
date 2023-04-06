@@ -18,17 +18,29 @@ struct ContentView: View {
     @State var permissionDenied = false
     @State var fileInfoShow = false
     
-    @State private var renameFileName = ""
     @State private var renameFileShow = false
-    @State private var renameFilePath: String = ""
+    @State var renameFileCurrentPath: String = ""
+    @State var renameFileCurrentName: String = ""
     
+    @State private var searchShow = false
     @State private var createDirectoryShow = false
-    @State private var mkdirName: String = ""
-    
     @State private var createFileShow = false
-    
     @State private var favoritesShow = false
+    @State private var settingsShow = false
     
+    @State private var moveFileShow = false
+    @State var moveFileCurrentPath: String = ""
+    @State var moveFileCurrentName: String = ""
+    
+    @State private var copyFileShow = false
+    @State var copyFileCurrentPath: String = ""
+    @State var copyFileCurrentName: String = ""
+    
+    @State private var videoPlayerShow = false
+    @State var videoPlayerPath: String = ""
+    
+    @State private var audioPlayerShow = false
+    @State var audioPlayerPath: String = ""
     
     var body: some View {
         NavigationView {
@@ -41,41 +53,7 @@ struct ContentView: View {
                         Image(systemName: "arrow.clockwise")
                     }
                 }
-                HStack { //copy, paste, create, etc buttons
-                    /*Button(action: { //copy
-                        //i dont know how to do this
-                    }) {
-                        Image(systemName: "doc.on.doc")
-                    }
-                    
-                    Button(action: { //paste
-                        //or this
-                        //could maybe add it as a context menu action? copy to?
-                    }) {
-                        Image(systemName: "doc.on.clipboard")
-                    }*/
-                    
-                    Button(action: { //new directory
-                        createDirectoryShow = true
-                    }) {
-                        Image(systemName: "folder.badge.plus")
-                            .frame(width:50, height:50)
-                    }
-                    
-                    Button(action: { //new file
-                        createFileShow = true
-                    }) {
-                        Image(systemName: "doc.badge.plus")
-                            .frame(width:50, height:50)
-                    }
-                    
-                    Button(action: { //favorites
-                        favoritesShow = true
-                    }) {
-                        Image(systemName: "star")
-                            .frame(width:50, height:50)
-                    }
-                }
+                topBar
                 List { //directory contents view
                     Button(action: {
                         goBack()
@@ -91,20 +69,34 @@ struct ContentView: View {
                                 directory += file
                                 updateFiles()
                                 print(directory)
+                            } else if (file.hasSuffix("aifc") || file.hasSuffix("m4r") || file.hasSuffix("wav") || file.hasSuffix("flac") || file.hasSuffix("m2a") || file.hasSuffix("aac") || file.hasSuffix("mpa") || file.hasSuffix("xhe") || file.hasSuffix("aiff") || file.hasSuffix("amr") || file.hasSuffix("caf") || file.hasSuffix("m4a") || file.hasSuffix("m4r") || file.hasSuffix("m4b") || file.hasSuffix("mp1") || file.hasSuffix("m1a") || file.hasSuffix("aax") || file.hasSuffix("mp2") || file.hasSuffix("w64") || file.hasSuffix("m4r") || file.hasSuffix("aa") || file.hasSuffix("mp3") || file.hasSuffix("au") || file.hasSuffix("eac3") || file.hasSuffix("ac3") || file.hasSuffix("m4p") || file.hasSuffix("loas")) {
+                                audioPlayerShow = true
+                                audioPlayerPath = directory + file
+                            } else if (file.hasSuffix("3gp") || file.hasSuffix("3g2") || file.hasSuffix("avi") || file.hasSuffix("mov") || file.hasSuffix("m4v") || file.hasSuffix("mp4")){
+                                videoPlayerShow = true
+                                videoPlayerPath = directory + file
                             } else {
                                 selectedFile = FileInfo(name: file, id: UUID())
                             }
                         }) {
                             HStack {
                                 if (file.hasSuffix("/")) {
-                                    if (isDirectoryEmpty(atPath: directory + file)){
+                                    if (isDirectoryEmpty(atPath: directory + file) == 1){
                                         Image(systemName: "folder")
-                                    } else {
+                                    } else if (isDirectoryEmpty(atPath: directory + file) == 0){
                                         Image(systemName: "folder.fill")
+                                    } else {
+                                        Image(systemName: "folder.badge.questionmark")
                                     }
                                     Text(substring(str: file, startIndex: file.index(file.startIndex, offsetBy: 0), endIndex: file.index(file.endIndex, offsetBy: -1)))
                                 } else if (FileManager.default.isExecutableFile(atPath: directory + file)){
                                     Image(systemName: "terminal")
+                                    Text(file)
+                                } else if (file.hasSuffix("aifc") || file.hasSuffix("m4r") || file.hasSuffix("wav") || file.hasSuffix("flac") || file.hasSuffix("m2a") || file.hasSuffix("aac") || file.hasSuffix("mpa") || file.hasSuffix("xhe") || file.hasSuffix("aiff") || file.hasSuffix("amr") || file.hasSuffix("caf") || file.hasSuffix("m4a") || file.hasSuffix("m4r") || file.hasSuffix("m4b") || file.hasSuffix("mp1") || file.hasSuffix("m1a") || file.hasSuffix("aax") || file.hasSuffix("mp2") || file.hasSuffix("w64") || file.hasSuffix("m4r") || file.hasSuffix("aa") || file.hasSuffix("mp3") || file.hasSuffix("au") || file.hasSuffix("eac3") || file.hasSuffix("ac3") || file.hasSuffix("m4p") || file.hasSuffix("loas")) {
+                                    Image(systemName: "waveform.circle")
+                                    Text(file)
+                                } else if (file.hasSuffix("3gp") || file.hasSuffix("3g2") || file.hasSuffix("avi") || file.hasSuffix("mov") || file.hasSuffix("m4v") || file.hasSuffix("mp4")){
+                                    Image(systemName: "video")
                                     Text(file)
                                 } else {
                                     Image(systemName: "doc")
@@ -121,19 +113,45 @@ struct ContentView: View {
                             }
                             
                             Button(action: {
-                                renameFilePath = file
+                                renameFileCurrentPath = directory
+                                renameFileCurrentName = file
                                 renameFileShow = true
-                                print(renameFilePath)
                             }) {
                                 Text("Rename")
                             }
                             
-                            Button(action: {
-                                deleteFile(atPath: directory + file)
-                                updateFiles()
-                            }) {
-                                Text("Delete")
+                            if(directory == "/var/mobile/Media/.Trash/"){
+                                Button(action: {
+                                    deleteFile(atPath: directory + file)
+                                    updateFiles()
+                                }) {
+                                    Text("Delete")
+                                }
+                            } else {
+                                Button(action: {
+                                    moveFile(path: directory + file, newPath: ("/var/mobile/Media/.Trash/" + file))
+                                    updateFiles()
+                                }) {
+                                    Text("Move to Trash")
+                                }
                             }
+                            
+                            Button(action: {
+                                moveFileCurrentPath = directory
+                                moveFileCurrentName = file
+                                moveFileShow = true
+                            }) {
+                                Text("Move To")
+                            }
+                            
+                            Button(action: {
+                                copyFileCurrentPath = directory
+                                copyFileCurrentName = file
+                                copyFileShow = true
+                            }) {
+                                Text("Copy To")
+                            }
+                            
                             Button(action: { }) { //if you have an empty button it dismisses a context menu??
                                 Text("Dismiss")
                             }
@@ -165,20 +183,77 @@ struct ContentView: View {
                         Text(readTextFile(path: directory + file.name))
                     }
                 }
+                .sheet(isPresented: $searchShow, content: { //search files
+                    SearchView()
+                })
                 .sheet(isPresented: $createDirectoryShow, content: { //create dir
-                    CreateDirectoryView(directoryName: $mkdirName, directoryPath: directory, isPresented: $createDirectoryShow)
+                    CreateDirectoryView(directoryPath: directory, isPresented: $createDirectoryShow)
                 })
                 .sheet(isPresented: $createFileShow, content: { //create file
-                    CreateFileView(fileName: $mkdirName, filePath: directory, isPresented: $createFileShow)
+                    CreateFileView(filePath: directory, isPresented: $createFileShow)
                 })
                 .sheet(isPresented: $favoritesShow, content: {
                     FavoritesView()
                 })
+                .sheet(isPresented: $settingsShow, content: {
+                    SettingsView()
+                })
                 .sheet(isPresented: $renameFileShow, content: {
-                    RenameFileView(fileName: $renameFileName, filePath: (directory + renameFilePath), isPresented: $renameFileShow)
+                    RenameFileView(fileName: $renameFileCurrentName, filePath: $renameFileCurrentPath, isPresented: $renameFileShow)
+                })
+                .sheet(isPresented: $moveFileShow, content: {
+                    MoveFileView(fileName: $moveFileCurrentName, filePath: $moveFileCurrentPath, isPresented: $moveFileShow)
+                })
+                .sheet(isPresented: $copyFileShow, content: {
+                    CopyFileView(fileName: $copyFileCurrentName, filePath: $copyFileCurrentPath, isPresented: $copyFileShow)
+                })
+                .sheet(isPresented: $videoPlayerShow, content: {
+                    VideoPlayerView(videoPath: $videoPlayerPath)
+                })
+                .sheet(isPresented: $audioPlayerShow, content: {
+                    AudioPlayerView(audioPath: $audioPlayerPath)
                 })
             }
         }
+    }
+    
+    var topBar: some View {
+        HStack {
+                    Button(action: {
+                        searchShow = true
+                    }) {
+                        Image(systemName: "magnifyingglass")
+                            .frame(width:50, height:50)
+                    }
+                
+                    Button(action: { //new file
+                        createFileShow = true
+                    }) {
+                        Image(systemName: "doc.badge.plus")
+                            .frame(width:50, height:50)
+                    }
+                    
+                    Button(action: { //new directory
+                        createDirectoryShow = true
+                    }) {
+                        Image(systemName: "folder.badge.plus")
+                            .frame(width:50, height:50)
+                    }
+                    
+                    Button(action: { //favorites
+                        favoritesShow = true
+                    }) {
+                        Image(systemName: "star")
+                            .frame(width:50, height:50)
+                    }
+                    
+                    Button(action: { //settings
+                        settingsShow = true
+                    }) {
+                        Image(systemName: "gear")
+                            .frame(width:50, height:50)
+                    }
+                }
     }
 
     func updateFiles() {
@@ -273,128 +348,32 @@ struct ContentView: View {
         }
     }
     
-    func isDirectoryEmpty(atPath path: String) -> Bool {
+    func isDirectoryEmpty(atPath path: String) -> Int {
         let fileManager = FileManager.default
         do {
             let files = try fileManager.contentsOfDirectory(atPath: path)
-            return files.isEmpty
+            if(files.isEmpty){
+                return 1
+            } else {
+                return 0
+            }
+            
         } catch {
             print("Error checking directory contents: \(error.localizedDescription)")
-            return false
+            return 2
         }
     }
-}
-
-struct creditsView: View {
-    var body: some View {
-        Text("credits")
+    
+    func moveFile(path: String, newPath: String) {
+        do {
+            try FileManager.default.moveItem(atPath: path, toPath: newPath)
+        } catch {
+            print("Failed to move file: \(error.localizedDescription)")
+        }
     }
 }
 
 struct FileInfo: Identifiable {
     let name: String
     let id: UUID
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView(directory: "/")
-    }
-}
-
-struct CreateDirectoryView: View {
-    @Binding var directoryName: String
-    @State var directoryPath: String
-    @Binding var isPresented: Bool
-
-    var body: some View {
-        VStack {
-            TextField("Enter directory name", text: $directoryName)
-            Button("Confirm") {
-                do {
-                    try createDirectoryAtPath(path: directoryPath, directoryName: directoryName)
-                    print("Directory created successfully")
-                    isPresented = false
-                    directoryName = ""
-                } catch {
-                    print("Failed to create directory: \(error.localizedDescription)")
-                }
-            }
-            .padding()
-        }
-        .padding()
-    }
-    
-    func createDirectoryAtPath(path: String, directoryName: String) throws {
-        let fileManager = FileManager.default
-        let directoryPath = (path as NSString).appendingPathComponent(directoryName)
-        try fileManager.createDirectory(atPath: directoryPath, withIntermediateDirectories: true, attributes: nil)
-    }
-}
-
-struct RenameFileView: View {
-    @Binding var fileName: String
-    @State var filePath: String
-    @Binding var isPresented: Bool
-    
-    var body: some View {
-        TextField("Enter new file name", text: $fileName)
-        Button("test"){
-            print(fileName)
-            print(filePath)
-        }
-        Button("Confirm") {
-            renameFile(path: filePath, fileName: fileName)
-            print("File renamed successfully")
-            fileName = ""
-            //isPresented = false
-        }
-    }
-    
-    func renameFile(path: String, fileName: String) {
-        
-        do {
-            try FileManager.default.moveItem(atPath: path, toPath: fileName)
-        } catch {
-            print("Failed to rename file: \(error.localizedDescription)")
-        }
-    }
-}
-
-struct CreateFileView: View {
-    @Binding var fileName: String
-    @State var filePath: String
-    @Binding var isPresented: Bool
-
-    var body: some View {
-        VStack {
-            TextField("Enter file name", text: $fileName)
-            Button("Confirm") {
-                do {
-                    try createFileAtPath(path: filePath, fileName: fileName)
-                    print("File created successfully")
-                    fileName = ""
-                    isPresented = false
-                } catch {
-                    print("Failed to create file: \(error.localizedDescription)")
-                }
-            }
-            .padding()
-        }
-        .padding()
-    }
-    
-    func createFileAtPath(path: String, fileName: String) throws {
-        let fileManager = FileManager.default
-        let filePath = (path as NSString).appendingPathComponent(fileName)
-        fileManager.createFile(atPath: filePath, contents: nil, attributes: nil)
-    }
-}
-
-struct FavoritesView: View {
-    var body: some View {
-        Text("**Favorites**")
-        //for loop through each entry in the array (will need to store in some permanent place)
-        //pressing each one will change directory to that, then updateFiles()
-    }
 }
