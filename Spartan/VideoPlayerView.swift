@@ -19,7 +19,10 @@ struct VideoPlayerView: View {
     @State private var currentTime: Double = 0
     @State private var rewindIncrement = 1
     @State private var fastIncrement = 1
-    @State private var endShow = false
+    @State private var infoShow = false
+    
+    @State private var preservedTime: Double = 0
+    @State private var infoShowWasShowing = false
     let timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
 
     var body: some View {
@@ -44,6 +47,10 @@ struct VideoPlayerView: View {
                 print(url)
                 player.replaceCurrentItem(with: AVPlayerItem(url: url))
                 player.play()
+                if(infoShowWasShowing){
+                    player.seek(to: CMTime(seconds: preservedTime, preferredTimescale: 1))
+                    infoShowWasShowing = false
+                }
             }
             .onReceive(timer) { _ in
                 currentTime = player.currentTime().seconds
@@ -52,7 +59,24 @@ struct VideoPlayerView: View {
                 isPlaying = timeControlStatus == .playing
             }
             .focusable(true)
+            .sheet(isPresented: $infoShow, onDismiss: {
+                preservedTime = currentTime
+                infoShowWasShowing = true
+            }) {
+                Text(videoPath)
+                    .font(.system(size: 40))
+                    .bold()
+                    .multilineTextAlignment(.center)
+                Text(getVideoInfo(atPath: videoPath))
+                    .multilineTextAlignment(.center)
+                Button(action: {
+                    infoShow = false
+                }) {
+                    Text("Dismiss")
+                }
+        }
     }
+    
     
     var controlsView: some View {
         VStack{
@@ -196,19 +220,10 @@ struct VideoPlayerView: View {
     @ViewBuilder
     var videoInfoButton: some View {
         Button(action: {
-            endShow = true
+            infoShow = true
         }) {
             Image(systemName: "info.circle")
-                .resizable()
-                .frame(width:36, height:32)
                 .accentColor(.accentColor)
-        }
-        .alert(isPresented: $endShow) {
-            Alert(
-                title: Text(videoPath),
-                message: Text(getVideoInfo(atPath: videoPath)),
-                dismissButton: .default(Text("Dismiss"))
-            )
         }
     }
 
@@ -223,20 +238,22 @@ struct VideoPlayerView: View {
     func getVideoInfo(atPath filePath: String) -> String {
         let fileURL = URL(fileURLWithPath: filePath)
         let asset = AVURLAsset(url: fileURL)
-        let duration = asset.duration.seconds
+        let duration = String(format: "%.2f", asset.duration.seconds)
         
         guard let videoTrack = asset.tracks(withMediaType: .video).first else {
             return "Error: Could not get video track"
         }
         let width = videoTrack.naturalSize.width
         let height = videoTrack.naturalSize.height
+        let width2 = String(format: "%.1f", width)
+        let height2 = String(format: "%.1f", height)
     
         //let metadata = asset.metadata
         
         let info = """
         Video file: \(fileURL.lastPathComponent)
         Duration: \(duration) seconds
-        Dimensions: \(width) x \(height) pixels
+        Dimensions: \(width2) x \(height2) pixels
         """
         return info
     }
