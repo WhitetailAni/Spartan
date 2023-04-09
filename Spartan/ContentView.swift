@@ -21,6 +21,10 @@ struct ContentView: View {
     @State private var renameFileShow = false
     @State var renameFileCurrentPath: String = ""
     @State var renameFileCurrentName: String = ""
+    @State var renameFileNewName: String = ""
+    
+    @State private var sidebarShow = false
+    @State private var sidebarFrame = CGRect.zero
     
     @State private var searchShow = false
     @State private var createDirectoryShow = false
@@ -42,18 +46,31 @@ struct ContentView: View {
     @State private var audioPlayerShow = false
     @State var audioPlayerPath: String = ""
     
+    @State private var addToFavoritesShow = false
+    @State private var addToFavoritesFilePath: String = ""
+    @State private var addToFavoritesDisplayName: String = ""
+    
     var body: some View {
         NavigationView {
             VStack {
                 HStack { //input directory + refresh
-                    TextField("Input directory", text: $directory)
+                    TextField("Input directory", text: $directory, onCommit: {
+                        updateFiles()
+                    })
                     Button(action: {
                         updateFiles()
                     }) {
                         Image(systemName: "arrow.clockwise")
                     }
                 }
-                topBar
+                HStack {
+                    topBarOffset
+                        .frame(alignment: .leading)
+                    topBar
+                        .frame(alignment: .center)
+                    freeSpace
+                        .frame(alignment: .trailing)
+                }
                 List { //directory contents view
                     Button(action: {
                         goBack()
@@ -115,6 +132,7 @@ struct ContentView: View {
                             Button(action: {
                                 renameFileCurrentPath = directory
                                 renameFileCurrentName = file
+                                renameFileNewName = file
                                 renameFileShow = true
                             }) {
                                 Text("Rename")
@@ -134,6 +152,19 @@ struct ContentView: View {
                                 }) {
                                     Text("Move to Trash")
                                 }
+                            }
+                            
+                            Button(action: {
+                                addToFavoritesShow = true
+                                addToFavoritesFilePath = directory + file
+                                if file.hasSuffix("/") {
+                                addToFavoritesDisplayName = String(substring(str: file, startIndex: file.index(file.startIndex, offsetBy: 0), endIndex: file.index(file.endIndex, offsetBy: -1)))
+                                } else {
+                                    addToFavoritesDisplayName = file
+                                }
+                                UserDefaults.favorites.synchronize()
+                            }) {
+                                Text("Add to Favorites")
                             }
                             
                             Button(action: {
@@ -184,7 +215,7 @@ struct ContentView: View {
                     }
                 }
                 .sheet(isPresented: $searchShow, content: { //search files
-                    SearchView()
+                    SearchView(directoryToSearch: $directory)
                 })
                 .sheet(isPresented: $createDirectoryShow, content: { //create dir
                     CreateDirectoryView(directoryPath: directory, isPresented: $createDirectoryShow)
@@ -193,13 +224,16 @@ struct ContentView: View {
                     CreateFileView(filePath: directory, isPresented: $createFileShow)
                 })
                 .sheet(isPresented: $favoritesShow, content: {
-                    FavoritesView()
+                    FavoritesView(directory: $directory, showView: $favoritesShow)
+                })
+                .sheet(isPresented: $addToFavoritesShow, content: {
+                    AddToFavoritesView(filePath: $addToFavoritesFilePath, displayName: $addToFavoritesDisplayName, showView: $addToFavoritesShow)
                 })
                 .sheet(isPresented: $settingsShow, content: {
                     SettingsView()
                 })
                 .sheet(isPresented: $renameFileShow, content: {
-                    RenameFileView(fileName: $renameFileCurrentName, filePath: $renameFileCurrentPath, isPresented: $renameFileShow)
+                    RenameFileView(fileName: $renameFileCurrentName, newFileName: $renameFileNewName, filePath: $renameFileCurrentPath, isPresented: $renameFileShow)
                 })
                 .sheet(isPresented: $moveFileShow, content: {
                     MoveFileView(fileName: $moveFileCurrentName, filePath: $moveFileCurrentPath, isPresented: $moveFileShow)
@@ -213,47 +247,82 @@ struct ContentView: View {
                 .sheet(isPresented: $audioPlayerShow, content: {
                     AudioPlayerView(audioPath: $audioPlayerPath)
                 })
+                .accentColor(.accentColor)
             }
         }
     }
     
     var topBar: some View {
         HStack {
-                    Button(action: {
-                        searchShow = true
-                    }) {
-                        Image(systemName: "magnifyingglass")
-                            .frame(width:50, height:50)
-                    }
-                
-                    Button(action: { //new file
-                        createFileShow = true
-                    }) {
-                        Image(systemName: "doc.badge.plus")
-                            .frame(width:50, height:50)
-                    }
-                    
-                    Button(action: { //new directory
-                        createDirectoryShow = true
-                    }) {
-                        Image(systemName: "folder.badge.plus")
-                            .frame(width:50, height:50)
-                    }
-                    
-                    Button(action: { //favorites
-                        favoritesShow = true
-                    }) {
-                        Image(systemName: "star")
-                            .frame(width:50, height:50)
-                    }
-                    
-                    Button(action: { //settings
-                        settingsShow = true
-                    }) {
-                        Image(systemName: "gear")
-                            .frame(width:50, height:50)
-                    }
-                }
+            Button(action: {
+                sidebarShow = true
+            }) {
+                Image(systemName: "list.bullet")
+                    .frame(width:50, height:50)
+            }
+            
+            Button(action: {
+                searchShow = true
+            }) {
+                Image(systemName: "magnifyingglass")
+                    .frame(width:50, height:50)
+            }
+        
+            Button(action: { //new file
+                createFileShow = true
+            }) {
+                Image(systemName: "doc.badge.plus")
+                    .frame(width:50, height:50)
+            }
+            
+            Button(action: { //new directory
+                createDirectoryShow = true
+            }) {
+                Image(systemName: "folder.badge.plus")
+                    .frame(width:50, height:50)
+            }
+            
+            Button(action: { //favorites
+                favoritesShow = true
+            }) {
+                Image(systemName: "star")
+                    .frame(width:50, height:50)
+            }
+            
+            Button(action: { //settings
+                settingsShow = true
+            }) {
+                Image(systemName: "gear")
+                    .frame(width:50, height:50)
+            }
+        }
+        .alignmentGuide(HorizontalAlignment.center) {
+            $0[HorizontalAlignment.center]
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
+    }
+    
+    var freeSpace: some View { //this is hardcoded for now, returning mount points wasnt working
+        let (doubleValue, stringValue) = freeSpace(path: "/")
+        return VStack {
+            Text("/")
+            Text("Free space: " + String(format: "%.2f", doubleValue) + " " + stringValue)
+        }
+        .alignmentGuide(.trailing) {
+            $0[HorizontalAlignment.trailing]
+        }
+        .frame(maxWidth: .infinity, alignment: .trailing)
+    }
+    
+    var topBarOffset: some View {
+        return VStack {
+                Text("")
+                Text("")
+            }
+            .alignmentGuide(.leading) {
+                $0[HorizontalAlignment.leading]
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     func updateFiles() {
@@ -371,6 +440,43 @@ struct ContentView: View {
             print("Failed to move file: \(error.localizedDescription)")
         }
     }
+    
+    func freeSpace(path: String) -> (Double, String) {
+        do {
+            let systemAttributes = try FileManager.default.attributesOfFileSystem(forPath: path)
+            let freeSpace = systemAttributes[.systemFreeSize] as? NSNumber
+            if let freeSpace = freeSpace {
+                if(freeSpace.doubleValue > 1073741824) {
+                    return (bytesToGigabytes(bytes: freeSpace.doubleValue), "GB")
+                } else if(freeSpace.doubleValue > 1048576) {
+                    return (bytesToMegabytes(bytes: freeSpace.doubleValue), "MB")
+                } else if(freeSpace.doubleValue > 1024) {
+                    return (bytesToKilobytes(bytes: freeSpace.doubleValue), "KB")
+                } else {
+                    return (freeSpace.doubleValue, "bytes")
+                }
+            } else {
+                return (0, "?")
+            }
+        } catch {
+            print("Error: \(error.localizedDescription)")
+            return (0, "?")
+        }
+    }
+    
+    func bytesToKilobytes(bytes: Double) -> Double {
+        let megabytes = bytes / 1024
+        return megabytes
+    }
+    func bytesToMegabytes(bytes: Double) -> Double {
+        let megabytes = bytes / (1024 * 1024)
+        return megabytes
+    }
+    func bytesToGigabytes(bytes: Double) -> Double {
+        let gigabytes = bytes / (1024 * 1024 * 1024)
+        return gigabytes
+    }
+    //hopefully these are self explanatory?
 }
 
 struct FileInfo: Identifiable {

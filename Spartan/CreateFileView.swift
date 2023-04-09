@@ -26,9 +26,8 @@ struct CreateFileView: View {
                     print("Failed to create file: \(error.localizedDescription)")
                 }
             }
-            .padding()
         }
-        .padding()
+        .accentColor(.accentColor)
     }
     
     func createFileAtPath(path: String, fileName: String) throws {

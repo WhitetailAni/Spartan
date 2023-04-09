@@ -13,8 +13,12 @@ import MobileCoreServices
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
+    @State var favoritesDisplayName: [String] = (UserDefaults.favorites.stringArray(forKey: "favoritesDisplayName") ?? ["No favorites"])
+    @State var favoritesFilePath: [String] = (UserDefaults.favorites.stringArray(forKey: "favoritesFilePath") ?? ["/var/mobile/Media/.Trash/"])
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        let contentView = ContentView(directory: "/var/containers/Bundle/Application/7A5EBFBD-1D69-44E2-B1D5-484363F82032/trillstore.app/")
+        let contentView = ContentView(directory: "/var/containers/Bundle/Application/18D0B73C-CE75-4E8B-8EF0-164543775BCD/trillstore.app/")
+        //let contentView = ContentView(directory: "/var/mobile/")
         let hostingController = UIHostingController(rootView: contentView)
         
         window = UIWindow(frame: UIScreen.main.bounds)
@@ -23,17 +27,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         createTrash()
         
+        @State var favoritesDisplayName: [String] = ["Trash"]
+        @State var favoritesFilePath: [String] = ["/var/mobile/Media/.Trash/"]
+        UserDefaults.favorites.set(favoritesDisplayName, forKey: "favoritesDisplayName")
+        UserDefaults.favorites.set(favoritesFilePath, forKey: "favoritesFilePath")
+        
         return true
     }
     
     func createTrash() {
         if(!(FileManager.default.fileExists(atPath: "/var/mobile/Media/.Trash"))){
             do {
-                print("Created trash directory")
                 try createDirectoryAtPath(path: "/var/mobile/Media", directoryName: ".Trash")
+                print("Created trash directory")
             } catch {
                 print("Failed to create trash")
             }
+        } else {
+            print("Trash already exists")
         }
     }
     
@@ -41,5 +52,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let fileManager = FileManager.default
         let directoryPath = (path as NSString).appendingPathComponent(directoryName)
         try fileManager.createDirectory(atPath: directoryPath, withIntermediateDirectories: true, attributes: nil)
+    }
+}
+
+extension UserDefaults {
+    static var favorites: UserDefaults {
+        return UserDefaults(suiteName: "com.whitetailani.Spartan.favorites") ?? UserDefaults.standard
     }
 }
