@@ -26,9 +26,8 @@ struct CreateDirectoryView: View {
                     print("Failed to create directory: \(error.localizedDescription)")
                 }
             }
-            .padding()
         }
-        .padding()
+        .accentColor(.accentColor)
     }
     
     public func createDirectoryAtPath(path: String, directoryName: String) throws {

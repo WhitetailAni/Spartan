@@ -89,7 +89,7 @@ struct VideoPlayerView: View {
             player.seek(to: newTime)
         }) {
             Image(systemName: "gobackward.10")
-                .foregroundColor(.accentColor)
+                .accentColor(.accentColor)
         }
     }
     
@@ -105,7 +105,7 @@ struct VideoPlayerView: View {
             player.seek(to: newTime)
         }) {
             Image(systemName: "goforward.10")
-                .foregroundColor(.accentColor)
+                .accentColor(.accentColor)
         }
     }
     
@@ -120,7 +120,7 @@ struct VideoPlayerView: View {
             Image(systemName: time > newTime ? "backward.end.fill" : "backward.end")
                 .resizable()
                 .frame(width:36, height:32)
-                .foregroundColor(.accentColor)
+                .accentColor(.accentColor)
         }
     }
     
@@ -147,7 +147,7 @@ struct VideoPlayerView: View {
             Image(systemName: player.rate < 0.0 ? "backward.fill" : "backward")
                 .resizable()
                 .frame(width:54, height:31)
-                .foregroundColor(.accentColor)
+                .accentColor(.accentColor)
         }
     }
     
@@ -164,7 +164,7 @@ struct VideoPlayerView: View {
             Image(systemName: isPlaying ? "pause.circle.fill" : "play.circle.fill")
                 .resizable()
                 .frame(width:50, height:50)
-                .foregroundColor(.accentColor)
+                .accentColor(.accentColor)
         }
     }
     
@@ -189,7 +189,7 @@ struct VideoPlayerView: View {
             Image(systemName: player.rate > 1.0 ? "forward.fill" : "forward")
                 .resizable()
                 .frame(width:54, height:31)
-                .foregroundColor(.accentColor)
+                .accentColor(.accentColor)
         }
     }
         
@@ -201,13 +201,13 @@ struct VideoPlayerView: View {
             Image(systemName: "info.circle")
                 .resizable()
                 .frame(width:36, height:32)
-                .foregroundColor(.accentColor)
+                .accentColor(.accentColor)
         }
         .alert(isPresented: $endShow) {
             Alert(
                 title: Text(videoPath),
                 message: Text(getVideoInfo(atPath: videoPath)),
-                dismissButton: .default(Text(""))
+                dismissButton: .default(Text("Dismiss"))
             )
         }
     }

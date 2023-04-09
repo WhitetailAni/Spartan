@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import AVFoundation
+import AVKit
 
 struct AudioPlayerView: View {
     @Binding var audioPath: String
@@ -14,12 +14,29 @@ struct AudioPlayerView: View {
     
     @State private var rewindIncrement = 1
     @State private var fastIncrement = 1
+    @State private var isPlaying = false
     
     var body: some View {
-        VStack {
+        HStack {
             rewindButton
-            Button(action: play) {
-                Image(systemName: "play.circle")
+            Button(action: {
+                if isPlaying {
+                    isPlaying = false
+                } else {
+                    isPlaying = true
+                }
+                guard let escapedFilePath = audioPath.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+                      let url = URL(string: "file://\(escapedFilePath)")
+                else {
+                    print("Invalid URL: \(audioPath)")
+                    return
+                }
+                let playerItem = AVPlayerItem(url: url)
+                let player = AVPlayer(playerItem: playerItem)
+                player.replaceCurrentItem(with: AVPlayerItem(url: url))
+                player.play()
+            }) {
+                Image(systemName: isPlaying ? "pause.circle" : "play.circle")
                     .font(.system(size: 64))
             }
             fastForwardButton
@@ -73,22 +90,6 @@ struct AudioPlayerView: View {
                 .resizable()
                 .frame(width:54, height:31)
                 .foregroundColor(.accentColor)
-        }
-    }
-    
-    func play() {
-        guard let audioURL = URL(string: audioPath.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? "") else {
-            print("Invalid audio URL: \(audioPath)")
-            return
-        }
-        
-        do {
-            try AVAudioSession.sharedInstance().setCategory(.playback)
-            self.player = try AVAudioPlayer(contentsOf: audioURL)
-            self.player.prepareToPlay()
-            self.player.play()
-        } catch let error {
-            print("Failed to play audio: \(error.localizedDescription)")
         }
     }
 }

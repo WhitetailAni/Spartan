@@ -12,7 +12,9 @@ struct SettingsView: View {
     @State private var infoShow = false
 
     var body: some View {
-        Text("settings")
+        Text("Settings")
+            .font(.system(size: 40))
+            .bold()
         Button(action: {
             print("e")
         }) {
