@@ -46,6 +46,9 @@ struct ContentView: View {
     @State private var audioPlayerShow = false
     @State var audioPlayerPath: String = ""
     
+    @State private var imageShow = false
+    @State var imagePath: String = ""
+    
     @State private var addToFavoritesShow = false
     @State private var addToFavoritesFilePath: String = ""
     @State private var addToFavoritesDisplayName: String = ""
@@ -92,6 +95,9 @@ struct ContentView: View {
                             } else if (file.hasSuffix("3gp") || file.hasSuffix("3g2") || file.hasSuffix("avi") || file.hasSuffix("mov") || file.hasSuffix("m4v") || file.hasSuffix("mp4")){
                                 videoPlayerShow = true
                                 videoPlayerPath = directory + file
+                            } else if (file.hasSuffix("png")) {
+                                imageShow = true
+                                imagePath = directory + file
                             } else {
                                 selectedFile = FileInfo(name: file, id: UUID())
                             }
@@ -114,6 +120,9 @@ struct ContentView: View {
                                     Text(file)
                                 } else if (file.hasSuffix("3gp") || file.hasSuffix("3g2") || file.hasSuffix("avi") || file.hasSuffix("mov") || file.hasSuffix("m4v") || file.hasSuffix("mp4")){
                                     Image(systemName: "video")
+                                    Text(file)
+                                } else if (file.hasSuffix("png")) {
+                                    Image(systemName: "photo")
                                     Text(file)
                                 } else {
                                     Image(systemName: "doc")
@@ -246,6 +255,9 @@ struct ContentView: View {
                 })
                 .sheet(isPresented: $audioPlayerShow, content: {
                     AudioPlayerView(audioPath: $audioPlayerPath)
+                })
+                .sheet(isPresented: $imageShow, content: {
+                    ImageView(imagePath: $imagePath)
                 })
                 .accentColor(.accentColor)
             }
