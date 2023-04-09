@@ -14,8 +14,16 @@ What it currently lets you do:
 8. Rename a file
 9. Move a file to Trash (or if it's in Trash, permanently delete it)
 10. Move a file to a new filepath (and optionally, rename it)
-11. Copy a file to a new filepath  (and optionally, rename it)
-12. SOON: View images
+11. Copy a file to a new filepath (and optionally, rename it)
+12. View images
+13. AT SOME POINT: Play audio
+
+TODO:
+1. Stop using yandere dev file type check statements
+2. Don't assume a filepath is a directory in ContentView (you can specify a filepath to a non-folder and it will open the proper view)
+3. Fix AudioPlayerView
+4. Add info to ImageView
+5. more to come
 
 By default it's sandboxed, so you will need a tvOS jailbreak to use it unless you're fine with just modifying what's in the app's data directory. It's set to open /var/mobile/ by default.
 
