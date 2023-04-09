@@ -304,10 +304,10 @@ struct ContentView: View {
     
     var freeSpace: some View { //this is hardcoded for now, returning mount points wasnt working
         let (doubleValue, stringValue) = freeSpace(path: "/")
-        return VStack {
-            Text("/")
+        return //VStack {
+            //Text("/")
             Text("Free space: " + String(format: "%.2f", doubleValue) + " " + stringValue)
-        }
+        //}
         .alignmentGuide(.trailing) {
             $0[HorizontalAlignment.trailing]
         }
