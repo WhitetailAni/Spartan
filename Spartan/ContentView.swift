@@ -83,7 +83,8 @@ struct ContentView: View {
                 }
                 List { //directory contents view
                     Button(action: {
-                        goBack()
+                        directoryListShow = true
+                        directoryListPath = goBack()
                     }) {
                         HStack {
                             Image(systemName: "arrowshape.turn.up.backward")
@@ -96,8 +97,6 @@ struct ContentView: View {
                             if file.hasSuffix("/") {
                                 directoryListShow = true
                                 directoryListPath = directory + file
-                                //directory += file
-                                //updateFiles()
                                 print(directory)
                             } else if (file.hasSuffix("aifc") || file.hasSuffix("m4r") || file.hasSuffix("wav") || file.hasSuffix("flac") || file.hasSuffix("m2a") || file.hasSuffix("aac") || file.hasSuffix("mpa") || file.hasSuffix("xhe") || file.hasSuffix("aiff") || file.hasSuffix("amr") || file.hasSuffix("caf") || file.hasSuffix("m4a") || file.hasSuffix("m4r") || file.hasSuffix("m4b") || file.hasSuffix("mp1") || file.hasSuffix("m1a") || file.hasSuffix("aax") || file.hasSuffix("mp2") || file.hasSuffix("w64") || file.hasSuffix("m4r") || file.hasSuffix("aa") || file.hasSuffix("mp3") || file.hasSuffix("au") || file.hasSuffix("eac3") || file.hasSuffix("ac3") || file.hasSuffix("m4p") || file.hasSuffix("loas")) {
                                 audioPlayerShow = true
@@ -434,7 +433,8 @@ struct ContentView: View {
             print(error)
             if(substring(str: error.localizedDescription, startIndex: error.localizedDescription.index(error.localizedDescription.endIndex, offsetBy: -33), endIndex: error.localizedDescription.index(error.localizedDescription.endIndex, offsetBy: 0)) == "don’t have permission to view it."){
                 permissionDenied = true
-                goBack()
+                directory = goBack()
+                updateFiles()
             }
         }
     }
@@ -450,17 +450,14 @@ struct ContentView: View {
         }
     }
     
-    func goBack() {
-        guard directory != "/" else { return }
+    func goBack() -> String {
+        guard directory != "/" else {
+            return "/"
+        }
         var components = directory.split(separator: "/")
     
-        if components.count > 1 {
-            components.removeLast()
-            directory = "/" + components.joined(separator: "/") + "/"
-        } else if components.count == 1 {
-            directory = "/"
-        }
-        updateFiles()
+        components.removeLast()
+        return "/" + components.joined(separator: "/") + "/"
     }
     
     func substring(str: String, startIndex: String.Index, endIndex: String.Index) -> Substring {
