@@ -1,8 +1,8 @@
 //
-//  ContentView.swift
+//  ContentViewNew.swift
 //  Spartan
 //
-//  Created by RealKGB on 4/3/23.
+//  Created by RealKGB on 4/11/23.
 //
 
 import SwiftUI
@@ -10,7 +10,7 @@ import UIKit
 import Foundation
 import MobileCoreServices
 
-struct ContentView: View {
+struct ContentViewNew: View {
     @Binding var directory: String
     @State private var files: [String] = []
     @State private var selectedFile: FileInfo?
@@ -28,7 +28,7 @@ struct ContentView: View {
     @State var renameFileNewName: String = ""
     
     @State private var sidebarShow = false
-    private let sidebarFocus = UIFocusGuide()
+    @State private var sidebarFrame = CGRect.zero
     
     @State private var searchShow = false
     @State private var createDirectoryShow = false
@@ -56,12 +56,17 @@ struct ContentView: View {
     @State private var plistShow = false
     @State var plistPath: String = ""
     
+    @State private var executableShow = false
+    @State var executablePath: String = ""
+    
+    @State private var spareShow = false
+    
     @State private var addToFavoritesShow = false
     @State private var addToFavoritesFilePath: String = ""
     @State private var addToFavoritesDisplayName: String = ""
     
     var body: some View {
-        ZStack {
+        NavigationView {
             VStack {
                 HStack { //input directory + refresh
                     TextField("Input directory", text: $directory, onCommit: {
@@ -83,7 +88,9 @@ struct ContentView: View {
                 }
                 List { //directory contents view
                     Button(action: {
-                        goBack()
+                        directoryListShow = true
+                        directoryListPath = goBack()
+                        print(directory)
                     }) {
                         HStack {
                             Image(systemName: "arrowshape.turn.up.backward")
@@ -93,30 +100,33 @@ struct ContentView: View {
                     ForEach(files, id: \.self) { file in
                         Button(action: {
                             print(yandereDevFileType(file: (directory + file)))
-                            if file.hasSuffix("/") {
+                            if (yandereDevFileType(file: directory) == 0) {
                                 directoryListShow = true
                                 directoryListPath = directory + file
-                                //directory += file
-                                //updateFiles()
                                 print(directory)
-                            } else if (file.hasSuffix("aifc") || file.hasSuffix("m4r") || file.hasSuffix("wav") || file.hasSuffix("flac") || file.hasSuffix("m2a") || file.hasSuffix("aac") || file.hasSuffix("mpa") || file.hasSuffix("xhe") || file.hasSuffix("aiff") || file.hasSuffix("amr") || file.hasSuffix("caf") || file.hasSuffix("m4a") || file.hasSuffix("m4r") || file.hasSuffix("m4b") || file.hasSuffix("mp1") || file.hasSuffix("m1a") || file.hasSuffix("aax") || file.hasSuffix("mp2") || file.hasSuffix("w64") || file.hasSuffix("m4r") || file.hasSuffix("aa") || file.hasSuffix("mp3") || file.hasSuffix("au") || file.hasSuffix("eac3") || file.hasSuffix("ac3") || file.hasSuffix("m4p") || file.hasSuffix("loas")) {
+                            } else if (yandereDevFileType(file: directory) == 1) {
                                 audioPlayerShow = true
-                                audioPlayerPath = directory + file
-                            } else if (file.hasSuffix("3gp") || file.hasSuffix("3g2") || file.hasSuffix("avi") || file.hasSuffix("mov") || file.hasSuffix("m4v") || file.hasSuffix("mp4")){
+                                audioPlayerPath = directory
+                            } else if (yandereDevFileType(file: directory) == 2) {
                                 videoPlayerShow = true
-                                videoPlayerPath = directory + file
-                            } else if (file.hasSuffix("png")) {
+                                videoPlayerPath = directory
+                            } else if (yandereDevFileType(file: directory) == 3) {
                                 imageShow = true
-                                imagePath = directory + file
-                            } else if (file.hasSuffix("plist")) {
-                                plistShow = true
-                                plistPath = directory + file
-                            } else {
+                                imagePath = directory
+                            } else if (yandereDevFileType(file: directory) == 4) {
                                 selectedFile = FileInfo(name: file, id: UUID())
+                            } else if (yandereDevFileType(file: directory) == 5) {
+                                plistShow = true
+                                plistPath = directory
+                            } else if (yandereDevFileType(file: directory) == 6) {
+                                executableShow = true
+                                executablePath = directory
+                            } else {
+                                spareShow = true
                             }
                         }) {
                             HStack {
-                                if (file.hasSuffix("/")) {
+                                if (yandereDevFileType(file: directory) == 0) {
                                     if (isDirectoryEmpty(atPath: directory + file) == 1){
                                         Image(systemName: "folder")
                                     } else if (isDirectoryEmpty(atPath: directory + file) == 0){
@@ -125,20 +135,20 @@ struct ContentView: View {
                                         Image(systemName: "folder.badge.questionmark")
                                     }
                                     Text(substring(str: file, startIndex: file.index(file.startIndex, offsetBy: 0), endIndex: file.index(file.endIndex, offsetBy: -1)))
-                                } else if (FileManager.default.isExecutableFile(atPath: directory + file)){
-                                    Image(systemName: "terminal")
-                                    Text(file)
-                                } else if (file.hasSuffix("aifc") || file.hasSuffix("m4r") || file.hasSuffix("wav") || file.hasSuffix("flac") || file.hasSuffix("m2a") || file.hasSuffix("aac") || file.hasSuffix("mpa") || file.hasSuffix("xhe") || file.hasSuffix("aiff") || file.hasSuffix("amr") || file.hasSuffix("caf") || file.hasSuffix("m4a") || file.hasSuffix("m4r") || file.hasSuffix("m4b") || file.hasSuffix("mp1") || file.hasSuffix("m1a") || file.hasSuffix("aax") || file.hasSuffix("mp2") || file.hasSuffix("w64") || file.hasSuffix("m4r") || file.hasSuffix("aa") || file.hasSuffix("mp3") || file.hasSuffix("au") || file.hasSuffix("eac3") || file.hasSuffix("ac3") || file.hasSuffix("m4p") || file.hasSuffix("loas")) {
+                                } else if (yandereDevFileType(file: directory) == 1) {
                                     Image(systemName: "waveform.circle")
                                     Text(file)
-                                } else if (file.hasSuffix("3gp") || file.hasSuffix("3g2") || file.hasSuffix("avi") || file.hasSuffix("mov") || file.hasSuffix("m4v") || file.hasSuffix("mp4")){
+                                } else if (yandereDevFileType(file: directory) == 2) {
                                     Image(systemName: "video")
                                     Text(file)
-                                } else if (file.hasSuffix("png")) {
+                                } else if (yandereDevFileType(file: directory) == 3) {
                                     Image(systemName: "photo")
                                     Text(file)
-                                } else if (file.hasSuffix("plist")) {
+                                } else if (yandereDevFileType(file: directory) == 5) {
                                     Image(systemName: "list.bullet")
+                                    Text(file)
+                                } else if (yandereDevFileType(file: directory) == 6){
+                                    Image(systemName: "terminal")
                                     Text(file)
                                 } else {
                                     Image(systemName: "doc")
@@ -283,75 +293,13 @@ struct ContentView: View {
                 })
                 .accentColor(.accentColor)
             }
-            
-            //sidebar HERE
-            if(sidebarShow){
-                VStack(alignment: .leading) {
-                    
-                    Text("Devices")
-                        .font(.system(size: 40))
-                        .bold()
-                    HStack {
-                        Button(action: {
-                            print("s0n")
-                        }) {
-                            HStack {
-                                Image(systemName: "externaldrive")
-                                Text("/")
-                            }
-                        }
-                        Spacer()
-                    }
-                    
-                    Text("Places")
-                        .font(.system(size: 40))
-                        .bold()
-                    HStack {
-                        Button(action: {
-                            directory = "/Applications/"
-                            updateFiles()
-                        }) {
-                            HStack {
-                                Image(systemName: "app.badge")
-                                Text("Applications")
-                            }
-                        }
-                        Spacer()
-                    }
-                    HStack {
-                        Button(action: {
-                            directory = "/var/containers/"
-                            updateFiles()
-                        }) {
-                            HStack {
-                                Image(systemName: "app.badge")
-                                Text("User Applications")
-                            }
-                        }
-                        Spacer ()
-                    }
-                    HStack {
-                        Button(action: {
-                            directory = "/var/mobile/Documents/"
-                            updateFiles()
-                        }) {
-                            HStack {
-                                Image(systemName: "doc.text")
-                                Text("Documents")
-                            }
-                        }
-                        Spacer ()
-                    }
-                }
-                .padding(.leading)
-            }
         }
     }
     
     var topBar: some View {
         HStack {
             Button(action: {
-                sidebarShow.toggle()
+                sidebarShow = true
             }) {
                 Image(systemName: "list.bullet")
                     .frame(width:50, height:50)
@@ -421,7 +369,7 @@ struct ContentView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    func updateFiles() {
+    func updateFiles(){
         do {
             let contents = try FileManager.default.contentsOfDirectory(atPath: directory)
             files = contents.map { file in
@@ -434,7 +382,8 @@ struct ContentView: View {
             print(error)
             if(substring(str: error.localizedDescription, startIndex: error.localizedDescription.index(error.localizedDescription.endIndex, offsetBy: -33), endIndex: error.localizedDescription.index(error.localizedDescription.endIndex, offsetBy: 0)) == "don’t have permission to view it."){
                 permissionDenied = true
-                goBack()
+                directory = goBack()
+                updateFiles() //this is cursed recursion.
             }
         }
     }
@@ -450,17 +399,14 @@ struct ContentView: View {
         }
     }
     
-    func goBack() {
-        guard directory != "/" else { return }
+    func goBack() -> String {
+        guard directory != "/" else {
+            return "/"
+        }
         var components = directory.split(separator: "/")
     
-        if components.count > 1 {
-            components.removeLast()
-            directory = "/" + components.joined(separator: "/") + "/"
-        } else if components.count == 1 {
-            directory = "/"
-        }
-        updateFiles()
+        components.removeLast()
+        return ("/" + components.joined(separator: "/") + "/")
     }
     
     func substring(str: String, startIndex: String.Index, endIndex: String.Index) -> Substring {
@@ -594,8 +540,10 @@ struct ContentView: View {
             return 4 //text file
         } else if (isPlist(filePath: file)) {
             return 5 //plist
+        } else if (FileManager.default.isExecutableFile(atPath: file)) {
+            return 6 //executable
         } else {
-            return 69 //unknown
+            return 4 //unknown
         }
     }
     
@@ -624,9 +572,4 @@ struct ContentView: View {
     
         return isXMLPlist || isBinaryPlist
     }
-}
-
-struct FileInfo: Identifiable {
-    let name: String
-    let id: UUID
 }
