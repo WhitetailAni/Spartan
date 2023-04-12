@@ -12,12 +12,25 @@ import SwiftUI
 struct PlistView: View {
     
     @Binding var filePath: String
+    @Binding var fileName: String
+    @EnvironmentObject var settingsVariables: SettingsVariables
     
     var body: some View {
         VStack {
+            if(settingsVariables.descriptiveTitles){
+                Text(filePath)
+                    .font(.system(size: 40))
+                    .bold()
+                    .multilineTextAlignment(.center)
+            } else {
+                Text(fileName)
+                    .font(.system(size: 40))
+                    .bold()
+                    .multilineTextAlignment(.center)
+            }
             List(getContents(), id: \.self) { content in
                 Button(action: {
-                    print("edit function s0n")
+                    print(settingsVariables.descriptiveTitles)
                 }) {
                     Text(content)
                 }

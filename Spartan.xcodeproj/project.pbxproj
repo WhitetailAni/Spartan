@@ -11,6 +11,24 @@
 		F853AB3129DBCB1A006EA2D5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB3029DBCB1A006EA2D5 /* ContentView.swift */; };
 		F853AB3329DBCB1E006EA2D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F853AB3229DBCB1E006EA2D5 /* Assets.xcassets */; };
 		F853AB3629DBCB1E006EA2D5 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F853AB3529DBCB1E006EA2D5 /* Preview Assets.xcassets */; };
+		F853AB4329DE1C41006EA2D5 /* CreateFileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB4229DE1C41006EA2D5 /* CreateFileView.swift */; };
+		F853AB4529DE1CB3006EA2D5 /* RenameFileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB4429DE1CB3006EA2D5 /* RenameFileView.swift */; };
+		F853AB4729DE1CEC006EA2D5 /* CreateDirectoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB4629DE1CEC006EA2D5 /* CreateDirectoryView.swift */; };
+		F853AB4929DE1D12006EA2D5 /* MoveFileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB4829DE1D12006EA2D5 /* MoveFileView.swift */; };
+		F853AB4B29DE21A8006EA2D5 /* CopyFileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB4A29DE21A8006EA2D5 /* CopyFileView.swift */; };
+		F853AB4D29DE4049006EA2D5 /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB4C29DE4049006EA2D5 /* VideoPlayerView.swift */; };
+		F853AB4F29DE57D8006EA2D5 /* AudioPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB4E29DE57D8006EA2D5 /* AudioPlayerView.swift */; };
+		F853AB5329DE8AA1006EA2D5 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB5229DE8AA1006EA2D5 /* SettingsView.swift */; };
+		F853AB5529DE8B3B006EA2D5 /* FavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB5429DE8B3B006EA2D5 /* FavoritesView.swift */; };
+		F853AB5729DE8B46006EA2D5 /* CreditsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB5629DE8B46006EA2D5 /* CreditsView.swift */; };
+		F853AB5929DE8C0E006EA2D5 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB5829DE8C0E006EA2D5 /* SearchView.swift */; };
+		F853AB5B29E09F8A006EA2D5 /* AddToFavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB5A29E09F8A006EA2D5 /* AddToFavoritesView.swift */; };
+		F853AB5D29E0AC3F006EA2D5 /* TintColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB5C29E0AC3F006EA2D5 /* TintColorView.swift */; };
+		F8CC211F29E2762F008C7B88 /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC211E29E2762F008C7B88 /* ImageView.swift */; };
+		F8CC212129E276F9008C7B88 /* sailymeme.png in Resources */ = {isa = PBXBuildFile; fileRef = F8CC212029E276F9008C7B88 /* sailymeme.png */; };
+		F8CC212329E4FFC5008C7B88 /* PlistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC212229E4FFC5008C7B88 /* PlistView.swift */; };
+		F8CC212729E5206B008C7B88 /* SpareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC212629E5206B008C7B88 /* SpareView.swift */; };
+		F8CC212B29E622BD008C7B88 /* Classes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC212A29E622BD008C7B88 /* Classes.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +37,24 @@
 		F853AB3029DBCB1A006EA2D5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F853AB3229DBCB1E006EA2D5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F853AB3529DBCB1E006EA2D5 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F853AB4229DE1C41006EA2D5 /* CreateFileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFileView.swift; sourceTree = "<group>"; };
+		F853AB4429DE1CB3006EA2D5 /* RenameFileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameFileView.swift; sourceTree = "<group>"; };
+		F853AB4629DE1CEC006EA2D5 /* CreateDirectoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateDirectoryView.swift; sourceTree = "<group>"; };
+		F853AB4829DE1D12006EA2D5 /* MoveFileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveFileView.swift; sourceTree = "<group>"; };
+		F853AB4A29DE21A8006EA2D5 /* CopyFileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyFileView.swift; sourceTree = "<group>"; };
+		F853AB4C29DE4049006EA2D5 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
+		F853AB4E29DE57D8006EA2D5 /* AudioPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerView.swift; sourceTree = "<group>"; };
+		F853AB5229DE8AA1006EA2D5 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		F853AB5429DE8B3B006EA2D5 /* FavoritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesView.swift; sourceTree = "<group>"; };
+		F853AB5629DE8B46006EA2D5 /* CreditsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreditsView.swift; sourceTree = "<group>"; };
+		F853AB5829DE8C0E006EA2D5 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		F853AB5A29E09F8A006EA2D5 /* AddToFavoritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToFavoritesView.swift; sourceTree = "<group>"; };
+		F853AB5C29E0AC3F006EA2D5 /* TintColorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TintColorView.swift; sourceTree = "<group>"; };
+		F8CC211E29E2762F008C7B88 /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
+		F8CC212029E276F9008C7B88 /* sailymeme.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sailymeme.png; sourceTree = "<group>"; };
+		F8CC212229E4FFC5008C7B88 /* PlistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistView.swift; sourceTree = "<group>"; };
+		F8CC212629E5206B008C7B88 /* SpareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpareView.swift; sourceTree = "<group>"; };
+		F8CC212A29E622BD008C7B88 /* Classes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Classes.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,8 +87,26 @@
 		F853AB2D29DBCB1A006EA2D5 /* Spartan */ = {
 			isa = PBXGroup;
 			children = (
+				F8CC212029E276F9008C7B88 /* sailymeme.png */,
 				F853AB2E29DBCB1A006EA2D5 /* SpartanApp.swift */,
 				F853AB3029DBCB1A006EA2D5 /* ContentView.swift */,
+				F853AB4229DE1C41006EA2D5 /* CreateFileView.swift */,
+				F853AB4629DE1CEC006EA2D5 /* CreateDirectoryView.swift */,
+				F853AB4429DE1CB3006EA2D5 /* RenameFileView.swift */,
+				F853AB4829DE1D12006EA2D5 /* MoveFileView.swift */,
+				F853AB4A29DE21A8006EA2D5 /* CopyFileView.swift */,
+				F853AB4C29DE4049006EA2D5 /* VideoPlayerView.swift */,
+				F853AB4E29DE57D8006EA2D5 /* AudioPlayerView.swift */,
+				F8CC211E29E2762F008C7B88 /* ImageView.swift */,
+				F8CC212229E4FFC5008C7B88 /* PlistView.swift */,
+				F853AB5429DE8B3B006EA2D5 /* FavoritesView.swift */,
+				F853AB5A29E09F8A006EA2D5 /* AddToFavoritesView.swift */,
+				F853AB5229DE8AA1006EA2D5 /* SettingsView.swift */,
+				F853AB5629DE8B46006EA2D5 /* CreditsView.swift */,
+				F853AB5829DE8C0E006EA2D5 /* SearchView.swift */,
+				F853AB5C29E0AC3F006EA2D5 /* TintColorView.swift */,
+				F8CC212629E5206B008C7B88 /* SpareView.swift */,
+				F8CC212A29E622BD008C7B88 /* Classes.swift */,
 				F853AB3229DBCB1E006EA2D5 /* Assets.xcassets */,
 				F853AB3429DBCB1E006EA2D5 /* Preview Content */,
 			);
@@ -83,6 +137,8 @@
 			dependencies = (
 			);
 			name = Spartan;
+			packageProductDependencies = (
+			);
 			productName = Spartan;
 			productReference = F853AB2B29DBCB1A006EA2D5 /* Spartan.app */;
 			productType = "com.apple.product-type.application";
@@ -111,6 +167,8 @@
 				Base,
 			);
 			mainGroup = F853AB2229DBCB1A006EA2D5;
+			packageReferences = (
+			);
 			productRefGroup = F853AB2C29DBCB1A006EA2D5 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -126,6 +184,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F853AB3629DBCB1E006EA2D5 /* Preview Assets.xcassets in Resources */,
+				F8CC212129E276F9008C7B88 /* sailymeme.png in Resources */,
 				F853AB3329DBCB1E006EA2D5 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -137,8 +196,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F853AB5D29E0AC3F006EA2D5 /* TintColorView.swift in Sources */,
+				F853AB5529DE8B3B006EA2D5 /* FavoritesView.swift in Sources */,
 				F853AB3129DBCB1A006EA2D5 /* ContentView.swift in Sources */,
+				F853AB4B29DE21A8006EA2D5 /* CopyFileView.swift in Sources */,
+				F8CC212329E4FFC5008C7B88 /* PlistView.swift in Sources */,
+				F853AB4929DE1D12006EA2D5 /* MoveFileView.swift in Sources */,
+				F853AB4329DE1C41006EA2D5 /* CreateFileView.swift in Sources */,
+				F853AB4729DE1CEC006EA2D5 /* CreateDirectoryView.swift in Sources */,
+				F8CC212B29E622BD008C7B88 /* Classes.swift in Sources */,
+				F853AB5329DE8AA1006EA2D5 /* SettingsView.swift in Sources */,
+				F8CC211F29E2762F008C7B88 /* ImageView.swift in Sources */,
+				F8CC212729E5206B008C7B88 /* SpareView.swift in Sources */,
+				F853AB5B29E09F8A006EA2D5 /* AddToFavoritesView.swift in Sources */,
+				F853AB4F29DE57D8006EA2D5 /* AudioPlayerView.swift in Sources */,
+				F853AB5929DE8C0E006EA2D5 /* SearchView.swift in Sources */,
+				F853AB4529DE1CB3006EA2D5 /* RenameFileView.swift in Sources */,
+				F853AB5729DE8B46006EA2D5 /* CreditsView.swift in Sources */,
 				F853AB2F29DBCB1A006EA2D5 /* SpartanApp.swift in Sources */,
+				F853AB4D29DE4049006EA2D5 /* VideoPlayerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

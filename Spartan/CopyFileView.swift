@@ -17,7 +17,13 @@ struct CopyFileView: View {
     var body: some View {
         VStack{
             Text("**Copy File To**")
-            TextField("Enter new file path", text: $newFilePath)
+            TextField("Enter new file path", text: $newFilePath, onEditingChanged: { (isEditing) in
+                if !isEditing {
+                    if(!(newFilePath.hasSuffix("/"))){
+                        newFilePath = newFilePath + "/"
+                    }
+                }
+            })
             TextField("Enter new file name (optional)", text: $newFileName)
         
             Button("Confirm") {

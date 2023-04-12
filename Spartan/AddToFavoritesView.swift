@@ -17,7 +17,13 @@ struct AddToFavoritesView: View {
 
     var body: some View {
         TextField("ADD_TO_FAVORITES_VIEW_DISPLAYNAME", text: $displayName)
-        TextField("ADD_TO_FAVORITES_VIEW_FILEPATH", text: $filePath)
+        TextField("ADD_TO_FAVORITES_VIEW_FILEPATH", text: $filePath, onEditingChanged: { (isEditing) in
+            if !isEditing {
+                if(!(filePath.hasSuffix("/"))){
+                    filePath = filePath + "/"
+                }
+            }
+        })
         Button(action: {
             favoritesDisplayName.append(displayName)
             favoritesFilePath.append(filePath)
