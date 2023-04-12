@@ -11,7 +11,7 @@ import Foundation
 import MobileCoreServices
 
 struct ContentView: View {
-    @Binding var directory: String
+    @State var directory: String
     @State private var files: [String] = []
     @State private var selectedFile: FileInfo?
     @State private var textSuccess = false
@@ -19,16 +19,14 @@ struct ContentView: View {
     @State var permissionDenied = false
     @State var fileInfoShow = false
     
-    @State private var directoryListShow = false
-    @State var directoryListPath: String = ""
+    @State var newViewFilePath: String = ""
+    @State var newViewFileName: String = ""
     
     @State private var renameFileShow = false
-    @State var renameFileCurrentPath: String = ""
     @State var renameFileCurrentName: String = ""
     @State var renameFileNewName: String = ""
     
     @State private var sidebarShow = false
-    private let sidebarFocus = UIFocusGuide()
     
     @State private var searchShow = false
     @State private var createDirectoryShow = false
@@ -37,31 +35,28 @@ struct ContentView: View {
     @State private var settingsShow = false
     
     @State private var moveFileShow = false
-    @State var moveFileCurrentPath: String = ""
-    @State var moveFileCurrentName: String = ""
     
     @State private var copyFileShow = false
-    @State var copyFileCurrentPath: String = ""
-    @State var copyFileCurrentName: String = ""
     
     @State private var videoPlayerShow = false
-    @State var videoPlayerPath: String = ""
     
     @State private var audioPlayerShow = false
-    @State var audioPlayerPath: String = ""
     
     @State private var imageShow = false
-    @State var imagePath: String = ""
     
     @State private var plistShow = false
-    @State var plistPath: String = ""
     
     @State private var addToFavoritesShow = false
-    @State private var addToFavoritesFilePath: String = ""
     @State private var addToFavoritesDisplayName: String = ""
     
+    @StateObject var settingsVariables = SettingsVariables()
+    
+    
+    //settings
+    //@StateObject var settingsVarsGlobal: SettingsVars
+    
     var body: some View {
-        ZStack {
+        NavigationView {
             VStack {
                 HStack { //input directory + refresh
                     TextField("Input directory", text: $directory, onCommit: {
@@ -83,8 +78,7 @@ struct ContentView: View {
                 }
                 List { //directory contents view
                     Button(action: {
-                        directoryListShow = true
-                        directoryListPath = goBack()
+                        goBack()
                     }) {
                         HStack {
                             Image(systemName: "arrowshape.turn.up.backward")
@@ -95,21 +89,22 @@ struct ContentView: View {
                         Button(action: {
                             print(yandereDevFileType(file: (directory + file)))
                             if file.hasSuffix("/") {
-                                directoryListShow = true
-                                directoryListPath = directory + file
+                                directory = directory + file
+                                updateFiles()
                                 print(directory)
                             } else if (file.hasSuffix("aifc") || file.hasSuffix("m4r") || file.hasSuffix("wav") || file.hasSuffix("flac") || file.hasSuffix("m2a") || file.hasSuffix("aac") || file.hasSuffix("mpa") || file.hasSuffix("xhe") || file.hasSuffix("aiff") || file.hasSuffix("amr") || file.hasSuffix("caf") || file.hasSuffix("m4a") || file.hasSuffix("m4r") || file.hasSuffix("m4b") || file.hasSuffix("mp1") || file.hasSuffix("m1a") || file.hasSuffix("aax") || file.hasSuffix("mp2") || file.hasSuffix("w64") || file.hasSuffix("m4r") || file.hasSuffix("aa") || file.hasSuffix("mp3") || file.hasSuffix("au") || file.hasSuffix("eac3") || file.hasSuffix("ac3") || file.hasSuffix("m4p") || file.hasSuffix("loas")) {
                                 audioPlayerShow = true
-                                audioPlayerPath = directory + file
+                                newViewFilePath = directory + file
                             } else if (file.hasSuffix("3gp") || file.hasSuffix("3g2") || file.hasSuffix("avi") || file.hasSuffix("mov") || file.hasSuffix("m4v") || file.hasSuffix("mp4")){
                                 videoPlayerShow = true
-                                videoPlayerPath = directory + file
+                                newViewFilePath = directory + file
                             } else if (file.hasSuffix("png")) {
                                 imageShow = true
-                                imagePath = directory + file
+                                newViewFilePath = directory + file
                             } else if (file.hasSuffix("plist")) {
                                 plistShow = true
-                                plistPath = directory + file
+                                newViewFilePath = directory + file
+                                newViewFileName = file
                             } else {
                                 selectedFile = FileInfo(name: file, id: UUID())
                             }
@@ -154,7 +149,7 @@ struct ContentView: View {
                             }
                             
                             Button(action: {
-                                renameFileCurrentPath = directory
+                                newViewFilePath = directory
                                 renameFileCurrentName = file
                                 renameFileNewName = file
                                 renameFileShow = true
@@ -180,7 +175,7 @@ struct ContentView: View {
                             
                             Button(action: {
                                 addToFavoritesShow = true
-                                addToFavoritesFilePath = directory + file
+                                newViewFilePath = directory + file
                                 if file.hasSuffix("/") {
                                 addToFavoritesDisplayName = String(substring(str: file, startIndex: file.index(file.startIndex, offsetBy: 0), endIndex: file.index(file.endIndex, offsetBy: -1)))
                                 } else {
@@ -192,16 +187,16 @@ struct ContentView: View {
                             }
                             
                             Button(action: {
-                                moveFileCurrentPath = directory
-                                moveFileCurrentName = file
+                                newViewFilePath = directory
+                                newViewFileName = file
                                 moveFileShow = true
                             }) {
                                 Text("Move To")
                             }
                             
                             Button(action: {
-                                copyFileCurrentPath = directory
-                                copyFileCurrentName = file
+                                newViewFilePath = directory
+                                newViewFileName = file
                                 copyFileShow = true
                             }) {
                                 Text("Copy To")
@@ -215,6 +210,9 @@ struct ContentView: View {
                 }
                 .navigationBarHidden(true)
                 .onAppear {
+                    if (directory == "//"){
+                        directory = "/"
+                    }
                     updateFiles()
                 }
                 .alert(isPresented: $permissionDenied) { //permissions fail!
@@ -238,9 +236,6 @@ struct ContentView: View {
                         Text(readTextFile(path: directory + file.name))
                     }
                 }
-                .sheet(isPresented: $directoryListShow, content: {
-                    ContentView(directory: $directoryListPath)
-                })
                 .sheet(isPresented: $searchShow, content: { //search files
                     SearchView(directoryToSearch: $directory)
                 })
@@ -254,39 +249,41 @@ struct ContentView: View {
                     FavoritesView(directory: $directory, showView: $favoritesShow)
                 })
                 .sheet(isPresented: $addToFavoritesShow, content: {
-                    AddToFavoritesView(filePath: $addToFavoritesFilePath, displayName: $addToFavoritesDisplayName, showView: $addToFavoritesShow)
+                    AddToFavoritesView(filePath: $newViewFilePath, displayName: $addToFavoritesDisplayName, showView: $addToFavoritesShow)
                 })
                 .sheet(isPresented: $settingsShow, content: {
                     SettingsView()
+                        .environmentObject(settingsVariables)
                 })
                 .sheet(isPresented: $renameFileShow, content: {
-                    RenameFileView(fileName: $renameFileCurrentName, newFileName: $renameFileNewName, filePath: $renameFileCurrentPath, isPresented: $renameFileShow)
+                    RenameFileView(fileName: $renameFileCurrentName, newFileName: $renameFileNewName, filePath: $newViewFilePath, isPresented: $renameFileShow)
                 })
                 .sheet(isPresented: $moveFileShow, content: {
-                    MoveFileView(fileName: $moveFileCurrentName, filePath: $moveFileCurrentPath, isPresented: $moveFileShow)
+                    MoveFileView(fileName: $newViewFileName, filePath: $newViewFilePath, isPresented: $moveFileShow)
                 })
                 .sheet(isPresented: $copyFileShow, content: {
-                    CopyFileView(fileName: $copyFileCurrentName, filePath: $copyFileCurrentPath, isPresented: $copyFileShow)
+                    CopyFileView(fileName: $newViewFileName, filePath: $newViewFilePath, isPresented: $copyFileShow)
                 })
                 .sheet(isPresented: $videoPlayerShow, content: {
-                    VideoPlayerView(videoPath: $videoPlayerPath)
+                    VideoPlayerView(videoPath: $newViewFilePath)
                 })
                 .sheet(isPresented: $audioPlayerShow, content: {
-                    AudioPlayerView(audioPath: $audioPlayerPath)
+                    AudioPlayerView(audioPath: $newViewFilePath)
                 })
                 .sheet(isPresented: $imageShow, content: {
-                    ImageView(imagePath: $imagePath)
+                    ImageView(imagePath: $newViewFilePath)
                 })
                 .sheet(isPresented: $plistShow, content: {
-                    PlistView(filePath: $plistPath)
+                    PlistView(filePath: $newViewFilePath, fileName: $newViewFileName)
+                        .environmentObject(settingsVariables)
                 })
                 .accentColor(.accentColor)
             }
             
             //sidebar HERE
-            if(sidebarShow){
+            /*if(sidebarShow){
                 VStack(alignment: .leading) {
-                    
+                    //i'll reuse this for something idk
                     Text("Devices")
                         .font(.system(size: 40))
                         .bold()
@@ -343,6 +340,13 @@ struct ContentView: View {
                     }
                 }
                 .padding(.leading)
+            }*/
+        }
+        .onExitCommand {
+            if(directory == "/"){
+                exit(69420)
+            } else {
+                goBack()
             }
         }
     }
@@ -350,9 +354,9 @@ struct ContentView: View {
     var topBar: some View {
         HStack {
             Button(action: {
-                sidebarShow.toggle()
+                print("something should go here")
             }) {
-                Image(systemName: "list.bullet")
+                Image(systemName: "questionmark.app")
                     .frame(width:50, height:50)
             }
             
@@ -433,8 +437,7 @@ struct ContentView: View {
             print(error)
             if(substring(str: error.localizedDescription, startIndex: error.localizedDescription.index(error.localizedDescription.endIndex, offsetBy: -33), endIndex: error.localizedDescription.index(error.localizedDescription.endIndex, offsetBy: 0)) == "don’t have permission to view it."){
                 permissionDenied = true
-                directory = goBack()
-                updateFiles()
+                goBack()
             }
         }
     }
@@ -450,14 +453,17 @@ struct ContentView: View {
         }
     }
     
-    func goBack() -> String {
-        guard directory != "/" else {
-            return "/"
-        }
+    func goBack() {
+        guard directory != "/" else { return }
         var components = directory.split(separator: "/")
     
-        components.removeLast()
-        return "/" + components.joined(separator: "/") + "/"
+        if components.count > 1 {
+            components.removeLast()
+            directory = "/" + components.joined(separator: "/") + "/"
+        } else if components.count == 1 {
+            directory = "/"
+        }
+        updateFiles()
     }
     
     func substring(str: String, startIndex: String.Index, endIndex: String.Index) -> Substring {

@@ -13,9 +13,12 @@ struct FavoritesView: View {
     @State var favoritesFilePath: [String] = (UserDefaults.favorites.stringArray(forKey: "favoritesFilePath") ?? ["/var/mobile/Media/.Trash/"])
     @Binding var directory: String
     @Binding var showView: Bool
+    @State private var addToFavoritesShow = false
+    @State private var blank: String = ""
 
     var body: some View {
         Text("**Favorites**")
+        
         List(favoritesDisplayName, id: \.self) { favoriteDisplayName in
             Button(action: {
                 let selectedString = favoriteDisplayName
@@ -26,12 +29,14 @@ struct FavoritesView: View {
                 Text(favoriteDisplayName)
             }
         }
+        
         Button(action: {
-            print(favoritesDisplayName)
-            print(favoritesFilePath)
+            addToFavoritesShow = true
         }) {
-            Text("lel")
+            Text("Add to Favorites")
+        }
+        .sheet(isPresented: $addToFavoritesShow){
+            AddToFavoritesView(filePath: $blank, displayName: $blank, showView: $addToFavoritesShow)
         }
     }
 }
-

@@ -22,11 +22,7 @@ struct SearchView: View {
         TextField("Enter a directory path to search", text: $directoryToSearch)
         HStack{
             Button(action: {
-                if(shallowSearch){
-                    shallowSearch = false
-                } else {
-                    shallowSearch = true
-                }
+                shallowSearch.toggle()
                 if(deepSearch){
                     deepSearch = false
                 }
@@ -35,11 +31,7 @@ struct SearchView: View {
                 Image(systemName: shallowSearch ? "checkmark.square" : "square")
             }
             Button(action: {
-                if(deepSearch){
-                    deepSearch = false
-                } else {
-                    deepSearch = true
-                }
+                deepSearch.toggle()
                 if(shallowSearch){
                     shallowSearch = false
                 }

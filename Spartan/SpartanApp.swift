@@ -16,14 +16,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     @State var favoritesDisplayName: [String] = (UserDefaults.favorites.stringArray(forKey: "favoritesDisplayName") ?? ["No favorites"])
     @State var favoritesFilePath: [String] = (UserDefaults.favorites.stringArray(forKey: "favoritesFilePath") ?? ["/var/mobile/Media/.Trash/"])
-    @State var startingDir: String = "/var/mobile/"
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-        let contentView = ContentView(directory: $startingDir)
+        let contentView = ContentView(directory: "/var/mobile/")
         //let contentView = ContentView(directory: "/var/containers/Bundle/Application/18D0B73C-CE75-4E8B-8EF0-164543775BCD/trillstore.app/")
-        //let contentView = ContentView(directory: "/var/mobile/")
-        //let contentView = ContentView(directory: "/Users/realkgb/Desktop/")
         let hostingController = UIHostingController(rootView: contentView)
         
         window = UIWindow(frame: UIScreen.main.bounds)
