@@ -1,6 +1,7 @@
 # Spartan
 tvOS file browser thrown together in SwiftUI. Supports tvOS 14.0+.
 I want it to support 13.0+ but ContextMenus are 14.0+. If you want to backport ContextMenus and make a pr, go ahead.
+I have an idea for eliminating ContextMenus but don't have time to implement it
 
 What it currently lets you do:
 
@@ -19,11 +20,10 @@ What it currently lets you do:
 13. AT SOME POINT: Play audio
 
 TODO:
-1. Stop using yandere dev file type check statements
-2. Don't assume a filepath is a directory in ContentView (you can specify a filepath to a non-folder and it will open the proper view)
-3. Fix AudioPlayerView
-4. Add info to ImageView
-5. more to come
+1. Don't assume a filepath is a directory in ContentView (you can specify a filepath to a non-folder and it will open the proper view)
+2. Fix AudioPlayerView
+3. Add info to ImageView
+4. more to come
 
 By default it's sandboxed, so you will need a tvOS jailbreak to use it unless you're fine with just modifying what's in the app's data directory. It's set to open /var/mobile/ by default.
 
