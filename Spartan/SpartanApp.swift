@@ -19,8 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-        //let contentView = ContentView(directory: "/var/mobile/")
-        let contentView = ContentView(directory: "/var/containers/Bundle/Application/2A65A51A-4061-4143-B622-FA0E57C0C3EE/trillstore.app/")
+        let contentView = ContentView(directory: "/var/mobile/")
+        //let contentView = ContentView(directory: "/var/containers/Bundle/Application/2A65A51A-4061-4143-B622-FA0E57C0C3EE/trillstore.app/")
         let hostingController = UIHostingController(rootView: contentView)
         
         window = UIWindow(frame: UIScreen.main.bounds)
