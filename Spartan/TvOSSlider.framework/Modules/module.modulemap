@@ -1,0 +1,11 @@
+framework module TvOSSlider {
+  umbrella header "TvOSSlider.h"
+
+  export *
+  module * { export * }
+}
+
+module TvOSSlider.Swift {
+  header "TvOSSlider-Swift.h"
+  requires objc
+}

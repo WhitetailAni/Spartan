@@ -125,16 +125,3 @@ struct SearchResultsView: View {
         }
     }
 }
-
-
-struct Checkbox: ToggleStyle {
-    func makeBody(configuration: Self.Configuration) -> some View {
-        HStack {
-            Image(systemName: configuration.isOn ? "checkmark.square.fill" : "square")
-                .resizable()
-                .frame(width: 50, height: 50)
-                .foregroundColor(configuration.isOn ? .green : .gray)
-            configuration.label
-        }
-    }
-}

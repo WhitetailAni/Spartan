@@ -9,6 +9,7 @@ import SwiftUI
 import UIKit
 import Foundation
 import MobileCoreServices
+import AVKit
 
 struct ContentView: View {
     @State var directory: String
@@ -38,9 +39,10 @@ struct ContentView: View {
     
     @State private var copyFileShow = false
     
-    @State private var videoPlayerShow = false
-    
     @State private var audioPlayerShow = false
+    @State private var videoPlayerShow = false
+    @State var globalAVPlayer = AVPlayer()
+    @State var isGlobalAVPlayerPlaying = false
     
     @State private var imageShow = false
     
@@ -48,8 +50,6 @@ struct ContentView: View {
     
     @State private var addToFavoritesShow = false
     @State private var addToFavoritesDisplayName: String = ""
-    
-    @StateObject var settingsVariables = SettingsVariables()
     
     
     //settings
@@ -95,9 +95,11 @@ struct ContentView: View {
                             } else if (file.hasSuffix("aifc") || file.hasSuffix("m4r") || file.hasSuffix("wav") || file.hasSuffix("flac") || file.hasSuffix("m2a") || file.hasSuffix("aac") || file.hasSuffix("mpa") || file.hasSuffix("xhe") || file.hasSuffix("aiff") || file.hasSuffix("amr") || file.hasSuffix("caf") || file.hasSuffix("m4a") || file.hasSuffix("m4r") || file.hasSuffix("m4b") || file.hasSuffix("mp1") || file.hasSuffix("m1a") || file.hasSuffix("aax") || file.hasSuffix("mp2") || file.hasSuffix("w64") || file.hasSuffix("m4r") || file.hasSuffix("aa") || file.hasSuffix("mp3") || file.hasSuffix("au") || file.hasSuffix("eac3") || file.hasSuffix("ac3") || file.hasSuffix("m4p") || file.hasSuffix("loas")) {
                                 audioPlayerShow = true
                                 newViewFilePath = directory + file
+                                newViewFileName = file
                             } else if (file.hasSuffix("3gp") || file.hasSuffix("3g2") || file.hasSuffix("avi") || file.hasSuffix("mov") || file.hasSuffix("m4v") || file.hasSuffix("mp4")){
                                 videoPlayerShow = true
                                 newViewFilePath = directory + file
+                                newViewFileName = file
                             } else if (file.hasSuffix("png")) {
                                 imageShow = true
                                 newViewFilePath = directory + file
@@ -253,7 +255,6 @@ struct ContentView: View {
                 })
                 .sheet(isPresented: $settingsShow, content: {
                     SettingsView()
-                        .environmentObject(settingsVariables)
                 })
                 .sheet(isPresented: $renameFileShow, content: {
                     RenameFileView(fileName: $renameFileCurrentName, newFileName: $renameFileNewName, filePath: $newViewFilePath, isPresented: $renameFileShow)
@@ -265,17 +266,16 @@ struct ContentView: View {
                     CopyFileView(fileName: $newViewFileName, filePath: $newViewFilePath, isPresented: $copyFileShow)
                 })
                 .sheet(isPresented: $videoPlayerShow, content: {
-                    VideoPlayerView(videoPath: $newViewFilePath)
+                    VideoPlayerView(videoPath: $newViewFilePath, videoName: $newViewFileName, player: globalAVPlayer)
                 })
                 .sheet(isPresented: $audioPlayerShow, content: {
-                    AudioPlayerView(audioPath: $newViewFilePath)
+                    AudioPlayerView(audioPath: $newViewFilePath, audioName: $newViewFileName, player: globalAVPlayer)
                 })
                 .sheet(isPresented: $imageShow, content: {
                     ImageView(imagePath: $newViewFilePath)
                 })
                 .sheet(isPresented: $plistShow, content: {
                     PlistView(filePath: $newViewFilePath, fileName: $newViewFileName)
-                        .environmentObject(settingsVariables)
                 })
                 .accentColor(.accentColor)
             }
@@ -454,7 +454,9 @@ struct ContentView: View {
     }
     
     func goBack() {
-        guard directory != "/" else { return }
+        guard directory != "/" else {
+            return
+        }
         var components = directory.split(separator: "/")
     
         if components.count > 1 {
