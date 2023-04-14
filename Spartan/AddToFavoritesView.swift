@@ -11,8 +11,8 @@ struct AddToFavoritesView: View {
     
     @Binding var filePath: String
     @Binding var displayName: String
-    @State var favoritesDisplayName: [String] = (UserDefaults.favorites.stringArray(forKey: "favoritesDisplayName") ?? ["Trash"])
-    @State var favoritesFilePath: [String] = (UserDefaults.favorites.stringArray(forKey: "favoritesFilePath") ?? ["/var/mobile/Media/.Trash/"])
+    @State var favoritesDisplayName: [String] = (UserDefaults.favorites.stringArray(forKey: "favoritesDisplayName") ?? ["Documents", "Applications", "UserApplications", "Trash"])
+    @State var favoritesFilePath: [String] = (UserDefaults.favorites.stringArray(forKey: "favoritesFilePath") ?? ["/var/mobile/Documents/", "/Applications/", "/var/containers/Bundle/Application/", "/var/mobile/Media/.Trash/"])
     @Binding var showView: Bool
 
     var body: some View {
@@ -27,8 +27,8 @@ struct AddToFavoritesView: View {
         Button(action: {
             favoritesDisplayName.append(displayName)
             favoritesFilePath.append(filePath)
-            UserDefaults.favorites.set(favoritesDisplayName, forKey: "favoritesDisplayName")
-            UserDefaults.favorites.set(favoritesFilePath, forKey: "favoritesFilePath")
+            UserDefaults.favorites.set(["Documents", "Applications", "UserApplications", "Trash"], forKey: "favoritesDisplayName")
+            UserDefaults.favorites.set(["/var/mobile/Documents/", "/Applications/", "/var/containers/Bundle/Application/", "/var/mobile/Media/.Trash/"], forKey: "favoritesFilePath")
             UserDefaults.favorites.synchronize()
             showView = false
         }) {

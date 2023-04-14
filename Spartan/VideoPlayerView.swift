@@ -1,95 +1,98 @@
 //
-//  VideoPlayerView.swift
+//  VideoPlayerView2.swift
 //  Spartan
 //
-//  Created by RealKGB on 4/5/23.
+//  Created by RealKGB on 4/12/23.
 //
 
 import SwiftUI
-import Foundation
-import AVFAudio
-import AVFoundation
 import AVKit
 
 struct VideoPlayerView: View {
     @Binding var videoPath: String
-    @State private var player = AVPlayer()
+    @Binding var videoName: String
+    @State var player: AVPlayer
+    @State private var descriptiveTimestamps = UserDefaults.settings.bool(forKey: "verboseTimestamps")
     @State private var isPlaying = false
-    @State private var duration: Double = 0
-    @State private var currentTime: Double = 0
+    @State private var currentTime: TimeInterval = 0
+    @State private var duration: TimeInterval = 0
     @State private var rewindIncrement = 1
     @State private var fastIncrement = 1
     @State private var infoShow = false
+    @State private var videoTitle: String = ""
     
-    @State private var preservedTime: Double = 0
-    @State private var infoShowWasShowing = false
-    let timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
-
     var body: some View {
-        VStack {
-            playerView
-            controlsView
+        NavigationView {
+            VStack {
+                if(videoTitle == ""){
+                    if(UserDefaults.settings.bool(forKey: "descriptiveTitles")){
+                        Text(videoPath)
+                            .font(.system(size: 40))
+                            .bold()
+                            .multilineTextAlignment(.center)
+                            .padding(-20)
+                    } else {
+                        Text(videoName)
+                            .font(.system(size: 40))
+                            .bold()
+                            .multilineTextAlignment(.center)
+                            .padding(-20)
+                    }
+                } else {
+                    Text(videoTitle)
+                        .font(.system(size: 40))
+                        .bold()
+                        .multilineTextAlignment(.center)
+                        .padding(-20)
+                }
+                VideoPlayerRenderView(player: player)
+                    .padding()
+                controlsView
+            }
+        }
+        .onAppear {
+            player.replaceCurrentItem(with: AVPlayerItem(url: URL(fileURLWithPath: videoPath)))
+            player.play()
+            
+            player.currentItem?.asset.loadValuesAsynchronously(forKeys: ["duration"]) {
+                DispatchQueue.main.async {
+                    self.duration = player.currentItem?.asset.duration.seconds ?? 0
+                }
+            }
+            player.addPeriodicTimeObserver(forInterval: CMTimeMake(value: 1, timescale: 10), queue: DispatchQueue.main) { time in
+                self.currentTime = time.seconds
+            }
+            
+            guard let playerItem = player.currentItem else { return }
+            let metadataList = playerItem.asset.commonMetadata
+
+            for metadata in metadataList {
+                if let commonKey = metadata.commonKey?.rawValue, commonKey == AVMetadataKey.commonKeyTitle.rawValue,
+                    let title = metadata.value as? String {
+                        videoTitle = title
+                    }
+                }
+        }
+        .onDisappear {
+            player.pause()
         }
         .onReceive(player.publisher(for: \.timeControlStatus)) { timeControlStatus in
             isPlaying = timeControlStatus == .playing
         }
-        .onReceive(player.publisher(for: \.currentItem)) { item in
-            guard let item = item else { return }
-            duration = item.duration.seconds
-        }
     }
-    
-    var playerView: some View {
-        VideoPlayer(player: player)
-            .onAppear {
-                let url = URL(fileURLWithPath: videoPath)
-                print(videoPath)
-                print(url)
-                player.replaceCurrentItem(with: AVPlayerItem(url: url))
-                player.play()
-                if(infoShowWasShowing){
-                    player.seek(to: CMTime(seconds: preservedTime, preferredTimescale: 1))
-                    infoShowWasShowing = false
-                }
-            }
-            .onReceive(timer) { _ in
-                currentTime = player.currentTime().seconds
-            }
-            .onReceive(player.publisher(for: \.timeControlStatus)) { timeControlStatus in
-                isPlaying = timeControlStatus == .playing
-            }
-            .focusable(true)
-            .sheet(isPresented: $infoShow, onDismiss: {
-                preservedTime = currentTime
-                infoShowWasShowing = true
-            }) {
-                Text(videoPath)
-                    .font(.system(size: 40))
-                    .bold()
-                    .multilineTextAlignment(.center)
-                Text(getVideoInfo(atPath: videoPath))
-                    .multilineTextAlignment(.center)
-                Button(action: {
-                    infoShow = false
-                }) {
-                    Text("Dismiss")
-                }
-        }
-    }
-    
     
     var controlsView: some View {
-        VStack{
-            HStack {
-                backwardButton
-                timeLabel
-                forwardButton
-            }
+        VStack{    
+            timeLabel
+            UIKitProgressView(value: $currentTime, total: duration)
+                .padding()
             HStack {
                 videoStartButton
                 Spacer()
                 rewindButton
+                backwardButton
                 playPauseButton
+                forwardButton
                 fastForwardButton
                 Spacer()
                 videoInfoButton
@@ -119,7 +122,15 @@ struct VideoPlayerView: View {
     
     @ViewBuilder
     var timeLabel: some View {
-        Text(timeString(time: currentTime))
+        if(descriptiveTimestamps) {
+            Text("\(currentTime) / \(duration)")
+                .font(.system(size: 30))
+                .multilineTextAlignment(.leading)
+        } else {
+            Text("\(currentTime.format()) / \(duration.format())")
+                .font(.system(size: 30))
+                .multilineTextAlignment(.leading)
+        }
     }
     
     @ViewBuilder
@@ -183,12 +194,9 @@ struct VideoPlayerView: View {
             } else {
                 player.play()
             }
-            isPlaying.toggle()
         }) {
-            Image(systemName: isPlaying ? "pause.circle.fill" : "play.circle.fill")
-                .resizable()
+            Image(systemName: isPlaying ? "pause.fill" : "play.fill")
                 .frame(width:50, height:50)
-                .accentColor(.accentColor)
         }
     }
     
@@ -226,14 +234,6 @@ struct VideoPlayerView: View {
                 .accentColor(.accentColor)
         }
     }
-
-    private func timeString(time: Double) -> String {
-        let date = Date(timeIntervalSince1970: time)
-        let formatter = DateFormatter()
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        formatter.dateFormat = time < 3600 ? "mm:ss" : "HH:mm:ss"
-        return formatter.string(from: date)
-    }
     
     func getVideoInfo(atPath filePath: String) -> String {
         let fileURL = URL(fileURLWithPath: filePath)
@@ -259,11 +259,20 @@ struct VideoPlayerView: View {
     }
 }
 
-extension Color {
-    init(hex: Int, opacity: Double = 1.0) {
-        let red = Double((hex & 0xff0000) >> 16) / 255.0
-        let green = Double((hex & 0xff00) >> 8) / 255.0
-        let blue = Double((hex & 0xff) >> 0) / 255.0
-        self.init(.sRGB, red: red, green: green, blue: blue, opacity: opacity)
+struct VideoPlayerRenderView: UIViewControllerRepresentable {
+    @State var player: AVPlayer
+    
+    
+    func makeUIViewController(context: Context) -> AVPlayerViewController {
+        let playerViewController = AVPlayerViewController()
+        playerViewController.player = player
+        playerViewController.player?.rate = 1.0
+        return playerViewController
+    }
+
+    func updateUIViewController(_ uiViewController: AVPlayerViewController, context: Context) {
+        player.play()
+        
+        uiViewController.player = player
     }
 }

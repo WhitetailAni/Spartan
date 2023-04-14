@@ -9,8 +9,8 @@ import SwiftUI
 
 struct FavoritesView: View {
 
-    @State var favoritesDisplayName: [String] = (UserDefaults.favorites.stringArray(forKey: "favoritesDisplayName") ?? ["Trash"])
-    @State var favoritesFilePath: [String] = (UserDefaults.favorites.stringArray(forKey: "favoritesFilePath") ?? ["/var/mobile/Media/.Trash/"])
+    @State var favoritesDisplayName: [String] = (UserDefaults.favorites.stringArray(forKey: "favoritesDisplayName") ?? ["Documents", "Applications", "UserApplications", "Trash"])
+    @State var favoritesFilePath: [String] = (UserDefaults.favorites.stringArray(forKey: "favoritesFilePath") ?? ["/var/mobile/Documents/", "/Applications/", "/var/containers/Bundle/Application/", "/var/mobile/Media/.Trash/"])
     @Binding var directory: String
     @Binding var showView: Bool
     @State private var addToFavoritesShow = false
@@ -21,12 +21,27 @@ struct FavoritesView: View {
         
         List(favoritesDisplayName, id: \.self) { favoriteDisplayName in
             Button(action: {
-                let selectedString = favoriteDisplayName
-                let index = favoritesDisplayName.firstIndex(of: selectedString)
-                directory = favoritesFilePath[index ?? 0]
-                showView = false
+                let index = favoritesDisplayName.firstIndex(of: favoriteDisplayName) ?? 0
+                directory = favoritesFilePath[index]
+                //showView = false
+                print(index)
             }) {
-                Text(favoriteDisplayName)
+                HStack {
+                    if(favoritesDisplayName.firstIndex(of: favoriteDisplayName) ?? 0 < 4){
+                        if(favoritesDisplayName.firstIndex(of: favoriteDisplayName) ?? 4 == 0){
+                            Image(systemName: "doc.text")
+                        } else if (favoritesDisplayName.firstIndex(of: favoriteDisplayName) ?? 4 == 1) {
+                            Image(systemName: "questionmark.app")
+                        } else if (favoritesDisplayName.firstIndex(of: favoriteDisplayName) ?? 4 == 2) {
+                            Image(systemName: "person.crop.circle")
+                        } else if (favoritesDisplayName.firstIndex(of: favoriteDisplayName) ?? 4 == 3) {
+                            Image(systemName: "trash")
+                        } else if (favoritesDisplayName.firstIndex(of: favoriteDisplayName) ?? 4 == 4) {
+                            Image(systemName: "questionmark.square.dashed")
+                        }
+                    }
+                    Text(favoriteDisplayName)
+                }
             }
         }
         

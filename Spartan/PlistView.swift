@@ -13,11 +13,10 @@ struct PlistView: View {
     
     @Binding var filePath: String
     @Binding var fileName: String
-    @EnvironmentObject var settingsVariables: SettingsVariables
     
     var body: some View {
         VStack {
-            if(settingsVariables.descriptiveTitles){
+            if(UserDefaults.settings.bool(forKey: "descriptiveTitles")){
                 Text(filePath)
                     .font(.system(size: 40))
                     .bold()
@@ -30,7 +29,7 @@ struct PlistView: View {
             }
             List(getContents(), id: \.self) { content in
                 Button(action: {
-                    print(settingsVariables.descriptiveTitles)
+                    print(UserDefaults.settings.bool(forKey: "descriptiveTitles"))
                 }) {
                     Text(content)
                 }

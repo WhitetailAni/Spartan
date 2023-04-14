@@ -19,8 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-        let contentView = ContentView(directory: "/var/mobile/")
-        //let contentView = ContentView(directory: "/var/containers/Bundle/Application/18D0B73C-CE75-4E8B-8EF0-164543775BCD/trillstore.app/")
+        //let contentView = ContentView(directory: "/var/mobile/")
+        let contentView = ContentView(directory: "/var/containers/Bundle/Application/2A65A51A-4061-4143-B622-FA0E57C0C3EE/trillstore.app/")
         let hostingController = UIHostingController(rootView: contentView)
         
         window = UIWindow(frame: UIScreen.main.bounds)
@@ -28,11 +28,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.makeKeyAndVisible()
         
         createTrash()
-        
-        @State var favoritesDisplayName: [String] = ["Trash"]
-        @State var favoritesFilePath: [String] = ["/var/mobile/Media/.Trash/"]
-        UserDefaults.favorites.set(favoritesDisplayName, forKey: "favoritesDisplayName")
-        UserDefaults.favorites.set(favoritesFilePath, forKey: "favoritesFilePath")
         
         return true
     }
@@ -51,14 +46,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func createDirectoryAtPath(path: String, directoryName: String) throws {
-        let fileManager = FileManager.default
+        guard FileManager.default.fileExists(atPath: "/var/mobile/Media/.Trash/") else {
+            print("Trash already exists")
+            return
+        }
         let directoryPath = (path as NSString).appendingPathComponent(directoryName)
-        try fileManager.createDirectory(atPath: directoryPath, withIntermediateDirectories: true, attributes: nil)
+        try FileManager.default.createDirectory(atPath: directoryPath, withIntermediateDirectories: true, attributes: nil)
     }
 }
 
 extension UserDefaults {
     static var favorites: UserDefaults {
         return UserDefaults(suiteName: "com.whitetailani.Spartan.favorites") ?? UserDefaults.standard
+    }
+    static var settings: UserDefaults {
+        return UserDefaults(suiteName: "com.whitetailani.Spartan.settings") ?? UserDefaults.standard
     }
 }
