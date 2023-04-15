@@ -25,7 +25,7 @@ struct MoveFileView: View {
                     }
                 }
             })
-            if(!multiMove){
+            if(fileNames.count > 1){
                 TextField("Enter new file name (optional)", text: $newFileName)
             }
         
@@ -33,9 +33,13 @@ struct MoveFileView: View {
                 print(multiMove)
                 print(fileNames)
                 if(multiMove){
-                    for fileName in fileNames {
-                        moveFile(path: filePath + fileName, newPath: newFilePath + fileName)
-                        print(fileName)
+                    if(fileNames.count > 1){
+                        for fileName in fileNames {
+                            moveFile(path: filePath + fileName, newPath: newFilePath + fileName)
+                            print(fileName)
+                        }
+                    } else {
+                        moveFile(path: filePath + fileNames[0], newPath: newFilePath + newFileName)
                     }
                 } else if(newFileName == ""){
                     moveFile(path: filePath + fileNames[0], newPath: newFilePath + fileNames[0])
