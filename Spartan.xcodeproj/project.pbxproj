@@ -30,6 +30,7 @@
 		F8CC213529E79136008C7B88 /* TvOSSlider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8CC213329E790B5008C7B88 /* TvOSSlider.framework */; };
 		F8CC213629E79136008C7B88 /* TvOSSlider.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F8CC213329E790B5008C7B88 /* TvOSSlider.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F8CC213F29E9FCFC008C7B88 /* SWCompression in Frameworks */ = {isa = PBXBuildFile; productRef = F8CC213E29E9FCFC008C7B88 /* SWCompression */; };
+		F8CC214229EA68BC008C7B88 /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = F8CC214129EA68BC008C7B88 /* Zip */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -77,6 +78,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F8CC214229EA68BC008C7B88 /* Zip in Frameworks */,
 				F8CC213529E79136008C7B88 /* TvOSSlider.framework in Frameworks */,
 				F8CC213F29E9FCFC008C7B88 /* SWCompression in Frameworks */,
 			);
@@ -165,6 +167,7 @@
 			name = Spartan;
 			packageProductDependencies = (
 				F8CC213E29E9FCFC008C7B88 /* SWCompression */,
+				F8CC214129EA68BC008C7B88 /* Zip */,
 			);
 			productName = Spartan;
 			productReference = F853AB2B29DBCB1A006EA2D5 /* Spartan.app */;
@@ -199,6 +202,7 @@
 			mainGroup = F853AB2229DBCB1A006EA2D5;
 			packageReferences = (
 				F8CC213D29E9FCFC008C7B88 /* XCRemoteSwiftPackageReference "SWCompression" */,
+				F8CC214029EA68BB008C7B88 /* XCRemoteSwiftPackageReference "Zip" */,
 			);
 			productRefGroup = F853AB2C29DBCB1A006EA2D5 /* Products */;
 			projectDirPath = "";
@@ -462,6 +466,14 @@
 				minimumVersion = 4.0.0;
 			};
 		};
+		F8CC214029EA68BB008C7B88 /* XCRemoteSwiftPackageReference "Zip" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/marmelroy/Zip";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -469,6 +481,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F8CC213D29E9FCFC008C7B88 /* XCRemoteSwiftPackageReference "SWCompression" */;
 			productName = SWCompression;
+		};
+		F8CC214129EA68BC008C7B88 /* Zip */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F8CC214029EA68BB008C7B88 /* XCRemoteSwiftPackageReference "Zip" */;
+			productName = Zip;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
