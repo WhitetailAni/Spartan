@@ -11,7 +11,11 @@ import SwiftUI
 
 struct SpareView: View {
     var body: some View {
-        Text("Unknown file type")
+        VStack {
+            Text("Take wrong turns. Talk to strangers. Open unmarked doors. And if you see a group of people in a field, go find out what they are doing.")
+            Text("")
+            Text("Except when that wrong turn leads you to a nonexistent file.")
+        }
     }
 }
 

@@ -23,7 +23,7 @@ struct FavoritesView: View {
             Button(action: {
                 let index = favoritesDisplayName.firstIndex(of: favoriteDisplayName) ?? 0
                 directory = favoritesFilePath[index]
-                //showView = false
+                showView = false
                 print(index)
             }) {
                 HStack {

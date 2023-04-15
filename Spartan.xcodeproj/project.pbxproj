@@ -16,7 +16,6 @@
 		F853AB4729DE1CEC006EA2D5 /* CreateDirectoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB4629DE1CEC006EA2D5 /* CreateDirectoryView.swift */; };
 		F853AB4929DE1D12006EA2D5 /* MoveFileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB4829DE1D12006EA2D5 /* MoveFileView.swift */; };
 		F853AB4B29DE21A8006EA2D5 /* CopyFileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB4A29DE21A8006EA2D5 /* CopyFileView.swift */; };
-		F853AB4D29DE4049006EA2D5 /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB4C29DE4049006EA2D5 /* VideoPlayerView.swift */; };
 		F853AB4F29DE57D8006EA2D5 /* AudioPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB4E29DE57D8006EA2D5 /* AudioPlayerView.swift */; };
 		F853AB5329DE8AA1006EA2D5 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB5229DE8AA1006EA2D5 /* SettingsView.swift */; };
 		F853AB5529DE8B3B006EA2D5 /* FavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB5429DE8B3B006EA2D5 /* FavoritesView.swift */; };
@@ -25,11 +24,27 @@
 		F853AB5B29E09F8A006EA2D5 /* AddToFavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB5A29E09F8A006EA2D5 /* AddToFavoritesView.swift */; };
 		F853AB5D29E0AC3F006EA2D5 /* TintColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB5C29E0AC3F006EA2D5 /* TintColorView.swift */; };
 		F8CC211F29E2762F008C7B88 /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC211E29E2762F008C7B88 /* ImageView.swift */; };
-		F8CC212129E276F9008C7B88 /* sailymeme.png in Resources */ = {isa = PBXBuildFile; fileRef = F8CC212029E276F9008C7B88 /* sailymeme.png */; };
 		F8CC212329E4FFC5008C7B88 /* PlistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC212229E4FFC5008C7B88 /* PlistView.swift */; };
-		F8CC212729E5206B008C7B88 /* SpareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC212629E5206B008C7B88 /* SpareView.swift */; };
-		F8CC212B29E622BD008C7B88 /* Classes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC212A29E622BD008C7B88 /* Classes.swift */; };
+		F8CC212729E5206B008C7B88 /* SpareViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC212629E5206B008C7B88 /* SpareViews.swift */; };
+		F8CC212F29E74DF4008C7B88 /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC212E29E74DF4008C7B88 /* VideoPlayerView.swift */; };
+		F8CC213529E79136008C7B88 /* TvOSSlider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8CC213329E790B5008C7B88 /* TvOSSlider.framework */; };
+		F8CC213629E79136008C7B88 /* TvOSSlider.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F8CC213329E790B5008C7B88 /* TvOSSlider.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F8CC213F29E9FCFC008C7B88 /* SWCompression in Frameworks */ = {isa = PBXBuildFile; productRef = F8CC213E29E9FCFC008C7B88 /* SWCompression */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F8CC213729E79136008C7B88 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				F8CC213629E79136008C7B88 /* TvOSSlider.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		F853AB2B29DBCB1A006EA2D5 /* Spartan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spartan.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -42,7 +57,6 @@
 		F853AB4629DE1CEC006EA2D5 /* CreateDirectoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateDirectoryView.swift; sourceTree = "<group>"; };
 		F853AB4829DE1D12006EA2D5 /* MoveFileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveFileView.swift; sourceTree = "<group>"; };
 		F853AB4A29DE21A8006EA2D5 /* CopyFileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyFileView.swift; sourceTree = "<group>"; };
-		F853AB4C29DE4049006EA2D5 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
 		F853AB4E29DE57D8006EA2D5 /* AudioPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerView.swift; sourceTree = "<group>"; };
 		F853AB5229DE8AA1006EA2D5 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		F853AB5429DE8B3B006EA2D5 /* FavoritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesView.swift; sourceTree = "<group>"; };
@@ -51,10 +65,11 @@
 		F853AB5A29E09F8A006EA2D5 /* AddToFavoritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToFavoritesView.swift; sourceTree = "<group>"; };
 		F853AB5C29E0AC3F006EA2D5 /* TintColorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TintColorView.swift; sourceTree = "<group>"; };
 		F8CC211E29E2762F008C7B88 /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
-		F8CC212029E276F9008C7B88 /* sailymeme.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sailymeme.png; sourceTree = "<group>"; };
 		F8CC212229E4FFC5008C7B88 /* PlistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistView.swift; sourceTree = "<group>"; };
-		F8CC212629E5206B008C7B88 /* SpareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpareView.swift; sourceTree = "<group>"; };
-		F8CC212A29E622BD008C7B88 /* Classes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Classes.swift; sourceTree = "<group>"; };
+		F8CC212629E5206B008C7B88 /* SpareViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpareViews.swift; sourceTree = "<group>"; };
+		F8CC212E29E74DF4008C7B88 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
+		F8CC213129E79042008C7B88 /* tvOSSlider.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = tvOSSlider.framework; path = Spartan/tvOSSlider.framework; sourceTree = "<group>"; };
+		F8CC213329E790B5008C7B88 /* TvOSSlider.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TvOSSlider.framework; path = Spartan/TvOSSlider.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +77,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F8CC213529E79136008C7B88 /* TvOSSlider.framework in Frameworks */,
+				F8CC213F29E9FCFC008C7B88 /* SWCompression in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -73,6 +90,7 @@
 			children = (
 				F853AB2D29DBCB1A006EA2D5 /* Spartan */,
 				F853AB2C29DBCB1A006EA2D5 /* Products */,
+				F8CC213029E79042008C7B88 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -87,7 +105,6 @@
 		F853AB2D29DBCB1A006EA2D5 /* Spartan */ = {
 			isa = PBXGroup;
 			children = (
-				F8CC212029E276F9008C7B88 /* sailymeme.png */,
 				F853AB2E29DBCB1A006EA2D5 /* SpartanApp.swift */,
 				F853AB3029DBCB1A006EA2D5 /* ContentView.swift */,
 				F853AB4229DE1C41006EA2D5 /* CreateFileView.swift */,
@@ -95,7 +112,7 @@
 				F853AB4429DE1CB3006EA2D5 /* RenameFileView.swift */,
 				F853AB4829DE1D12006EA2D5 /* MoveFileView.swift */,
 				F853AB4A29DE21A8006EA2D5 /* CopyFileView.swift */,
-				F853AB4C29DE4049006EA2D5 /* VideoPlayerView.swift */,
+				F8CC212E29E74DF4008C7B88 /* VideoPlayerView.swift */,
 				F853AB4E29DE57D8006EA2D5 /* AudioPlayerView.swift */,
 				F8CC211E29E2762F008C7B88 /* ImageView.swift */,
 				F8CC212229E4FFC5008C7B88 /* PlistView.swift */,
@@ -105,8 +122,7 @@
 				F853AB5629DE8B46006EA2D5 /* CreditsView.swift */,
 				F853AB5829DE8C0E006EA2D5 /* SearchView.swift */,
 				F853AB5C29E0AC3F006EA2D5 /* TintColorView.swift */,
-				F8CC212629E5206B008C7B88 /* SpareView.swift */,
-				F8CC212A29E622BD008C7B88 /* Classes.swift */,
+				F8CC212629E5206B008C7B88 /* SpareViews.swift */,
 				F853AB3229DBCB1E006EA2D5 /* Assets.xcassets */,
 				F853AB3429DBCB1E006EA2D5 /* Preview Content */,
 			);
@@ -121,6 +137,15 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		F8CC213029E79042008C7B88 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F8CC213329E790B5008C7B88 /* TvOSSlider.framework */,
+				F8CC213129E79042008C7B88 /* tvOSSlider.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -131,6 +156,7 @@
 				F853AB2729DBCB1A006EA2D5 /* Sources */,
 				F853AB2829DBCB1A006EA2D5 /* Frameworks */,
 				F853AB2929DBCB1A006EA2D5 /* Resources */,
+				F8CC213729E79136008C7B88 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -138,6 +164,7 @@
 			);
 			name = Spartan;
 			packageProductDependencies = (
+				F8CC213E29E9FCFC008C7B88 /* SWCompression */,
 			);
 			productName = Spartan;
 			productReference = F853AB2B29DBCB1A006EA2D5 /* Spartan.app */;
@@ -150,6 +177,9 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
+				KnownAssetTags = (
+					New,
+				);
 				LastSwiftUpdateCheck = 1430;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
@@ -168,6 +198,7 @@
 			);
 			mainGroup = F853AB2229DBCB1A006EA2D5;
 			packageReferences = (
+				F8CC213D29E9FCFC008C7B88 /* XCRemoteSwiftPackageReference "SWCompression" */,
 			);
 			productRefGroup = F853AB2C29DBCB1A006EA2D5 /* Products */;
 			projectDirPath = "";
@@ -184,7 +215,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F853AB3629DBCB1E006EA2D5 /* Preview Assets.xcassets in Resources */,
-				F8CC212129E276F9008C7B88 /* sailymeme.png in Resources */,
 				F853AB3329DBCB1E006EA2D5 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -204,17 +234,16 @@
 				F853AB4929DE1D12006EA2D5 /* MoveFileView.swift in Sources */,
 				F853AB4329DE1C41006EA2D5 /* CreateFileView.swift in Sources */,
 				F853AB4729DE1CEC006EA2D5 /* CreateDirectoryView.swift in Sources */,
-				F8CC212B29E622BD008C7B88 /* Classes.swift in Sources */,
 				F853AB5329DE8AA1006EA2D5 /* SettingsView.swift in Sources */,
 				F8CC211F29E2762F008C7B88 /* ImageView.swift in Sources */,
-				F8CC212729E5206B008C7B88 /* SpareView.swift in Sources */,
+				F8CC212729E5206B008C7B88 /* SpareViews.swift in Sources */,
 				F853AB5B29E09F8A006EA2D5 /* AddToFavoritesView.swift in Sources */,
 				F853AB4F29DE57D8006EA2D5 /* AudioPlayerView.swift in Sources */,
+				F8CC212F29E74DF4008C7B88 /* VideoPlayerView.swift in Sources */,
 				F853AB5929DE8C0E006EA2D5 /* SearchView.swift in Sources */,
 				F853AB4529DE1CB3006EA2D5 /* RenameFileView.swift in Sources */,
 				F853AB5729DE8B46006EA2D5 /* CreditsView.swift in Sources */,
 				F853AB2F29DBCB1A006EA2D5 /* SpartanApp.swift in Sources */,
-				F853AB4D29DE4049006EA2D5 /* VideoPlayerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -345,6 +374,10 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Spartan/Preview Content\"";
 				DEVELOPMENT_TEAM = DK2B92MAN7;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Spartan",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Spartan;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
@@ -374,6 +407,10 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Spartan/Preview Content\"";
 				DEVELOPMENT_TEAM = DK2B92MAN7;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Spartan",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Spartan;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
@@ -415,6 +452,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F8CC213D29E9FCFC008C7B88 /* XCRemoteSwiftPackageReference "SWCompression" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tsolomko/SWCompression";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F8CC213E29E9FCFC008C7B88 /* SWCompression */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F8CC213D29E9FCFC008C7B88 /* XCRemoteSwiftPackageReference "SWCompression" */;
+			productName = SWCompression;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F853AB2329DBCB1A006EA2D5 /* Project object */;
 }

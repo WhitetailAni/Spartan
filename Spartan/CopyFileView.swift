@@ -10,13 +10,15 @@ import SwiftUI
 struct CopyFileView: View {
     @Binding var fileName: String
     @Binding var filePath: String
+    @State var multiMove = false
     @State var newFileName: String = ""
     @State var newFilePath: String = ""
     @Binding var isPresented: Bool
     
     var body: some View {
         VStack{
-            Text("**Copy File To**")
+            Text("**CURRENTLY VERY BROKEN DO NOT USE**")
+            /*Text("**Copy File To**")
             TextField("Enter new file path", text: $newFilePath, onEditingChanged: { (isEditing) in
                 if !isEditing {
                     if(!(newFilePath.hasSuffix("/"))){
@@ -24,6 +26,7 @@ struct CopyFileView: View {
                     }
                 }
             })
+
             TextField("Enter new file name (optional)", text: $newFileName)
         
             Button("Confirm") {
@@ -36,7 +39,11 @@ struct CopyFileView: View {
                 print("File copied successfully")
                 fileName = ""
                 isPresented = false
-            }
+            }*/
+        }
+        .onAppear {
+            newFilePath = filePath
+            newFileName = fileName
         }
     }
     

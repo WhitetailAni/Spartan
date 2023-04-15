@@ -13,6 +13,7 @@ struct PlistView: View {
     
     @Binding var filePath: String
     @Binding var fileName: String
+    @State private var editorShow = false
     
     var body: some View {
         VStack {
@@ -29,12 +30,15 @@ struct PlistView: View {
             }
             List(getContents(), id: \.self) { content in
                 Button(action: {
-                    print(UserDefaults.settings.bool(forKey: "descriptiveTitles"))
+                    editorShow = true
                 }) {
                     Text(content)
                 }
             }
         }
+        .sheet(isPresented: $editorShow, content: {
+            Text("editor s0n")
+        })
     }
     
     private func getContents() -> [String] {
