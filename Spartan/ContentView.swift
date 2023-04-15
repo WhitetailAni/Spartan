@@ -18,9 +18,17 @@ struct ContentView: View {
     @State private var textSuccess = false
     @State private var fileInfo: String = ""
     @State var permissionDenied = false
+    @State var deleteOverride = false
+    
+    @State var multiSelect = false
+    @State var allWereSelected = false
+    @State var multiSelectFiles: [String] = [""]
+    @State var fileWasSelected: [Bool] = [false]
+    
     @State var fileInfoShow = false
     
     @State var newViewFilePath: String = ""
+    @State var newViewArrayNames: [String] = [""]
     @State var newViewFileName: String = ""
     
     @State private var renameFileShow = false
@@ -36,24 +44,24 @@ struct ContentView: View {
     @State private var settingsShow = false
     
     @State private var moveFileShow = false
-    
     @State private var copyFileShow = false
     
     @State private var audioPlayerShow = false
     @State private var videoPlayerShow = false
     @State var globalAVPlayer = AVPlayer()
     @State var isGlobalAVPlayerPlaying = false
+    @State var callback = false
     
     @State private var imageShow = false
     
     @State private var plistShow = false
     
+    @State private var textShow = false
+    
     @State private var addToFavoritesShow = false
     @State private var addToFavoritesDisplayName: String = ""
     
-    
-    //settings
-    //@StateObject var settingsVarsGlobal: SettingsVars
+    @State var blankString: String = ""
     
     var body: some View {
         NavigationView {
@@ -85,103 +93,144 @@ struct ContentView: View {
                             Text("..")
                         }
                     }
-                    ForEach(files, id: \.self) { file in
+                    ForEach(files.indices, id: \.self) { index in
                         Button(action: {
-                            print(yandereDevFileType(file: (directory + file)))
-                            if file.hasSuffix("/") {
-                                directory = directory + file
-                                updateFiles()
-                                print(directory)
-                            } else if (file.hasSuffix("aifc") || file.hasSuffix("m4r") || file.hasSuffix("wav") || file.hasSuffix("flac") || file.hasSuffix("m2a") || file.hasSuffix("aac") || file.hasSuffix("mpa") || file.hasSuffix("xhe") || file.hasSuffix("aiff") || file.hasSuffix("amr") || file.hasSuffix("caf") || file.hasSuffix("m4a") || file.hasSuffix("m4r") || file.hasSuffix("m4b") || file.hasSuffix("mp1") || file.hasSuffix("m1a") || file.hasSuffix("aax") || file.hasSuffix("mp2") || file.hasSuffix("w64") || file.hasSuffix("m4r") || file.hasSuffix("aa") || file.hasSuffix("mp3") || file.hasSuffix("au") || file.hasSuffix("eac3") || file.hasSuffix("ac3") || file.hasSuffix("m4p") || file.hasSuffix("loas")) {
-                                audioPlayerShow = true
-                                newViewFilePath = directory + file
-                                newViewFileName = file
-                            } else if (file.hasSuffix("3gp") || file.hasSuffix("3g2") || file.hasSuffix("avi") || file.hasSuffix("mov") || file.hasSuffix("m4v") || file.hasSuffix("mp4")){
-                                videoPlayerShow = true
-                                newViewFilePath = directory + file
-                                newViewFileName = file
-                            } else if (file.hasSuffix("png")) {
-                                imageShow = true
-                                newViewFilePath = directory + file
-                            } else if (file.hasSuffix("plist")) {
-                                plistShow = true
-                                newViewFilePath = directory + file
-                                newViewFileName = file
+                            if (multiSelect) {
+                                fileWasSelected[index] = true
+                                if(fileWasSelected[index]){
+                                    if(multiSelectFiles.count == 1 && multiSelectFiles[0] == ""){
+                                        multiSelectFiles[0] = files[index]
+                                        print("original item")
+                                    } else {
+                                        multiSelectFiles.append(files[index])
+                                        print("appended")
+                                    }
+                                    print(multiSelectFiles)
+                                }
+                                print(fileWasSelected)
+                                
                             } else {
-                                selectedFile = FileInfo(name: file, id: UUID())
+                                print(yandereDevFileType(file: (directory + files[index])))
+                                if files[index].hasSuffix("/") {
+                                    directory = directory + files[index]
+                                    updateFiles()
+                                    print(directory)
+                                } else if (files[index].hasSuffix("aifc") || files[index].hasSuffix("m4r") || files[index].hasSuffix("wav") || files[index].hasSuffix("flac") || files[index].hasSuffix("m2a") || files[index].hasSuffix("aac") || files[index].hasSuffix("mpa") || files[index].hasSuffix("xhe") || files[index].hasSuffix("aiff") || files[index].hasSuffix("amr") || files[index].hasSuffix("caf") || files[index].hasSuffix("m4a") || files[index].hasSuffix("m4r") || files[index].hasSuffix("m4b") || files[index].hasSuffix("mp1") || files[index].hasSuffix("m1a") || files[index].hasSuffix("aax") || files[index].hasSuffix("mp2") || files[index].hasSuffix("w64") || files[index].hasSuffix("m4r") || files[index].hasSuffix("aa") || files[index].hasSuffix("mp3") || files[index].hasSuffix("au") || files[index].hasSuffix("eac3") || files[index].hasSuffix("ac3") || files[index].hasSuffix("m4p") || files[index].hasSuffix("loas")) {
+                                    audioPlayerShow = true
+                                    callback = true
+                                    newViewFilePath = directory + files[index]
+                                    newViewFileName = files[index]
+                                } else if (files[index].hasSuffix("3gp") || files[index].hasSuffix("3g2") || files[index].hasSuffix("avi") || files[index].hasSuffix("mov") || files[index].hasSuffix("m4v") || files[index].hasSuffix("mp4")){
+                                    videoPlayerShow = true
+                                    newViewFilePath = directory + files[index]
+                                    newViewFileName = files[index]
+                                } else if (files[index].hasSuffix("png")) {
+                                    imageShow = true
+                                    newViewFilePath = directory + files[index]
+                                } else if (files[index].hasSuffix("plist")) {
+                                    plistShow = true
+                                    newViewFilePath = directory + files[index]
+                                    newViewFileName = files[index]
+                                } else {
+                                    selectedFile = FileInfo(name: files[index], id: UUID())
+                                }
                             }
                         }) {
                             HStack {
-                                if (file.hasSuffix("/")) {
-                                    if (isDirectoryEmpty(atPath: directory + file) == 1){
+                                if (multiSelect) {
+                                    Image(systemName: fileWasSelected[index] ? "checkmark.circle" : "circle")
+                                }
+                                if (files[index].hasSuffix("/")) {
+                                    if (isDirectoryEmpty(atPath: directory + files[index]) == 1){
                                         Image(systemName: "folder")
-                                    } else if (isDirectoryEmpty(atPath: directory + file) == 0){
+                                    } else if (isDirectoryEmpty(atPath: directory + files[index]) == 0){
                                         Image(systemName: "folder.fill")
                                     } else {
                                         Image(systemName: "folder.badge.questionmark")
                                     }
-                                    Text(substring(str: file, startIndex: file.index(file.startIndex, offsetBy: 0), endIndex: file.index(file.endIndex, offsetBy: -1)))
-                                } else if (FileManager.default.isExecutableFile(atPath: directory + file)){
+                                    Text(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
+                                } else if (FileManager.default.isExecutableFile(atPath: directory + files[index])){
                                     Image(systemName: "terminal")
-                                    Text(file)
-                                } else if (file.hasSuffix("aifc") || file.hasSuffix("m4r") || file.hasSuffix("wav") || file.hasSuffix("flac") || file.hasSuffix("m2a") || file.hasSuffix("aac") || file.hasSuffix("mpa") || file.hasSuffix("xhe") || file.hasSuffix("aiff") || file.hasSuffix("amr") || file.hasSuffix("caf") || file.hasSuffix("m4a") || file.hasSuffix("m4r") || file.hasSuffix("m4b") || file.hasSuffix("mp1") || file.hasSuffix("m1a") || file.hasSuffix("aax") || file.hasSuffix("mp2") || file.hasSuffix("w64") || file.hasSuffix("m4r") || file.hasSuffix("aa") || file.hasSuffix("mp3") || file.hasSuffix("au") || file.hasSuffix("eac3") || file.hasSuffix("ac3") || file.hasSuffix("m4p") || file.hasSuffix("loas")) {
+                                    Text(files[index])
+                                } else if (files[index].hasSuffix("aifc") || files[index].hasSuffix("m4r") || files[index].hasSuffix("wav") || files[index].hasSuffix("flac") || files[index].hasSuffix("m2a") || files[index].hasSuffix("aac") || files[index].hasSuffix("mpa") || files[index].hasSuffix("xhe") || files[index].hasSuffix("aiff") || files[index].hasSuffix("amr") || files[index].hasSuffix("caf") || files[index].hasSuffix("m4a") || files[index].hasSuffix("m4r") || files[index].hasSuffix("m4b") || files[index].hasSuffix("mp1") || files[index].hasSuffix("m1a") || files[index].hasSuffix("aax") || files[index].hasSuffix("mp2") || files[index].hasSuffix("w64") || files[index].hasSuffix("m4r") || files[index].hasSuffix("aa") || files[index].hasSuffix("mp3") || files[index].hasSuffix("au") || files[index].hasSuffix("eac3") || files[index].hasSuffix("ac3") || files[index].hasSuffix("m4p") || files[index].hasSuffix("loas")) {
                                     Image(systemName: "waveform.circle")
-                                    Text(file)
-                                } else if (file.hasSuffix("3gp") || file.hasSuffix("3g2") || file.hasSuffix("avi") || file.hasSuffix("mov") || file.hasSuffix("m4v") || file.hasSuffix("mp4")){
+                                    Text(files[index])
+                                } else if (files[index].hasSuffix("3gp") || files[index].hasSuffix("3g2") || files[index].hasSuffix("avi") || files[index].hasSuffix("mov") || files[index].hasSuffix("m4v") || files[index].hasSuffix("mp4")){
                                     Image(systemName: "video")
-                                    Text(file)
-                                } else if (file.hasSuffix("png")) {
+                                    Text(files[index])
+                                } else if (files[index].hasSuffix("png")) {
                                     Image(systemName: "photo")
-                                    Text(file)
-                                } else if (file.hasSuffix("plist")) {
+                                    Text(files[index])
+                                } else if (files[index].hasSuffix("plist")) {
                                     Image(systemName: "list.bullet")
-                                    Text(file)
+                                    Text(files[index])
                                 } else {
                                     Image(systemName: "doc")
-                                    Text(file)
+                                    Text(files[index])
                                 }
                             }
                         }
                         .contextMenu {
                             Button(action: {
                                 fileInfoShow = true
-                                fileInfo = getFileInfo(forFileAtPath: directory + file)
+                                fileInfo = getFileInfo(forFileAtPath: directory + files[index])
                             }) {
                                 Text("Info")
                             }
                             
                             Button(action: {
                                 newViewFilePath = directory
-                                renameFileCurrentName = file
-                                renameFileNewName = file
+                                renameFileCurrentName = files[index]
+                                renameFileNewName = files[index]
                                 renameFileShow = true
                             }) {
                                 Text("Rename")
                             }
                             
-                            if(directory == "/var/mobile/Media/.Trash/"){
+                            //if(directory == "/var/mobile/Media/.Trash/"){
                                 Button(action: {
-                                    deleteFile(atPath: directory + file)
+                                    deleteFile(atPath: directory + files[index])
                                     updateFiles()
                                 }) {
                                     Text("Delete")
                                 }
+                                .foregroundColor(.red)
+                            /*} else if(directory == "/var/mobile/Media/" && files[index] == ".Trash/"){
+                                Button(action: {
+                                    do {
+                                        try FileManager.default.removeItem(atPath: "/var/mobile/Media/.Trash/")
+                                    } catch {
+                                        print("Error emptying Trash: \(error)")
+                                    }
+                                    FileManager.default.createDirectory(atPath: "/var/mobile/Media/.Trash/")
+                                }) {
+                                    Text("Empty Trash")
+                                }
                             } else {
                                 Button(action: {
-                                    moveFile(path: directory + file, newPath: ("/var/mobile/Media/.Trash/" + file))
+                                    moveFile(path: directory + files[index], newPath: ("/var/mobile/Media/.Trash/" + files[index]))
                                     updateFiles()
                                 }) {
                                     Text("Move to Trash")
                                 }
+                            }*/
+                            if(deleteOverride){
+                                Button(action: {
+                                    deleteFile(atPath: directory + files[index])
+                                    updateFiles()
+                                }) {
+                                    Text("Delete")
+                                }
+                                .foregroundColor(.red)
                             }
                             
                             Button(action: {
                                 addToFavoritesShow = true
-                                newViewFilePath = directory + file
-                                if file.hasSuffix("/") {
-                                addToFavoritesDisplayName = String(substring(str: file, startIndex: file.index(file.startIndex, offsetBy: 0), endIndex: file.index(file.endIndex, offsetBy: -1)))
+                                newViewFilePath = directory + files[index]
+                                if files[index].hasSuffix("/") {
+                                addToFavoritesDisplayName = String(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
                                 } else {
-                                    addToFavoritesDisplayName = file
+                                    addToFavoritesDisplayName = files[index]
                                 }
                                 UserDefaults.favorites.synchronize()
                             }) {
@@ -190,7 +239,7 @@ struct ContentView: View {
                             
                             Button(action: {
                                 newViewFilePath = directory
-                                newViewFileName = file
+                                newViewArrayNames = [files[index]]
                                 moveFileShow = true
                             }) {
                                 Text("Move To")
@@ -198,7 +247,7 @@ struct ContentView: View {
                             
                             Button(action: {
                                 newViewFilePath = directory
-                                newViewFileName = file
+                                newViewArrayNames = [files[index]]
                                 copyFileShow = true
                             }) {
                                 Text("Copy To")
@@ -217,6 +266,10 @@ struct ContentView: View {
                     }
                     updateFiles()
                 }
+                .onPlayPauseCommand {
+                    callback = false
+                    audioPlayerShow = true
+                }
                 .alert(isPresented: $permissionDenied) { //permissions fail!
                     Alert(
                         title: Text("Permission denied"),
@@ -230,14 +283,9 @@ struct ContentView: View {
                         dismissButton: .default(Text("Dismiss"))
                     )
                 }
-                .sheet(item: $selectedFile) { file in //text editor
-                    if(textSuccess){
-                        Text("**Text Viewer**")
-                    }
-                    ScrollView{
-                        Text(readTextFile(path: directory + file.name))
-                    }
-                }
+                /*.sheet(isPresented $textShow, content: {
+                    
+                }*/
                 .sheet(isPresented: $searchShow, content: { //search files
                     SearchView(directoryToSearch: $directory)
                 })
@@ -260,7 +308,7 @@ struct ContentView: View {
                     RenameFileView(fileName: $renameFileCurrentName, newFileName: $renameFileNewName, filePath: $newViewFilePath, isPresented: $renameFileShow)
                 })
                 .sheet(isPresented: $moveFileShow, content: {
-                    MoveFileView(fileName: $newViewFileName, filePath: $newViewFilePath, isPresented: $moveFileShow)
+                    MoveFileView(fileNames: $newViewArrayNames, filePath: $newViewFilePath, multiMove: $multiSelect, isPresented: $moveFileShow)
                 })
                 .sheet(isPresented: $copyFileShow, content: {
                     CopyFileView(fileName: $newViewFileName, filePath: $newViewFilePath, isPresented: $copyFileShow)
@@ -269,7 +317,11 @@ struct ContentView: View {
                     VideoPlayerView(videoPath: $newViewFilePath, videoName: $newViewFileName, player: globalAVPlayer)
                 })
                 .sheet(isPresented: $audioPlayerShow, content: {
-                    AudioPlayerView(audioPath: $newViewFilePath, audioName: $newViewFileName, player: globalAVPlayer)
+                    if(callback){
+                        AudioPlayerView(callback: true, audioPath: $newViewFilePath, audioName: $newViewFileName, player: globalAVPlayer)
+                    } else {
+                        AudioPlayerView(callback: false, audioPath: $blankString, audioName: $blankString, player: globalAVPlayer)
+                    }
                 })
                 .sheet(isPresented: $imageShow, content: {
                     ImageView(imagePath: $newViewFilePath)
@@ -354,45 +406,143 @@ struct ContentView: View {
     var topBar: some View {
         HStack {
             Button(action: {
-                print("something should go here")
+                if(multiSelect) {
+                    print(directory)
+                    print(files)
+                    multiSelectFiles = files
+                    allWereSelected.toggle()
+                    if(allWereSelected) {
+                        iterateOverFileWasSelected(boolToIterate: true)
+                    } else {
+                        iterateOverFileWasSelected(boolToIterate: false)
+                    }
+                } else {
+                    resizeMultiSelectArrays()
+                    resetMultiSelectArrays()
+                    multiSelect = true
+                }
             }) {
-                Image(systemName: "questionmark.app")
-                    .frame(width:50, height:50)
+                if (multiSelect){
+                    if (allWereSelected) {
+                        Image(systemName: "checkmark.circle")
+                        .frame(width:50, height:50)
+                    } else {
+                        Image(systemName: "circle")
+                        .frame(width:50, height:50)
+                    }
+                } else {
+                    Image(systemName: "checkmark.circle")
+                        .frame(width:50, height:50)
+                }
             }
             
-            Button(action: {
-                searchShow = true
-            }) {
-                Image(systemName: "magnifyingglass")
-                    .frame(width:50, height:50)
-            }
+            if (!multiSelect) {
+                Button(action: {
+                    searchShow = true
+                    newViewFilePath = directory
+                }) {
+                    Image(systemName: "magnifyingglass")
+                        .frame(width:50, height:50)
+                }
         
-            Button(action: { //new file
-                createFileShow = true
-            }) {
-                Image(systemName: "doc.badge.plus")
-                    .frame(width:50, height:50)
-            }
+                Button(action: { //new file
+                    createFileShow = true
+                }) {
+                    Image(systemName: "doc.badge.plus")
+                        .frame(width:50, height:50)
+                }
             
-            Button(action: { //new directory
-                createDirectoryShow = true
-            }) {
-                Image(systemName: "folder.badge.plus")
-                    .frame(width:50, height:50)
-            }
+                Button(action: { //new directory
+                    createDirectoryShow = true
+                }) {
+                    Image(systemName: "folder.badge.plus")
+                        .frame(width:50, height:50)
+                }
             
-            Button(action: { //favorites
-                favoritesShow = true
-            }) {
-                Image(systemName: "star")
-                    .frame(width:50, height:50)
-            }
+                Button(action: { //favorites
+                    favoritesShow = true
+                }) {
+                    Image(systemName: "star")
+                        .frame(width:50, height:50)
+                }
             
-            Button(action: { //settings
-                settingsShow = true
-            }) {
-                Image(systemName: "gear")
-                    .frame(width:50, height:50)
+                Button(action: { //settings
+                    settingsShow = true
+                }) {
+                    Image(systemName: "gear")
+                        .frame(width:50, height:50)
+                }
+            } else {
+                Button(action: {
+                    moveFileShow = true
+                    newViewFilePath = directory
+                    newViewArrayNames = multiSelectFiles
+                    resizeMultiSelectArrays()
+                    resetMultiSelectArrays()
+                }) {
+                    ZStack {
+                        Image(systemName: "doc.on.doc")
+                            .frame(width:50, height:50)
+                        Image(systemName: "arrow.right")
+                            .resizable()
+                            .frame(width:15, height:13)
+                            .offset(x:-4, y:11.75)
+                    }
+                }
+        
+                Button(action: {
+                    //copy bulk
+                }) {
+                    ZStack {
+                        Image(systemName: "doc.on.clipboard")
+                            .frame(width:50, height:50)
+                        Image(systemName: "arrow.right")
+                            .resizable()
+                            .frame(width:15, height:13)
+                            .offset(x:-3.75, y:11.75)
+                    }
+                }
+            
+                Button(action: {
+                    //compress
+                }) {
+                    Image(systemName: "doc.zipper")
+                        .frame(width:50, height:50)
+                }
+            
+                Button(action: {
+                    if(directory == "/var/mobile/Media/.Trash/"){
+                        for file in multiSelectFiles {
+                            deleteFile(atPath: directory + file)
+                            updateFiles()
+                        }
+                        resizeMultiSelectArrays()
+                    } else {
+                        for file in multiSelectFiles {
+                            moveFile(path: directory + file, newPath: "/var/mobile/Media/.Trash/" + file)
+                            updateFiles()
+                        }
+                    }
+                }) {
+                    ZStack {
+                        if(directory == "/var/mobile/Media/.Trash/"){
+                            Image(systemName: "trash")
+                                .frame(width:50, height:50)
+                                .foregroundColor(.red)
+                        } else {
+                            Image(systemName: "trash")
+                                .frame(width:50, height:50)
+                        }
+                    }
+                }
+            
+                Button(action: {
+                    multiSelect = false
+                    allWereSelected = false
+                }) {
+                    Image(systemName: "xmark")
+                        .frame(width:50, height:50)
+                }
             }
         }
         .alignmentGuide(HorizontalAlignment.center) {
@@ -433,23 +583,14 @@ struct ContentView: View {
                 FileManager.default.fileExists(atPath: filePath, isDirectory: &isDirectory)
                 return isDirectory.boolValue ? "\(file)/" : file
             }
+            resizeMultiSelectArrays()
+            resetMultiSelectArrays()
         } catch {
             print(error)
             if(substring(str: error.localizedDescription, startIndex: error.localizedDescription.index(error.localizedDescription.endIndex, offsetBy: -33), endIndex: error.localizedDescription.index(error.localizedDescription.endIndex, offsetBy: 0)) == "don’t have permission to view it."){
                 permissionDenied = true
                 goBack()
             }
-        }
-    }
-    
-    func readTextFile(path: String) -> String {
-        do {
-            let fileSelected = try String(contentsOfFile: path, encoding: .utf8)
-            textSuccess = true
-            return fileSelected
-        } catch {
-            print(error.localizedDescription)
-            return error.localizedDescription
         }
     }
     
@@ -628,6 +769,31 @@ struct ContentView: View {
         let isBinaryPlist = header.starts(with: [98, 112, 108, 105, 115, 116, 48, 48]) // "bplist00"
     
         return isXMLPlist || isBinaryPlist
+    }
+    
+    func resizeMultiSelectArrays() {
+        let range = abs(files.count - fileWasSelected.count)
+        if(fileWasSelected.count > files.count){
+            fileWasSelected.removeLast(range)
+            if(fileWasSelected.count == 0){
+                fileWasSelected.append(false)
+            }
+        } else if(fileWasSelected.count < files.count){
+            for _ in 0..<range {
+                fileWasSelected.append(false)
+            }
+        }
+    }
+    func resetMultiSelectArrays(){
+        iterateOverFileWasSelected(boolToIterate: false)
+        for i in 0..<multiSelectFiles.count {
+            multiSelectFiles[i] = ""
+        }
+    }
+    func iterateOverFileWasSelected(boolToIterate: Bool) {
+        for i in 0..<fileWasSelected.count {
+            fileWasSelected[i] = boolToIterate
+        }
     }
 }
 
