@@ -8,26 +8,34 @@ What it currently lets you do:
 
 1. Browse file directory
 2. Read text files
-3. Watch videos (and get info about them)
+3. Watch videos
 4. Play audio (and view metadata)
 5. Create folders
 6. Create files
 7. Save folders or files to Favorites
 8. Get info about a file
 9. Rename a file
-10. Move a file to Trash (or if it's in Trash, permanently delete it)
-11. Move a file to a new filepath (and optionally, rename it)
-12. Copy a file to a new filepath (and optionally, rename it)
+10. Move a file or files to Trash (or if in Trash, delete them)
+11. Move a file or files to a given directory (if a single file, you can rename it)
+12. //BROKEN Copy a file to a new filepath (and optionally, rename it)
 13. View images
 
 TODO:
 1. Don't assume a filepath is a directory in ContentView (you can specify a filepath to a non-folder and it will open the proper view)
+(this will probably never happen)
 2. Add info to ImageView
-3. Root helper
-4. more
+3. Fix the copy function
+4. Add support for compression
+5. Root helper
+6. more
 
-By default it's sandboxed, so you will need a tvOS jailbreak to use it unless you're fine with just modifying what's in the app's data directory. It's set to open /var/mobile/ by default. Moving, renaming, and copying require you being in /var/mobile/ until I add a root helper
+By default it's sandboxed, so you will need a tvOS jailbreak to use it unless you're fine with just modifying what's in the app's data directory. Since it currently lacks a root helper, any actions that write to the filesystem must be within /var/mobile/.
+It will open /var/mobile/ by default, unless you are sandboxed, in which case it will open the app's data directory.
 
-Xcode project requires Xcode 14.3+
+Xcode project requires Xcode 14.3+. Has three dependencies:
+1. Zip
+2. SWCompression
+3. BitByteData (dependency of SWCompression)
+It does not yet use these as I haven't implemented data extraction/archive yet.
 
 Good luck have fun. Hopefully this isn't the only tvOS file browser ever.
