@@ -29,8 +29,8 @@
 		F8CC212F29E74DF4008C7B88 /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC212E29E74DF4008C7B88 /* VideoPlayerView.swift */; };
 		F8CC213529E79136008C7B88 /* TvOSSlider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8CC213329E790B5008C7B88 /* TvOSSlider.framework */; };
 		F8CC213629E79136008C7B88 /* TvOSSlider.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F8CC213329E790B5008C7B88 /* TvOSSlider.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		F8CC213F29E9FCFC008C7B88 /* SWCompression in Frameworks */ = {isa = PBXBuildFile; productRef = F8CC213E29E9FCFC008C7B88 /* SWCompression */; };
 		F8CC214229EA68BC008C7B88 /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = F8CC214129EA68BC008C7B88 /* Zip */; };
+		F8CC214429EB9503008C7B88 /* ZipFileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214329EB9503008C7B88 /* ZipFileView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -71,6 +71,7 @@
 		F8CC212E29E74DF4008C7B88 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
 		F8CC213129E79042008C7B88 /* tvOSSlider.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = tvOSSlider.framework; path = Spartan/tvOSSlider.framework; sourceTree = "<group>"; };
 		F8CC213329E790B5008C7B88 /* TvOSSlider.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TvOSSlider.framework; path = Spartan/TvOSSlider.framework; sourceTree = "<group>"; };
+		F8CC214329EB9503008C7B88 /* ZipFileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipFileView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,7 +81,6 @@
 			files = (
 				F8CC214229EA68BC008C7B88 /* Zip in Frameworks */,
 				F8CC213529E79136008C7B88 /* TvOSSlider.framework in Frameworks */,
-				F8CC213F29E9FCFC008C7B88 /* SWCompression in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,8 +90,8 @@
 		F853AB2229DBCB1A006EA2D5 = {
 			isa = PBXGroup;
 			children = (
-				F853AB2D29DBCB1A006EA2D5 /* Spartan */,
 				F853AB2C29DBCB1A006EA2D5 /* Products */,
+				F853AB2D29DBCB1A006EA2D5 /* Spartan */,
 				F8CC213029E79042008C7B88 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -118,6 +118,7 @@
 				F853AB4E29DE57D8006EA2D5 /* AudioPlayerView.swift */,
 				F8CC211E29E2762F008C7B88 /* ImageView.swift */,
 				F8CC212229E4FFC5008C7B88 /* PlistView.swift */,
+				F8CC214329EB9503008C7B88 /* ZipFileView.swift */,
 				F853AB5429DE8B3B006EA2D5 /* FavoritesView.swift */,
 				F853AB5A29E09F8A006EA2D5 /* AddToFavoritesView.swift */,
 				F853AB5229DE8AA1006EA2D5 /* SettingsView.swift */,
@@ -166,7 +167,6 @@
 			);
 			name = Spartan;
 			packageProductDependencies = (
-				F8CC213E29E9FCFC008C7B88 /* SWCompression */,
 				F8CC214129EA68BC008C7B88 /* Zip */,
 			);
 			productName = Spartan;
@@ -201,7 +201,6 @@
 			);
 			mainGroup = F853AB2229DBCB1A006EA2D5;
 			packageReferences = (
-				F8CC213D29E9FCFC008C7B88 /* XCRemoteSwiftPackageReference "SWCompression" */,
 				F8CC214029EA68BB008C7B88 /* XCRemoteSwiftPackageReference "Zip" */,
 			);
 			productRefGroup = F853AB2C29DBCB1A006EA2D5 /* Products */;
@@ -236,6 +235,7 @@
 				F853AB4B29DE21A8006EA2D5 /* CopyFileView.swift in Sources */,
 				F8CC212329E4FFC5008C7B88 /* PlistView.swift in Sources */,
 				F853AB4929DE1D12006EA2D5 /* MoveFileView.swift in Sources */,
+				F8CC214429EB9503008C7B88 /* ZipFileView.swift in Sources */,
 				F853AB4329DE1C41006EA2D5 /* CreateFileView.swift in Sources */,
 				F853AB4729DE1CEC006EA2D5 /* CreateDirectoryView.swift in Sources */,
 				F853AB5329DE8AA1006EA2D5 /* SettingsView.swift in Sources */,
@@ -458,14 +458,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		F8CC213D29E9FCFC008C7B88 /* XCRemoteSwiftPackageReference "SWCompression" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/tsolomko/SWCompression";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.0.0;
-			};
-		};
 		F8CC214029EA68BB008C7B88 /* XCRemoteSwiftPackageReference "Zip" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/marmelroy/Zip";
@@ -477,11 +469,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		F8CC213E29E9FCFC008C7B88 /* SWCompression */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F8CC213D29E9FCFC008C7B88 /* XCRemoteSwiftPackageReference "SWCompression" */;
-			productName = SWCompression;
-		};
 		F8CC214129EA68BC008C7B88 /* Zip */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F8CC214029EA68BB008C7B88 /* XCRemoteSwiftPackageReference "Zip" */;

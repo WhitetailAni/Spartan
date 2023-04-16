@@ -22,7 +22,7 @@ struct ContentView: View {
     
     @State var multiSelect = false
     @State var allWereSelected = false
-    @State var multiSelectFiles: [String] = [""]
+    @State var multiSelectFiles: [String] = []
     @State var fileWasSelected: [Bool] = [false]
     
     @State var fileInfoShow = false
@@ -57,6 +57,9 @@ struct ContentView: View {
     @State private var plistShow = false
     
     @State private var textShow = false
+    
+    @State private var zipFileShow = false
+    @State private var uncompressZip = false
     
     @State private var addToFavoritesShow = false
     @State private var addToFavoritesDisplayName: String = ""
@@ -96,38 +99,38 @@ struct ContentView: View {
                     ForEach(files.indices, id: \.self) { index in
                         Button(action: {
                             if (multiSelect) {
-                                fileWasSelected[index] = true
                                 if(fileWasSelected[index]){
-                                    if(multiSelectFiles.count == 1 && multiSelectFiles[0] == ""){
-                                        multiSelectFiles[0] = files[index]
-                                        print("original item")
-                                    } else {
-                                        multiSelectFiles.append(files[index])
-                                        print("appended")
-                                    }
+                                    let searchedIndex = multiSelectFiles.firstIndex(of: files[index])
+                                    multiSelectFiles.remove(at: searchedIndex!)
+                                    fileWasSelected[index] = false
+                                } else {
+                                    fileWasSelected[index] = true
+                                    multiSelectFiles.append(files[index])
                                     print(multiSelectFiles)
                                 }
-                                print(fileWasSelected)
-                                
                             } else {
+                                multiSelect = false
                                 print(yandereDevFileType(file: (directory + files[index])))
-                                if files[index].hasSuffix("/") {
+                                if (yandereDevFileType(file: (directory + files[index])) == 0) {
                                     directory = directory + files[index]
                                     updateFiles()
                                     print(directory)
-                                } else if (files[index].hasSuffix("aifc") || files[index].hasSuffix("m4r") || files[index].hasSuffix("wav") || files[index].hasSuffix("flac") || files[index].hasSuffix("m2a") || files[index].hasSuffix("aac") || files[index].hasSuffix("mpa") || files[index].hasSuffix("xhe") || files[index].hasSuffix("aiff") || files[index].hasSuffix("amr") || files[index].hasSuffix("caf") || files[index].hasSuffix("m4a") || files[index].hasSuffix("m4r") || files[index].hasSuffix("m4b") || files[index].hasSuffix("mp1") || files[index].hasSuffix("m1a") || files[index].hasSuffix("aax") || files[index].hasSuffix("mp2") || files[index].hasSuffix("w64") || files[index].hasSuffix("m4r") || files[index].hasSuffix("aa") || files[index].hasSuffix("mp3") || files[index].hasSuffix("au") || files[index].hasSuffix("eac3") || files[index].hasSuffix("ac3") || files[index].hasSuffix("m4p") || files[index].hasSuffix("loas")) {
+                                } else if (yandereDevFileType(file: (directory + files[index])) == 1) {
                                     audioPlayerShow = true
                                     callback = true
                                     newViewFilePath = directory + files[index]
                                     newViewFileName = files[index]
-                                } else if (files[index].hasSuffix("3gp") || files[index].hasSuffix("3g2") || files[index].hasSuffix("avi") || files[index].hasSuffix("mov") || files[index].hasSuffix("m4v") || files[index].hasSuffix("mp4")){
+                                    print(newViewFilePath)
+                                    print(newViewFileName)
+                                    print(callback)
+                                } else if (yandereDevFileType(file: (directory + files[index])) == 2){
                                     videoPlayerShow = true
                                     newViewFilePath = directory + files[index]
                                     newViewFileName = files[index]
-                                } else if (files[index].hasSuffix("png")) {
+                                } else if (yandereDevFileType(file: (directory + files[index])) == 3) {
                                     imageShow = true
                                     newViewFilePath = directory + files[index]
-                                } else if (files[index].hasSuffix("plist")) {
+                                } else if (yandereDevFileType(file: (directory + files[index])) == 4) {
                                     plistShow = true
                                     newViewFilePath = directory + files[index]
                                     newViewFileName = files[index]
@@ -308,19 +311,19 @@ struct ContentView: View {
                     RenameFileView(fileName: $renameFileCurrentName, newFileName: $renameFileNewName, filePath: $newViewFilePath, isPresented: $renameFileShow)
                 })
                 .sheet(isPresented: $moveFileShow, content: {
-                    MoveFileView(fileNames: $newViewArrayNames, filePath: $newViewFilePath, multiMove: $multiSelect, isPresented: $moveFileShow)
+                    MoveFileView(fileNames: $newViewArrayNames, filePath: $newViewFilePath, multiSelect: $multiSelect, isPresented: $moveFileShow)
                 })
                 .sheet(isPresented: $copyFileShow, content: {
-                    CopyFileView(fileName: $newViewFileName, filePath: $newViewFilePath, isPresented: $copyFileShow)
+                    CopyFileView(fileNames: $newViewArrayNames, filePath: $newViewFilePath, multiSelect: $multiSelect, isPresented: $copyFileShow)
                 })
                 .sheet(isPresented: $videoPlayerShow, content: {
                     VideoPlayerView(videoPath: $newViewFilePath, videoName: $newViewFileName, player: globalAVPlayer)
                 })
                 .sheet(isPresented: $audioPlayerShow, content: {
                     if(callback){
-                        AudioPlayerView(callback: true, audioPath: $newViewFilePath, audioName: $newViewFileName, player: globalAVPlayer)
+                        AudioPlayerView(callback: callback, audioPath: $newViewFilePath, audioName: $newViewFileName, player: globalAVPlayer)
                     } else {
-                        AudioPlayerView(callback: false, audioPath: $blankString, audioName: $blankString, player: globalAVPlayer)
+                        AudioPlayerView(callback: callback, audioPath: $blankString, audioName: $blankString, player: globalAVPlayer)
                     }
                 })
                 .sheet(isPresented: $imageShow, content: {
@@ -328,6 +331,13 @@ struct ContentView: View {
                 })
                 .sheet(isPresented: $plistShow, content: {
                     PlistView(filePath: $newViewFilePath, fileName: $newViewFileName)
+                })
+                .sheet(isPresented: $zipFileShow, content: {
+                    if(uncompressZip){
+                        //ZipFileView(filePath: $newViewFilePath, fileName: $newViewFileName)
+                    } else {
+                        ZipFileView(unzip: false, isPresented: $zipFileShow, fileNames: $multiSelectFiles, filePath: $directory, zipFileName: $blankString)
+                    }
                 })
                 .accentColor(.accentColor)
             }
@@ -407,8 +417,6 @@ struct ContentView: View {
         HStack {
             Button(action: {
                 if(multiSelect) {
-                    print(directory)
-                    print(files)
                     multiSelectFiles = files
                     allWereSelected.toggle()
                     if(allWereSelected) {
@@ -491,7 +499,11 @@ struct ContentView: View {
                 }
         
                 Button(action: {
-                    //copy bulk
+                    copyFileShow = true
+                    newViewFilePath = directory
+                    newViewArrayNames = multiSelectFiles
+                    resizeMultiSelectArrays()
+                    resetMultiSelectArrays()
                 }) {
                     ZStack {
                         Image(systemName: "doc.on.clipboard")
@@ -504,7 +516,12 @@ struct ContentView: View {
                 }
             
                 Button(action: {
-                    //compress
+                    zipFileShow = true
+                    uncompressZip = false
+                    newViewFilePath = directory
+                    newViewArrayNames = multiSelectFiles
+                    resizeMultiSelectArrays()
+                    resetMultiSelectArrays()
                 }) {
                     Image(systemName: "doc.zipper")
                         .frame(width:50, height:50)
@@ -589,6 +606,7 @@ struct ContentView: View {
             print(error)
             if(substring(str: error.localizedDescription, startIndex: error.localizedDescription.index(error.localizedDescription.endIndex, offsetBy: -33), endIndex: error.localizedDescription.index(error.localizedDescription.endIndex, offsetBy: 0)) == "don’t have permission to view it."){
                 permissionDenied = true
+                multiSelect = false
                 goBack()
             }
         }

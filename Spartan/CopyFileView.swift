@@ -8,17 +8,16 @@
 import SwiftUI
 
 struct CopyFileView: View {
-    @Binding var fileName: String
+    @Binding var fileNames: [String]
     @Binding var filePath: String
-    @State var multiMove = false
+    @Binding var multiSelect: Bool
     @State var newFileName: String = ""
     @State var newFilePath: String = ""
     @Binding var isPresented: Bool
     
     var body: some View {
         VStack{
-            Text("**CURRENTLY VERY BROKEN DO NOT USE**")
-            /*Text("**Copy File To**")
+            Text("**Copy File To**")
             TextField("Enter new file path", text: $newFilePath, onEditingChanged: { (isEditing) in
                 if !isEditing {
                     if(!(newFilePath.hasSuffix("/"))){
@@ -26,24 +25,39 @@ struct CopyFileView: View {
                     }
                 }
             })
-
-            TextField("Enter new file name (optional)", text: $newFileName)
+            if(fileNames.count == 1){
+                TextField("Enter new file name (optional)", text: $newFileName)
+            }
         
             Button("Confirm") {
-                if(newFileName == ""){
-                    copyFile(path: filePath + fileName, newPath: newFilePath + fileName)
+                print(multiSelect)
+                print(fileNames)
+                if(multiSelect){
+                    if(fileNames.count > 1){
+                        for fileName in fileNames {
+                            copyFile(path: filePath + fileName, newPath: newFilePath + fileName)
+                            print(fileName)
+                        }
+                    } else {
+                        copyFile(path: filePath + fileNames[0], newPath: newFilePath + newFileName)
+                    }
+                } else if(newFileName == ""){
+                    copyFile(path: filePath + fileNames[0], newPath: newFilePath + fileNames[0])
                 } else {
-                    copyFile(path: filePath + fileName, newPath: newFilePath + newFileName)
+                    copyFile(path: filePath + fileNames[0], newPath: newFilePath + newFileName)
                 }
             
                 print("File copied successfully")
-                fileName = ""
+                fileNames[0] = ""
+                multiSelect = false
                 isPresented = false
-            }*/
+            }
         }
         .onAppear {
             newFilePath = filePath
-            newFileName = fileName
+            if(!multiSelect){
+                newFileName = fileNames[0]
+            }
         }
     }
     
@@ -55,4 +69,3 @@ struct CopyFileView: View {
         }
     }
 }
-
