@@ -30,7 +30,7 @@ struct AudioPlayerView: View {
             HStack {
                 VStack {
                     if(audioPath == "" && duration == 0){
-                        Text("Please select an audio file")
+                        Text("Please select a valid audio file")
                                 .font(.system(size: 40))
                                 .bold()
                                 .multilineTextAlignment(.center)
@@ -151,7 +151,7 @@ struct AudioPlayerView: View {
                     } else {
                         Image(isFocused ? "repeat.slash.black" : "repeat.slash.white")
                             .resizable()
-                            .frame(width:50, height:50)
+                            .frame(width:35, height:35)
                     }
                 }
                 
@@ -170,14 +170,18 @@ struct AudioPlayerView: View {
             }
         }
         .onAppear {
-            if(callback){
+            //if(callback){
                 cementedAudioPath = audioPath
                 cementedAudioName = audioName
                 duration = 0
                 currentTime = 0
                 player.replaceCurrentItem(with: AVPlayerItem(url: URL(fileURLWithPath: cementedAudioPath)))
                 player.play()
-            }
+            //}
+            print("audio view")
+            print(audioPath)
+            print(audioName)
+            print(callback)
             
             player.currentItem?.asset.loadValuesAsynchronously(forKeys: ["duration"]) {
                 DispatchQueue.main.async {

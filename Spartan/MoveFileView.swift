@@ -10,7 +10,7 @@ import SwiftUI
 struct MoveFileView: View {
     @Binding var fileNames: [String]
     @Binding var filePath: String
-    @Binding var multiMove: Bool
+    @Binding var multiSelect: Bool
     @State var newFileName: String = ""
     @State var newFilePath: String = ""
     @Binding var isPresented: Bool
@@ -25,14 +25,14 @@ struct MoveFileView: View {
                     }
                 }
             })
-            if(fileNames.count > 1){
+            if(fileNames.count == 1){
                 TextField("Enter new file name (optional)", text: $newFileName)
             }
         
             Button("Confirm") {
-                print(multiMove)
+                print(multiSelect)
                 print(fileNames)
-                if(multiMove){
+                if(multiSelect){
                     if(fileNames.count > 1){
                         for fileName in fileNames {
                             moveFile(path: filePath + fileName, newPath: newFilePath + fileName)
@@ -49,12 +49,13 @@ struct MoveFileView: View {
             
                 print("File moved successfully")
                 fileNames[0] = ""
+                multiSelect = false
                 isPresented = false
             }
         }
         .onAppear {
             newFilePath = filePath
-            if(!multiMove){
+            if(!multiSelect){
                 newFileName = fileNames[0]
             }
         }

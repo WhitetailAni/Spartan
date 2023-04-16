@@ -19,10 +19,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     @State var favoritesFilePath: [String] = (UserDefaults.favorites.stringArray(forKey: "favoritesFilePath") ?? ["/var/mobile/Media/.Trash/"])
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    
+        UserDefaults.settings.set(true, forKey: "autoComplete")
         
         if(FileManager.default.isReadableFile(atPath: "/var/mobile/")){ //shows app data directory if sandbox exists
-            displayView(pathToLoad: "/var/mobile/")
-            //displayView(pathToLoad:  "/var/containers/Bundle/Application/2A65A51A-4061-4143-B622-FA0E57C0C3EE/trillstore.app/")
+            //displayView(pathToLoad: "/var/mobile/")
+            displayView(pathToLoad:  "/var/containers/Bundle/Application/2A65A51A-4061-4143-B622-FA0E57C0C3EE/trillstore.app/")
         } else {
             displayView(pathToLoad: getDataDirectory())
         }

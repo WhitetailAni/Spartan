@@ -16,10 +16,10 @@ struct AddToFavoritesView: View {
     @Binding var showView: Bool
 
     var body: some View {
-        TextField("ADD_TO_FAVORITES_VIEW_DISPLAYNAME", text: $displayName)
-        TextField("ADD_TO_FAVORITES_VIEW_FILEPATH", text: $filePath, onEditingChanged: { (isEditing) in
+        TextField("Enter the name that will display in Favorites", text: $displayName)
+        TextField("Enter the file path for the item you wish to add", text: $filePath, onEditingChanged: { (isEditing) in
             if !isEditing {
-                if(!(filePath.hasSuffix("/"))){
+                if(!(filePath.hasSuffix("/")) && UserDefaults.settings.bool(forKey: "autoComplete")){
                     filePath = filePath + "/"
                 }
             }
