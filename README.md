@@ -7,7 +7,7 @@ Aside from ContextMenus, everything supports 13.0+
 What it currently lets you do:
 
 1. Browse file directory
-2. Read text files
+2. View text files
 3. Watch videos
 4. Play audio (and view metadata)
 5. Create folders
@@ -17,15 +17,18 @@ What it currently lets you do:
 9. Rename a file
 10. Move a file or files to Trash (or if in Trash, delete them)
 11. Move a file or files to a given directory (if a single file, you can rename it)
-12. //BROKEN Copy a file to a new filepath (and optionally, rename it)
+12. Copy a file to a new filepath (and optionally, rename it)
 13. View images
+14. View plists
+15. //BROKEN Execute binaries
+16. Compress and uncompress .zip archives
 
 TODO:
 1. Don't assume a filepath is a directory in ContentView (you can specify a filepath to a non-folder and it will open the proper view)
 (this will probably never happen)
-2. Add info to ImageView
-3. Fix the copy function
-4. Add support for compression
+2. Add info to ImageView and VideoPlayerView
+3. Plist editor
+4. Text editor
 5. Root helper
 6. more
 
