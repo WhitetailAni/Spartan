@@ -131,11 +131,7 @@ struct AudioPlayerView: View {
                 }
             
                 Button(action: {
-                    if isPlaying {
-                        player.pause()
-                    } else {
-                        player.play()
-                    }
+                    playPause()
                 }) {
                     Image(systemName: isPlaying ? "pause.fill" : "play.fill")
                         .frame(width:50, height:50)
@@ -163,21 +159,17 @@ struct AudioPlayerView: View {
             }
         }
         .onPlayPauseCommand {
-            if isPlaying {
-                player.pause()
-            } else {
-                player.play()
-            }
+            playPause()
         }
         .onAppear {
-            //if(callback){
+            if(callback){
                 cementedAudioPath = audioPath
                 cementedAudioName = audioName
                 duration = 0
                 currentTime = 0
                 player.replaceCurrentItem(with: AVPlayerItem(url: URL(fileURLWithPath: cementedAudioPath)))
                 player.play()
-            //}
+            }
             print("audio view")
             print(audioPath)
             print(audioName)
@@ -246,6 +238,20 @@ struct AudioPlayerView: View {
     func seekToZero() {
         player.seek(to: CMTime(seconds: 0, preferredTimescale: 1), toleranceBefore: .zero, toleranceAfter: .zero)
     }
+    
+    func playPause() {
+        if isPlaying {
+            player.pause()
+            /*playerNode.pause()
+            stopWaveformVisualization()*/
+        } else {
+            player.play()
+            /*playerNode.play()
+            startWaveformVisualization()*/
+        }
+    }
+    
+    
 }
 
 extension Double {

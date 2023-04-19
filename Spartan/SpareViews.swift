@@ -48,3 +48,29 @@ struct Checkbox: ToggleStyle {
         }
     }
 }
+
+struct StepperTV: View {
+    @Binding var value: Int
+    
+    var body: some View {
+        HStack {
+            Button(action: {
+                self.value -= 1
+            }) {
+                Image(systemName: "minus")
+                    .font(.system(size: 30))
+            }
+            
+            Text("\(value)")
+                .font(.headline)
+            
+            Button(action: {
+                self.value += 1
+            }) {
+                Image(systemName: "plus")
+                    .font(.system(size: 30))
+            }
+        }
+    }
+}
+

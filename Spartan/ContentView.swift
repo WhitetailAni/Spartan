@@ -50,13 +50,12 @@ struct ContentView: View {
     @State private var videoPlayerShow = false
     @State var globalAVPlayer = AVPlayer()
     @State var isGlobalAVPlayerPlaying = false
-    @State var callback = false
+    @State var callback = true
     
     @State private var imageShow = false
-    
     @State private var plistShow = false
-    
     @State private var textShow = false
+    @State private var spawnShow = false
     
     @State private var zipFileShow = false
     @State private var uncompressZip = false
@@ -64,7 +63,7 @@ struct ContentView: View {
     @State private var addToFavoritesShow = false
     @State private var addToFavoritesDisplayName: String = ""
     
-    @State var blankString: String = ""
+    @State var blankString: [String] = [""]
     
     var body: some View {
         NavigationView {
@@ -103,6 +102,7 @@ struct ContentView: View {
                                     let searchedIndex = multiSelectFiles.firstIndex(of: files[index])
                                     multiSelectFiles.remove(at: searchedIndex!)
                                     fileWasSelected[index] = false
+                                    print(multiSelectFiles)
                                 } else {
                                     fileWasSelected[index] = true
                                     multiSelectFiles.append(files[index])
@@ -110,7 +110,6 @@ struct ContentView: View {
                                 }
                             } else {
                                 multiSelect = false
-                                print(yandereDevFileType(file: (directory + files[index])))
                                 if (yandereDevFileType(file: (directory + files[index])) == 0) {
                                     directory = directory + files[index]
                                     updateFiles()
@@ -120,9 +119,6 @@ struct ContentView: View {
                                     callback = true
                                     newViewFilePath = directory + files[index]
                                     newViewFileName = files[index]
-                                    print(newViewFilePath)
-                                    print(newViewFileName)
-                                    print(callback)
                                 } else if (yandereDevFileType(file: (directory + files[index])) == 2){
                                     videoPlayerShow = true
                                     newViewFilePath = directory + files[index]
@@ -131,9 +127,19 @@ struct ContentView: View {
                                     imageShow = true
                                     newViewFilePath = directory + files[index]
                                 } else if (yandereDevFileType(file: (directory + files[index])) == 4) {
+                                    textShow = true
+                                    newViewFilePath = directory + files[index]
+                                } else if (yandereDevFileType(file: (directory + files[index])) == 5){
                                     plistShow = true
                                     newViewFilePath = directory + files[index]
                                     newViewFileName = files[index]
+                                } else if (yandereDevFileType(file: (directory + files[index])) == 6){
+                                    zipFileShow = true
+                                    newViewFileName = files[index]
+                                    uncompressZip = true
+                                } else if (yandereDevFileType(file: (directory + files[index])) == 7){
+                                    spawnShow = true
+                                    newViewFilePath = directory + files[index]
                                 } else {
                                     selectedFile = FileInfo(name: files[index], id: UUID())
                                 }
@@ -143,7 +149,7 @@ struct ContentView: View {
                                 if (multiSelect) {
                                     Image(systemName: fileWasSelected[index] ? "checkmark.circle" : "circle")
                                 }
-                                if (files[index].hasSuffix("/")) {
+                                if (yandereDevFileType(file: (directory + files[index])) == 0) {
                                     if (isDirectoryEmpty(atPath: directory + files[index]) == 1){
                                         Image(systemName: "folder")
                                     } else if (isDirectoryEmpty(atPath: directory + files[index]) == 0){
@@ -152,20 +158,26 @@ struct ContentView: View {
                                         Image(systemName: "folder.badge.questionmark")
                                     }
                                     Text(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
-                                } else if (FileManager.default.isExecutableFile(atPath: directory + files[index])){
-                                    Image(systemName: "terminal")
-                                    Text(files[index])
-                                } else if (files[index].hasSuffix("aifc") || files[index].hasSuffix("m4r") || files[index].hasSuffix("wav") || files[index].hasSuffix("flac") || files[index].hasSuffix("m2a") || files[index].hasSuffix("aac") || files[index].hasSuffix("mpa") || files[index].hasSuffix("xhe") || files[index].hasSuffix("aiff") || files[index].hasSuffix("amr") || files[index].hasSuffix("caf") || files[index].hasSuffix("m4a") || files[index].hasSuffix("m4r") || files[index].hasSuffix("m4b") || files[index].hasSuffix("mp1") || files[index].hasSuffix("m1a") || files[index].hasSuffix("aax") || files[index].hasSuffix("mp2") || files[index].hasSuffix("w64") || files[index].hasSuffix("m4r") || files[index].hasSuffix("aa") || files[index].hasSuffix("mp3") || files[index].hasSuffix("au") || files[index].hasSuffix("eac3") || files[index].hasSuffix("ac3") || files[index].hasSuffix("m4p") || files[index].hasSuffix("loas")) {
+                                } else if (yandereDevFileType(file: (directory + files[index])) == 1) {
                                     Image(systemName: "waveform.circle")
                                     Text(files[index])
-                                } else if (files[index].hasSuffix("3gp") || files[index].hasSuffix("3g2") || files[index].hasSuffix("avi") || files[index].hasSuffix("mov") || files[index].hasSuffix("m4v") || files[index].hasSuffix("mp4")){
+                                } else if (yandereDevFileType(file: (directory + files[index])) == 2){
                                     Image(systemName: "video")
                                     Text(files[index])
-                                } else if (files[index].hasSuffix("png")) {
+                                } else if (yandereDevFileType(file: (directory + files[index])) == 3) {
                                     Image(systemName: "photo")
                                     Text(files[index])
-                                } else if (files[index].hasSuffix("plist")) {
+                                } else if (yandereDevFileType(file: (directory + files[index])) == 4) {
+                                    Image(systemName: "doc.text")
+                                    Text(files[index])
+                                } else if (yandereDevFileType(file: (directory + files[index])) == 5) {
                                     Image(systemName: "list.bullet")
+                                    Text(files[index])
+                                } else if (yandereDevFileType(file: (directory + files[index])) == 6){
+                                    Image(systemName: "doc.zipper")
+                                    Text(files[index])
+                                } else if (yandereDevFileType(file: (directory + files[index])) == 7){
+                                    Image(systemName: "terminal")
                                     Text(files[index])
                                 } else {
                                     Image(systemName: "doc")
@@ -286,9 +298,9 @@ struct ContentView: View {
                         dismissButton: .default(Text("Dismiss"))
                     )
                 }
-                /*.sheet(isPresented $textShow, content: {
-                    
-                }*/
+                .sheet(isPresented: $textShow, content: {
+                    TextView(filePath: newViewFilePath)
+                })
                 .sheet(isPresented: $searchShow, content: { //search files
                     SearchView(directoryToSearch: $directory)
                 })
@@ -323,7 +335,7 @@ struct ContentView: View {
                     if(callback){
                         AudioPlayerView(callback: callback, audioPath: $newViewFilePath, audioName: $newViewFileName, player: globalAVPlayer)
                     } else {
-                        AudioPlayerView(callback: callback, audioPath: $blankString, audioName: $blankString, player: globalAVPlayer)
+                        AudioPlayerView(callback: callback, audioPath: $blankString[0], audioName: $blankString[0], player: globalAVPlayer)
                     }
                 })
                 .sheet(isPresented: $imageShow, content: {
@@ -334,10 +346,13 @@ struct ContentView: View {
                 })
                 .sheet(isPresented: $zipFileShow, content: {
                     if(uncompressZip){
-                        //ZipFileView(filePath: $newViewFilePath, fileName: $newViewFileName)
+                        ZipFileView(unzip: uncompressZip, isPresented: $zipFileShow, fileNames: blankString, filePath: $directory, zipFileName: $newViewFileName)
                     } else {
-                        ZipFileView(unzip: false, isPresented: $zipFileShow, fileNames: $multiSelectFiles, filePath: $directory, zipFileName: $blankString)
+                        ZipFileView(unzip: uncompressZip, isPresented: $zipFileShow, fileNames: multiSelectFiles, filePath: $directory, zipFileName: $blankString[0])
                     }
+                })
+                .sheet(isPresented: $spawnShow, content: {
+                    SpawnView(binaryPath: $newViewFilePath)
                 })
                 .accentColor(.accentColor)
             }
@@ -521,7 +536,7 @@ struct ContentView: View {
                     newViewFilePath = directory
                     newViewArrayNames = multiSelectFiles
                     resizeMultiSelectArrays()
-                    resetMultiSelectArrays()
+                    //resetMultiSelectArrays()
                 }) {
                     Image(systemName: "doc.zipper")
                         .frame(width:50, height:50)
@@ -744,7 +759,7 @@ struct ContentView: View {
         let audioTypes: [String] = ["aifc", "m4r", "wav", "flac", "m2a", "aac", "mpa", "xhe", "aiff", "amr", "caf", "m4a", "m4r", "m4b", "mp1", "m1a", "aax", "mp2", "w64", "m4r", "aa", "mp3", "au", "eac3", "ac3", "m4p", "loas"]
         let videoTypes: [String] = ["3gp", "3g2", "avi", "mov", "m4v", "mp4"]
         let imageTypes: [String] = ["png", "tiff", "tif", "jpeg", "jpg", "gif", "bmp", "BMPf", "ico", "cur", "xbm"]
-    
+        let archiveTypes: [String] = ["zip", "cbz"]
     
         if file.hasSuffix("/") {
             return 0 //directory
@@ -758,6 +773,10 @@ struct ContentView: View {
             return 4 //text file
         } else if (isPlist(filePath: file)) {
             return 5 //plist
+        } else if (archiveTypes.contains(where: file.hasSuffix)){
+            return 6 //archive
+        } else if (FileManager.default.isExecutableFile(atPath: file)) {
+            return 7 //executable
         } else {
             return 69 //unknown
         }

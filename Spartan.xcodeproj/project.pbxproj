@@ -31,6 +31,8 @@
 		F8CC213629E79136008C7B88 /* TvOSSlider.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F8CC213329E790B5008C7B88 /* TvOSSlider.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F8CC214229EA68BC008C7B88 /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = F8CC214129EA68BC008C7B88 /* Zip */; };
 		F8CC214429EB9503008C7B88 /* ZipFileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214329EB9503008C7B88 /* ZipFileView.swift */; };
+		F8CC214629EF5838008C7B88 /* SpawnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214529EF5838008C7B88 /* SpawnView.swift */; };
+		F8CC214829EFA165008C7B88 /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214729EFA164008C7B88 /* TextView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -72,6 +74,8 @@
 		F8CC213129E79042008C7B88 /* tvOSSlider.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = tvOSSlider.framework; path = Spartan/tvOSSlider.framework; sourceTree = "<group>"; };
 		F8CC213329E790B5008C7B88 /* TvOSSlider.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TvOSSlider.framework; path = Spartan/TvOSSlider.framework; sourceTree = "<group>"; };
 		F8CC214329EB9503008C7B88 /* ZipFileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipFileView.swift; sourceTree = "<group>"; };
+		F8CC214529EF5838008C7B88 /* SpawnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpawnView.swift; sourceTree = "<group>"; };
+		F8CC214729EFA164008C7B88 /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +113,7 @@
 			children = (
 				F853AB2E29DBCB1A006EA2D5 /* SpartanApp.swift */,
 				F853AB3029DBCB1A006EA2D5 /* ContentView.swift */,
+				F8CC214729EFA164008C7B88 /* TextView.swift */,
 				F853AB4229DE1C41006EA2D5 /* CreateFileView.swift */,
 				F853AB4629DE1CEC006EA2D5 /* CreateDirectoryView.swift */,
 				F853AB4429DE1CB3006EA2D5 /* RenameFileView.swift */,
@@ -119,6 +124,7 @@
 				F8CC211E29E2762F008C7B88 /* ImageView.swift */,
 				F8CC212229E4FFC5008C7B88 /* PlistView.swift */,
 				F8CC214329EB9503008C7B88 /* ZipFileView.swift */,
+				F8CC214529EF5838008C7B88 /* SpawnView.swift */,
 				F853AB5429DE8B3B006EA2D5 /* FavoritesView.swift */,
 				F853AB5A29E09F8A006EA2D5 /* AddToFavoritesView.swift */,
 				F853AB5229DE8AA1006EA2D5 /* SettingsView.swift */,
@@ -232,6 +238,7 @@
 				F853AB5D29E0AC3F006EA2D5 /* TintColorView.swift in Sources */,
 				F853AB5529DE8B3B006EA2D5 /* FavoritesView.swift in Sources */,
 				F853AB3129DBCB1A006EA2D5 /* ContentView.swift in Sources */,
+				F8CC214829EFA165008C7B88 /* TextView.swift in Sources */,
 				F853AB4B29DE21A8006EA2D5 /* CopyFileView.swift in Sources */,
 				F8CC212329E4FFC5008C7B88 /* PlistView.swift in Sources */,
 				F853AB4929DE1D12006EA2D5 /* MoveFileView.swift in Sources */,
@@ -243,6 +250,7 @@
 				F8CC212729E5206B008C7B88 /* SpareViews.swift in Sources */,
 				F853AB5B29E09F8A006EA2D5 /* AddToFavoritesView.swift in Sources */,
 				F853AB4F29DE57D8006EA2D5 /* AudioPlayerView.swift in Sources */,
+				F8CC214629EF5838008C7B88 /* SpawnView.swift in Sources */,
 				F8CC212F29E74DF4008C7B88 /* VideoPlayerView.swift in Sources */,
 				F853AB5929DE8C0E006EA2D5 /* SearchView.swift in Sources */,
 				F853AB4529DE1CB3006EA2D5 /* RenameFileView.swift in Sources */,

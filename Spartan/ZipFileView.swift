@@ -13,7 +13,7 @@ struct ZipFileView: View {
     @Binding var isPresented: Bool
 
     //compress
-    @Binding var fileNames: [String] //files to be archived
+    var fileNames: [String] //files to be archived
     @State var fullFilePaths: [String] = [""]
     
     //uncompress
@@ -29,7 +29,13 @@ struct ZipFileView: View {
         VStack{
             if(unzip){
                 Text("**Uncompress Archive**")
-                TextField("Destination directory", text: $extractFilePath)
+                TextField("Destination directory", text: $extractFilePath, onEditingChanged: { (isEditing) in
+                    if !isEditing {
+                        if(!(extractFilePath.hasSuffix("/")) && UserDefaults.settings.bool(forKey: "autoComplete")){
+                            extractFilePath = extractFilePath + "/"
+                        }
+                    }
+                })
                 TextField("Archive password (optional)", text: $zipPassword)
                 Button(action: {
                     overwriteFiles.toggle()
