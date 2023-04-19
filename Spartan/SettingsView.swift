@@ -17,6 +17,7 @@ struct SettingsView: View {
     @State private var descriptiveTitlesPre = UserDefaults.settings.bool(forKey: "descriptiveTitles")
     @State private var descriptiveTimestampsPre = UserDefaults.settings.bool(forKey: "verboseTimestamps")
     @State private var autoCompletePre = UserDefaults.settings.bool(forKey: "autoComplete")
+    @State private var testShow = false
 
 
     var body: some View {
@@ -72,7 +73,6 @@ struct SettingsView: View {
                 Text("Credits")
             }
         }
-        
         .sheet(isPresented: $infoShow, content: {
             CreditsView()
         })

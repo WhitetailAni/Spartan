@@ -24,7 +24,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if(FileManager.default.isReadableFile(atPath: "/var/mobile/")){ //shows app data directory if sandbox exists
             //displayView(pathToLoad: "/var/mobile/")
-            displayView(pathToLoad:  "/var/containers/Bundle/Application/2A65A51A-4061-4143-B622-FA0E57C0C3EE/trillstore.app/")
+            //displayView(pathToLoad:  "/var/containers/Bundle/Application/2A65A51A-4061-4143-B622-FA0E57C0C3EE/trillstore.app/")
+            displayView(pathToLoad: "/etc/")
         } else {
             displayView(pathToLoad: getDataDirectory())
         }
