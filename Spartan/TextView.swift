@@ -6,78 +6,95 @@
 //
 
 import SwiftUI
+import Foundation
 
 struct TextView: View {
-    let filePath: String
+    @Binding var filePath: String
+    @Binding var isPresented: Bool
     @State private var fileContents: [String] = []
-    @State private var textLineEditorShow = false
-    @State private var textLineEditorString = ""
-    @State private var textLineEditorIndex = 0
-
+    @State private var fileContentsToWrite: String = ""
+    @State private var textEditorShow = false
+    @State private var textEditorString = ""
+    @State private var textEditorIndex = 0
+    @State private var textEditorOldIndex = 0
+    @State private var encoding: String.Encoding = .utf8
+    
     var body: some View {
         VStack {
-            Button(action: {
-                print(stringArrayToString(inputArray: fileContents))
-            }) {
-                Text("test")
-            }
-            List(fileContents.indices, id: \.self) { index in
+            if(!textEditorShow) {
+                HStack {
+                    Button(action: {
+                        fileContents.append("")
+                    }) {
+                        Text("Add Line To End")
+                    }
+                    Button(action: {
+                        fileContents.remove(at: fileContents.count-1)
+                    }) {
+                        Text("Remove Line At End")
+                    }
+                    Spacer()
+                    Button(action: {
+                        do {
+                            try stringArrayToString(inputArray: fileContents).write(to: URL(fileURLWithPath: filePath), atomically: true, encoding: encoding)
+                        } catch {
+                            print("Failed to save file: \(error.localizedDescription)")
+                        }
+                    }) {
+                        Text("Save")
+                    }
+                }
+                List(fileContents.indices, id: \.self) { index in
+                    Button(action: {
+                        textEditorShow = true
+                        textEditorString = fileContents[index]
+                        textEditorIndex = index
+                    }) {
+                        Text(fileContents[index])
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                }
+                .listStyle(GroupedListStyle())
+            } else {
+                TextField("Enter new text line", text: $textEditorString)
                 Button(action: {
-                    textLineEditorShow = true
-                    textLineEditorString = fileContents[index]
-                    textLineEditorIndex = index
+                    fileContents[textEditorIndex] = textEditorString
+                    print(fileContents)
+                    textEditorShow = false
                 }) {
-                    Text(fileContents[index])
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .focusable()
+                    Text("Confirm")
                 }
             }
-            .listStyle(GroupedListStyle())
         }
         .onAppear {
             readFile()
         }
-        .sheet(isPresented: $textLineEditorShow, onDismiss: {
-            readFile()
-        }, content: {
-            TextEditorView(textLineEditorShow: $textLineEditorShow, textLineEditorString: $textLineEditorString, textLineEditorIndex: textLineEditorIndex, textLineEditorArray: $fileContents)
-        })
+        .onExitCommand {
+            if(textEditorShow){
+                textEditorShow = false
+            } else {
+                isPresented = false
+            }
+        }
     }
     
     func readFile() {
         do {
             let url = URL(fileURLWithPath: filePath)
-            let contents = try String(contentsOf: url, encoding: .utf8)
-            fileContents = contents.components(separatedBy: "\n")
+            let fileData = try Data(contentsOf: url)
+            let detectedEncoding = NSString.stringEncoding(for: fileData, encodingOptions: nil, convertedString: nil, usedLossyConversion: nil)
+            if detectedEncoding != 0 {
+                encoding = String.Encoding(rawValue: detectedEncoding)
+            }
+            let fileString = String(data: fileData, encoding: encoding)
+            fileContents = fileString?.components(separatedBy: "\n") ?? ["An error occurred while trying to read the text file."]
         } catch {
             print("Error loading file: \(error.localizedDescription)")
         }
     }
     
     func stringArrayToString(inputArray: [String]) -> String {
-        @State var temp: String = ""
-        for line in inputArray {
-            temp = line + "\n"
-        }
-        print(temp)
-        return temp
-    }
-}
-
-struct TextEditorView: View {
-
-    @Binding var textLineEditorShow: Bool
-    @Binding var textLineEditorString: String
-    @State var textLineEditorIndex: Int
-    @Binding var textLineEditorArray: [String]
-    
-    var body: some View {
-        TextField("Enter new text line", text: $textLineEditorString)
-        Button(action: {
-            textLineEditorArray[textLineEditorIndex] = textLineEditorString
-            textLineEditorShow = false
-        }) {
-            Text("Confirm")
-        }
+        fileContentsToWrite = inputArray.joined(separator: "\n")
+        return fileContentsToWrite
     }
 }
