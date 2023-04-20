@@ -23,9 +23,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UserDefaults.settings.set(true, forKey: "autoComplete")
         
         if(FileManager.default.isReadableFile(atPath: "/var/mobile/")){ //shows app data directory if sandbox exists
-            //displayView(pathToLoad: "/var/mobile/")
+            displayView(pathToLoad: "/var/mobile/")
             //displayView(pathToLoad:  "/var/containers/Bundle/Application/2A65A51A-4061-4143-B622-FA0E57C0C3EE/trillstore.app/")
-            displayView(pathToLoad: "/etc/")
+            //displayView(pathToLoad: "/etc/")
         } else {
             displayView(pathToLoad: getDataDirectory())
         }
@@ -82,5 +82,8 @@ extension UserDefaults {
     }
     static var settings: UserDefaults {
         return UserDefaults(suiteName: "com.whitetailani.Spartan.settings") ?? UserDefaults.standard
+    }
+    static var textedit: UserDefaults {
+        return UserDefaults(suiteName: "com.whitetailani.Spartan.texteditor") ?? UserDefaults.standard
     }
 }

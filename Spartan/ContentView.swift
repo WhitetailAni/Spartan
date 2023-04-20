@@ -299,7 +299,7 @@ struct ContentView: View {
                     )
                 }
                 .sheet(isPresented: $textShow, content: {
-                    TextView(filePath: newViewFilePath)
+                    TextView(filePath: $newViewFilePath, isPresented: $textShow)
                 })
                 .sheet(isPresented: $searchShow, content: { //search files
                     SearchView(directoryToSearch: $directory)
@@ -536,7 +536,6 @@ struct ContentView: View {
                     newViewFilePath = directory
                     newViewArrayNames = multiSelectFiles
                     resizeMultiSelectArrays()
-                    //resetMultiSelectArrays()
                 }) {
                     Image(systemName: "doc.zipper")
                         .frame(width:50, height:50)
