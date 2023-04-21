@@ -102,8 +102,12 @@ struct SearchResultsView: View {
         Text("Search Results")
         List(resultsList, id: \.self) { string in
             Button(action: {
-                let index = string.lastIndex(of: "/")
-                currentDirectory = String(string.prefix(upTo: index!)) + "/"
+                if(!string.hasSuffix("/")){
+                    let index = string.lastIndex(of: "/")
+                    currentDirectory = String(string.prefix(upTo: index!)) + "/"
+                } else {
+                    currentDirectory = string
+                }
                 showingNest = false
                 showingOriginal = false
             }) {
