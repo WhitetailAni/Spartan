@@ -12,116 +12,137 @@ struct SearchView: View {
 
     @State var searchTerm: String = ""
     @Binding var directoryToSearch: String
-    @State var matchCase = false
-    @State var shallowSearch = false
-    @State var deepSearch = true
+    @Binding var isPresenting: Bool
+    @State private var matchCase = false
+    @State private var shallowSearch = false
+    @State private var deepSearch = true
     @State var showResults = false
+    @State private var currentlySearching = false
+    
+    @State private var entireResults: [String] = []
+    @State private var filteredResults: [String] = []
+    @State private var resultsList: [String] = []
+    
     
     var body: some View {
         TextField("Enter file or directory name to search for", text: $searchTerm)
+            .disabled(currentlySearching)
         TextField("Enter a directory path to search", text: $directoryToSearch)
+            .disabled(currentlySearching)
         HStack{
             Button(action: {
                 shallowSearch.toggle()
-                if(deepSearch){
-                    deepSearch = false
-                }
             }) {
                 Text("Search Only This Directory")
                 Image(systemName: shallowSearch ? "checkmark.square" : "square")
             }
+            .disabled(currentlySearching)
+            
             Button(action: {
-                deepSearch.toggle()
-                if(shallowSearch){
-                    shallowSearch = false
-                }
+                shallowSearch.toggle()
             }) {
-                Text("Search All Directories")
-                Image(systemName: deepSearch ? "checkmark.square" : "square")
+                Text("Search All Subdirectories")
+                Image(systemName: !shallowSearch ? "checkmark.square" : "square")
             }
+            .disabled(currentlySearching)
+            
             Button(action: {
-                if(matchCase){
-                    matchCase = false
-                } else {
-                    matchCase = true
-                }
+                matchCase.toggle()
             }) {
                 Text("Match Case")
                 Image(systemName: matchCase ? "checkmark.square" : "square")
             }
+            .disabled(currentlySearching)
         }
         Button(action: {
-            showResults = true
+            currentlySearching = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.001) { //so the loading symbol shows
+            //horribly hacky but it works
+                resultsList = dirSearch(directoryPath: directoryToSearch, searchTerm: searchTerm, searchType: shallowSearch)
+                showResults = true
+            }
         }) {
-            Text("Confirm")
+            if(currentlySearching){
+                ProgressView()
+            } else {
+                Text("Confirm")
+            }
         }
+        .disabled(currentlySearching)
         .sheet(isPresented: $showResults, content: { //search files
-            SearchResultsView(resultsList: dirSearch(directoryPath: directoryToSearch, searchTerm: searchTerm, searchType: shallowSearch))
+            SearchResultsView(resultsList: $resultsList, currentDirectory: $directoryToSearch, showingNest: $showResults, showingOriginal: $isPresenting)
         })
+        .onAppear {
+            currentlySearching = false
+        }
     }
     
     func dirSearch(directoryPath: String, searchTerm: String, searchType: Bool) -> [String] {
-        @State var entireResults: [String] = [""]
-        @State var filteredResults: [String] = [""]
-    
-        print("uhh")
-    
         do {
             if(searchType){
-                print(try FileManager.default.contentsOfDirectory(atPath: directoryPath))
+                let contents = try FileManager.default.contentsOfDirectory(atPath: directoryPath)
+                entireResults = contents.map { file in
+                    let filePath = "/" + directoryPath + "/" + file
+                    var isDirectory: ObjCBool = false
+                    FileManager.default.fileExists(atPath: filePath, isDirectory: &isDirectory)
+                    return isDirectory.boolValue ? "\(file)/" : file
+                }
             } else {
-                print(directoryEnumeratorToStringArray(FileManager.default.enumerator(atPath: directoryPath)!))
+                entireResults = searchFilesystem(atPath: directoryToSearch, searchTerm: searchTerm)
             }
         } catch {
             return ["An error occurred: \(error.localizedDescription)"]
         }
         
-        print(directoryToSearch)
-        print(searchTerm)
-        print(entireResults)
-        
         for entireResult in entireResults {
-            @State var i: Int = 0
-            print("made it to loop")
             if (matchCase){
-                print("matchcase")
-                if (entireResult.contains(searchTerm)){
-                    print("matchcase SUCCESS!")
-                    print(entireResult, " = ", searchTerm, "?")
-                    filteredResults[i] = entireResult
+                if (entireResults.contains(searchTerm)){
+                    filteredResults.append(entireResult)
                 }
             } else {
-                print("anycase")
-                if (entireResult.localizedCaseInsensitiveContains(searchTerm)){
-                    print("anycase SUCCESS!")
-                    print(entireResult, " = ", searchTerm, "?")
-                    filteredResults[i] = entireResult
+                if entireResult.range(of: searchTerm, options: .caseInsensitive) != nil {
+                    filteredResults.append(entireResult)
                 }
             }
-            print("made it past loop")
-            i += 1
         }
         return filteredResults
     }
-    func directoryEnumeratorToStringArray(_ enumerator: FileManager.DirectoryEnumerator) -> [String] {
-        var array = [String]()
-        while let fileURL = enumerator.nextObject() as? URL {
-            if fileURL.isFileURL {
-                array.append(fileURL.path)
+    
+    func searchFilesystem(atPath: String, searchTerm: String) -> [String] {
+        let pathURL = URL(fileURLWithPath: atPath, isDirectory: true)
+        var foundResults: [String] = []
+        if let enumerator = FileManager.default.enumerator(atPath: atPath) {
+            for file in enumerator {
+                let path = URL(fileURLWithPath: file as! String, relativeTo: pathURL).path
+                if(path.contains(searchTerm)) {
+                    foundResults.append(path)
+                }
             }
         }
-        return array
+        return foundResults
     }
 }
 
 struct SearchResultsView: View {
 
-    @State var resultsList: [String]
+    @Binding var resultsList: [String]
+    @Binding var currentDirectory: String
+    @Binding var showingNest: Bool
+    @Binding var showingOriginal: Bool
+    
+    @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
-        Text("filter results")
+        Text("Search Results")
         List(resultsList, id: \.self) { string in
-            Text(string)
+            Button(action: {
+                let index = string.lastIndex(of: "/")
+                currentDirectory = String(string.prefix(upTo: index!)) + "/"
+                showingNest = false
+                showingOriginal = false
+            }) {
+                Text(string)
+            }
         }
     }
 }

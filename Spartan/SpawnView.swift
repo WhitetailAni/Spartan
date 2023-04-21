@@ -12,6 +12,9 @@ class ProcessOutput: ObservableObject {
     @Published var error: String = ""
 }
 
+//this is probably done very very wrong.
+//i'll steal pogo code later
+
 struct SpawnView: View {
     @Binding var binaryPath: String
     @StateObject var processOutput = ProcessOutput()

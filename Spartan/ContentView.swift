@@ -302,7 +302,7 @@ struct ContentView: View {
                     TextView(filePath: $newViewFilePath, isPresented: $textShow)
                 })
                 .sheet(isPresented: $searchShow, content: { //search files
-                    SearchView(directoryToSearch: $directory)
+                    SearchView(directoryToSearch: $directory, isPresenting: $searchShow)
                 })
                 .sheet(isPresented: $createDirectoryShow, content: { //create dir
                     CreateDirectoryView(directoryPath: directory, isPresented: $createDirectoryShow)
