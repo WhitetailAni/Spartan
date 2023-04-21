@@ -29,6 +29,7 @@ TODO:
 (this will probably never happen)
 2. Add info to ImageView and VideoPlayerView
 3. Plist editor
+4. Spawn binaries
 5. Root helper
 6. more
 
