@@ -36,6 +36,9 @@ TODO:
 By default it's sandboxed, so you will need a tvOS jailbreak to use it unless you're fine with just modifying what's in the app's data directory. Since it currently lacks a root helper, any actions that write to the filesystem must be within /var/mobile/.
 It will open /var/mobile/ by default, unless you are sandboxed, in which case it will open the app's data directory.
 
-Xcode project requires Xcode 14.3+. Has one dependency, Zip.
+How to use:
+1. Clone the repository and open it in Xcode (14.3+ required).
+2. Enter the Xcode.app folder and find the AppleTVOS SDK. Locate /usr/include/spawn.h, give it write permissions, and remove the listings that mark it as unavailable on tvOS.
+3. Build and run to your Apple TV.
 
 Good luck have fun. Hopefully this isn't the only tvOS file browser ever.
