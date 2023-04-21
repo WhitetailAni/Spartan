@@ -14,8 +14,6 @@ struct SearchView: View {
     @Binding var directoryToSearch: String
     @Binding var isPresenting: Bool
     @State private var matchCase = false
-    @State private var shallowSearch = false
-    @State private var deepSearch = true
     @State var showResults = false
     @State private var currentlySearching = false
     
@@ -29,36 +27,18 @@ struct SearchView: View {
             .disabled(currentlySearching)
         TextField("Enter a directory path to search", text: $directoryToSearch)
             .disabled(currentlySearching)
-        HStack{
-            Button(action: {
-                shallowSearch.toggle()
-            }) {
-                Text("Search Only This Directory")
-                Image(systemName: shallowSearch ? "checkmark.square" : "square")
-            }
-            .disabled(currentlySearching)
-            
-            Button(action: {
-                shallowSearch.toggle()
-            }) {
-                Text("Search All Subdirectories")
-                Image(systemName: !shallowSearch ? "checkmark.square" : "square")
-            }
-            .disabled(currentlySearching)
-            
-            Button(action: {
-                matchCase.toggle()
-            }) {
-                Text("Match Case")
-                Image(systemName: matchCase ? "checkmark.square" : "square")
-            }
-            .disabled(currentlySearching)
+        Button(action: {
+            matchCase.toggle()
+        }) {
+            Text("Match Case")
+            Image(systemName: matchCase ? "checkmark.square" : "square")
         }
+        .disabled(currentlySearching)
         Button(action: {
             currentlySearching = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.001) { //so the loading symbol shows
             //horribly hacky but it works
-                resultsList = dirSearch(directoryPath: directoryToSearch, searchTerm: searchTerm, searchType: shallowSearch)
+                resultsList = dirSearch(directoryPath: directoryToSearch, searchTerm: searchTerm)
                 showResults = true
             }
         }) {
@@ -77,22 +57,8 @@ struct SearchView: View {
         }
     }
     
-    func dirSearch(directoryPath: String, searchTerm: String, searchType: Bool) -> [String] {
-        do {
-            if(searchType){
-                let contents = try FileManager.default.contentsOfDirectory(atPath: directoryPath)
-                entireResults = contents.map { file in
-                    let filePath = "/" + directoryPath + "/" + file
-                    var isDirectory: ObjCBool = false
-                    FileManager.default.fileExists(atPath: filePath, isDirectory: &isDirectory)
-                    return isDirectory.boolValue ? "\(file)/" : file
-                }
-            } else {
-                entireResults = searchFilesystem(atPath: directoryToSearch, searchTerm: searchTerm)
-            }
-        } catch {
-            return ["An error occurred: \(error.localizedDescription)"]
-        }
+    func dirSearch(directoryPath: String, searchTerm: String) -> [String] {
+        entireResults = searchFilesystem(atPath: directoryToSearch, searchTerm: searchTerm)
         
         for entireResult in entireResults {
             if (matchCase){
