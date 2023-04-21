@@ -202,7 +202,7 @@ struct ContentView: View {
                                 Text("Rename")
                             }
                             
-                            //if(directory == "/var/mobile/Media/.Trash/"){
+                            if(directory == "/var/mobile/Media/.Trash/"){
                                 Button(action: {
                                     deleteFile(atPath: directory + files[index])
                                     updateFiles()
@@ -210,7 +210,7 @@ struct ContentView: View {
                                     Text("Delete")
                                 }
                                 .foregroundColor(.red)
-                            /*} else if(directory == "/var/mobile/Media/" && files[index] == ".Trash/"){
+                            } else if(directory == "/var/mobile/Media/" && files[index] == ".Trash/"){
                                 Button(action: {
                                     do {
                                         try FileManager.default.removeItem(atPath: "/var/mobile/Media/.Trash/")
@@ -228,7 +228,7 @@ struct ContentView: View {
                                 }) {
                                     Text("Move to Trash")
                                 }
-                            }*/
+                            }
                             if(deleteOverride){
                                 Button(action: {
                                     deleteFile(atPath: directory + files[index])
