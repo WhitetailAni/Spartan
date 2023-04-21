@@ -22,7 +22,7 @@ What it currently lets you do:
 14. View plist files (both xml and bplist)
 15. //BROKEN Execute binaries
 16. Compress and uncompress .zip archives
-17. Search a directory and its subdirectories for a file or directory (needs a few fixes but im tired so i'll do it tomorrow)
+17. Search a directory and its subdirectories for a file or directory
 
 TODO:
 1. Don't assume a filepath is a directory in ContentView (you can specify a filepath to a non-folder and it will open the proper view)
