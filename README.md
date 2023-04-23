@@ -41,4 +41,6 @@ How to use:
 2. Enter the Xcode.app folder and find the AppleTVOS SDK. Locate /usr/include/spawn.h, give it write permissions, and remove the listings that mark it as unavailable on tvOS.
 3. Build and run to your Apple TV.
 
+# Spartan now supports localization! Please contribute to localizing it!
+
 Good luck have fun. Hopefully this isn't the only tvOS file browser ever.
