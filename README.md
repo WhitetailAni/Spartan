@@ -1,8 +1,9 @@
+# Spartan now supports localization! Please contribute to localizing it!
+
 # Spartan
-tvOS file browser thrown together in SwiftUI. Supports tvOS 14.0+.
-I want it to support 13.0+ but ContextMenus are 14.0+. If you want to backport ContextMenus and make a pr, go ahead.
-I have an idea for eliminating ContextMenus but don't have time to implement it.
-Aside from ContextMenus, everything supports 13.0+
+tvOS file browser thrown together in SwiftUI. Supports tvOS 13.0+
+
+Note that tvOS 13.x is more limited compared to 14.0+. It is still capable of everything though.
 
 What it currently lets you do:
 
@@ -23,6 +24,7 @@ What it currently lets you do:
 15. //BROKEN Execute binaries
 16. Compress and uncompress .zip archives
 17. Search a directory and its subdirectories for a file or directory
+There's probably more, I lost track.
 
 TODO:
 1. Don't assume a filepath is a directory in ContentView (you can specify a filepath to a non-folder and it will open the proper view)
@@ -31,7 +33,10 @@ TODO:
 3. Plist editor
 4. Spawn binaries
 5. Root helper
-6. more
+6. Read app list to show what app container is which if in (/private)/var/containers or (/private)/var/mobile/
+7. more
+
+I keep doing things OTHER than the todo list. Fun!
 
 By default it's sandboxed, so you will need a tvOS jailbreak to use it unless you're fine with just modifying what's in the app's data directory. Since it currently lacks a root helper, any actions that write to the filesystem must be within /var/mobile/.
 It will open /var/mobile/ by default, unless you are sandboxed, in which case it will open the app's data directory.
@@ -40,7 +45,5 @@ How to use:
 1. Clone the repository and open it in Xcode (14.3+ required).
 2. Enter the Xcode.app folder and find the AppleTVOS SDK. Locate /usr/include/spawn.h, give it write permissions, and remove the listings that mark it as unavailable on tvOS.
 3. Build and run to your Apple TV.
-
-# Spartan now supports localization! Please contribute to localizing it!
 
 Good luck have fun. Hopefully this isn't the only tvOS file browser ever.
