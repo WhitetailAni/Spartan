@@ -21,16 +21,21 @@ struct AudioPlayerView: View {
     @State public var duration: TimeInterval = 0
     @State private var descriptiveTimestamps = UserDefaults.settings.bool(forKey: "verboseTimestamps")
     @State private var loop = false
-    @State private var audioData: [String] = Array(repeating: "", count: 69)
+    @State private var audioData: [String] = Array(repeating: "", count: 8)
     @State private var audioArtwork: UIImage?
-    @State var isFocused = false
+    @State var buttonIsFocused = false
+    @State var metadataTitles: [String] = [NSLocalizedString("ALBUM", comment: "- Wonder what it'll be like?"), NSLocalizedString("ARTIST", comment: "- A little scary."), NSLocalizedString("ALBUMARTIST", comment: "Welcome to Honex, a division of Honesco"), NSLocalizedString("GENRE", comment: "and a part of the Hexagon Group."), NSLocalizedString("YEAR", comment: "This is it!"), NSLocalizedString("TRACKNUMBER", comment: "Wow."), NSLocalizedString("DISCNUMBER", comment: "Wow."), NSLocalizedString("BPM", comment: "We know that you, as a bee, have worked your whole life")]
+    
+    //i love bad SVG support
+    @State var buttonWidth: CGFloat = 0
+    @State var buttonHeight: CGFloat = 0
     
     var body: some View {
         VStack {
             HStack {
                 VStack {
-                    if(audioPath == "" && duration == 0){
-                        Text("Please select a valid audio file")
+                    if(duration == 0 || audioPath == ""){
+                        Text(NSLocalizedString("AUDIO_ERROR", comment: "to get to the point where you can work for your whole life."))
                                 .font(.system(size: 40))
                                 .bold()
                                 .multilineTextAlignment(.center)
@@ -73,53 +78,18 @@ struct AudioPlayerView: View {
                             .multilineTextAlignment(.leading)
                     }
                     Text("")
-                    if(!(audioData[2] == "")){
-                        Text("Album: \(audioData[2])")
-                            .font(.system(size: 30))
-                            .multilineTextAlignment(.leading)
+                    ForEach(1..<audioData.count, id: \.self) { index in
+                        if(!(audioData[index] == "")) {
+                            Text("\(metadataTitles[index] + audioData[index])")
+                        }
                     }
-                    if(!(audioData[1] == "")){
-                        Text("Artist: \(audioData[1])")
-                            .font(.system(size: 30))
+                    .font(.system(size: 30))
                             .multilineTextAlignment(.leading)
-                    }
-                    if(!(audioData[3] == "")){
-                        Text("Album Artist: \(audioData[3])")
-                            .font(.system(size: 30))
-                            .multilineTextAlignment(.leading)
-                    }
-                    Text("")
-                    if(!(audioData[6] == "")){
-                        Text("Genre: \(audioData[6])")
-                            .font(.system(size: 30))
-                            .multilineTextAlignment(.leading)
-                    }
-                    if(!(audioData[7] == "")){
-                        Text("Year: \(audioData[7])")
-                            .font(.system(size: 30))
-                            .multilineTextAlignment(.leading)
-                    }
-                    if(!(audioData[8] == "")){
-                        Text("Track Number: \(audioData[8])")
-                            .font(.system(size: 30))
-                            .multilineTextAlignment(.leading)
-                    }
-                    if(!(audioData[5] == "")){
-                        Text("Disc Number: \(audioData[5])")
-                            .font(.system(size: 30))
-                            .multilineTextAlignment(.leading)
-                    }
-                    /*if(!(audioData[4] == "")){
-                        Text("BPM: \(audioData[4])")
-                            .font(.system(size: 30))
-                            .multilineTextAlignment(.leading)
-                    }*/
                 }
             }
-            .padding()
             
             UIKitProgressView(value: $currentTime, total: duration)
-                .focusable(true) //potentially lets us set up for scrubbing
+                //.focusable(true) //potentially lets us set up for scrubbing
                 .padding()
             
             HStack {
@@ -129,6 +99,13 @@ struct AudioPlayerView: View {
                     Image(systemName: "backward.end.fill")
                         .frame(width:50, height:50)
                 }
+                .background(GeometryReader { geo in
+                Color.clear
+                    .onAppear {
+                        buttonWidth = geo.size.width
+                        buttonHeight = geo.size.height
+                    }
+                })
             
                 Button(action: {
                     playPause()
@@ -139,22 +116,25 @@ struct AudioPlayerView: View {
                 
                 Button(action: {
                     loop.toggle()
-                    print("main view: " + String(isFocused))
+                    print("loop: ", loop)
                 }) {
                     if (loop) {
                         Image(systemName: "repeat.1")
                             .frame(width:50, height:50)
                     } else {
-                        Image(isFocused ? "repeat.slash.black" : "repeat.slash.white")
+                        Image("repeat.slash")
                             .resizable()
-                            .frame(width:35, height:35)
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width:45, height:45)
+                            .blending(color: buttonIsFocused ? Color(.black) : Color(.white))
                     }
                 }
+                .frame(width: buttonWidth, height: buttonHeight)
                 
                 /*Button(action: {
                     player.seek(to: CMTime(seconds: duration*0.995, preferredTimescale: 1), toleranceBefore: .zero, toleranceAfter: .zero)
                 }) {
-                    Text("jump to almost end")
+                    Image(systemName: "forward.fill")
                 }*/
             }
         }
@@ -170,7 +150,6 @@ struct AudioPlayerView: View {
                 player.replaceCurrentItem(with: AVPlayerItem(url: URL(fileURLWithPath: cementedAudioPath)))
                 player.play()
             }
-            print("audio view")
             print(audioPath)
             print(audioName)
             print(callback)

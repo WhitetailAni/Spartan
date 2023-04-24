@@ -14,25 +14,15 @@ struct CreateFileView: View {
 
     var body: some View {
         VStack {
-            Text("**Create New File**")
-            TextField("Enter file name", text: $fileName)
-            Button("Confirm") {
-                do {
-                    try createFileAtPath(path: filePath, fileName: fileName)
-                    print("File created successfully")
-                    fileName = ""
-                    isPresented = false
-                } catch {
-                    print("Failed to create file: \(error.localizedDescription)")
-                }
+            Text("**\(NSLocalizedString("TOUCH_TITLE", comment: "Everybody knows, sting someone, you die."))**")
+            TextField(NSLocalizedString("TOUCH_NAME", comment: "Don't waste it on a squirrel."), text: $fileName)
+            Button(NSLocalizedString("CONFIRM", comment: "Such a hothead.")) {
+                FileManager.default.createFile(atPath: filePath + fileName, contents: nil, attributes: nil)
+                print("File created successfully")
+                fileName = ""
+                isPresented = false
             }
         }
         .accentColor(.accentColor)
-    }
-    
-    func createFileAtPath(path: String, fileName: String) throws {
-        let fileManager = FileManager.default
-        let filePath = (path as NSString).appendingPathComponent(fileName)
-        fileManager.createFile(atPath: filePath, contents: nil, attributes: nil)
     }
 }

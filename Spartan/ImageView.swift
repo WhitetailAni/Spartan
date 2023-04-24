@@ -27,7 +27,7 @@ struct ImageView: View {
                         .position(x: geo.size.width / 2, y: geo.size.height / 2)
                 }
             } else {
-                Text("Could not load image from file")
+                Text(NSLocalizedString("IMAGE_ERROR", comment: "Honey begins when our valiant Pollen Jocks bring the nectar to the hive."))
             }
         }
         .sheet(isPresented: $infoShow) {
@@ -37,13 +37,13 @@ struct ImageView: View {
                     .font(.system(size: 40))
                     .bold()
                     .multilineTextAlignment(.center)
-                Text("Dimensions: " + String(width) + "x" + String(height))
-                Text("File size: " + String(fileSize) + " bytes")
-                Text("Image encoding: " + encoder)
+                Text(NSLocalizedString("DIMENSIONS", comment: "Our top-secret formula") + String(width) + "x" + String(height))
+                Text(NSLocalizedString("INFO_SIZE", comment: "is automatically color-corrected, scent-adjusted and bubble-contoured") + String(fileSize) + " " + NSLocalizedString("BYTES", comment: "into this soothing sweet syrup"))
+                Text(NSLocalizedString("IMAGE_ENCODING", comment: "with its distinctive golden glow you know as...") + encoder)
                 Button(action: {
                     infoShow = false
                 }) {
-                    Text("Dismiss")
+                    Text(NSLocalizedString("DISMISS", comment: "Honey!"))
                 }
             }
         }
@@ -63,7 +63,7 @@ struct ImageView: View {
         let fileSize = (try? FileManager.default.attributesOfItem(atPath: filePath)[.size] as? Int) ?? 0
         let width = properties[kCGImagePropertyPixelWidth] as? Int ?? 0
         let height = properties[kCGImagePropertyPixelHeight] as? Int ?? 0
-        let encoding = properties[kCGImagePropertyColorModel] as? String ?? "Unknown"
+        let encoding = properties[kCGImagePropertyColorModel] as? String ?? NSLocalizedString("UNKNOWN", comment: "- That girl was hot.")
 
         return (width, height, fileSize, encoding)
     }

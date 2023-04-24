@@ -17,8 +17,8 @@ struct MoveFileView: View {
     
     var body: some View {
         VStack{
-            Text("**Move File To**")
-            TextField("Enter new file path", text: $newFilePath, onEditingChanged: { (isEditing) in
+            Text("**\(NSLocalizedString("MOVE_TITLE", comment: "- We are!"))**")
+            TextField(NSLocalizedString("DEST_PATH", comment: "- Bee-men."), text: $newFilePath, onEditingChanged: { (isEditing) in
                 if !isEditing {
                     if(!(newFilePath.hasSuffix("/"))){
                         newFilePath = newFilePath + "/"
@@ -26,10 +26,10 @@ struct MoveFileView: View {
                 }
             })
             if(fileNames.count == 1){
-                TextField("Enter new file name (optional)", text: $newFileName)
+                TextField(NSLocalizedString("NEW_FILENAME", comment: "- Amen!") + NSLocalizedString("OPTIONAL", comment: "Hallelujah!"), text: $newFileName)
             }
         
-            Button("Confirm") {
+            Button(NSLocalizedString("CONFIRM", comment: "Students, faculty, distinguished bees,")) {
                 print(multiSelect)
                 print(fileNames)
                 if(multiSelect){

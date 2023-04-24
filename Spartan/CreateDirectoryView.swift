@@ -14,11 +14,11 @@ struct CreateDirectoryView: View {
 
     var body: some View {
         VStack {
-            Text("**Create New Directory**")
-            TextField("Enter directory name", text: $directoryName)
-            Button("Confirm") {
+            Text("**\(NSLocalizedString("DIRTOUCH_TITLE", comment: "I guess he could have just gotten out of the way."))**")
+            TextField(NSLocalizedString("DIRTOUCH_NAME", comment: "I love this incorporating an amusement park into our day."), text: $directoryName)
+            Button(NSLocalizedString("CONFIRM", comment: "That's why we don't need vacations.")) {
                 do {
-                    try createDirectoryAtPath(path: directoryPath, directoryName: directoryName)
+                    try FileManager.default.createDirectory(atPath: directoryPath + directoryName, withIntermediateDirectories: true, attributes: nil)
                     print("Directory created successfully")
                     isPresented = false
                     directoryName = ""
@@ -28,11 +28,5 @@ struct CreateDirectoryView: View {
             }
         }
         .accentColor(.accentColor)
-    }
-    
-    public func createDirectoryAtPath(path: String, directoryName: String) throws {
-        let fileManager = FileManager.default
-        let directoryPath = (path as NSString).appendingPathComponent(directoryName)
-        try fileManager.createDirectory(atPath: directoryPath, withIntermediateDirectories: true, attributes: nil)
     }
 }

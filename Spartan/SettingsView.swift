@@ -21,7 +21,7 @@ struct SettingsView: View {
 
 
     var body: some View {
-        Text("Settings")
+        Text(NSLocalizedString("SETTINGS", comment: "But choose carefully because you'll stay in the job you pick for the rest of your life."))
             .font(.system(size: 60))
             .bold()
         
@@ -30,10 +30,10 @@ struct SettingsView: View {
             UserDefaults.settings.set(descriptiveTitlesPre, forKey: "descriptiveTitles")
             UserDefaults.settings.synchronize()
         }) {
-            Text("Descriptive Titles")
+            Text(NSLocalizedString("SETTINGS_TITLES", comment: "The same job the rest of your life?"))
             Image(systemName: descriptiveTitlesPre ? "checkmark.square" : "square")
         }
-        Text("If enabled, shows the full filepath to a given file. Otherwise just the name of the file is shown.")
+        Text(NSLocalizedString("SETTINGS_TITLES_DESC", comment: "I didn't know that."))
             .font(.system(size: 25))
             
         Button(action: {
@@ -41,10 +41,10 @@ struct SettingsView: View {
             UserDefaults.settings.set(descriptiveTimestampsPre, forKey: "verboseTimestamps")
             UserDefaults.settings.synchronize()
         }) {
-            Text("Verbose Timestamps")
+            Text(NSLocalizedString("SETTINGS_TIMESTAMPS", comment: "What's the difference?"))
             Image(systemName: descriptiveTimestampsPre ? "checkmark.square" : "square")
         }
-        Text("If enabled, displays timestamps as ss.ssssss instead of mm:ss.")
+        Text(NSLocalizedString("SETTINGS_TIMESTAMPS_DESC", comment: "You'll be happy to know that bees, as a species"))
             .font(.system(size: 25))
             
         Button(action: {
@@ -52,16 +52,16 @@ struct SettingsView: View {
             UserDefaults.settings.set(autoCompletePre, forKey: "autoComplete")
             UserDefaults.settings.synchronize()
         }) {
-            Text("Autocomplete File Extensions")
+            Text(NSLocalizedString("SETTINGS_AUTOCOMPLETE", comment: "haven't had one day off in 27 million years."))
             Image(systemName: autoCompletePre ? "checkmark.square" : "square")
         }
         Text("""
-             If enabled, will automatically add file extensions if you don't add them,
-             such as adding "/" when changing directory or ".zip" to archives.
-             """)
+        \(NSLocalizedString("SETTINGS_AUTOCOMPLETE_DESC_1", comment: "So you'll just work us to death?"))
+        \(NSLocalizedString("SETTINGS_AUTOCOMPLETE_DESC_2", comment: "We'll sure try."))
+        """)
              .font(.system(size: 25))
              .multilineTextAlignment(.center)
-        Text("WARNING: Make sure you type your filepaths **exactly** if you disable this!")
+        Text(NSLocalizedString("SETTINGS_AUTOCOMPLETE_WARNING", comment: "Wow! That blew my mind!"))
             .font(.system(size: 25))
         
         Button(action: { //info
@@ -70,7 +70,9 @@ struct SettingsView: View {
             HStack {
                 Image(systemName: "info.circle")
                     .frame(width:50, height:50)
-                Text("Credits")
+                Text(NSLocalizedString("CREDITS", comment: """
+                "What's the difference?"
+                """))
             }
         }
         .sheet(isPresented: $infoShow, content: {

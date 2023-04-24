@@ -17,7 +17,7 @@ class ProcessOutput: ObservableObject {
 
 struct SpawnView: View {
     @Binding var binaryPath: String
-    @StateObject var processOutput = ProcessOutput()
+    @State var processOutput = ProcessOutput()
 
     var body: some View {
         VStack {

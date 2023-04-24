@@ -6,8 +6,9 @@
 //
 
 import SwiftUI
+import UIKit
 
-//this is to put extra views that are used by main views - UIKit progress bar, checkbox, etc.
+//this is to put extra views that are used by other views - UIKit progress bar, checkbox, etc.
 
 struct SpareView: View {
     var body: some View {
@@ -74,3 +75,37 @@ struct StepperTV: View {
     }
 }
 
+struct UIViewControllerWrapper<UIViewControllerType: UIViewController>: UIViewControllerRepresentable {
+    let viewControllerFactory: () -> UIViewControllerType
+    
+    init(_ viewControllerFactory: @escaping () -> UIViewControllerType) {
+        self.viewControllerFactory = viewControllerFactory
+    }
+    
+    func makeUIViewController(context: UIViewControllerRepresentableContext<UIViewControllerWrapper>) -> UIViewControllerType {
+        viewControllerFactory()
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: UIViewControllerRepresentableContext<UIViewControllerWrapper>) {
+    }
+}
+
+extension View {
+    public func blending(color: Color) -> some View {
+        modifier(ColorBlended(color: color))
+    }
+}
+
+public struct ColorBlended: ViewModifier {
+    fileprivate var color: Color
+  
+    public func body(content: Content) -> some View {
+        VStack {
+            ZStack {
+                content
+                color.blendMode(.sourceAtop)
+            }
+            .drawingGroup(opaque: false)
+        }
+    }
+}
