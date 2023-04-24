@@ -14,10 +14,9 @@ struct RenameFileView: View {
     @Binding var isPresented: Bool
     
     var body: some View {
-        Text("**Rename File To**")
-        TextField("Enter new file name", text: $newFileName)
-        Button("Confirm") {
-            print("confirm button action")
+        Text("**\(NSLocalizedString("RENAME_TITLE", comment: "Boy, quite a bit of pomp..."))**")
+        TextField(NSLocalizedString("RENAME_NAME", comment: "under the circumstances."), text: $newFileName)
+        Button(NSLocalizedString("CONFIRM", comment: "Well, Adam, today we are men.")) {
             print(fileName)
             print(newFileName)
             print(filePath)
@@ -28,8 +27,6 @@ struct RenameFileView: View {
     
     func renameFile(path: String, fileName: String) {
         do {
-            print("")
-            print("renameFile func")
             print(path)
             print(fileName)
             try FileManager.default.moveItem(atPath: path, toPath: fileName)

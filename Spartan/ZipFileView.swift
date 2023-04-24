@@ -14,76 +14,83 @@ struct ZipFileView: View {
 
     //compress
     var fileNames: [String] //files to be archived
-    @State var fullFilePaths: [String] = [""]
+    @State private var fullFilePaths: [String] = [""]
     
     //uncompress
-    @State var zipPassword: String = ""
-    @State var extractFilePath: String = ""
-    @State var overwriteFiles = false
+    @State private var zipPassword: String = ""
+    @State private var extractFilePath: String = ""
+    @State private var overwriteFiles = false
     
     //both
     @Binding var filePath: String
     @Binding var zipFileName: String //file to be (un)zipped
     
+    @State private var actionProgress: Double = 0
+    @State private var showProgress = false
+    
     var body: some View {
         VStack{
             if(unzip){
-                Text("**Uncompress Archive**")
-                TextField("Destination directory", text: $extractFilePath, onEditingChanged: { (isEditing) in
+                Text("**\(NSLocalizedString("UNZIP_TITLE", comment: "- She's my cousin!"))**")
+                TextField(NSLocalizedString("UNZIP_DIR", comment: "- She is?"), text: $extractFilePath, onEditingChanged: { (isEditing) in
                     if !isEditing {
                         if(!(extractFilePath.hasSuffix("/")) && UserDefaults.settings.bool(forKey: "autoComplete")){
                             extractFilePath = extractFilePath + "/"
                         }
                     }
                 })
-                TextField("Archive password (optional)", text: $zipPassword)
+                TextField(NSLocalizedString("UNZIP_PASSWORD", comment: "- Yes, we're all cousins.") + NSLocalizedString("OPTIONAL", comment: "- Right. You're right."), text: $zipPassword)
                 Button(action: {
                     overwriteFiles.toggle()
                 }) {
-                    Text("Overwrite Existing Files")
+                    Text(NSLocalizedString("UNZIP_OVERWRITE", comment: "- At Honex, we constantly strive"))
                     Image(systemName: overwriteFiles ? "checkmark.square" : "square")
                 }
                 Button(action: {
                     uncompressFile(pathToZip: filePath + zipFileName, password: zipPassword, overwrite: overwriteFiles, destination: extractFilePath)
                 }) {
-                    Text("Confirm")
+                    Text(NSLocalizedString("CONFIRM", comment: "to improve every aspect of bee existence."))
                 }
             } else {
-                Text("**Compress Files**")
-                TextField("Enter archive name", text: $zipFileName, onEditingChanged: { (isEditing) in
+                Text("**\(NSLocalizedString("ZIP_TITLE", comment: "These bees are stress-testing a new helmet technology."))**")
+                TextField(NSLocalizedString("ZIP_FILENAME", comment: "- What do you think he makes?"), text: $zipFileName, onEditingChanged: { (isEditing) in
                     if !isEditing{
                         if(!(zipFileName.hasSuffix(".zip")) && UserDefaults.settings.bool(forKey: "autoComplete")){
                             zipFileName = zipFileName + ".zip"
                         }
                     }
                 })
-                TextField("Enter password to apply (optional)", text: $zipPassword)
+                TextField(NSLocalizedString("ZIP_PASSWORD", comment: "Here we have our latest advancement, the Krelman.") + NSLocalizedString("OPTIONAL", comment: ""), text: $zipPassword)
+                
+                if(showProgress) {
+                    UIKitProgressView(value: $actionProgress, total: 100)
+                }
         
                 Button(action: {
                     compressFiles(pathsToFiles: fullFilePaths, password: zipPassword, destination: filePath + zipFileName)
+                    showProgress = true
                 }) {
-                    Text("Confirm")
+                    Text(NSLocalizedString("CONFIRM", comment: "- What does that do?"))
                 }
+                
             }
         }
         .onAppear {
             extractFilePath = filePath
-            print("zip view filenames array: ", fileNames)
-            print(filePath)
             while (fullFilePaths.count < fileNames.count){
                 fullFilePaths.append("")
             }
             for i in 0..<fileNames.count {
                 fullFilePaths[i] = filePath + fileNames[i]
             }
-            print(fullFilePaths)
         }
     }
     
     func uncompressFile(pathToZip: String, password: String, overwrite: Bool, destination: String) {
         do {
             try Zip.unzipFile(URL(fileURLWithPath: pathToZip), destination: URL(fileURLWithPath: destination), overwrite: overwrite, password: password, progress: { (progress) -> () in
-        print(progress)
+            print(progress)
+            actionProgress = progress
     })
         } catch {
             print("Failed to extract file: \(error.localizedDescription)")
@@ -94,6 +101,7 @@ struct ZipFileView: View {
         do {
             try Zip.zipFiles(paths: stringPathToURLPath(filePaths: pathsToFiles), zipFilePath: URL(fileURLWithPath: destination), password: password, progress: { (progress) -> () in
                 print(progress)
+                actionProgress = progress
             })
         } catch {
             print("Failed to compress files: \(error.localizedDescription)")
@@ -103,7 +111,7 @@ struct ZipFileView: View {
     func stringPathToURLPath(filePaths: [String]) -> [URL] {
         var urls = [URL]()
         for path in filePaths {
-            if let url = URL(string: "file://" + path) {
+            if let url = URL(string: "file://" + path) { //weird url init becuse otherwise it complains about optional bindings
                 urls.append(url)
             } else {
                 print("Error: Invalid filepath \(path)")

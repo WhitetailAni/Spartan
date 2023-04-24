@@ -16,8 +16,9 @@ struct AddToFavoritesView: View {
     @Binding var showView: Bool
 
     var body: some View {
-        TextField("Enter the name that will display in Favorites", text: $displayName)
-        TextField("Enter the file path for the item you wish to add", text: $filePath, onEditingChanged: { (isEditing) in
+        Text("**\(NSLocalizedString("FAVORITESADD", comment: "Saves us millions."))**")
+        TextField(NSLocalizedString("FAVORITESADD_DISPLAYNAME", comment: "Can anyone work on the Krelman?"), text: $displayName)
+        TextField(NSLocalizedString("FAVORITESADD_FILEPATH", comment: "Of course. Most bee jobs are small ones."), text: $filePath, onEditingChanged: { (isEditing) in
             if !isEditing {
                 if(!(filePath.hasSuffix("/")) && UserDefaults.settings.bool(forKey: "autoComplete")){
                     filePath = filePath + "/"
@@ -32,7 +33,7 @@ struct AddToFavoritesView: View {
             UserDefaults.favorites.synchronize()
             showView = false
         }) {
-            Text("Confirm")
+            Text(NSLocalizedString("CONFIRM", comment: "But bees know that every small job, if it's done well, means a lot."))
         }
     }
 }

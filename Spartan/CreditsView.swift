@@ -20,7 +20,7 @@ struct CreditsView: View {
         Credits to:
         SerenaKit: Inspiration from Santander, guidance with Swift APIs
         staturnz: Improving yandereDevFileTypes
-        llsc12: SwiftUI ADVICE
+        llsc12: SwiftUI advice
         flower: UI/UX advice
         ChatGPT: Explaining stuff better than StackOverflow™
         ...and also writing me UIKit

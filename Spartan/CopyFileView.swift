@@ -17,8 +17,8 @@ struct CopyFileView: View {
     
     var body: some View {
         VStack{
-            Text("**Copy File To**")
-            TextField("Enter new file path", text: $newFilePath, onEditingChanged: { (isEditing) in
+            Text("**\(NSLocalizedString("COPY_TITLE", comment: "please welcome Dean Buzzwell."))**")
+            TextField(NSLocalizedString("DEST_PATH", comment: "Welcome, New Hive City graduating class of..."), text: $newFilePath, onEditingChanged: { (isEditing) in
                 if !isEditing {
                     if(!(newFilePath.hasSuffix("/"))){
                         newFilePath = newFilePath + "/"
@@ -26,10 +26,10 @@ struct CopyFileView: View {
                 }
             })
             if(fileNames.count == 1){
-                TextField("Enter new file name (optional)", text: $newFileName)
+                TextField(NSLocalizedString("NEW_FILENAME", comment: "...9:15.") + NSLocalizedString("OPTIONAL", comment: "That concludes our ceremonies."), text: $newFileName)
             }
         
-            Button("Confirm") {
+            Button(NSLocalizedString("CONFIRM", comment: "And begins your career at Honex Industries!")) {
                 print(multiSelect)
                 print(fileNames)
                 if(multiSelect){

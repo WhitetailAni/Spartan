@@ -23,14 +23,14 @@ struct SearchView: View {
     
     
     var body: some View {
-        TextField("Enter file or directory name to search for", text: $searchTerm)
+        TextField(NSLocalizedString("SEARCH_TERM", comment: "How can you say that? One job forever?"), text: $searchTerm)
             .disabled(currentlySearching)
-        TextField("Enter a directory path to search", text: $directoryToSearch)
+        TextField(NSLocalizedString("SEARCH_PATH", comment: "That's an insane choice to have to make."), text: $directoryToSearch)
             .disabled(currentlySearching)
         Button(action: {
             matchCase.toggle()
         }) {
-            Text("Match Case")
+            Text(NSLocalizedString("SEARCH_CASE", comment: "I'm relieved. Now we only have to make one decision in life."))
             Image(systemName: matchCase ? "checkmark.square" : "square")
         }
         .disabled(currentlySearching)
@@ -43,9 +43,11 @@ struct SearchView: View {
             }
         }) {
             if(currentlySearching){
-                ProgressView()
+                if #available(tvOS 14.0, *) {
+                    ProgressView()
+                }
             } else {
-                Text("Confirm")
+                Text(NSLocalizedString("CONFIRM", comment: "But, Adam, how could they never have told us that?"))
             }
         }
         .disabled(currentlySearching)
@@ -99,7 +101,7 @@ struct SearchResultsView: View {
     @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
-        Text("Search Results")
+        Text(NSLocalizedString("SEARCH_RESULTS", comment: "Why would you question anything?"))
         List(resultsList, id: \.self) { string in
             Button(action: {
                 if(!string.hasSuffix("/")){

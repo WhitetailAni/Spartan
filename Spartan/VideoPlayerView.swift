@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AVKit
+import AVFoundation
 
 struct VideoPlayerView: View {
     @Binding var videoPath: String
@@ -239,22 +240,29 @@ struct VideoPlayerView: View {
         let fileURL = URL(fileURLWithPath: filePath)
         let asset = AVURLAsset(url: fileURL)
         let duration = String(format: "%.2f", asset.duration.seconds)
+        let metadata = asset.metadata
         
         guard let videoTrack = asset.tracks(withMediaType: .video).first else {
-            return "Error: Could not get video track"
+            return NSLocalizedString("VIDEO_ERROR", comment: "Will we pick ourjob today?")
         }
+        
         let width = videoTrack.naturalSize.width
         let height = videoTrack.naturalSize.height
         let width2 = String(format: "%.1f", width)
         let height2 = String(format: "%.1f", height)
     
-        //let metadata = asset.metadata
+        for item in metadata {
+            if let key = item.commonKey?.rawValue, let value = item.value {
+                print("\(key): \(value)")
+            }
+        }
         
         let info = """
-        Video file: \(fileURL.lastPathComponent)
-        Duration: \(duration) seconds
-        Dimensions: \(width2) x \(height2) pixels
+        \(NSLocalizedString("VIDEO_FILE", comment: "I heard it's just orientation.") + fileURL.lastPathComponent)
+        \(NSLocalizedString("VIDEO_DURATION", comment: "Heads up! Here we go.") + duration) \(NSLocalizedString("SECONDS", comment: ""))
+        \(NSLocalizedString("DIMENSIONS", comment: "Keep your hands and antennas inside the tram at all times.") + width2) x \(height2) pixels
         """
+        //add support for stating more than just seconds (base off of descriptiveTimestamps)
         return info
     }
 }

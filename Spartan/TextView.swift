@@ -26,12 +26,12 @@ struct TextView: View {
                     Button(action: {
                         fileContents.append("")
                     }) {
-                        Text("Add Line To End")
+                        Text(NSLocalizedString("LINEADD", comment: "- Hear about Frankie?"))
                     }
                     Button(action: {
                         fileContents.remove(at: fileContents.count-1)
                     }) {
-                        Text("Remove Line At End")
+                        Text(NSLocalizedString("LINEREMOVE", comment: "- Yeah."))
                     }
                     Spacer()
                     Button(action: {
@@ -41,7 +41,7 @@ struct TextView: View {
                             print("Failed to save file: \(error.localizedDescription)")
                         }
                     }) {
-                        Text("Save")
+                        Image(systemName: "square.and.arrow.down")
                     }
                 }
                 List(fileContents.indices, id: \.self) { index in
@@ -56,13 +56,13 @@ struct TextView: View {
                 }
                 .listStyle(GroupedListStyle())
             } else {
-                TextField("Enter new text line", text: $textEditorString)
+                TextField(NSLocalizedString("LINEADD_DESCRIPTION", comment: "- You going to the funeral?"), text: $textEditorString)
                 Button(action: {
                     fileContents[textEditorIndex] = textEditorString
                     print(fileContents)
                     textEditorShow = false
                 }) {
-                    Text("Confirm")
+                    Text(NSLocalizedString("CONFIRM", comment: "- No, I'm not going."))
                 }
             }
         }

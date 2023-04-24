@@ -17,7 +17,7 @@ struct FavoritesView: View {
     @State private var blank: String = ""
 
     var body: some View {
-        Text("**Favorites**")
+        Text("**\(NSLocalizedString("FAVORITES_TITLE", comment: "- Catches that little strand of honey"))**")
         
         List(favoritesDisplayName, id: \.self) { favoriteDisplayName in
             Button(action: {
@@ -31,7 +31,7 @@ struct FavoritesView: View {
                         if(favoritesDisplayName.firstIndex(of: favoriteDisplayName) ?? 4 == 0){
                             Image(systemName: "doc.text")
                         } else if (favoritesDisplayName.firstIndex(of: favoriteDisplayName) ?? 4 == 1) {
-                            Image(systemName: "questionmark.app")
+                            Image(systemName: "applescript")
                         } else if (favoritesDisplayName.firstIndex(of: favoriteDisplayName) ?? 4 == 2) {
                             Image(systemName: "person.crop.circle")
                         } else if (favoritesDisplayName.firstIndex(of: favoriteDisplayName) ?? 4 == 3) {
@@ -48,7 +48,7 @@ struct FavoritesView: View {
         Button(action: {
             addToFavoritesShow = true
         }) {
-            Text("Add to Favorites")
+            Text(NSLocalizedString("FAVORITESADD", comment: "that hangs after you pour it."))
         }
         .sheet(isPresented: $addToFavoritesShow){
             AddToFavoritesView(filePath: $blank, displayName: $blank, showView: $addToFavoritesShow)
