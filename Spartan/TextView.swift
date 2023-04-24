@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Foundation
 
 struct TextView: View {
     @Binding var filePath: String

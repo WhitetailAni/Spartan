@@ -6,9 +6,6 @@
 //
 
 import SwiftUI
-import UIKit
-import Foundation
-import MobileCoreServices
 import AVKit
 
 struct ContentView: View {
