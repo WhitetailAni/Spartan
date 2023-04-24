@@ -6,10 +6,6 @@
 //
 
 import SwiftUI
-import Foundation
-import Combine
-
-//settings vars
 
 struct SettingsView: View {
 

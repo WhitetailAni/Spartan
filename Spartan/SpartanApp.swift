@@ -6,10 +6,6 @@
 //
 
 import SwiftUI
-import AVKit
-import MobileCoreServices
-import Foundation
-
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
