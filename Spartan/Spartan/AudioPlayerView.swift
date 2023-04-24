@@ -87,10 +87,9 @@ struct AudioPlayerView: View {
                             .multilineTextAlignment(.leading)
                 }
             }
-            .padding()
             
             UIKitProgressView(value: $currentTime, total: duration)
-                .focusable(true) //potentially lets us set up for scrubbing
+                //.focusable(true) //potentially lets us set up for scrubbing
                 .padding()
             
             HStack {
@@ -131,9 +130,6 @@ struct AudioPlayerView: View {
                     }
                 }
                 .frame(width: buttonWidth, height: buttonHeight)
-                /*.focusable(true, onFocusChange: { isFocused in
-                    buttonIsFocused = isFocused
-                })*/
                 
                 /*Button(action: {
                     player.seek(to: CMTime(seconds: duration*0.995, preferredTimescale: 1), toleranceBefore: .zero, toleranceAfter: .zero)

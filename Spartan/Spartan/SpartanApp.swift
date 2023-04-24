@@ -25,7 +25,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if(FileManager.default.isReadableFile(atPath: "/var/mobile/")){ //shows app data directory if sandbox exists
             //displayView(pathToLoad: "/var/mobile/")
             displayView(pathToLoad:  "/var/containers/Bundle/Application/2A65A51A-4061-4143-B622-FA0E57C0C3EE/trillstore.app/")
+<<<<<<< HEAD
             //displayView(pathToLoad: "/etc/") //for posix_spawn testing
+=======
+            //displayView(pathToLoad: "/bin/") //for posix_spawn testing
+>>>>>>> f71da6b (switch to cli for easier commit stuff)
         } else {
             displayView(pathToLoad: getDataDirectory())
             //displayView(pathToLoad: "/Users/realkgb/Documents/") // used in case of simulator
