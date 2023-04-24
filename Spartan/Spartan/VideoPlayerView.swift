@@ -22,6 +22,7 @@ struct VideoPlayerView: View {
     @State private var infoShow = false
     @State private var videoTitle: String = ""
     
+<<<<<<< HEAD
     var body: some View {
         NavigationView {
             VStack {
@@ -49,6 +50,41 @@ struct VideoPlayerView: View {
                 VideoPlayerRenderView(player: player)
                     .padding()
                 controlsView
+=======
+    @State private var fullScreen = false
+    
+    var body: some View {
+        NavigationView {
+            VStack {
+                if(!fullScreen){
+                    if(videoTitle == ""){
+                        if(UserDefaults.settings.bool(forKey: "descriptiveTitles")){
+                            Text(videoPath)
+                                .font(.system(size: 40))
+                                .bold()
+                                .multilineTextAlignment(.center)
+                                .padding(-10)
+                        } else {
+                            Text(videoName)
+                                .font(.system(size: 40))
+                                .bold()
+                                .multilineTextAlignment(.center)
+                                .padding(-10)
+                        }
+                    } else {
+                        Text(videoTitle)
+                            .font(.system(size: 40))
+                            .bold()
+                            .multilineTextAlignment(.center)
+                            .padding(-10)
+                    }
+                }
+                VideoPlayerRenderView(player: player, fullScreen: $fullScreen)
+                    .padding(fullScreen ? -60 : 0)
+                if(!fullScreen){
+                    controlsView
+                }
+>>>>>>> f71da6b (switch to cli for easier commit stuff)
             }
         }
         .onAppear {
@@ -229,9 +265,16 @@ struct VideoPlayerView: View {
     @ViewBuilder
     var videoInfoButton: some View {
         Button(action: {
+<<<<<<< HEAD
             infoShow = true
         }) {
             Image(systemName: "info.circle")
+=======
+            fullScreen = true
+            //infoShow = true
+        }) {
+            Image(systemName: "rectangle.dashed")
+>>>>>>> f71da6b (switch to cli for easier commit stuff)
                 .accentColor(.accentColor)
         }
     }
@@ -269,7 +312,11 @@ struct VideoPlayerView: View {
 
 struct VideoPlayerRenderView: UIViewControllerRepresentable {
     @State var player: AVPlayer
+<<<<<<< HEAD
     
+=======
+    @Binding var fullScreen: Bool
+>>>>>>> f71da6b (switch to cli for easier commit stuff)
     
     func makeUIViewController(context: Context) -> AVPlayerViewController {
         let playerViewController = AVPlayerViewController()
@@ -280,7 +327,10 @@ struct VideoPlayerRenderView: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: AVPlayerViewController, context: Context) {
         player.play()
+<<<<<<< HEAD
         
+=======
+>>>>>>> f71da6b (switch to cli for easier commit stuff)
         uiViewController.player = player
     }
 }

@@ -12,6 +12,7 @@
 "OPTIONAL" = " (optional)";
 "PIXELS" = "pixels";
 "UNKNOWN" = "Unknown";
+"OPEN" = "Open";
 
 //main view
 "FREE_SPACE" = "Free space: ";

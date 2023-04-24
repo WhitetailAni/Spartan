@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		F845C82829F4D77C0025AC0A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F845C82A29F4D77C0025AC0A /* Localizable.strings */; };
-		F845C82D29F5EEE20025AC0A /* ContextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F845C82C29F5EEE20025AC0A /* ContextView.swift */; };
-		F845C82F29F6247A0025AC0A /* EThree.swift in Sources */ = {isa = PBXBuildFile; fileRef = F845C82E29F6247A0025AC0A /* EThree.swift */; };
 		F853AB2F29DBCB1A006EA2D5 /* SpartanApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB2E29DBCB1A006EA2D5 /* SpartanApp.swift */; };
 		F853AB3129DBCB1A006EA2D5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB3029DBCB1A006EA2D5 /* ContentView.swift */; };
 		F853AB3329DBCB1E006EA2D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F853AB3229DBCB1E006EA2D5 /* Assets.xcassets */; };
@@ -51,8 +49,6 @@
 
 /* Begin PBXFileReference section */
 		F845C82929F4D77C0025AC0A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		F845C82C29F5EEE20025AC0A /* ContextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextView.swift; sourceTree = "<group>"; };
-		F845C82E29F6247A0025AC0A /* EThree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EThree.swift; sourceTree = "<group>"; };
 		F853AB2B29DBCB1A006EA2D5 /* Spartan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spartan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F853AB2E29DBCB1A006EA2D5 /* SpartanApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpartanApp.swift; sourceTree = "<group>"; };
 		F853AB3029DBCB1A006EA2D5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -115,7 +111,6 @@
 			children = (
 				F853AB2E29DBCB1A006EA2D5 /* SpartanApp.swift */,
 				F853AB3029DBCB1A006EA2D5 /* ContentView.swift */,
-				F845C82C29F5EEE20025AC0A /* ContextView.swift */,
 				F8CC214729EFA164008C7B88 /* TextView.swift */,
 				F853AB4229DE1C41006EA2D5 /* CreateFileView.swift */,
 				F853AB4629DE1CEC006EA2D5 /* CreateDirectoryView.swift */,
@@ -135,7 +130,6 @@
 				F853AB5829DE8C0E006EA2D5 /* SearchView.swift */,
 				F853AB5C29E0AC3F006EA2D5 /* TintColorView.swift */,
 				F8CC212629E5206B008C7B88 /* SpareViews.swift */,
-				F845C82E29F6247A0025AC0A /* EThree.swift */,
 				F853AB3229DBCB1E006EA2D5 /* Assets.xcassets */,
 				F853AB3429DBCB1E006EA2D5 /* Preview Content */,
 				F845C82A29F4D77C0025AC0A /* Localizable.strings */,
@@ -243,7 +237,6 @@
 			files = (
 				F853AB5D29E0AC3F006EA2D5 /* TintColorView.swift in Sources */,
 				F853AB5529DE8B3B006EA2D5 /* FavoritesView.swift in Sources */,
-				F845C82D29F5EEE20025AC0A /* ContextView.swift in Sources */,
 				F853AB3129DBCB1A006EA2D5 /* ContentView.swift in Sources */,
 				F8CC214829EFA165008C7B88 /* TextView.swift in Sources */,
 				F853AB4B29DE21A8006EA2D5 /* CopyFileView.swift in Sources */,
@@ -260,7 +253,6 @@
 				F8CC214629EF5838008C7B88 /* SpawnView.swift in Sources */,
 				F8CC212F29E74DF4008C7B88 /* VideoPlayerView.swift in Sources */,
 				F853AB5929DE8C0E006EA2D5 /* SearchView.swift in Sources */,
-				F845C82F29F6247A0025AC0A /* EThree.swift in Sources */,
 				F853AB4529DE1CB3006EA2D5 /* RenameFileView.swift in Sources */,
 				F853AB5729DE8B46006EA2D5 /* CreditsView.swift in Sources */,
 				F853AB2F29DBCB1A006EA2D5 /* SpartanApp.swift in Sources */,
@@ -285,7 +277,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -338,7 +329,7 @@
 				SDKROOT = appletvos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				TVOS_DEPLOYMENT_TARGET = 13.0;
+				TVOS_DEPLOYMENT_TARGET = 14.0;
 			};
 			name = Debug;
 		};
@@ -346,7 +337,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -392,7 +382,7 @@
 				SDKROOT = appletvos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				TVOS_DEPLOYMENT_TARGET = 13.0;
+				TVOS_DEPLOYMENT_TARGET = 14.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -426,7 +416,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 13.0;
+				TVOS_DEPLOYMENT_TARGET = 14.0;
 			};
 			name = Debug;
 		};
@@ -459,7 +449,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 13.0;
+				TVOS_DEPLOYMENT_TARGET = 14.0;
 			};
 			name = Release;
 		};

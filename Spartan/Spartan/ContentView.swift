@@ -20,6 +20,8 @@ struct ContentView: View {
     @State var permissionDenied = false
     @State var deleteOverride = false
     @State var isFocused: Bool = false
+    @State var E = false
+    @State var E2 = false
     
     @State var multiSelect = false
     @State var allWereSelected = false
@@ -31,6 +33,7 @@ struct ContentView: View {
     @State var newViewFilePath: String = ""
     @State var newViewArrayNames: [String] = [""]
     @State var newViewFileName: String = ""
+    @State private var newViewFileIndex = 0
     
     @State private var renameFileShow = false
     @State var renameFileCurrentName: String = ""
@@ -91,274 +94,246 @@ struct ContentView: View {
                     freeSpace
                         .frame(alignment: .trailing)
                 }
-                List { //directory contents view
-                    Button(action: {
-                        goBack()
-                    }) {
-                        HStack {
-                            Image(systemName: "arrowshape.turn.up.backward")
-                            Text("..")
-                        }
-                    }
-                    ForEach(files.indices, id: \.self) { index in
-                        Button(action: {
-                            if (multiSelect) {
-                                if(fileWasSelected[index]){
-                                    let searchedIndex = multiSelectFiles.firstIndex(of: files[index])
-                                    multiSelectFiles.remove(at: searchedIndex!)
-                                    fileWasSelected[index] = false
-                                    print(multiSelectFiles)
-                                } else {
-                                    fileWasSelected[index] = true
-                                    multiSelectFiles.append(files[index])
-                                    print(multiSelectFiles)
-                                }
-                            } else {
-                                multiSelect = false
-                                if (yandereDevFileType(file: (directory + files[index])) == 0) {
-                                    directory = directory + files[index]
-                                    updateFiles()
-                                    print(directory)
-                                } else if (yandereDevFileType(file: (directory + files[index])) == 1) {
-                                    audioPlayerShow = true
-                                    callback = true
-                                    newViewFilePath = directory + files[index]
-                                    newViewFileName = files[index]
-                                } else if (yandereDevFileType(file: (directory + files[index])) == 2){
-                                    videoPlayerShow = true
-                                    newViewFilePath = directory + files[index]
-                                    newViewFileName = files[index]
-                                } else if (yandereDevFileType(file: (directory + files[index])) == 3) {
-                                    imageShow = true
-                                    newViewFilePath = directory + files[index]
-                                } else if (yandereDevFileType(file: (directory + files[index])) == 4) {
-                                    textShow = true
-                                    newViewFilePath = directory + files[index]
-                                } else if (yandereDevFileType(file: (directory + files[index])) == 5){
-                                    plistShow = true
-                                    newViewFilePath = directory + files[index]
-                                    newViewFileName = files[index]
-                                } else if (yandereDevFileType(file: (directory + files[index])) == 6){
-                                    zipFileShow = true
-                                    newViewFileName = files[index]
-                                    uncompressZip = true
-                                } else if (yandereDevFileType(file: (directory + files[index])) == 7){
-                                    spawnShow = true
-                                    newViewFilePath = directory + files[index]
-                                } else {
-                                    selectedFile = FileInfo(name: files[index], id: UUID())
+                HStack {
+                    List { //directory contents view
+                        if #available(tvOS 14.0, *) {
+                            Button(action: {
+                                goBack()
+                            }) {
+                                HStack {
+                                    Image(systemName: "arrowshape.turn.up.left")
+                                    Text("..")
                                 }
                             }
-                        }) {
-                            HStack {
-                                if (multiSelect) {
-                                    Image(systemName: fileWasSelected[index] ? "checkmark.circle" : "circle")
+                            .contextMenu {
+                                Button(action: {
+                                    E.toggle()
+                                }) {
+                                    Text("Toggle Debug")
                                 }
-                                if (yandereDevFileType(file: (directory + files[index])) == 0) {
-                                    if (isDirectoryEmpty(atPath: directory + files[index]) == 1){
-                                        Image(systemName: "folder")
-                                    } else if (isDirectoryEmpty(atPath: directory + files[index]) == 0){
-                                        Image(systemName: "folder.fill")
-                                    } else {
-                                        Image(systemName: "folder.badge.questionmark")
-                                    }
-                                    Text(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
-                                } else if (yandereDevFileType(file: (directory + files[index])) == 1) {
-                                    Image(systemName: "waveform.circle")
-                                    Text(files[index])
-                                } else if (yandereDevFileType(file: (directory + files[index])) == 2){
-                                    Image(systemName: "video")
-                                    Text(files[index])
-                                } else if (yandereDevFileType(file: (directory + files[index])) == 3) {
-                                    Image(systemName: "photo")
-                                    Text(files[index])
-                                } else if (yandereDevFileType(file: (directory + files[index])) == 4) {
-                                    Image(systemName: "doc.text")
-                                    Text(files[index])
-                                } else if (yandereDevFileType(file: (directory + files[index])) == 5) {
-                                    Image(systemName: "list.bullet")
-                                    Text(files[index])
-                                } else if (yandereDevFileType(file: (directory + files[index])) == 6){
-                                    Image(systemName: "doc.zipper")
-                                    Text(files[index])
-                                } else if (yandereDevFileType(file: (directory + files[index])) == 7){
-                                    Image(systemName: "terminal")
-                                    Text(files[index])
-                                } else {
-                                    Image(systemName: "doc")
-                                    Text(files[index])
+                            }
+                        } else {
+                            Button(action: {
+                                goBack()
+                            }) {
+                                HStack {
+                                    Image(systemName: "arrowshape.turn.up.left")
+                                    Text("..")
                                 }
                             }
                         }
-                        .contextMenu {
-                            if(!openInMenu) {
+                        ForEach(files.indices, id: \.self) { index in
+                            if #available(tvOS 14.0, *) {
                                 Button(action: {
-                                    fileInfoShow = true
-                                    fileInfo = getFileInfo(forFileAtPath: directory + files[index])
+                                    defaultAction(index: index)
                                 }) {
-                                    Text(NSLocalizedString("INFO", comment: "there is no way a bee should be able to fly."))
-                                }
-                                .disabled(openInMenu)
-                                
-                                Button(action: {
-                                    newViewFilePath = directory
-                                    renameFileCurrentName = files[index]
-                                    renameFileNewName = files[index]
-                                    renameFileShow = true
-                                }) {
-                                    Text(NSLocalizedString("RENAME", comment: "Its wings are too small to get its fat little body off the ground."))
-                                }
-                                .disabled(openInMenu)
-                                
-                                Button(action: {
-                                    openInMenu = true
-                                    newViewFilePath = directory
-                                    newViewArrayNames = [files[index]]
-                                }) {
-                                    Text(NSLocalizedString("OPENIN", comment: "The bee, of course, flies anyway"))
-                                }
-                                .disabled(openInMenu)
-                                
-                                if(directory == "/var/mobile/Media/.Trash/"){
-                                    Button(action: {
-                                        deleteFile(atPath: directory + files[index])
-                                        updateFiles()
-                                    }) {
-                                        Text(NSLocalizedString("DELETE", comment: "because bees don't care what humans think is impossible."))
-                                    }
-                                    .foregroundColor(.red)
-                                    .disabled(openInMenu)
-                                } else if(directory == "/var/mobile/Media/" && files[index] == ".Trash/"){
-                                    Button(action: {
-                                        do {
-                                            try FileManager.default.removeItem(atPath: "/var/mobile/Media/.Trash/")
-                                        } catch {
-                                            print("Error emptying Trash: \(error)")
+                                    HStack {
+                                        if (multiSelect) {
+                                            Image(systemName: fileWasSelected[index] ? "checkmark.circle" : "circle")
+                                                .transition(.opacity)
                                         }
-                                        do {
-                                            try FileManager.default.createDirectory(atPath: "/var/mobile/Media/.Trash/", withIntermediateDirectories: true, attributes: nil)
-                                        } catch {
-                                            print("Error emptying Trash: \(error)")
+                                        if (yandereDevFileType(file: (directory + files[index])) == 0) {
+                                            if (isDirectoryEmpty(atPath: directory + files[index]) == 1){
+                                                Image(systemName: "folder")
+                                            } else if (isDirectoryEmpty(atPath: directory + files[index]) == 0){
+                                                Image(systemName: "folder.fill")
+                                            } else {
+                                                Image(systemName: "folder.badge.questionmark")
+                                            }
+                                            Text(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
+                                        } else if (yandereDevFileType(file: (directory + files[index])) == 1) {
+                                            Image(systemName: "waveform")
+                                            Text(files[index])
+                                        } else if (yandereDevFileType(file: (directory + files[index])) == 2){
+                                            Image(systemName: "video")
+                                            Text(files[index])
+                                        } else if (yandereDevFileType(file: (directory + files[index])) == 3) {
+                                            Image(systemName: "photo")
+                                            Text(files[index])
+                                        } else if (yandereDevFileType(file: (directory + files[index])) == 4) {
+                                            Image(systemName: "doc.text")
+                                            Text(files[index])
+                                        } else if (yandereDevFileType(file: (directory + files[index])) == 5) {
+                                            Image(systemName: "list.bullet")
+                                            Text(files[index])
+                                        } else if (yandereDevFileType(file: (directory + files[index])) == 6){
+                                            Image(systemName: "doc.zipper")
+                                            Text(files[index])
+                                        } else if (yandereDevFileType(file: (directory + files[index])) == 7){
+                                            Image(systemName: "terminal")
+                                            Text(files[index])
+                                        } else {
+                                            Image(systemName: "doc")
+                                            Text(files[index])
+                                        }
+                                    }
+                                }
+                                .contextMenu {
+                                    if(!openInMenu) {
+                                        Button(action: {
+                                            fileInfoShow = true
+                                            fileInfo = getFileInfo(forFileAtPath: directory + files[index])
+                                        }) {
+                                            Text(NSLocalizedString("INFO", comment: "there is no way a bee should be able to fly."))
+                                        }
+                                        .disabled(openInMenu)
+                                        
+                                        Button(action: {
+                                            newViewFilePath = directory
+                                            renameFileCurrentName = files[index]
+                                            renameFileNewName = files[index]
+                                            renameFileShow = true
+                                        }) {
+                                            Text(NSLocalizedString("RENAME", comment: "Its wings are too small to get its fat little body off the ground."))
+                                        }
+                                        .disabled(openInMenu)
+                                        
+                                        Button(action: {
+                                            openInMenu = true
+                                            newViewFilePath = directory
+                                            newViewArrayNames = [files[index]]
+                                        }) {
+                                            Text(NSLocalizedString("OPENIN", comment: "The bee, of course, flies anyway"))
+                                        }
+                                        .disabled(openInMenu)
+                                        
+                                        if(directory == "/var/mobile/Media/.Trash/"){
+                                            Button(action: {
+                                                deleteFile(atPath: directory + files[index])
+                                                updateFiles()
+                                            }) {
+                                                Text(NSLocalizedString("DELETE", comment: "because bees don't care what humans think is impossible."))
+                                            }
+                                            .foregroundColor(.red)
+                                            .disabled(openInMenu)
+                                        } else if(directory == "/var/mobile/Media/" && files[index] == ".Trash/"){
+                                            Button(action: {
+                                                do {
+                                                    try FileManager.default.removeItem(atPath: "/var/mobile/Media/.Trash/")
+                                                } catch {
+                                                    print("Error emptying Trash: \(error)")
+                                                }
+                                                do {
+                                                    try FileManager.default.createDirectory(atPath: "/var/mobile/Media/.Trash/", withIntermediateDirectories: true, attributes: nil)
+                                                } catch {
+                                                    print("Error emptying Trash: \(error)")
+                                                }
+                                                
+                                            }) {
+                                                Text(NSLocalizedString("TRASHYEET", comment: "Yellow, black. Yellow, black."))
+                                            }
+                                            .disabled(openInMenu)
+                                        } else {
+                                            Button(action: {
+                                                moveFile(path: directory + files[index], newPath: ("/var/mobile/Media/.Trash/" + files[index]))
+                                                updateFiles()
+                                            }) {
+                                                Text(NSLocalizedString("GOTOTRASH", comment: "Yellow, black. Yellow, black."))
+                                            }
+                                            .disabled(openInMenu)
+                                        }
+                                        if(deleteOverride){
+                                            Button(action: {
+                                                deleteFile(atPath: directory + files[index])
+                                                updateFiles()
+                                            }) {
+                                                Text(NSLocalizedString("DELETE", comment: "Ooh, black and yellow!"))
+                                            }
+                                            .foregroundColor(.red)
+                                            .disabled(openInMenu)
                                         }
                                         
-                                    }) {
-                                        Text(NSLocalizedString("TRASHYEET", comment: "Yellow, black. Yellow, black."))
+                                        Button(action: {
+                                            addToFavoritesShow = true
+                                            newViewFilePath = directory + files[index]
+                                            if files[index].hasSuffix("/") {
+                                            addToFavoritesDisplayName = String(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
+                                            } else {
+                                                addToFavoritesDisplayName = files[index]
+                                            }
+                                            UserDefaults.favorites.synchronize()
+                                        }) {
+                                            Text(NSLocalizedString("FAVORITESADD", comment: "Let's shake it up a little."))
+                                        }
+                                        .disabled(openInMenu)
+                                        
+                                        Button(action: {
+                                            newViewFilePath = directory
+                                            newViewArrayNames = [files[index]]
+                                            moveFileShow = true
+                                        }) {
+                                            Text(NSLocalizedString("MOVETO", comment: "Barry! Breakfast is ready!"))
+                                        }
+                                        
+                                        Button(action: {
+                                            newViewFilePath = directory
+                                            newViewArrayNames = [files[index]]
+                                            copyFileShow = true
+                                        }) {
+                                            Text(NSLocalizedString("COPYTO", comment: "Coming!"))
+                                        }
+                                        
+                                        Button(NSLocalizedString("DISMISS", comment: "Hang on a second.")) { }
                                     }
-                                    .disabled(openInMenu)
-                                } else {
-                                    Button(action: {
-                                        moveFile(path: directory + files[index], newPath: ("/var/mobile/Media/.Trash/" + files[index]))
-                                        updateFiles()
-                                    }) {
-                                        Text(NSLocalizedString("GOTOTRASH", comment: "Yellow, black. Yellow, black."))
-                                    }
-                                    .disabled(openInMenu)
-                                }
-                                if(deleteOverride){
-                                    Button(action: {
-                                        deleteFile(atPath: directory + files[index])
-                                        updateFiles()
-                                    }) {
-                                        Text(NSLocalizedString("DELETE", comment: "Ooh, black and yellow!"))
-                                    }
-                                    .foregroundColor(.red)
-                                    .disabled(openInMenu)
-                                }
-                                
+                                } // end of menu
+                            } else {
                                 Button(action: {
-                                    addToFavoritesShow = true
-                                    newViewFilePath = directory + files[index]
-                                    if files[index].hasSuffix("/") {
-                                    addToFavoritesDisplayName = String(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
-                                    } else {
-                                        addToFavoritesDisplayName = files[index]
-                                    }
-                                    UserDefaults.favorites.synchronize()
-                                }) {
-                                    Text(NSLocalizedString("FAVORITESADD", comment: "Let's shake it up a little."))
-                                }
-                                .disabled(openInMenu)
-                                
-                                Button(action: {
+                                    contextMenuShow = true
                                     newViewFilePath = directory
-                                    newViewArrayNames = [files[index]]
-                                    moveFileShow = true
+                                    newViewFileName = files[index]
+                                    newViewFileIndex = index
                                 }) {
-                                    Text(NSLocalizedString("MOVETO", comment: "Barry! Breakfast is ready!"))
+                                    HStack {
+                                        if (multiSelect) {
+                                            Image(systemName: fileWasSelected[index] ? "checkmark.circle" : "circle")
+                                        }
+                                        if (yandereDevFileType(file: (directory + files[index])) == 0) {
+                                            if (isDirectoryEmpty(atPath: directory + files[index]) == 1){
+                                                Image(systemName: "folder")
+                                            } else if (isDirectoryEmpty(atPath: directory + files[index]) == 0){
+                                                Image(systemName: "folder.fill")
+                                            } else {
+                                                Image(systemName: "folder.badge.minus")
+                                            }
+                                            Text(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
+                                        } else if (yandereDevFileType(file: (directory + files[index])) == 1) {
+                                            Image(systemName: "waveform.circle")
+                                            Text(files[index])
+                                        } else if (yandereDevFileType(file: (directory + files[index])) == 2){
+                                            Image(systemName: "video")
+                                            Text(files[index])
+                                        } else if (yandereDevFileType(file: (directory + files[index])) == 3) {
+                                            Image(systemName: "photo")
+                                            Text(files[index])
+                                        } else if (yandereDevFileType(file: (directory + files[index])) == 4) {
+                                            Image(systemName: "doc.text")
+                                            Text(files[index])
+                                        } else if (yandereDevFileType(file: (directory + files[index])) == 5) {
+                                            Image(systemName: "list.bullet")
+                                            Text(files[index])
+                                        } else if (yandereDevFileType(file: (directory + files[index])) == 6){
+                                            Image(systemName: "rectangle.compress.vertical")
+                                            Text(files[index])
+                                        } else if (yandereDevFileType(file: (directory + files[index])) == 7){
+                                            Image(systemName: "terminal")
+                                            Text(files[index])
+                                        } else {
+                                            Image(systemName: "doc")
+                                            Text(files[index])
+                                        }
+                                    }
                                 }
-                                
-                                Button(action: {
-                                    newViewFilePath = directory
-                                    newViewArrayNames = [files[index]]
-                                    copyFileShow = true
-                                }) {
-                                    Text(NSLocalizedString("COPYTO", comment: "Coming!"))
-                                }
-                                
-                                Button(NSLocalizedString("DISMISS", comment: "Hang on a second.")) { }
                             }
-                            if(openInMenu) {
-                                Button(action: {
-                                    directory = directory + files[index]
-                                    updateFiles()
-                                    print(directory)
-                                }) {
-                                    Text(NSLocalizedString("OPEN_DIRECTORY", comment: "Hello?"))
-                                }
-                                
-                                Button(action: {
-                                    audioPlayerShow = true
-                                    callback = true
-                                    newViewFilePath = directory + files[index]
-                                    newViewFileName = files[index]
-                                }) {
-                                    Text(NSLocalizedString("OPEN_AUDIO", comment: "- Barry?"))
-                                }
-                                
-                                Button(action: {
-                                    videoPlayerShow = true
-                                    newViewFilePath = directory + files[index]
-                                    newViewFileName = files[index]
-                                }) {
-                                    Text(NSLocalizedString("OPEN_VIDEO", comment: "- Adam?"))
-                                }
-                                
-                                Button(action: {
-                                    imageShow = true
-                                    newViewFilePath = directory + files[index]
-                                }) {
-                                    Text(NSLocalizedString("OPEN_IMAGE", comment: "- Can you believe this is happening?"))
-                                }
-                                
-                                Button(action: {
-                                    textShow = true
-                                    newViewFilePath = directory + files[index]
-                                }) {
-                                    Text(NSLocalizedString("OPEN_TEXT", comment: "- I can't. I'll pick you up."))
-                                }
-                                
-                                Button(action: {
-                                    plistShow = true
-                                    newViewFilePath = directory + files[index]
-                                    newViewFileName = files[index]
-                                }) {
-                                    Text(NSLocalizedString("OPEN_PLIST", comment: "Looking sharp."))
-                                }
-                                
-                                Button(action: {
-                                    spawnShow = true
-                                    newViewFilePath = directory + files[index]
-                                }) {
-                                    Text(NSLocalizedString("OPEN_SPAWN", comment: "Use the stairs. Your father paid good money for those."))
-                                }
-                                
-                                Button(NSLocalizedString("DISMISS", comment: "Sorry. I'm excited.")) { }
-                            }
-                        } // end of menu
-                        .onExitCommand {
-                            print("whee")
                         }
                     }
+                }
+                .sheet(isPresented: $contextMenuShow) {
+                    ContextView(index: $newViewFileIndex, directory: $newViewFilePath, files: $files, fileInfoShow: $fileInfoShow, fileInfo: $fileInfo, newViewFilePath: $newViewFilePath, newViewArrayNames: $newViewArrayNames, renameFileCurrentName: $renameFileCurrentName, renameFileNewName: $renameFileNewName, renameFileShow: $renameFileShow, addToFavoritesDisplayName: $addToFavoritesDisplayName, moveFileShow: $moveFileShow, copyFileShow: $copyFileShow, addToFavoritesShow: $addToFavoritesShow, deleteOverride: $deleteOverride, multiSelect: $multiSelect, permissionDenied: $permissionDenied, multiSelectFiles: $multiSelectFiles, fileWasSelected: $fileWasSelected, audioPlayerShow: $audioPlayerShow, callback: $callback, newViewFileName: $newViewFileName, videoPlayerShow: $videoPlayerShow, imageShow: $imageShow, textShow: $textShow, plistShow: $plistShow, spawnShow: $spawnShow, zipFileShow: $zipFileShow, uncompressZip: $uncompressZip, selectedFile: $selectedFile)
+                    //i hate myself so much for this.
+                    //I really do.
+                }
+                .sheet(isPresented: $E2) {
+                    E3(directory: $directory, files: $files, multiSelectFiles: $multiSelectFiles, fileWasSelected: $fileWasSelected)
                 }
                 .navigationBarHidden(true)
                 .onAppear {
@@ -442,68 +417,6 @@ struct ContentView: View {
                 })
                 .accentColor(.accentColor)
             }
-            
-            //sidebar HERE
-            /*if(sidebarShow){
-                VStack(alignment: .leading) {
-                    //i'll reuse this for something idk
-                    Text("Devices")
-                        .font(.system(size: 40))
-                        .bold()
-                    HStack {
-                        Button(action: {
-                            print("s0n")
-                        }) {
-                            HStack {
-                                Image(systemName: "externaldrive")
-                                Text("/")
-                            }
-                        }
-                        Spacer()
-                    }
-                    
-                    Text("Places")
-                        .font(.system(size: 40))
-                        .bold()
-                    HStack {
-                        Button(action: {
-                            directory = "/Applications/"
-                            updateFiles()
-                        }) {
-                            HStack {
-                                Image(systemName: "app.badge")
-                                Text("Applications")
-                            }
-                        }
-                        Spacer()
-                    }
-                    HStack {
-                        Button(action: {
-                            directory = "/var/containers/"
-                            updateFiles()
-                        }) {
-                            HStack {
-                                Image(systemName: "app.badge")
-                                Text("User Applications")
-                            }
-                        }
-                        Spacer ()
-                    }
-                    HStack {
-                        Button(action: {
-                            directory = "/var/mobile/Documents/"
-                            updateFiles()
-                        }) {
-                            HStack {
-                                Image(systemName: "doc.text")
-                                Text("Documents")
-                            }
-                        }
-                        Spacer ()
-                    }
-                }
-                .padding(.leading)
-            }*/
         }
         .onExitCommand {
             if(directory == "/"){
@@ -528,7 +441,9 @@ struct ContentView: View {
                 } else {
                     resizeMultiSelectArrays()
                     resetMultiSelectArrays()
-                    multiSelect = true
+                    withAnimation {
+                        multiSelect = true
+                    }
                 }
             }) {
                 if (multiSelect){
@@ -557,8 +472,13 @@ struct ContentView: View {
                 Button(action: { //new file
                     createFileShow = true
                 }) {
-                    Image(systemName: "doc.badge.plus")
-                        .frame(width:50, height:50)
+                    if #available(tvOS 14.0, *){
+                        Image(systemName: "doc.badge.plus")
+                            .frame(width:50, height:50)
+                    } else {
+                        Image(systemName: "doc")
+                            .frame(width:50, height:50)
+                    }
                 }
             
                 Button(action: { //new directory
@@ -654,7 +574,9 @@ struct ContentView: View {
                 }
             
                 Button(action: {
-                    multiSelect = false
+                    withAnimation {
+                        multiSelect = false
+                    }
                     allWereSelected = false
                 }) {
                     Image(systemName: "xmark")
@@ -682,13 +604,66 @@ struct ContentView: View {
     
     var topBarOffset: some View {
         return VStack {
-                Text("")
-                Text("")
-            }
-            .alignmentGuide(.leading) {
-                $0[HorizontalAlignment.leading]
+                if (E) {
+                    Button(action: {
+                        E2 = true
+                    }) {
+                        Image(systemName: "ant")
+                            .frame(width: 50, height: 50)
+                    }
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+    }
+    
+    func defaultAction(index: Int) {
+        if (multiSelect) {
+            if(fileWasSelected[index]){
+                let searchedIndex = multiSelectFiles.firstIndex(of: files[index])
+                multiSelectFiles.remove(at: searchedIndex!)
+                fileWasSelected[index] = false
+                print(multiSelectFiles)
+            } else {
+                fileWasSelected[index] = true
+                multiSelectFiles.append(files[index])
+                print(multiSelectFiles)
+            }
+        } else {
+            multiSelect = false
+            if (yandereDevFileType(file: (directory + files[index])) == 0) {
+                directory = directory + files[index]
+                updateFiles()
+                print(directory)
+            } else if (yandereDevFileType(file: (directory + files[index])) == 1) {
+                audioPlayerShow = true
+                callback = true
+                newViewFilePath = directory + files[index]
+                newViewFileName = files[index]
+            } else if (yandereDevFileType(file: (directory + files[index])) == 2){
+                videoPlayerShow = true
+                newViewFilePath = directory + files[index]
+                newViewFileName = files[index]
+            } else if (yandereDevFileType(file: (directory + files[index])) == 3) {
+                imageShow = true
+                newViewFilePath = directory + files[index]
+            } else if (yandereDevFileType(file: (directory + files[index])) == 4) {
+                textShow = true
+                newViewFilePath = directory + files[index]
+            } else if (yandereDevFileType(file: (directory + files[index])) == 5){
+                plistShow = true
+                newViewFilePath = directory + files[index]
+                newViewFileName = files[index]
+            } else if (yandereDevFileType(file: (directory + files[index])) == 6){
+                zipFileShow = true
+                newViewFileName = files[index]
+                uncompressZip = true
+            } else if (yandereDevFileType(file: (directory + files[index])) == 7){
+                spawnShow = true
+                newViewFilePath = directory + files[index]
+            } else {
+                selectedFile = FileInfo(name: files[index], id: UUID())
+            }
+        }
     }
 
     func updateFiles() {
@@ -741,11 +716,11 @@ struct ContentView: View {
         }
     }
     
-    func getFileInfo(forFileAtPath path: String) -> String {
+    func getFileInfo(forFileAtPath: String) -> String {
         let fileManager = FileManager.default
     
         do {
-            let attributes = try fileManager.attributesOfItem(atPath: path)
+            let attributes = try fileManager.attributesOfItem(atPath: forFileAtPath)
     
             let creationDate = attributes[.creationDate] as? Date ?? Date.distantPast
             let modificationDate = attributes[.modificationDate] as? Date ?? Date.distantPast
@@ -763,7 +738,7 @@ struct ContentView: View {
             dateFormatter.timeStyle = .medium
             
             let fileInfoString = """
-            \(NSLocalizedString("INFO_PATH", comment: "Ma! I got a thing going here.") + path)
+            \(NSLocalizedString("INFO_PATH", comment: "Ma! I got a thing going here.") + forFileAtPath)
             \(NSLocalizedString("INFO_SIZE", comment: "- You got lint on your fuzz.") + ByteCountFormatter().string(fromByteCount: Int64(fileSize)))
             \(NSLocalizedString("INFO_CREATION", comment: "- Ow! That's me!") + dateFormatter.string(from: creationDate))
             \(NSLocalizedString("INFO_MODIFICATION", comment: "- Wave to us! We'll be in row 118,000.") + dateFormatter.string(from: modificationDate))
@@ -807,27 +782,7 @@ struct ContentView: View {
             let systemAttributes = try FileManager.default.attributesOfFileSystem(forPath: path)
             let freeSpace = systemAttributes[.systemFreeSize] as? NSNumber
             if let freeSpace = freeSpace {
-                if(freeSpace.doubleValue / 1024 > 9) {
-                    return (freeSpace.doubleValue / pow(1024, 9), NSLocalizedString("BRONTOBYTES", comment: "- Hey, Barry."))
-                } else if(freeSpace.doubleValue / 1024 > 8) {
-                    return (freeSpace.doubleValue / pow(1024, 8), NSLocalizedString("YOTTABYTES", comment: "- Is that fuzz gel?"))
-                } else if(freeSpace.doubleValue / 1024 > 7) {
-                    return (freeSpace.doubleValue / pow(1024, 7), NSLocalizedString("ZETTABYTES", comment: "- A little. Special day, graduation."))
-                } else if(freeSpace.doubleValue / 1024 > 6) {
-                    return (freeSpace.doubleValue / pow(1024, 6), NSLocalizedString("EXABYTES", comment: "Never thought I'd make it."))
-                } else if(freeSpace.doubleValue / 1024 > 5) {
-                    return (freeSpace.doubleValue / pow(1024, 5), NSLocalizedString("PETABYTES", comment: "Three days grade school, three days high school."))
-                } else if(freeSpace.doubleValue / 1024 > 4) {
-                    return (freeSpace.doubleValue / pow(1024, 4), NSLocalizedString("TERABYTES", comment: "Those were awkward."))
-                } else if(freeSpace.doubleValue / 1024 > 3) {
-                    return (freeSpace.doubleValue / pow(1024, 3), NSLocalizedString("GIGABYTES", comment: "Three days college. I'm glad I took a day and hitchhiked around the hive."))
-                } else if(freeSpace.doubleValue / 1024 > 2) {
-                    return (freeSpace.doubleValue / pow(1024, 2), NSLocalizedString("MEGABYTES", comment: "You did come back different."))
-                } else if(freeSpace.doubleValue / 1024 > 1) {
-                    return (freeSpace.doubleValue / 1024, NSLocalizedString("KILOBYTES", comment: "- Hi, Barry."))
-                } else {
-                    return (freeSpace.doubleValue, NSLocalizedString("BYTES", comment: "- Artie, growing a mustache? Looks good."))
-                }
+                return convertBytes(bytes: freeSpace.doubleValue)
             } else {
                 return (0, "?")
             }
@@ -837,6 +792,19 @@ struct ContentView: View {
         }
     }
     
+    func convertBytes(bytes: Double) -> (Double, String) {
+        let units = ["bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB", "BB"]
+        var remainingBytes = Double(bytes)
+        var i = 0
+        
+        while remainingBytes >= 1024 && i < units.count - 1 {
+            remainingBytes /= 1024
+            i += 1
+        }
+        
+        return (remainingBytes, units[i])
+    }
+
     func yandereDevFileType(file: String) -> Int { //I tried using unified file types but they all returned nil so I have to use this awful yandere dev shit
         //im sorry
         
@@ -923,4 +891,13 @@ struct ContentView: View {
 struct FileInfo: Identifiable {
     let name: String
     let id: UUID
+}
+
+struct ViewOffsetKey: PreferenceKey {
+    typealias Value = CGFloat
+    static var defaultValue: CGFloat = 0
+
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
+    }
 }
