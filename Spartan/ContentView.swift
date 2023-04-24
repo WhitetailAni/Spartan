@@ -326,7 +326,6 @@ struct ContentView: View {
                             }
                         }
                     }
-                    .padding()
                 }
                 .sheet(isPresented: $contextMenuShow) {
                     ContextView(index: $newViewFileIndex, directory: $newViewFilePath, files: $files, fileInfoShow: $fileInfoShow, fileInfo: $fileInfo, newViewFilePath: $newViewFilePath, newViewArrayNames: $newViewArrayNames, renameFileCurrentName: $renameFileCurrentName, renameFileNewName: $renameFileNewName, renameFileShow: $renameFileShow, addToFavoritesDisplayName: $addToFavoritesDisplayName, moveFileShow: $moveFileShow, copyFileShow: $copyFileShow, addToFavoritesShow: $addToFavoritesShow, deleteOverride: $deleteOverride, multiSelect: $multiSelect, permissionDenied: $permissionDenied, multiSelectFiles: $multiSelectFiles, fileWasSelected: $fileWasSelected, audioPlayerShow: $audioPlayerShow, callback: $callback, newViewFileName: $newViewFileName, videoPlayerShow: $videoPlayerShow, imageShow: $imageShow, textShow: $textShow, plistShow: $plistShow, spawnShow: $spawnShow, zipFileShow: $zipFileShow, uncompressZip: $uncompressZip, selectedFile: $selectedFile)
