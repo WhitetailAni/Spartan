@@ -32,7 +32,8 @@ struct ContentView: View {
     @State var renameFileCurrentName: String = ""
     @State var renameFileNewName: String = ""
     
-    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 19)
+    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 20)
+    //? = 0
     //contextMenuShow = 1
     //openInMenu = 2
     //fileInfoShow = 3
@@ -586,7 +587,7 @@ struct ContentView: View {
                     .opacity(opacityInt)
                 }
                 .sheet(isPresented: $E2) {
-                    E3(directory: $directory, files: $files, multiSelectFiles: $multiSelectFiles, fileWasSelected: $fileWasSelected)
+                    E3(directory: $directory, files: $files, multiSelectFiles: $multiSelectFiles, fileWasSelected: $fileWasSelected, showSubView: $showSubView)
                 }
                 .navigationBarHidden(true)
                 .onAppear {
