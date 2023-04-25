@@ -166,113 +166,104 @@ struct ContentView: View {
                                     }
                                 }
                                 .contextMenu {
-                                    if(!openInMenu) {
-                                        Button(action: {
-                                            fileInfoShow = true
-                                            fileInfo = getFileInfo(forFileAtPath: directory + files[index])
-                                        }) {
-                                            Text(NSLocalizedString("INFO", comment: "there is no way a bee should be able to fly."))
-                                        }
-                                        .disabled(openInMenu)
-                                        
-                                        Button(action: {
-                                            newViewFilePath = directory
-                                            renameFileCurrentName = files[index]
-                                            renameFileNewName = files[index]
-                                            renameFileShow = true
-                                        }) {
-                                            Text(NSLocalizedString("RENAME", comment: "Its wings are too small to get its fat little body off the ground."))
-                                        }
-                                        .disabled(openInMenu)
-                                        
-                                        Button(action: {
-                                            openInMenu = true
-                                            newViewFilePath = directory
-                                            newViewArrayNames = [files[index]]
-                                        }) {
-                                            Text(NSLocalizedString("OPENIN", comment: "The bee, of course, flies anyway"))
-                                        }
-                                        .disabled(openInMenu)
-                                        
-                                        if(directory == "/var/mobile/Media/.Trash/"){
-                                            Button(action: {
-                                                deleteFile(atPath: directory + files[index])
-                                                updateFiles()
-                                            }) {
-                                                Text(NSLocalizedString("DELETE", comment: "because bees don't care what humans think is impossible."))
-                                            }
-                                            .foregroundColor(.red)
-                                            .disabled(openInMenu)
-                                        } else if(directory == "/var/mobile/Media/" && files[index] == ".Trash/"){
-                                            Button(action: {
-                                                do {
-                                                    try FileManager.default.removeItem(atPath: "/var/mobile/Media/.Trash/")
-                                                } catch {
-                                                    print("Error emptying Trash: \(error)")
-                                                }
-                                                do {
-                                                    try FileManager.default.createDirectory(atPath: "/var/mobile/Media/.Trash/", withIntermediateDirectories: true, attributes: nil)
-                                                } catch {
-                                                    print("Error emptying Trash: \(error)")
-                                                }
-                                                
-                                            }) {
-                                                Text(NSLocalizedString("TRASHYEET", comment: "Yellow, black. Yellow, black."))
-                                            }
-                                            .disabled(openInMenu)
-                                        } else {
-                                            Button(action: {
-                                                moveFile(path: directory + files[index], newPath: ("/var/mobile/Media/.Trash/" + files[index]))
-                                                updateFiles()
-                                            }) {
-                                                Text(NSLocalizedString("GOTOTRASH", comment: "Yellow, black. Yellow, black."))
-                                            }
-                                            .disabled(openInMenu)
-                                        }
-                                        if(deleteOverride){
-                                            Button(action: {
-                                                deleteFile(atPath: directory + files[index])
-                                                updateFiles()
-                                            }) {
-                                                Text(NSLocalizedString("DELETE", comment: "Ooh, black and yellow!"))
-                                            }
-                                            .foregroundColor(.red)
-                                            .disabled(openInMenu)
-                                        }
-                                        
-                                        Button(action: {
-                                            addToFavoritesShow = true
-                                            newViewFilePath = directory + files[index]
-                                            if files[index].hasSuffix("/") {
-                                            addToFavoritesDisplayName = String(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
-                                            } else {
-                                                addToFavoritesDisplayName = files[index]
-                                            }
-                                            UserDefaults.favorites.synchronize()
-                                        }) {
-                                            Text(NSLocalizedString("FAVORITESADD", comment: "Let's shake it up a little."))
-                                        }
-                                        .disabled(openInMenu)
-                                        
-                                        Button(action: {
-                                            newViewFilePath = directory
-                                            newViewArrayNames = [files[index]]
-                                            moveFileShow = true
-                                        }) {
-                                            Text(NSLocalizedString("MOVETO", comment: "Barry! Breakfast is ready!"))
-                                        }
-                                        
-                                        Button(action: {
-                                            newViewFilePath = directory
-                                            newViewArrayNames = [files[index]]
-                                            copyFileShow = true
-                                        }) {
-                                            Text(NSLocalizedString("COPYTO", comment: "Coming!"))
-                                        }
-                                        
-                                        Button(NSLocalizedString("DISMISS", comment: "Hang on a second.")) { }
+                                    Button(action: {
+                                        fileInfoShow = true
+                                        fileInfo = getFileInfo(forFileAtPath: directory + files[index])
+                                    }) {
+                                        Text(NSLocalizedString("INFO", comment: "there is no way a bee should be able to fly."))
                                     }
-                                } // end of menu
+                                    
+                                    
+                                    Button(action: {
+                                        newViewFilePath = directory
+                                        renameFileCurrentName = files[index]
+                                        renameFileNewName = files[index]
+                                        renameFileShow = true
+                                    }) {
+                                        Text(NSLocalizedString("RENAME", comment: "Its wings are too small to get its fat little body off the ground."))
+                                    }
+                                    
+                                    Button(action: {
+                                        openInMenu = true
+                                        newViewFilePath = directory
+                                        newViewArrayNames = [files[index]]
+                                    }) {
+                                        Text(NSLocalizedString("OPENIN", comment: "The bee, of course, flies anyway"))
+                                    }
+                                    
+                                    if(directory == "/var/mobile/Media/.Trash/"){
+                                        Button(action: {
+                                            deleteFile(atPath: directory + files[index])
+                                            updateFiles()
+                                        }) {
+                                            Text(NSLocalizedString("DELETE", comment: "because bees don't care what humans think is impossible."))
+                                        }
+                                        .foregroundColor(.red)
+                                    } else if(directory == "/var/mobile/Media/" && files[index] == ".Trash/"){
+                                        Button(action: {
+                                            do {
+                                                try FileManager.default.removeItem(atPath: "/var/mobile/Media/.Trash/")
+                                            } catch {
+                                                print("Error emptying Trash: \(error)")
+                                            }
+                                            do {
+                                                try FileManager.default.createDirectory(atPath: "/var/mobile/Media/.Trash/", withIntermediateDirectories: true, attributes: nil)
+                                            } catch {
+                                                print("Error emptying Trash: \(error)")
+                                            }
+                                            
+                                        }) {
+                                            Text(NSLocalizedString("TRASHYEET", comment: "Yellow, black. Yellow, black."))
+                                        }
+                                    } else {
+                                        Button(action: {
+                                            moveFile(path: directory + files[index], newPath: ("/var/mobile/Media/.Trash/" + files[index]))
+                                            updateFiles()
+                                        }) {
+                                            Text(NSLocalizedString("GOTOTRASH", comment: "Yellow, black. Yellow, black."))
+                                        }
+                                    }
+                                    if(deleteOverride){
+                                        Button(action: {
+                                            deleteFile(atPath: directory + files[index])
+                                            updateFiles()
+                                        }) {
+                                            Text(NSLocalizedString("DELETE", comment: "Ooh, black and yellow!"))
+                                        }
+                                        .foregroundColor(.red)
+                                    }
+                                    
+                                    Button(action: {
+                                        addToFavoritesShow = true
+                                        newViewFilePath = directory + files[index]
+                                        if files[index].hasSuffix("/") {
+                                            addToFavoritesDisplayName = String(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
+                                        } else {
+                                            addToFavoritesDisplayName = files[index]
+                                        }
+                                        UserDefaults.favorites.synchronize()
+                                    }) {
+                                        Text(NSLocalizedString("FAVORITESADD", comment: "Let's shake it up a little."))
+                                    }
+                                    
+                                    Button(action: {
+                                        newViewFilePath = directory
+                                        newViewArrayNames = [files[index]]
+                                        moveFileShow = true
+                                    }) {
+                                        Text(NSLocalizedString("MOVETO", comment: "Barry! Breakfast is ready!"))
+                                    }
+                                    
+                                    Button(action: {
+                                        newViewFilePath = directory
+                                        newViewArrayNames = [files[index]]
+                                        copyFileShow = true
+                                    }) {
+                                        Text(NSLocalizedString("COPYTO", comment: "Coming!"))
+                                    }
+                                    
+                                    Button(NSLocalizedString("DISMISS", comment: "Hang on a second.")) { }
+                                }
                             } else {
                                 Button(action: {
                                     contextMenuShow = true
@@ -325,9 +316,284 @@ struct ContentView: View {
                     }
                 }
                 .sheet(isPresented: $contextMenuShow) {
-                    ContextView(index: $newViewFileIndex, directory: $newViewFilePath, files: $files, fileInfoShow: $fileInfoShow, fileInfo: $fileInfo, newViewFilePath: $newViewFilePath, newViewArrayNames: $newViewArrayNames, renameFileCurrentName: $renameFileCurrentName, renameFileNewName: $renameFileNewName, renameFileShow: $renameFileShow, addToFavoritesDisplayName: $addToFavoritesDisplayName, moveFileShow: $moveFileShow, copyFileShow: $copyFileShow, addToFavoritesShow: $addToFavoritesShow, deleteOverride: $deleteOverride, multiSelect: $multiSelect, permissionDenied: $permissionDenied, multiSelectFiles: $multiSelectFiles, fileWasSelected: $fileWasSelected, audioPlayerShow: $audioPlayerShow, callback: $callback, newViewFileName: $newViewFileName, videoPlayerShow: $videoPlayerShow, imageShow: $imageShow, textShow: $textShow, plistShow: $plistShow, spawnShow: $spawnShow, zipFileShow: $zipFileShow, uncompressZip: $uncompressZip, selectedFile: $selectedFile)
-                    //i hate myself so much for this.
-                    //I really do.
+                    let buttonWidth: CGFloat = 500
+                    let buttonHeight: CGFloat = 30
+                    let paddingInt: CGFloat = -7
+                    let opacityInt: CGFloat = 1.0
+                    
+                    Button(action: {
+                        defaultAction(index: newViewFileIndex)
+                        contextMenuShow = false
+                    }) {
+                        Text(NSLocalizedString("OPEN", comment: "You ever think maybe things work a little too well here?"))
+                            .frame(width: buttonWidth, height: buttonHeight)
+                    }
+                    .padding(paddingInt)
+                    .opacity(opacityInt)
+    
+                    Button(action: {
+                        fileInfo = getFileInfo(forFileAtPath: directory + files[newViewFileIndex])
+                        contextMenuShow = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                            fileInfoShow = true
+                        }
+                    }) {
+                        Text(NSLocalizedString("INFO", comment: "there is no way a bee should be able to fly."))
+                            .frame(width: buttonWidth, height: buttonHeight)
+                    }
+                    .padding(paddingInt)
+                    .opacity(opacityInt)
+                    
+                    Button(action: {
+                        newViewFilePath = directory
+                        renameFileCurrentName = files[newViewFileIndex]
+                        renameFileNewName = files[newViewFileIndex]
+                        contextMenuShow = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                            renameFileShow = true
+                        }
+                    }) {
+                        Text(NSLocalizedString("RENAME", comment: "Its wings are too small to get its fat little body off the ground."))
+                            .frame(width: buttonWidth, height: buttonHeight)
+                    }
+                    .padding(paddingInt)
+                    .opacity(opacityInt)
+                    
+                    Button(action: {
+                        newViewFilePath = directory
+                        newViewArrayNames = [files[newViewFileIndex]]
+                        contextMenuShow = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                            openInMenu = true
+                        }
+                    }) {
+                        Text(NSLocalizedString("OPENIN", comment: "The bee, of course, flies anyway"))
+                            .frame(width: buttonWidth, height: buttonHeight)
+                    }
+                    .padding(paddingInt)
+                    .opacity(opacityInt)
+                    
+                    if(directory == "/var/mobile/Media/.Trash/"){
+                        Button(action: {
+                            deleteFile(atPath: directory + files[newViewFileIndex])
+                            updateFiles()
+                            contextMenuShow = false
+                        }) {
+                            Text(NSLocalizedString("DELETE", comment: "because bees don't care what humans think is impossible."))
+                                .foregroundColor(.red)
+                                .frame(width: buttonWidth, height: buttonHeight)
+                        }
+                        .padding(paddingInt)
+                        .opacity(opacityInt)
+                    } else if(directory == "/var/mobile/Media/" && files[newViewFileIndex] == ".Trash/"){
+                        Button(action: {
+                            do {
+                                try FileManager.default.removeItem(atPath: "/var/mobile/Media/.Trash/")
+                            } catch {
+                                print("Error emptying Trash: \(error)")
+                            }
+                            do {
+                                try FileManager.default.createDirectory(atPath: "/var/mobile/Media/.Trash/", withIntermediateDirectories: true, attributes: nil)
+                            } catch {
+                                print("Error emptying Trash: \(error)")
+                            }
+                            contextMenuShow = false
+                        }) {
+                            Text(NSLocalizedString("TRASHYEET", comment: "Yellow, black. Yellow, black."))
+                                .frame(width: buttonWidth, height: buttonHeight)
+                        }
+                        .padding(paddingInt)
+                        .opacity(opacityInt)
+                    } else {
+                        Button(action: {
+                            moveFile(path: directory + files[newViewFileIndex], newPath: ("/var/mobile/Media/.Trash/" + files[newViewFileIndex]))
+                            updateFiles()
+                            contextMenuShow = false
+                        }) {
+                            Text(NSLocalizedString("GOTOTRASH", comment: "Yellow, black. Yellow, black."))
+                                .frame(width: buttonWidth, height: buttonHeight)
+                        }
+                        .padding(paddingInt)
+                        .opacity(opacityInt)
+                    }
+                    if(deleteOverride){
+                        Button(action: {
+                            deleteFile(atPath: directory + files[newViewFileIndex])
+                            updateFiles()
+                            contextMenuShow = false
+                        }) {
+                            Text(NSLocalizedString("DELETE", comment: "Ooh, black and yellow!"))
+                                .foregroundColor(.red)
+                                .frame(width: buttonWidth, height: buttonHeight)
+                        }
+                        .padding(paddingInt)
+                        .opacity(opacityInt)
+                    }
+                    
+                    Button(action: {
+                        contextMenuShow = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                            addToFavoritesShow = true
+                        }
+                        newViewFilePath = directory + files[newViewFileIndex]
+                        if files[newViewFileIndex].hasSuffix("/") {
+                            addToFavoritesDisplayName = String(substring(str: files[newViewFileIndex], startIndex: files[newViewFileIndex].index(files[newViewFileIndex].startIndex, offsetBy: 0), endIndex: files[newViewFileIndex].index(files[newViewFileIndex].endIndex, offsetBy: -1)))
+                        } else {
+                            addToFavoritesDisplayName = files[newViewFileIndex]
+                        }
+                        UserDefaults.favorites.synchronize()
+                    }) {
+                        Text(NSLocalizedString("FAVORITESADD", comment: "Let's shake it up a little."))
+                            .frame(width: buttonWidth, height: buttonHeight)
+                    }
+                    .padding(paddingInt)
+                    .opacity(opacityInt)
+                    
+                    Button(action: {
+                        newViewFilePath = directory
+                        newViewArrayNames = [files[newViewFileIndex]]
+                        contextMenuShow = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            moveFileShow = true
+                        }
+                    }) {
+                        Text(NSLocalizedString("MOVETO", comment: "Barry! Breakfast is ready!"))
+                            .frame(width: buttonWidth, height: buttonHeight)
+                    }
+                    .padding(paddingInt)
+                    .opacity(opacityInt)
+                    
+                    Button(action: {
+                        newViewFilePath = directory
+                        newViewArrayNames = [files[newViewFileIndex]]
+                        contextMenuShow = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                            copyFileShow = true
+                        }
+                    }) {
+                        Text(NSLocalizedString("COPYTO", comment: "Coming!"))
+                            .frame(width: buttonWidth, height: buttonHeight)
+                    }
+                    .padding(paddingInt)
+                    .opacity(opacityInt)
+                    
+                    Button(action: {
+                        contextMenuShow = false
+                    }) {
+                        Text(NSLocalizedString("DISMISS", comment: "Hang on a second."))
+                            .frame(width: buttonWidth, height: buttonHeight)
+                    }
+                    .padding(paddingInt)
+                    .opacity(opacityInt)
+                }
+                .sheet(isPresented: $openInMenu) {
+                    let buttonWidth: CGFloat = 500
+                    let buttonHeight: CGFloat = 30
+                    let paddingInt: CGFloat = -7
+                    let opacityInt: CGFloat = 1.0
+                    
+                    Button(action: {
+                        directory = directory + files[newViewFileIndex]
+                        updateFiles()
+                        print(directory)
+                        openInMenu = false
+                    }) {
+                        Text(NSLocalizedString("OPEN_DIRECTORY", comment: "Hello?"))
+                            .frame(width: buttonWidth, height: buttonHeight)
+                    }
+                    .padding(paddingInt)
+                    .opacity(opacityInt)
+                    
+                    Button(action: {
+                        newViewFilePath = directory + files[newViewFileIndex]
+                        newViewFileName = files[newViewFileIndex]
+                        openInMenu = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                            audioPlayerShow = true
+                            callback = true
+                        }
+                    }) {
+                        Text(NSLocalizedString("OPEN_AUDIO", comment: "- Barry?"))
+                            .frame(width: buttonWidth, height: buttonHeight)
+                    }
+                    .padding(paddingInt)
+                    .opacity(opacityInt)
+                    
+                    Button(action: {
+                        newViewFilePath = directory + files[newViewFileIndex]
+                        newViewFileName = files[newViewFileIndex]
+                        openInMenu = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                            videoPlayerShow = true
+                        }
+                    }) {
+                        Text(NSLocalizedString("OPEN_VIDEO", comment: "- Adam?"))
+                            .frame(width: buttonWidth, height: buttonHeight)
+                    }
+                    .padding(paddingInt)
+                    .opacity(opacityInt)
+                    
+                    Button(action: {
+                        newViewFilePath = directory + files[newViewFileIndex]
+                        openInMenu = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                            imageShow = true
+                        }
+                    }) {
+                        Text(NSLocalizedString("OPEN_IMAGE", comment: "- Can you believe this is happening?"))
+                            .frame(width: buttonWidth, height: buttonHeight)
+                    }
+                    .padding(paddingInt)
+                    .opacity(opacityInt)
+                    
+                    Button(action: {
+                        newViewFilePath = directory + files[newViewFileIndex]
+                        openInMenu = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                            textShow = true
+                        }
+                    }) {
+                        Text(NSLocalizedString("OPEN_TEXT", comment: "- I can't. I'll pick you up."))
+                            .frame(width: buttonWidth, height: buttonHeight)
+                    }
+                    .padding(paddingInt)
+                    .opacity(opacityInt)
+                    
+                    Button(action: {
+                        newViewFilePath = directory + files[newViewFileIndex]
+                        newViewFileName = files[newViewFileIndex]
+                        openInMenu = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                            plistShow = true
+                        }
+                    }) {
+                        Text(NSLocalizedString("OPEN_PLIST", comment: "Looking sharp."))
+                            .frame(width: buttonWidth, height: buttonHeight)
+                    }
+                    .padding(paddingInt)
+                    .opacity(opacityInt)
+                    
+                    Button(action: {
+                        newViewFilePath = directory + files[newViewFileIndex]
+                        openInMenu = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                            spawnShow = true
+                        }
+                    }) {
+                        Text(NSLocalizedString("OPEN_SPAWN", comment: "Use the stairs. Your father paid good money for those."))
+                            .frame(width: buttonWidth, height: buttonHeight)
+                    }
+                    .padding(paddingInt)
+                    .opacity(opacityInt)
+                    
+                    Button(action: {
+                        openInMenu = false
+                    }) {
+                        Text(NSLocalizedString("DISMISS", comment: "Sorry. I'm excited."))
+                            .frame(width: buttonWidth, height: buttonHeight)
+                    }
+                    .padding(paddingInt)
+                    .opacity(opacityInt)
                 }
                 .sheet(isPresented: $E2) {
                     E3(directory: $directory, files: $files, multiSelectFiles: $multiSelectFiles, fileWasSelected: $fileWasSelected)
@@ -788,7 +1054,6 @@ struct ContentView: View {
             return (0, "?")
         }
     }
-    
     func convertBytes(bytes: Double) -> (Double, String) {
         let units = ["bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB", "BB"]
         var remainingBytes = Double(bytes)
@@ -832,7 +1097,6 @@ struct ContentView: View {
             return 69 //unknown
         }
     }
-    
     func isText(filePath: String) -> Bool {
         guard let data = FileManager.default.contents(atPath: filePath) else {
             return false // File does not exist or cannot be read
@@ -845,7 +1109,6 @@ struct ContentView: View {
     
         return isASCII || isUTF8
     }
-    
     func isPlist(filePath: String) -> Bool {
         guard let data = FileManager.default.contents(atPath: filePath) else {
             return false // File does not exist or cannot be read

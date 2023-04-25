@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		F845C82829F4D77C0025AC0A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F845C82A29F4D77C0025AC0A /* Localizable.strings */; };
-		F845C82D29F5EEE20025AC0A /* ContextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F845C82C29F5EEE20025AC0A /* ContextView.swift */; };
 		F845C82F29F6247A0025AC0A /* EThree.swift in Sources */ = {isa = PBXBuildFile; fileRef = F845C82E29F6247A0025AC0A /* EThree.swift */; };
 		F853AB2F29DBCB1A006EA2D5 /* SpartanApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB2E29DBCB1A006EA2D5 /* SpartanApp.swift */; };
 		F853AB3129DBCB1A006EA2D5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB3029DBCB1A006EA2D5 /* ContentView.swift */; };
@@ -51,7 +50,6 @@
 
 /* Begin PBXFileReference section */
 		F845C82929F4D77C0025AC0A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		F845C82C29F5EEE20025AC0A /* ContextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextView.swift; sourceTree = "<group>"; };
 		F845C82E29F6247A0025AC0A /* EThree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EThree.swift; sourceTree = "<group>"; };
 		F853AB2B29DBCB1A006EA2D5 /* Spartan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spartan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F853AB2E29DBCB1A006EA2D5 /* SpartanApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpartanApp.swift; sourceTree = "<group>"; };
@@ -115,7 +113,6 @@
 			children = (
 				F853AB2E29DBCB1A006EA2D5 /* SpartanApp.swift */,
 				F853AB3029DBCB1A006EA2D5 /* ContentView.swift */,
-				F845C82C29F5EEE20025AC0A /* ContextView.swift */,
 				F8CC214729EFA164008C7B88 /* TextView.swift */,
 				F853AB4229DE1C41006EA2D5 /* CreateFileView.swift */,
 				F853AB4629DE1CEC006EA2D5 /* CreateDirectoryView.swift */,
@@ -243,7 +240,6 @@
 			files = (
 				F853AB5D29E0AC3F006EA2D5 /* TintColorView.swift in Sources */,
 				F853AB5529DE8B3B006EA2D5 /* FavoritesView.swift in Sources */,
-				F845C82D29F5EEE20025AC0A /* ContextView.swift in Sources */,
 				F853AB3129DBCB1A006EA2D5 /* ContentView.swift in Sources */,
 				F8CC214829EFA165008C7B88 /* TextView.swift in Sources */,
 				F853AB4B29DE21A8006EA2D5 /* CopyFileView.swift in Sources */,
@@ -421,7 +417,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = lol.whitetailani.Spartan;
+				PRODUCT_BUNDLE_IDENTIFIER = com.whitetailani.Spartan;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -454,7 +450,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = lol.whitetailani.Spartan;
+				PRODUCT_BUNDLE_IDENTIFIER = com.whitetailani.Spartan;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
