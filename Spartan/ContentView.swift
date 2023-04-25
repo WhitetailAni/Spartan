@@ -12,7 +12,6 @@ struct ContentView: View {
     @State var directory: String
     @State private var files: [String] = []
     @State private var selectedFile: FileInfo?
-    @State private var textSuccess = false
     @State private var fileInfo: String = ""
     @State var permissionDenied = false
     @State var deleteOverride = false
@@ -25,48 +24,39 @@ struct ContentView: View {
     @State var multiSelectFiles: [String] = []
     @State var fileWasSelected: [Bool] = [false]
     
-    @State var fileInfoShow = false
-    
     @State var newViewFilePath: String = ""
     @State var newViewArrayNames: [String] = [""]
     @State var newViewFileName: String = ""
     @State private var newViewFileIndex = 0
     
-    @State private var renameFileShow = false
     @State var renameFileCurrentName: String = ""
     @State var renameFileNewName: String = ""
     
-    @State private var sidebarShow = false
+    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 19)
+    //contextMenuShow = 1
+    //openInMenu = 2
+    //fileInfoShow = 3
+    //textShow = 4
+    //createFileShow = 5
+    //createDirectoryShow = 6
+    //renameFileShow = 7
+    //moveFileShow = 8
+    //copyFileShow = 9
+    //audioPlayerShow = 10
+    //videoPlayerShow = 11
+    //imageShow = 12
+    //plistShow = 13
+    //zipFileShow = 14
+    //spawnShow = 15
+    //favoritesShow = 16
+    //addToFavoritesShow = 17
+    //settingsShow = 18
+    //searchShow = 19
     
-    @State private var contextMenuShow = false
-    
-    @State private var searchShow = false
-    @State private var createDirectoryShow = false
-    @State private var createFileShow = false
-    @State private var favoritesShow = false
-    @State private var settingsShow = false
-    
-    @State private var openInMenu = false
-    
-    @State private var moveFileShow = false
-    @State private var copyFileShow = false
-    
-    @State private var audioPlayerShow = false
-    @State private var videoPlayerShow = false
     @State var globalAVPlayer = AVPlayer()
     @State var isGlobalAVPlayerPlaying = false
     @State var callback = true
-    
-    @State private var imageShow = false
-    @State private var plistShow = false
-    @State private var textShow = false
-    @State private var spawnShow = false
-    
-    @State private var zipFileShow = false
     @State private var uncompressZip = false
-    
-    @State private var addToFavoritesShow = false
-    @State private var addToFavoritesDisplayName: String = ""
     
     @State var blankString: [String] = [""]
     
@@ -167,7 +157,7 @@ struct ContentView: View {
                                 }
                                 .contextMenu {
                                     Button(action: {
-                                        fileInfoShow = true
+                                        showSubView[3] = true
                                         fileInfo = getFileInfo(forFileAtPath: directory + files[index])
                                     }) {
                                         Text(NSLocalizedString("INFO", comment: "there is no way a bee should be able to fly."))
@@ -178,13 +168,13 @@ struct ContentView: View {
                                         newViewFilePath = directory
                                         renameFileCurrentName = files[index]
                                         renameFileNewName = files[index]
-                                        renameFileShow = true
+                                        showSubView[7] = true
                                     }) {
                                         Text(NSLocalizedString("RENAME", comment: "Its wings are too small to get its fat little body off the ground."))
                                     }
                                     
                                     Button(action: {
-                                        openInMenu = true
+                                        showSubView[2] = true
                                         newViewFilePath = directory
                                         newViewArrayNames = [files[index]]
                                     }) {
@@ -234,12 +224,12 @@ struct ContentView: View {
                                     }
                                     
                                     Button(action: {
-                                        addToFavoritesShow = true
+                                        showSubView[17] = true
                                         newViewFilePath = directory + files[index]
                                         if files[index].hasSuffix("/") {
-                                            addToFavoritesDisplayName = String(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
+                                            newViewFileName = String(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
                                         } else {
-                                            addToFavoritesDisplayName = files[index]
+                                            newViewFileName = files[index]
                                         }
                                         UserDefaults.favorites.synchronize()
                                     }) {
@@ -249,7 +239,7 @@ struct ContentView: View {
                                     Button(action: {
                                         newViewFilePath = directory
                                         newViewArrayNames = [files[index]]
-                                        moveFileShow = true
+                                        showSubView[8] = true
                                     }) {
                                         Text(NSLocalizedString("MOVETO", comment: "Barry! Breakfast is ready!"))
                                     }
@@ -257,7 +247,7 @@ struct ContentView: View {
                                     Button(action: {
                                         newViewFilePath = directory
                                         newViewArrayNames = [files[index]]
-                                        copyFileShow = true
+                                        showSubView[9] = true
                                     }) {
                                         Text(NSLocalizedString("COPYTO", comment: "Coming!"))
                                     }
@@ -266,7 +256,7 @@ struct ContentView: View {
                                 }
                             } else {
                                 Button(action: {
-                                    contextMenuShow = true
+                                    showSubView[1] = true
                                     newViewFilePath = directory
                                     newViewFileName = files[index]
                                     newViewFileIndex = index
@@ -315,7 +305,7 @@ struct ContentView: View {
                         }
                     }
                 }
-                .sheet(isPresented: $contextMenuShow) {
+                .sheet(isPresented: $showSubView[1]) {
                     let buttonWidth: CGFloat = 500
                     let buttonHeight: CGFloat = 30
                     let paddingInt: CGFloat = -7
@@ -323,7 +313,7 @@ struct ContentView: View {
                     
                     Button(action: {
                         defaultAction(index: newViewFileIndex)
-                        contextMenuShow = false
+                        showSubView[1] = false
                     }) {
                         Text(NSLocalizedString("OPEN", comment: "You ever think maybe things work a little too well here?"))
                             .frame(width: buttonWidth, height: buttonHeight)
@@ -333,9 +323,9 @@ struct ContentView: View {
     
                     Button(action: {
                         fileInfo = getFileInfo(forFileAtPath: directory + files[newViewFileIndex])
-                        contextMenuShow = false
+                        showSubView[1] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                            fileInfoShow = true
+                            showSubView[3] = true
                         }
                     }) {
                         Text(NSLocalizedString("INFO", comment: "there is no way a bee should be able to fly."))
@@ -348,9 +338,9 @@ struct ContentView: View {
                         newViewFilePath = directory
                         renameFileCurrentName = files[newViewFileIndex]
                         renameFileNewName = files[newViewFileIndex]
-                        contextMenuShow = false
+                        showSubView[1] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                            renameFileShow = true
+                            showSubView[7] = true
                         }
                     }) {
                         Text(NSLocalizedString("RENAME", comment: "Its wings are too small to get its fat little body off the ground."))
@@ -362,9 +352,9 @@ struct ContentView: View {
                     Button(action: {
                         newViewFilePath = directory
                         newViewArrayNames = [files[newViewFileIndex]]
-                        contextMenuShow = false
+                        showSubView[1] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                            openInMenu = true
+                            showSubView[2] = true
                         }
                     }) {
                         Text(NSLocalizedString("OPENIN", comment: "The bee, of course, flies anyway"))
@@ -377,7 +367,7 @@ struct ContentView: View {
                         Button(action: {
                             deleteFile(atPath: directory + files[newViewFileIndex])
                             updateFiles()
-                            contextMenuShow = false
+                            showSubView[1] = false
                         }) {
                             Text(NSLocalizedString("DELETE", comment: "because bees don't care what humans think is impossible."))
                                 .foregroundColor(.red)
@@ -397,7 +387,7 @@ struct ContentView: View {
                             } catch {
                                 print("Error emptying Trash: \(error)")
                             }
-                            contextMenuShow = false
+                            showSubView[1] = false
                         }) {
                             Text(NSLocalizedString("TRASHYEET", comment: "Yellow, black. Yellow, black."))
                                 .frame(width: buttonWidth, height: buttonHeight)
@@ -408,7 +398,7 @@ struct ContentView: View {
                         Button(action: {
                             moveFile(path: directory + files[newViewFileIndex], newPath: ("/var/mobile/Media/.Trash/" + files[newViewFileIndex]))
                             updateFiles()
-                            contextMenuShow = false
+                            showSubView[1] = false
                         }) {
                             Text(NSLocalizedString("GOTOTRASH", comment: "Yellow, black. Yellow, black."))
                                 .frame(width: buttonWidth, height: buttonHeight)
@@ -420,7 +410,7 @@ struct ContentView: View {
                         Button(action: {
                             deleteFile(atPath: directory + files[newViewFileIndex])
                             updateFiles()
-                            contextMenuShow = false
+                            showSubView[1] = false
                         }) {
                             Text(NSLocalizedString("DELETE", comment: "Ooh, black and yellow!"))
                                 .foregroundColor(.red)
@@ -431,15 +421,15 @@ struct ContentView: View {
                     }
                     
                     Button(action: {
-                        contextMenuShow = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                            addToFavoritesShow = true
-                        }
                         newViewFilePath = directory + files[newViewFileIndex]
                         if files[newViewFileIndex].hasSuffix("/") {
-                            addToFavoritesDisplayName = String(substring(str: files[newViewFileIndex], startIndex: files[newViewFileIndex].index(files[newViewFileIndex].startIndex, offsetBy: 0), endIndex: files[newViewFileIndex].index(files[newViewFileIndex].endIndex, offsetBy: -1)))
+                            newViewFileName = String(substring(str: files[newViewFileIndex], startIndex: files[newViewFileIndex].index(files[newViewFileIndex].startIndex, offsetBy: 0), endIndex: files[newViewFileIndex].index(files[newViewFileIndex].endIndex, offsetBy: -1)))
                         } else {
-                            addToFavoritesDisplayName = files[newViewFileIndex]
+                            newViewFileName = files[newViewFileIndex]
+                        }
+                        showSubView[1] = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                            showSubView[17] = true
                         }
                         UserDefaults.favorites.synchronize()
                     }) {
@@ -452,9 +442,9 @@ struct ContentView: View {
                     Button(action: {
                         newViewFilePath = directory
                         newViewArrayNames = [files[newViewFileIndex]]
-                        contextMenuShow = false
+                        showSubView[1] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            moveFileShow = true
+                            showSubView[8] = true
                         }
                     }) {
                         Text(NSLocalizedString("MOVETO", comment: "Barry! Breakfast is ready!"))
@@ -466,9 +456,9 @@ struct ContentView: View {
                     Button(action: {
                         newViewFilePath = directory
                         newViewArrayNames = [files[newViewFileIndex]]
-                        contextMenuShow = false
+                        showSubView[1] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                            copyFileShow = true
+                            showSubView[9] = true
                         }
                     }) {
                         Text(NSLocalizedString("COPYTO", comment: "Coming!"))
@@ -478,7 +468,7 @@ struct ContentView: View {
                     .opacity(opacityInt)
                     
                     Button(action: {
-                        contextMenuShow = false
+                        showSubView[1] = false
                     }) {
                         Text(NSLocalizedString("DISMISS", comment: "Hang on a second."))
                             .frame(width: buttonWidth, height: buttonHeight)
@@ -486,7 +476,7 @@ struct ContentView: View {
                     .padding(paddingInt)
                     .opacity(opacityInt)
                 }
-                .sheet(isPresented: $openInMenu) {
+                .sheet(isPresented: $showSubView[2]) {
                     let buttonWidth: CGFloat = 500
                     let buttonHeight: CGFloat = 30
                     let paddingInt: CGFloat = -7
@@ -496,7 +486,7 @@ struct ContentView: View {
                         directory = directory + files[newViewFileIndex]
                         updateFiles()
                         print(directory)
-                        openInMenu = false
+                        showSubView[2] = false
                     }) {
                         Text(NSLocalizedString("OPEN_DIRECTORY", comment: "Hello?"))
                             .frame(width: buttonWidth, height: buttonHeight)
@@ -507,9 +497,9 @@ struct ContentView: View {
                     Button(action: {
                         newViewFilePath = directory + files[newViewFileIndex]
                         newViewFileName = files[newViewFileIndex]
-                        openInMenu = false
+                        showSubView[2] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                            audioPlayerShow = true
+                            showSubView[10] = true
                             callback = true
                         }
                     }) {
@@ -522,9 +512,9 @@ struct ContentView: View {
                     Button(action: {
                         newViewFilePath = directory + files[newViewFileIndex]
                         newViewFileName = files[newViewFileIndex]
-                        openInMenu = false
+                        showSubView[2] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                            videoPlayerShow = true
+                            showSubView[11] = true
                         }
                     }) {
                         Text(NSLocalizedString("OPEN_VIDEO", comment: "- Adam?"))
@@ -535,9 +525,9 @@ struct ContentView: View {
                     
                     Button(action: {
                         newViewFilePath = directory + files[newViewFileIndex]
-                        openInMenu = false
+                        showSubView[2] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                            imageShow = true
+                            showSubView[12] = true
                         }
                     }) {
                         Text(NSLocalizedString("OPEN_IMAGE", comment: "- Can you believe this is happening?"))
@@ -548,9 +538,9 @@ struct ContentView: View {
                     
                     Button(action: {
                         newViewFilePath = directory + files[newViewFileIndex]
-                        openInMenu = false
+                        showSubView[2] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                            textShow = true
+                            showSubView[4] = true
                         }
                     }) {
                         Text(NSLocalizedString("OPEN_TEXT", comment: "- I can't. I'll pick you up."))
@@ -562,9 +552,9 @@ struct ContentView: View {
                     Button(action: {
                         newViewFilePath = directory + files[newViewFileIndex]
                         newViewFileName = files[newViewFileIndex]
-                        openInMenu = false
+                        showSubView[2] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                            plistShow = true
+                            showSubView[13] = true
                         }
                     }) {
                         Text(NSLocalizedString("OPEN_PLIST", comment: "Looking sharp."))
@@ -575,9 +565,9 @@ struct ContentView: View {
                     
                     Button(action: {
                         newViewFilePath = directory + files[newViewFileIndex]
-                        openInMenu = false
+                        showSubView[2] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                            spawnShow = true
+                            showSubView[15] = true
                         }
                     }) {
                         Text(NSLocalizedString("OPEN_SPAWN", comment: "Use the stairs. Your father paid good money for those."))
@@ -587,7 +577,7 @@ struct ContentView: View {
                     .opacity(opacityInt)
                     
                     Button(action: {
-                        openInMenu = false
+                        showSubView[2] = false
                     }) {
                         Text(NSLocalizedString("DISMISS", comment: "Sorry. I'm excited."))
                             .frame(width: buttonWidth, height: buttonHeight)
@@ -607,7 +597,7 @@ struct ContentView: View {
                 }
                 .onPlayPauseCommand {
                     callback = false
-                    audioPlayerShow = true
+                    showSubView[10] = true
                 }
                 .alert(isPresented: $permissionDenied) { //permissions fail!
                     Alert(
@@ -615,67 +605,67 @@ struct ContentView: View {
                         dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "We're very proud of you, son.")))
                     )
                 }
-                .alert(isPresented: $fileInfoShow) { //file info
+                .alert(isPresented: $showSubView[3]) { //file info
                     Alert(
                         title: Text(NSLocalizedString("SHOW_INFO", comment: "A perfect report card, all B's.")),
                         message: Text(fileInfo),
                         dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "Very proud.")))
                     )
                 }
-                .sheet(isPresented: $textShow, content: {
-                    TextView(filePath: $newViewFilePath, isPresented: $textShow)
+                .sheet(isPresented: $showSubView[4], content: {
+                    TextView(filePath: $newViewFilePath, isPresented: $showSubView[4])
                 })
-                .sheet(isPresented: $searchShow, content: { //search files
-                    SearchView(directoryToSearch: $directory, isPresenting: $searchShow)
+                .sheet(isPresented: $showSubView[19], content: { //search files
+                    SearchView(directoryToSearch: $directory, isPresenting: $showSubView[19])
                 })
-                .sheet(isPresented: $createDirectoryShow, content: { //create dir
-                    CreateDirectoryView(directoryPath: directory, isPresented: $createDirectoryShow)
+                .sheet(isPresented: $showSubView[6], content: { //create dir
+                    CreateDirectoryView(directoryPath: directory, isPresented: $showSubView[6])
                 })
-                .sheet(isPresented: $createFileShow, content: { //create file
-                    CreateFileView(filePath: directory, isPresented: $createFileShow)
+                .sheet(isPresented: $showSubView[5], content: { //create file
+                    CreateFileView(filePath: directory, isPresented: $showSubView[5])
                 })
-                .sheet(isPresented: $favoritesShow, content: {
-                    FavoritesView(directory: $directory, showView: $favoritesShow)
+                .sheet(isPresented: $showSubView[16], content: {
+                    FavoritesView(directory: $directory, showView: $showSubView[16])
                 })
-                .sheet(isPresented: $addToFavoritesShow, content: {
-                    AddToFavoritesView(filePath: $newViewFilePath, displayName: $addToFavoritesDisplayName, showView: $addToFavoritesShow)
+                .sheet(isPresented: $showSubView[17], content: {
+                    AddToFavoritesView(filePath: $newViewFilePath, displayName: $newViewFileName, showView: $showSubView[17])
                 })
-                .sheet(isPresented: $settingsShow, content: {
+                .sheet(isPresented: $showSubView[18], content: {
                     SettingsView()
                 })
-                .sheet(isPresented: $renameFileShow, content: {
-                    RenameFileView(fileName: $renameFileCurrentName, newFileName: $renameFileNewName, filePath: $newViewFilePath, isPresented: $renameFileShow)
+                .sheet(isPresented: $showSubView[7], content: {
+                    RenameFileView(fileName: $renameFileCurrentName, newFileName: $renameFileNewName, filePath: $newViewFilePath, isPresented: $showSubView[7])
                 })
-                .sheet(isPresented: $moveFileShow, content: {
-                    MoveFileView(fileNames: $newViewArrayNames, filePath: $newViewFilePath, multiSelect: $multiSelect, isPresented: $moveFileShow)
+                .sheet(isPresented: $showSubView[8], content: {
+                    MoveFileView(fileNames: $newViewArrayNames, filePath: $newViewFilePath, multiSelect: $multiSelect, isPresented: $showSubView[8])
                 })
-                .sheet(isPresented: $copyFileShow, content: {
-                    CopyFileView(fileNames: $newViewArrayNames, filePath: $newViewFilePath, multiSelect: $multiSelect, isPresented: $copyFileShow)
+                .sheet(isPresented: $showSubView[9], content: {
+                    CopyFileView(fileNames: $newViewArrayNames, filePath: $newViewFilePath, multiSelect: $multiSelect, isPresented: $showSubView[9])
                 })
-                .sheet(isPresented: $videoPlayerShow, content: {
+                .sheet(isPresented: $showSubView[11], content: {
                     VideoPlayerView(videoPath: $newViewFilePath, videoName: $newViewFileName, player: globalAVPlayer)
                 })
-                .sheet(isPresented: $audioPlayerShow, content: {
+                .sheet(isPresented: $showSubView[10], content: {
                     if(callback){
                         AudioPlayerView(callback: callback, audioPath: $newViewFilePath, audioName: $newViewFileName, player: globalAVPlayer)
                     } else {
                         AudioPlayerView(callback: callback, audioPath: $blankString[0], audioName: $blankString[0], player: globalAVPlayer)
                     }
                 })
-                .sheet(isPresented: $imageShow, content: {
+                .sheet(isPresented: $showSubView[12], content: {
                     ImageView(imagePath: $newViewFilePath)
                 })
-                .sheet(isPresented: $plistShow, content: {
+                .sheet(isPresented: $showSubView[13], content: {
                     PlistView(filePath: $newViewFilePath, fileName: $newViewFileName)
                 })
-                .sheet(isPresented: $zipFileShow, content: {
+                .sheet(isPresented: $showSubView[14], content: {
                     if(uncompressZip){
-                        ZipFileView(unzip: uncompressZip, isPresented: $zipFileShow, fileNames: blankString, filePath: $directory, zipFileName: $newViewFileName)
+                        ZipFileView(unzip: uncompressZip, isPresented: $showSubView[14], fileNames: blankString, filePath: $directory, zipFileName: $newViewFileName)
                     } else {
-                        ZipFileView(unzip: uncompressZip, isPresented: $zipFileShow, fileNames: multiSelectFiles, filePath: $directory, zipFileName: $blankString[0])
+                        ZipFileView(unzip: uncompressZip, isPresented: $showSubView[14], fileNames: multiSelectFiles, filePath: $directory, zipFileName: $blankString[0])
                     }
                 })
-                .sheet(isPresented: $spawnShow, content: {
+                .sheet(isPresented: $showSubView[15], content: {
                     SpawnView(binaryPath: $newViewFilePath)
                 })
                 .accentColor(.accentColor)
@@ -725,7 +715,7 @@ struct ContentView: View {
             
             if (!multiSelect) {
                 Button(action: {
-                    searchShow = true
+                    showSubView[19] = true
                     newViewFilePath = directory
                 }) {
                     Image(systemName: "magnifyingglass")
@@ -733,7 +723,7 @@ struct ContentView: View {
                 }
         
                 Button(action: { //new file
-                    createFileShow = true
+                    showSubView[5] = true
                 }) {
                     if #available(tvOS 14.0, *){
                         Image(systemName: "doc.badge.plus")
@@ -745,28 +735,28 @@ struct ContentView: View {
                 }
             
                 Button(action: { //new directory
-                    createDirectoryShow = true
+                    showSubView[6] = true
                 }) {
                     Image(systemName: "folder.badge.plus")
                         .frame(width:50, height:50)
                 }
                 
                 Button(action: { //favorites
-                    favoritesShow = true
+                    showSubView[16] = true
                 }) {
                     Image(systemName: "star")
                         .frame(width:50, height:50)
                 }
             
                 Button(action: { //settings
-                    settingsShow = true
+                    showSubView[18] = true
                 }) {
                     Image(systemName: "gear")
                         .frame(width:50, height:50)
                 }
             } else {
                 Button(action: {
-                    moveFileShow = true
+                    showSubView[8] = true
                     newViewFilePath = directory
                     newViewArrayNames = multiSelectFiles
                     resizeMultiSelectArrays()
@@ -783,7 +773,7 @@ struct ContentView: View {
                 }
         
                 Button(action: {
-                    copyFileShow = true
+                    showSubView[9] = true
                     newViewFilePath = directory
                     newViewArrayNames = multiSelectFiles
                     resizeMultiSelectArrays()
@@ -800,7 +790,7 @@ struct ContentView: View {
                 }
             
                 Button(action: {
-                    zipFileShow = true
+                    showSubView[14] = true
                     uncompressZip = false
                     newViewFilePath = directory
                     newViewArrayNames = multiSelectFiles
@@ -898,30 +888,30 @@ struct ContentView: View {
                 updateFiles()
                 print(directory)
             } else if (yandereDevFileType(file: (directory + files[index])) == 1) {
-                audioPlayerShow = true
+                showSubView[10] = true
                 callback = true
                 newViewFilePath = directory + files[index]
                 newViewFileName = files[index]
             } else if (yandereDevFileType(file: (directory + files[index])) == 2){
-                videoPlayerShow = true
+                showSubView[11] = true
                 newViewFilePath = directory + files[index]
                 newViewFileName = files[index]
             } else if (yandereDevFileType(file: (directory + files[index])) == 3) {
-                imageShow = true
+                showSubView[12] = true
                 newViewFilePath = directory + files[index]
             } else if (yandereDevFileType(file: (directory + files[index])) == 4) {
-                textShow = true
+                showSubView[4] = true
                 newViewFilePath = directory + files[index]
             } else if (yandereDevFileType(file: (directory + files[index])) == 5){
-                plistShow = true
+                showSubView[13] = true
                 newViewFilePath = directory + files[index]
                 newViewFileName = files[index]
             } else if (yandereDevFileType(file: (directory + files[index])) == 6){
-                zipFileShow = true
-                newViewFileName = files[index]
+                showSubView[14] = true
                 uncompressZip = true
+                newViewFileName = files[index]
             } else if (yandereDevFileType(file: (directory + files[index])) == 7){
-                spawnShow = true
+                showSubView[15] = true
                 newViewFilePath = directory + files[index]
             } else {
                 selectedFile = FileInfo(name: files[index], id: UUID())
