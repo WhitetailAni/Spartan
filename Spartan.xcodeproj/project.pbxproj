@@ -72,8 +72,6 @@
 		F8CC212229E4FFC5008C7B88 /* PlistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistView.swift; sourceTree = "<group>"; };
 		F8CC212629E5206B008C7B88 /* SpareViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpareViews.swift; sourceTree = "<group>"; };
 		F8CC212E29E74DF4008C7B88 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
-		F8CC213129E79042008C7B88 /* tvOSSlider.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = tvOSSlider.framework; path = Spartan/tvOSSlider.framework; sourceTree = "<group>"; };
-		F8CC213329E790B5008C7B88 /* TvOSSlider.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TvOSSlider.framework; path = Spartan/TvOSSlider.framework; sourceTree = "<group>"; };
 		F8CC214329EB9503008C7B88 /* ZipFileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipFileView.swift; sourceTree = "<group>"; };
 		F8CC214529EF5838008C7B88 /* SpawnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpawnView.swift; sourceTree = "<group>"; };
 		F8CC214729EFA164008C7B88 /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
@@ -96,7 +94,6 @@
 			children = (
 				F853AB2C29DBCB1A006EA2D5 /* Products */,
 				F853AB2D29DBCB1A006EA2D5 /* Spartan */,
-				F8CC213029E79042008C7B88 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -119,8 +116,8 @@
 				F853AB4429DE1CB3006EA2D5 /* RenameFileView.swift */,
 				F853AB4829DE1D12006EA2D5 /* MoveFileView.swift */,
 				F853AB4A29DE21A8006EA2D5 /* CopyFileView.swift */,
-				F8CC212E29E74DF4008C7B88 /* VideoPlayerView.swift */,
 				F853AB4E29DE57D8006EA2D5 /* AudioPlayerView.swift */,
+				F8CC212E29E74DF4008C7B88 /* VideoPlayerView.swift */,
 				F8CC211E29E2762F008C7B88 /* ImageView.swift */,
 				F8CC212229E4FFC5008C7B88 /* PlistView.swift */,
 				F8CC214329EB9503008C7B88 /* ZipFileView.swift */,
@@ -146,15 +143,6 @@
 				F853AB3529DBCB1E006EA2D5 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		F8CC213029E79042008C7B88 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				F8CC213329E790B5008C7B88 /* TvOSSlider.framework */,
-				F8CC213129E79042008C7B88 /* tvOSSlider.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
