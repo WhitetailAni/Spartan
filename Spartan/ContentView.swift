@@ -100,6 +100,8 @@ struct ContentView: View {
                                 }) {
                                     Text("Toggle Debug")
                                 }
+                                
+                                Button("Dismiss", action: { } )
                             }
                         } else {
                             Button(action: {
@@ -605,7 +607,7 @@ struct ContentView: View {
                     
                 }
                 .sheet(isPresented: $E2) {
-                    E3(directory: $directory, files: $files, multiSelectFiles: $multiSelectFiles, fileWasSelected: $fileWasSelected, showSubView: $showSubView)
+                    E3(directory: $directory, files: $files, multiSelectFiles: $multiSelectFiles, fileWasSelected: $fileWasSelected, showSubView: $showSubView, yandereDevFileTypeDebugTransfer: yandereDevFileType)
                 }
                 .navigationBarHidden(true)
                 .onAppear {
