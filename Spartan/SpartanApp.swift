@@ -14,12 +14,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     @State var favoritesDisplayName: [String] = (UserDefaults.favorites.stringArray(forKey: "favoritesDisplayName") ?? [NSLocalizedString("NOFAVORITES", comment: "The Bee Movie Script Will Be Located In NSLocalizedString Comments")])
     @State var favoritesFilePath: [String] = (UserDefaults.favorites.stringArray(forKey: "favoritesFilePath") ?? ["/var/mobile/Media/.Trash/"])
     
+    @State private var buttonWidth: CGFloat = 0
+    @State private var buttonHeight: CGFloat = 0
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     
         UserDefaults.settings.set(true, forKey: "autoComplete")
         
         if(FileManager.default.isReadableFile(atPath: "/var/mobile/")){ //shows app data directory if sandbox exists
-            displayView(pathToLoad: "/var/mobile/Documents/")
+            displayView(pathToLoad: "/var/mobile/")
             //displayView(pathToLoad:  "/var/containers/Bundle/Application/2A65A51A-4061-4143-B622-FA0E57C0C3EE/trillstore.app/")
             //displayView(pathToLoad: "/bin/") //for posix_spawn testing
         } else {
@@ -33,7 +36,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func displayView(pathToLoad: String) {
-        let hostingController = UIHostingController(rootView: ContentView(directory: pathToLoad))
+        if UIScreen.main.nativeBounds.height == 2160 {
+            buttonWidth = 1000
+            buttonHeight = 60
+        } else if UIScreen.main.nativeBounds.height == 1080 {
+            buttonWidth = 500
+            buttonHeight = 30
+        }
+        let hostingController = UIHostingController(rootView: ContentView(directory: pathToLoad, buttonWidth: buttonWidth, buttonHeight: buttonHeight))
             window = UIWindow(frame: UIScreen.main.bounds)
             window?.rootViewController = hostingController
             window?.makeKeyAndVisible()

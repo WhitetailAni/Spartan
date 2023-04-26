@@ -19,6 +19,9 @@ struct ContentView: View {
     @State var E = false
     @State var E2 = false
     
+    @State var buttonWidth: CGFloat
+    @State var buttonHeight: CGFloat
+    
     @State var multiSelect = false
     @State var allWereSelected = false
     @State var multiSelectFiles: [String] = []
@@ -318,8 +321,6 @@ struct ContentView: View {
                 .sheet(isPresented: $showSubView[1]) {
                     let paddingInt: CGFloat = -7
                     let opacityInt: CGFloat = 1.0
-                    let buttonWidth: CGFloat = 500
-                    let buttonHeight: CGFloat = 30
                     
                     Button(action: {
                         defaultAction(index: newViewFileIndex)
@@ -607,7 +608,7 @@ struct ContentView: View {
                     
                 }
                 .sheet(isPresented: $E2) {
-                    E3(directory: $directory, files: $files, multiSelectFiles: $multiSelectFiles, fileWasSelected: $fileWasSelected, showSubView: $showSubView, yandereDevFileTypeDebugTransfer: yandereDevFileType)
+                    EThree(directory: $directory, files: $files, multiSelectFiles: $multiSelectFiles, fileWasSelected: $fileWasSelected, showSubView: $showSubView, yandereDevFileTypeDebugTransfer: yandereDevFileType)
                 }
                 .navigationBarHidden(true)
                 .onAppear {
