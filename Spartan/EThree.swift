@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct E3: View {
+struct EThree: View {
     
     @Binding var directory: String
     @Binding var files: [String]
@@ -15,19 +15,54 @@ struct E3: View {
     @Binding var fileWasSelected: [Bool]
     @Binding var showSubView: [Bool]
     
+    @State var buttonWidth: CGFloat = 0
+    @State var buttonHeight: CGFloat = 0
+    
+    @State private var deviceInfo: [String] = []
+    @State private var deviceInfoShow = false
+    
     var yandereDevFileTypeDebugTransfer: ((String) -> Int)? = nil
+    //var realFreeSpace: ((Double) -> (Double, String))? = nil
     
     var body: some View {
         let paddingInt: CGFloat = -7
         let opacityInt: CGFloat = 1.0
-        let buttonWidth: CGFloat = 500
-        let buttonHeight: CGFloat = 30
     
         Text("Welcome to Milliways")
             .font(.system(size: 69))
             .bold()
             .padding(paddingInt)
             .opacity(opacityInt)
+            .onAppear {
+                let propertyKeys = ["name", "model", "localizedModel", "systemName", "systemVersion", "identifierForVendor"]
+
+                for key in propertyKeys {
+                    switch key {
+                    case "name":
+                        deviceInfo.append(UIDevice.current.name)
+                    case "model":
+                        deviceInfo.append(UIDevice.current.model)
+                    case "localizedModel":
+                        deviceInfo.append(UIDevice.current.localizedModel)
+                    case "systemName":
+                        deviceInfo.append(UIDevice.current.systemName)
+                    case "systemVersion":
+                        deviceInfo.append(UIDevice.current.systemVersion)
+                    case "identifierForVendor":
+                        deviceInfo.append(UIDevice.current.identifierForVendor?.uuidString ?? "unknown")
+                    default:
+                        break
+                    }
+                }
+                
+                if UIScreen.main.nativeBounds.height == 2160 {
+                    buttonWidth = 1000
+                    buttonHeight = 60
+                } else if UIScreen.main.nativeBounds.height == 1080 {
+                    buttonWidth = 500
+                    buttonHeight = 30
+                }
+            }
         
         Button(action: {
             print(directory)
@@ -36,7 +71,7 @@ struct E3: View {
                 .frame(width: buttonWidth, height: buttonHeight)
         }
         .padding(paddingInt)
-            .opacity(opacityInt)
+        .opacity(opacityInt)
         
         
         Button(action: {
@@ -68,7 +103,7 @@ struct E3: View {
                 .frame(width: buttonWidth, height: buttonHeight)
         }
         .padding(paddingInt)
-            .opacity(opacityInt)
+        .opacity(opacityInt)
         
         
         Button(action: {
@@ -78,7 +113,7 @@ struct E3: View {
                 .frame(width: buttonWidth, height: buttonHeight)
         }
         .padding(paddingInt)
-            .opacity(opacityInt)
+        .opacity(opacityInt)
         
         
         Button(action: {
@@ -88,7 +123,7 @@ struct E3: View {
                 .frame(width: buttonWidth, height: buttonHeight)
         }
         .padding(paddingInt)
-            .opacity(opacityInt)
+        .opacity(opacityInt)
         
         
         Button(action: {
@@ -98,7 +133,19 @@ struct E3: View {
                 .frame(width: buttonWidth, height: buttonHeight)
         }
         .padding(paddingInt)
-            .opacity(opacityInt)
+        .opacity(opacityInt)
+        
+        Button(action: {
+            deviceInfoShow = true
+        }) {
+            Text("Show Device Info")
+                .frame(width: buttonWidth, height: buttonHeight)
+        }
+        .padding(paddingInt)
+        .opacity(opacityInt)
+        .sheet(isPresented: $deviceInfoShow, content: {
+            EEEE(deviceInfo: $deviceInfo, buttonWidth: $buttonWidth, buttonHeight: $buttonHeight)
+        })
         
         
         Button(action: {
@@ -108,5 +155,46 @@ struct E3: View {
                 .frame(width: buttonWidth, height: buttonHeight)
         }
         .padding(10)
+        .opacity(opacityInt)
+    }
+}
+
+struct EEEE: View {
+
+    @Binding var deviceInfo: [String]
+    @Binding var buttonWidth: CGFloat
+    @Binding var buttonHeight: CGFloat
+    
+    var body: some View {
+        Text("Don't worry, sir. I'll be very humane.")
+            .font(.system(size: 60))
+            .bold()
+        ForEach(deviceInfo.indices, id: \.self) { index in
+            if(index == 0) {
+                Button(action: {
+                    print(deviceInfo[index])
+                }) {
+                    Text("Device Name: \(deviceInfo[index])")
+                }
+            } else if(index == 1) {
+                Button(action: {
+                    print(deviceInfo[index])
+                }) {
+                    Text("Device Type: \(deviceInfo[index])")
+                }
+            } else if(index == 3) {
+                Button(action: {
+                    print("\(deviceInfo[index]) \(deviceInfo[4])")
+                }) {
+                    Text("Software Version: \(deviceInfo[index]) \(deviceInfo[4])")
+                }
+            } else if(index == 5) {
+                Button(action: {
+                    print(deviceInfo[index])
+                }) {
+                    Text("Device ID: \(deviceInfo[index])")
+                }
+            }
+        }
     }
 }

@@ -10,7 +10,7 @@ import SwiftUI
 struct CreditsView: View {
     var body: some View {
         Text("Spartan, © 2023 by WhitetailAni")
-            .font(.system(size: 40))
+            .font(.system(size: 60))
             .bold()
         Text("""
         "Hopefully not the only tvOS file browser ever"
