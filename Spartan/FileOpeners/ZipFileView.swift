@@ -31,7 +31,8 @@ struct ZipFileView: View {
     var body: some View {
         VStack{
             if(unzip){
-                Text("**\(NSLocalizedString("UNZIP_TITLE", comment: "- She's my cousin!"))**")
+                Text(NSLocalizedString("UNZIP_TITLE", comment: "- She's my cousin!"))
+                    .bold()
                 TextField(NSLocalizedString("UNZIP_DIR", comment: "- She is?"), text: $extractFilePath, onEditingChanged: { (isEditing) in
                     if !isEditing {
                         if(!(extractFilePath.hasSuffix("/")) && UserDefaults.settings.bool(forKey: "autoComplete")){
@@ -52,7 +53,8 @@ struct ZipFileView: View {
                     Text(NSLocalizedString("CONFIRM", comment: "to improve every aspect of bee existence."))
                 }
             } else {
-                Text("**\(NSLocalizedString("ZIP_TITLE", comment: "These bees are stress-testing a new helmet technology."))**")
+                Text(NSLocalizedString("ZIP_TITLE", comment: "These bees are stress-testing a new helmet technology."))
+                    .bold()
                 TextField(NSLocalizedString("ZIP_FILENAME", comment: "- What do you think he makes?"), text: $zipFileName, onEditingChanged: { (isEditing) in
                     if !isEditing{
                         if(!(zipFileName.hasSuffix(".zip")) && UserDefaults.settings.bool(forKey: "autoComplete")){

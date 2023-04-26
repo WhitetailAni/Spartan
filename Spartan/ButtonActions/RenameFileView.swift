@@ -14,7 +14,8 @@ struct RenameFileView: View {
     @Binding var isPresented: Bool
     
     var body: some View {
-        Text("**\(NSLocalizedString("RENAME_TITLE", comment: "Boy, quite a bit of pomp..."))**")
+        Text(NSLocalizedString("RENAME_TITLE", comment: "Boy, quite a bit of pomp..."))
+            .bold()
         TextField(NSLocalizedString("RENAME_NAME", comment: "under the circumstances."), text: $newFileName)
         Button(NSLocalizedString("CONFIRM", comment: "Well, Adam, today we are men.")) {
             print(fileName)

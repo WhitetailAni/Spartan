@@ -16,7 +16,8 @@ struct AddToFavoritesView: View {
     @Binding var showView: Bool
 
     var body: some View {
-        Text("**\(NSLocalizedString("FAVORITESADD", comment: "Saves us millions."))**")
+        Text(NSLocalizedString("FAVORITESADD", comment: "Saves us millions."))
+            .bold()
         TextField(NSLocalizedString("FAVORITESADD_DISPLAYNAME", comment: "Can anyone work on the Krelman?"), text: $displayName)
         TextField(NSLocalizedString("FAVORITESADD_FILEPATH", comment: "Of course. Most bee jobs are small ones."), text: $filePath, onEditingChanged: { (isEditing) in
             if !isEditing {

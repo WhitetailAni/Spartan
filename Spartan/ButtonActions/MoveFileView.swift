@@ -17,7 +17,8 @@ struct MoveFileView: View {
     
     var body: some View {
         VStack{
-            Text("**\(NSLocalizedString("MOVE_TITLE", comment: "- We are!"))**")
+            Text(NSLocalizedString("MOVE_TITLE", comment: "- We are!"))
+                .bold()
             TextField(NSLocalizedString("DEST_PATH", comment: "- Bee-men."), text: $newFilePath, onEditingChanged: { (isEditing) in
                 if !isEditing {
                     if(!(newFilePath.hasSuffix("/"))){

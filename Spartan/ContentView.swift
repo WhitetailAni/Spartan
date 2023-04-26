@@ -32,8 +32,8 @@ struct ContentView: View {
     @State var renameFileCurrentName: String = ""
     @State var renameFileNewName: String = ""
     
-    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 20)
-    //? = 0
+    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 21)
+    //createFileSelectShow = 0
     //contextMenuShow = 1
     //openInMenu = 2
     //fileInfoShow = 3
@@ -53,6 +53,7 @@ struct ContentView: View {
     //addToFavoritesShow = 17
     //settingsShow = 18
     //searchShow = 19
+    //symlinkShow = 20
     
     @State var globalAVPlayer = AVPlayer()
     @State var isGlobalAVPlayerPlaying = false
@@ -75,7 +76,7 @@ struct ContentView: View {
                     }
                 }
                 HStack {
-                    topBarOffset
+                    debugMenu
                         .frame(alignment: .leading)
                     topBar
                         .frame(alignment: .center)
@@ -164,7 +165,6 @@ struct ContentView: View {
                                         Text(NSLocalizedString("INFO", comment: "there is no way a bee should be able to fly."))
                                     }
                                     
-                                    
                                     Button(action: {
                                         newViewFilePath = directory
                                         renameFileCurrentName = files[index]
@@ -202,7 +202,7 @@ struct ContentView: View {
                                             } catch {
                                                 print("Error emptying Trash: \(error)")
                                             }
-                                            
+                                            updateFiles()
                                         }) {
                                             Text(NSLocalizedString("TRASHYEET", comment: "Yellow, black. Yellow, black."))
                                         }
@@ -267,9 +267,9 @@ struct ContentView: View {
                                             Image(systemName: fileWasSelected[index] ? "checkmark.circle" : "circle")
                                         }
                                         if (yandereDevFileType(file: (directory + files[index])) == 0) {
-                                            if (isDirectoryEmpty(atPath: directory + files[index]) == 1){
+                                            if (isDirectoryEmpty(atPath: directory + files[index]) == 1) {
                                                 Image(systemName: "folder")
-                                            } else if (isDirectoryEmpty(atPath: directory + files[index]) == 0){
+                                            } else if (isDirectoryEmpty(atPath: directory + files[index]) == 0) {
                                                 Image(systemName: "folder.fill")
                                             } else {
                                                 Image(systemName: "folder.badge.minus")
@@ -278,7 +278,7 @@ struct ContentView: View {
                                         } else if (yandereDevFileType(file: (directory + files[index])) == 1) {
                                             Image(systemName: "waveform.circle")
                                             Text(files[index])
-                                        } else if (yandereDevFileType(file: (directory + files[index])) == 2){
+                                        } else if (yandereDevFileType(file: (directory + files[index])) == 2) {
                                             Image(systemName: "video")
                                             Text(files[index])
                                         } else if (yandereDevFileType(file: (directory + files[index])) == 3) {
@@ -290,11 +290,18 @@ struct ContentView: View {
                                         } else if (yandereDevFileType(file: (directory + files[index])) == 5) {
                                             Image(systemName: "list.bullet")
                                             Text(files[index])
-                                        } else if (yandereDevFileType(file: (directory + files[index])) == 6){
+                                        } else if (yandereDevFileType(file: (directory + files[index])) == 6) {
                                             Image(systemName: "rectangle.compress.vertical")
                                             Text(files[index])
-                                        } else if (yandereDevFileType(file: (directory + files[index])) == 7){
+                                        } else if (yandereDevFileType(file: (directory + files[index])) == 7) {
                                             Image(systemName: "terminal")
+                                            Text(files[index])
+                                        } else if (yandereDevFileType(file: (directory + files[index])) == 8) {
+                                            Image(systemName: "folder")
+                                            Image(systemName: "arrowshape.turn.up.left")
+                                                .resizable()
+                                                .frame(width: 30, height: 30)
+                                                .offset(x: -10, y: -10)
                                             Text(files[index])
                                         } else {
                                             Image(systemName: "doc")
@@ -307,10 +314,10 @@ struct ContentView: View {
                     }
                 }
                 .sheet(isPresented: $showSubView[1]) {
-                    let buttonWidth: CGFloat = 500
-                    let buttonHeight: CGFloat = 30
                     let paddingInt: CGFloat = -7
                     let opacityInt: CGFloat = 1.0
+                    let buttonWidth: CGFloat = 500
+                    let buttonHeight: CGFloat = 30
                     
                     Button(action: {
                         defaultAction(index: newViewFileIndex)
@@ -454,6 +461,7 @@ struct ContentView: View {
                     .padding(paddingInt)
                     .opacity(opacityInt)
                     
+                    
                     Button(action: {
                         newViewFilePath = directory
                         newViewArrayNames = [files[newViewFileIndex]]
@@ -468,6 +476,7 @@ struct ContentView: View {
                     .padding(paddingInt)
                     .opacity(opacityInt)
                     
+                    
                     Button(action: {
                         showSubView[1] = false
                     }) {
@@ -476,12 +485,13 @@ struct ContentView: View {
                     }
                     .padding(paddingInt)
                     .opacity(opacityInt)
+                    
                 }
                 .sheet(isPresented: $showSubView[2]) {
-                    let buttonWidth: CGFloat = 500
-                    let buttonHeight: CGFloat = 30
                     let paddingInt: CGFloat = -7
                     let opacityInt: CGFloat = 1.0
+                    let buttonWidth: CGFloat = 500
+                    let buttonHeight: CGFloat = 30
                     
                     Button(action: {
                         directory = directory + files[newViewFileIndex]
@@ -494,6 +504,7 @@ struct ContentView: View {
                     }
                     .padding(paddingInt)
                     .opacity(opacityInt)
+                    
                     
                     Button(action: {
                         newViewFilePath = directory + files[newViewFileIndex]
@@ -510,6 +521,7 @@ struct ContentView: View {
                     .padding(paddingInt)
                     .opacity(opacityInt)
                     
+                    
                     Button(action: {
                         newViewFilePath = directory + files[newViewFileIndex]
                         newViewFileName = files[newViewFileIndex]
@@ -524,6 +536,7 @@ struct ContentView: View {
                     .padding(paddingInt)
                     .opacity(opacityInt)
                     
+                    
                     Button(action: {
                         newViewFilePath = directory + files[newViewFileIndex]
                         showSubView[2] = false
@@ -537,6 +550,7 @@ struct ContentView: View {
                     .padding(paddingInt)
                     .opacity(opacityInt)
                     
+                    
                     Button(action: {
                         newViewFilePath = directory + files[newViewFileIndex]
                         showSubView[2] = false
@@ -549,6 +563,7 @@ struct ContentView: View {
                     }
                     .padding(paddingInt)
                     .opacity(opacityInt)
+                    
                     
                     Button(action: {
                         newViewFilePath = directory + files[newViewFileIndex]
@@ -564,6 +579,7 @@ struct ContentView: View {
                     .padding(paddingInt)
                     .opacity(opacityInt)
                     
+                    
                     Button(action: {
                         newViewFilePath = directory + files[newViewFileIndex]
                         showSubView[2] = false
@@ -577,6 +593,7 @@ struct ContentView: View {
                     .padding(paddingInt)
                     .opacity(opacityInt)
                     
+                    
                     Button(action: {
                         showSubView[2] = false
                     }) {
@@ -585,6 +602,7 @@ struct ContentView: View {
                     }
                     .padding(paddingInt)
                     .opacity(opacityInt)
+                    
                 }
                 .sheet(isPresented: $E2) {
                     E3(directory: $directory, files: $files, multiSelectFiles: $multiSelectFiles, fileWasSelected: $fileWasSelected, showSubView: $showSubView)
@@ -613,6 +631,48 @@ struct ContentView: View {
                         dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "Very proud.")))
                     )
                 }
+                .sheet(isPresented: $showSubView[0], content: {
+                    let paddingInt: CGFloat = -7
+                    let opacityInt: CGFloat = 1.0
+                    let buttonWidth: CGFloat = 500
+                    let buttonHeight: CGFloat = 30
+                
+                    Button(action: {
+                        showSubView[0] = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                            showSubView[5] = true
+                        }
+                    }) {
+                        Text(NSLocalizedString("CREATE_FILE", comment: "Please clear the gate."))
+                            .frame(width: buttonWidth, height: buttonHeight)
+                    }
+                    .padding(paddingInt)
+                    .opacity(opacityInt)
+                    
+                    Button(action: {
+                        showSubView[6] = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                            showSubView[6] = true
+                        }
+                    }) {
+                        Text(NSLocalizedString("CREATE_DIR", comment: "Royal Nectar Force on approach."))
+                            .frame(width: buttonWidth, height: buttonHeight)
+                    }
+                    .padding(paddingInt)
+                    .opacity(opacityInt)
+                    
+                    Button(action: {
+                        showSubView[0] = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                            showSubView[20] = true
+                        }
+                    }) {
+                        Text(NSLocalizedString("CREATE_SYM", comment: "Wait a second. Check it out."))
+                            .frame(width: buttonWidth, height: buttonHeight)
+                    }
+                    .padding(paddingInt)
+                    .opacity(opacityInt)
+                })
                 .sheet(isPresented: $showSubView[4], content: {
                     TextView(filePath: $newViewFilePath, isPresented: $showSubView[4])
                 })
@@ -620,10 +680,13 @@ struct ContentView: View {
                     SearchView(directoryToSearch: $directory, isPresenting: $showSubView[19])
                 })
                 .sheet(isPresented: $showSubView[6], content: { //create dir
-                    CreateDirectoryView(directoryPath: directory, isPresented: $showSubView[6])
+                    CreateDirectoryView(directoryPath: $directory, isPresented: $showSubView[6])
                 })
                 .sheet(isPresented: $showSubView[5], content: { //create file
-                    CreateFileView(filePath: directory, isPresented: $showSubView[5])
+                    CreateFileView(filePath: $directory, isPresented: $showSubView[5])
+                })
+                .sheet(isPresented: $showSubView[20], content: {
+                    CreateSymlinkView(symlinkPath: $directory, isPresented: $showSubView[20])
                 })
                 .sheet(isPresented: $showSubView[16], content: {
                     FavoritesView(directory: $directory, showView: $showSubView[16])
@@ -723,8 +786,8 @@ struct ContentView: View {
                         .frame(width:50, height:50)
                 }
         
-                Button(action: { //new file
-                    showSubView[5] = true
+                Button(action: { //new file/directory/symlink
+                    showSubView[0] = true
                 }) {
                     if #available(tvOS 14.0, *){
                         Image(systemName: "doc.badge.plus")
@@ -735,10 +798,10 @@ struct ContentView: View {
                     }
                 }
             
-                Button(action: { //new directory
-                    showSubView[6] = true
+                Button(action: { //unused
+                    print("button goes here")
                 }) {
-                    Image(systemName: "folder.badge.plus")
+                    Image(systemName: "questionmark")
                         .frame(width:50, height:50)
                 }
                 
@@ -856,7 +919,7 @@ struct ContentView: View {
         .frame(maxWidth: .infinity, alignment: .trailing)
     }
     
-    var topBarOffset: some View {
+    var debugMenu: some View {
         return VStack {
                 if (E) {
                     Button(action: {
@@ -1065,9 +1128,9 @@ struct ContentView: View {
         let videoTypes: [String] = ["3gp", "3g2", "avi", "mov", "m4v", "mp4"]
         let imageTypes: [String] = ["png", "tiff", "tif", "jpeg", "jpg", "gif", "bmp", "BMPf", "ico", "cur", "xbm"]
         let archiveTypes: [String] = ["zip", "cbz"]
-    
         if file.hasSuffix("/") {
             return 0 //directory
+            //return 8 //symlinks wont detect for some stupid reason.
         } else if (audioTypes.contains(where: file.hasSuffix)) {
             return 1 //audio file
         } else if (videoTypes.contains(where: file.hasSuffix)) {
@@ -1082,8 +1145,6 @@ struct ContentView: View {
             return 6 //archive
         } else if (FileManager.default.isExecutableFile(atPath: file)) {
             return 7 //executable
-        //} else if (URL(fileURLWithPath: file).isSymbolicLink()) {
-          //  return 8 //symlink
         } else {
             return 69 //unknown
         }
@@ -1102,14 +1163,11 @@ struct ContentView: View {
     }
     func isPlist(filePath: String) -> Bool {
         guard let data = FileManager.default.contents(atPath: filePath) else {
-            return false // File does not exist or cannot be read
+            return false
         }
-    
-        let headerSize = 8
-        let header = data.prefix(headerSize)
-        let isXMLPlist = header.starts(with: [60, 63, 120, 109, 108]) // "<?xml"
-        let isBinaryPlist = header.starts(with: [98, 112, 108, 105, 115, 116, 48, 48]) // "bplist00"
-    
+        let isXMLPlist = data.prefix(8).starts(with: [60, 63, 120, 109, 108]) //xml
+        let isBinaryPlist = data.prefix(8).starts(with: [98, 112, 108, 105, 115, 116, 48, 48]) //bplist
+        //yeah this one checks the header of the file. fancy!
         return isXMLPlist || isBinaryPlist
     }
     

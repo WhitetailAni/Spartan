@@ -17,7 +17,8 @@ struct CopyFileView: View {
     
     var body: some View {
         VStack{
-            Text("**\(NSLocalizedString("COPY_TITLE", comment: "please welcome Dean Buzzwell."))**")
+            Text(NSLocalizedString("COPY_TITLE", comment: "please welcome Dean Buzzwell."))
+                .bold()
             TextField(NSLocalizedString("DEST_PATH", comment: "Welcome, New Hive City graduating class of..."), text: $newFilePath, onEditingChanged: { (isEditing) in
                 if !isEditing {
                     if(!(newFilePath.hasSuffix("/"))){

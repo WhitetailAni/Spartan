@@ -109,3 +109,14 @@ public struct ColorBlended: ViewModifier {
         }
     }
 }
+
+struct ContextMenuButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        let paddingInt: CGFloat = -7
+        let opacityInt: CGFloat = 1.0
+        
+        configuration.label
+            .padding(paddingInt)
+            .opacity(opacityInt)
+    }
+}
