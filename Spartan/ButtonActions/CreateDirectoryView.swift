@@ -9,12 +9,16 @@ import SwiftUI
 
 struct CreateDirectoryView: View {
     @State var directoryName: String = ""
-    @State var directoryPath: String
+    @Binding var directoryPath: String
     @Binding var isPresented: Bool
+    
+    @State private var errorMessage: String = ""
+    @State private var wasError = false
 
     var body: some View {
         VStack {
-            Text("**\(NSLocalizedString("DIRTOUCH_TITLE", comment: "I guess he could have just gotten out of the way."))**")
+            Text(NSLocalizedString("DIRTOUCH_TITLE", comment: "I guess he could have just gotten out of the way."))
+                .bold()
             TextField(NSLocalizedString("DIRTOUCH_NAME", comment: "I love this incorporating an amusement park into our day."), text: $directoryName)
             Button(NSLocalizedString("CONFIRM", comment: "That's why we don't need vacations.")) {
                 do {
@@ -23,9 +27,20 @@ struct CreateDirectoryView: View {
                     isPresented = false
                     directoryName = ""
                 } catch {
-                    print("Failed to create directory: \(error.localizedDescription)")
+                    errorMessage = error.localizedDescription
+                }
+                
+                if(!(errorMessage == "")){
+                    wasError = true
                 }
             }
+        }
+        .alert(isPresented: $wasError) {
+            Alert (
+                title: Text(NSLocalizedString("ERROR", comment: "- Hi, Jocks!")),
+                message: Text(errorMessage),
+                dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "You guys did great!")))
+            )
         }
         .accentColor(.accentColor)
     }

@@ -16,16 +16,16 @@ struct E3: View {
     @Binding var showSubView: [Bool]
     
     var body: some View {
-    
-        let buttonWidth: CGFloat = 500
-        let buttonHeight: CGFloat = 30
         let paddingInt: CGFloat = -7
         let opacityInt: CGFloat = 1.0
+        let buttonWidth: CGFloat = 500
+        let buttonHeight: CGFloat = 30
     
         Text("Welcome to Milliways")
             .font(.system(size: 69))
             .bold()
             .padding(paddingInt)
+            .opacity(opacityInt)
         
         Button(action: {
             print(directory)
@@ -34,7 +34,8 @@ struct E3: View {
                 .frame(width: buttonWidth, height: buttonHeight)
         }
         .padding(paddingInt)
-        .opacity(opacityInt)
+            .opacity(opacityInt)
+        
         
         Button(action: {
             print("\(files), \(files.count)")
@@ -43,7 +44,8 @@ struct E3: View {
                 .frame(width: buttonWidth, height: buttonHeight)
         }
         .padding(paddingInt)
-        .opacity(opacityInt)
+            .opacity(opacityInt)
+        
         
         Button(action: {
             print("\(multiSelectFiles) \(multiSelectFiles.count)")
@@ -52,7 +54,8 @@ struct E3: View {
                 .frame(width: buttonWidth, height: buttonHeight)
         }
         .padding(paddingInt)
-        .opacity(opacityInt)
+            .opacity(opacityInt)
+        
         
         Button(action: {
             print("\(fileWasSelected) \(fileWasSelected.count)")
@@ -61,7 +64,8 @@ struct E3: View {
                 .frame(width: buttonWidth, height: buttonHeight)
         }
         .padding(paddingInt)
-        .opacity(opacityInt)
+            .opacity(opacityInt)
+        
         
         Button(action: {
             print("\(showSubView) \(showSubView.count)")
@@ -70,7 +74,8 @@ struct E3: View {
                 .frame(width: buttonWidth, height: buttonHeight)
         }
         .padding(paddingInt)
-        .opacity(opacityInt)
+            .opacity(opacityInt)
+        
         
         Button(action: {
             print("What is the answer to Life, the Universe, and Everything?")

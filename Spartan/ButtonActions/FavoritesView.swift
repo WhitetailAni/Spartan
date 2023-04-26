@@ -17,7 +17,8 @@ struct FavoritesView: View {
     @State private var blank: String = ""
 
     var body: some View {
-        Text("**\(NSLocalizedString("FAVORITES_TITLE", comment: "- Catches that little strand of honey"))**")
+        Text(NSLocalizedString("FAVORITES_TITLE", comment: "- Catches that little strand of honey"))
+            .bold()
         
         List(favoritesDisplayName, id: \.self) { favoriteDisplayName in
             Button(action: {

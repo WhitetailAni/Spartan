@@ -33,6 +33,7 @@
 		F8CC214429EB9503008C7B88 /* ZipFileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214329EB9503008C7B88 /* ZipFileView.swift */; };
 		F8CC214629EF5838008C7B88 /* SpawnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214529EF5838008C7B88 /* SpawnView.swift */; };
 		F8CC214829EFA165008C7B88 /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214729EFA164008C7B88 /* TextView.swift */; };
+		F8EA28D429F8C2710063206D /* CreateSymlinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8EA28D329F8C2710063206D /* CreateSymlinkView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -75,6 +76,7 @@
 		F8CC214329EB9503008C7B88 /* ZipFileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipFileView.swift; sourceTree = "<group>"; };
 		F8CC214529EF5838008C7B88 /* SpawnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpawnView.swift; sourceTree = "<group>"; };
 		F8CC214729EFA164008C7B88 /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
+		F8EA28D329F8C2710063206D /* CreateSymlinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSymlinkView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,23 +112,8 @@
 			children = (
 				F853AB2E29DBCB1A006EA2D5 /* SpartanApp.swift */,
 				F853AB3029DBCB1A006EA2D5 /* ContentView.swift */,
-				F8CC214729EFA164008C7B88 /* TextView.swift */,
-				F853AB4229DE1C41006EA2D5 /* CreateFileView.swift */,
-				F853AB4629DE1CEC006EA2D5 /* CreateDirectoryView.swift */,
-				F853AB4429DE1CB3006EA2D5 /* RenameFileView.swift */,
-				F853AB4829DE1D12006EA2D5 /* MoveFileView.swift */,
-				F853AB4A29DE21A8006EA2D5 /* CopyFileView.swift */,
-				F853AB4E29DE57D8006EA2D5 /* AudioPlayerView.swift */,
-				F8CC212E29E74DF4008C7B88 /* VideoPlayerView.swift */,
-				F8CC211E29E2762F008C7B88 /* ImageView.swift */,
-				F8CC212229E4FFC5008C7B88 /* PlistView.swift */,
-				F8CC214329EB9503008C7B88 /* ZipFileView.swift */,
-				F8CC214529EF5838008C7B88 /* SpawnView.swift */,
-				F853AB5429DE8B3B006EA2D5 /* FavoritesView.swift */,
-				F853AB5A29E09F8A006EA2D5 /* AddToFavoritesView.swift */,
-				F853AB5229DE8AA1006EA2D5 /* SettingsView.swift */,
-				F853AB5629DE8B46006EA2D5 /* CreditsView.swift */,
-				F853AB5829DE8C0E006EA2D5 /* SearchView.swift */,
+				F8EA28D229F8ACCF0063206D /* ButtonActions */,
+				F8EA28D129F8ACAB0063206D /* FileOpeners */,
 				F853AB5C29E0AC3F006EA2D5 /* TintColorView.swift */,
 				F8CC212629E5206B008C7B88 /* SpareViews.swift */,
 				F845C82E29F6247A0025AC0A /* EThree.swift */,
@@ -143,6 +130,38 @@
 				F853AB3529DBCB1E006EA2D5 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		F8EA28D129F8ACAB0063206D /* FileOpeners */ = {
+			isa = PBXGroup;
+			children = (
+				F8CC214729EFA164008C7B88 /* TextView.swift */,
+				F853AB4E29DE57D8006EA2D5 /* AudioPlayerView.swift */,
+				F8CC212E29E74DF4008C7B88 /* VideoPlayerView.swift */,
+				F8CC211E29E2762F008C7B88 /* ImageView.swift */,
+				F8CC212229E4FFC5008C7B88 /* PlistView.swift */,
+				F8CC214329EB9503008C7B88 /* ZipFileView.swift */,
+				F8CC214529EF5838008C7B88 /* SpawnView.swift */,
+			);
+			path = FileOpeners;
+			sourceTree = "<group>";
+		};
+		F8EA28D229F8ACCF0063206D /* ButtonActions */ = {
+			isa = PBXGroup;
+			children = (
+				F853AB4429DE1CB3006EA2D5 /* RenameFileView.swift */,
+				F853AB4829DE1D12006EA2D5 /* MoveFileView.swift */,
+				F853AB4A29DE21A8006EA2D5 /* CopyFileView.swift */,
+				F853AB5829DE8C0E006EA2D5 /* SearchView.swift */,
+				F853AB4229DE1C41006EA2D5 /* CreateFileView.swift */,
+				F853AB4629DE1CEC006EA2D5 /* CreateDirectoryView.swift */,
+				F8EA28D329F8C2710063206D /* CreateSymlinkView.swift */,
+				F853AB5429DE8B3B006EA2D5 /* FavoritesView.swift */,
+				F853AB5A29E09F8A006EA2D5 /* AddToFavoritesView.swift */,
+				F853AB5229DE8AA1006EA2D5 /* SettingsView.swift */,
+				F853AB5629DE8B46006EA2D5 /* CreditsView.swift */,
+			);
+			path = ButtonActions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -240,6 +259,7 @@
 				F8CC211F29E2762F008C7B88 /* ImageView.swift in Sources */,
 				F8CC212729E5206B008C7B88 /* SpareViews.swift in Sources */,
 				F853AB5B29E09F8A006EA2D5 /* AddToFavoritesView.swift in Sources */,
+				F8EA28D429F8C2710063206D /* CreateSymlinkView.swift in Sources */,
 				F853AB4F29DE57D8006EA2D5 /* AudioPlayerView.swift in Sources */,
 				F8CC214629EF5838008C7B88 /* SpawnView.swift in Sources */,
 				F8CC212F29E74DF4008C7B88 /* VideoPlayerView.swift in Sources */,
@@ -316,6 +336,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -371,6 +392,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = appletvos;
@@ -400,6 +422,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -407,6 +430,9 @@
 				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.whitetailani.Spartan;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -433,6 +459,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -440,6 +467,9 @@
 				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.whitetailani.Spartan;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;

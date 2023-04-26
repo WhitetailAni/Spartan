@@ -13,6 +13,7 @@
 "PIXELS" = "pixels";
 "UNKNOWN" = "Unknown";
 "OPEN" = "Open";
+"ERROR" = "An error occurred";
 
 //main view
 "FREE_SPACE" = "Free space: ";
@@ -76,6 +77,11 @@
 //dirtouch view
 "DIRTOUCH_TITLE" = "Create New Directory";
 "DIRTOUCH_NAME" = "Enter directory title";
+
+//symtouch view
+"SYMTOUCH_TITLE" = "Create New Symlink";
+"SYMTOUCH_NAME" = "Enter symbolic link name";
+"SYMTOUCH_DEST" = "Enter symbolic link destination directory";
 
 //rename view
 "RENAME_TITLE" = "Rename File To";
@@ -144,3 +150,8 @@
 "SEARCH_PATH" = "Enter a directory to search";
 "SEARCH_CASE" = "Match Case";
 "SEARCH_RESULTS" = "Search Results";
+
+//topbar
+"CREATE_FILE" = "Create File";
+"CREATE_DIR" = "Create Directory";
+"CREATE_SYM" = "Create Symbolic Link";
