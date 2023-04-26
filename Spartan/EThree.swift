@@ -15,6 +15,8 @@ struct E3: View {
     @Binding var fileWasSelected: [Bool]
     @Binding var showSubView: [Bool]
     
+    var yandereDevFileTypeDebugTransfer: ((String) -> Int)? = nil
+    
     var body: some View {
         let paddingInt: CGFloat = -7
         let opacityInt: CGFloat = 1.0
@@ -38,7 +40,29 @@ struct E3: View {
         
         
         Button(action: {
-            print("\(files), \(files.count)")
+            for file in files {
+                print(file, ": ", String(Int((yandereDevFileTypeDebugTransfer?(file))!)), terminator: " ")
+                if(Int((yandereDevFileTypeDebugTransfer?(file))!) == 0) {
+                    print("directory")
+                } else if(Int((yandereDevFileTypeDebugTransfer?(file))!) == 1) {
+                    print("audio file")
+                } else if(Int((yandereDevFileTypeDebugTransfer?(file))!) == 2) {
+                    print("video file")
+                } else if(Int((yandereDevFileTypeDebugTransfer?(file))!) == 3) {
+                    print("image")
+                } else if(Int((yandereDevFileTypeDebugTransfer?(file))!) == 4) {
+                    print("text file")
+                } else if(Int((yandereDevFileTypeDebugTransfer?(file))!) == 5) {
+                    print("plist")
+                } else if(Int((yandereDevFileTypeDebugTransfer?(file))!) == 6) {
+                    print("archive (currently zip only)")
+                } else if(Int((yandereDevFileTypeDebugTransfer?(file))!) == 7) {
+                    print("executable")
+                } else if(Int((yandereDevFileTypeDebugTransfer?(file))!) == 8) {
+                    print("symlink")
+                    print("how did we get here?")
+                }
+            }
         }) {
             Text("Print 'files'")
                 .frame(width: buttonWidth, height: buttonHeight)
