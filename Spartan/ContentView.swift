@@ -1180,7 +1180,7 @@ struct ContentView: View {
     }
     func isText(filePath: String) -> Bool {
         guard let data = FileManager.default.contents(atPath: filePath) else {
-            return false // File does not exist or cannot be read
+            return false
         }
     
         let isASCII = data.allSatisfy {
