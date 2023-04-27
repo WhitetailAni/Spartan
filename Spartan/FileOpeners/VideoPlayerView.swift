@@ -48,11 +48,32 @@ struct VideoPlayerView: View {
                 }
                 VideoPlayerRenderView(player: player)
                     .padding()
-                controlsView
+                timeLabel
+                UIKitProgressView(value: $currentTime, total: duration)
+                    .padding()
+                HStack {
+                    videoStartButton
+                    Spacer()
+                    controlsView
+                    Spacer()
+                    Button(action: {
+                        infoShow = true
+                    }) {
+                        Image(systemName: "info.circle")
+                            .accentColor(.accentColor)
+                    }
+                    .alert(isPresented: $infoShow) {
+                        Alert(
+                            title: Text(videoPath + videoName),
+                            message: Text(getVideoInfo(filePath: (videoPath + "/" + videoName))),
+                            dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "You're sky freaks! I love it! I love it!")))
+                        )
+                    }
+                }
             }
         }
         .onAppear {
-            player.replaceCurrentItem(with: AVPlayerItem(url: URL(fileURLWithPath: videoPath)))
+            player.replaceCurrentItem(with: AVPlayerItem(url: URL(fileURLWithPath: (videoPath + "/" + videoName))))
             player.play()
             
             player.currentItem?.asset.loadValuesAsynchronously(forKeys: ["duration"]) {
@@ -83,21 +104,12 @@ struct VideoPlayerView: View {
     }
     
     var controlsView: some View {
-        VStack{    
-            timeLabel
-            UIKitProgressView(value: $currentTime, total: duration)
-                .padding()
-            HStack {
-                videoStartButton
-                Spacer()
-                rewindButton
-                backwardButton
-                playPauseButton
-                forwardButton
-                fastForwardButton
-                Spacer()
-                videoInfoButton
-            }
+        HStack {
+            rewindButton
+            backwardButton
+            playPauseButton
+            forwardButton
+            fastForwardButton
         }
         .padding(.horizontal)
         .onPlayPauseCommand {
@@ -225,18 +237,8 @@ struct VideoPlayerView: View {
                 .accentColor(.accentColor)
         }
     }
-        
-    @ViewBuilder
-    var videoInfoButton: some View {
-        Button(action: {
-            infoShow = true
-        }) {
-            Image(systemName: "info.circle")
-                .accentColor(.accentColor)
-        }
-    }
     
-    func getVideoInfo(atPath filePath: String) -> String {
+    func getVideoInfo(filePath: String) -> String {
         let fileURL = URL(fileURLWithPath: filePath)
         let asset = AVURLAsset(url: fileURL)
         let duration = String(format: "%.2f", asset.duration.seconds)
@@ -270,7 +272,6 @@ struct VideoPlayerView: View {
 struct VideoPlayerRenderView: UIViewControllerRepresentable {
     @State var player: AVPlayer
     
-    
     func makeUIViewController(context: Context) -> AVPlayerViewController {
         let playerViewController = AVPlayerViewController()
         playerViewController.player = player
@@ -280,7 +281,6 @@ struct VideoPlayerRenderView: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: AVPlayerViewController, context: Context) {
         player.play()
-        
         uiViewController.player = player
     }
 }

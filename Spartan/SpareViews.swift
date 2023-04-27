@@ -120,3 +120,32 @@ struct ContextMenuButtonStyle: ButtonStyle {
             .opacity(opacityInt)
     }
 }
+
+struct UIKitTapGesture: UIViewRepresentable {
+    let action: () -> Void
+    
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView()
+        let tapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.onTap))
+        view.addGestureRecognizer(tapGesture)
+        return view
+    }
+    
+    func updateUIView(_ uiView: UIView, context: Context) {}
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(action: action)
+    }
+    
+    class Coordinator: NSObject {
+        let action: () -> Void
+        
+        init(action: @escaping () -> Void) {
+            self.action = action
+        }
+        
+        @objc func onTap() {
+            action()
+        }
+    }
+}

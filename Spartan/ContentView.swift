@@ -534,7 +534,7 @@ struct ContentView: View {
                     
                     
                     Button(action: {
-                        newViewFilePath = directory + files[newViewFileIndex]
+                        newViewFilePath = directory
                         newViewFileName = files[newViewFileIndex]
                         showSubView[2] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
@@ -987,11 +987,11 @@ struct ContentView: View {
             } else if (yandereDevFileType(file: (directory + fileToCheck[index])) == 1) {
                 showSubView[10] = true
                 callback = true
-                newViewFilePath = directory + fileToCheck[index]
+                newViewFilePath = directory
                 newViewFileName = fileToCheck[index]
             } else if (yandereDevFileType(file: (directory + fileToCheck[index])) == 2){
                 showSubView[11] = true
-                newViewFilePath = directory + fileToCheck[index]
+                newViewFilePath = directory
                 newViewFileName = fileToCheck[index]
             } else if (yandereDevFileType(file: (directory + fileToCheck[index])) == 3) {
                 showSubView[12] = true
@@ -1003,7 +1003,7 @@ struct ContentView: View {
                 newViewFileName = fileToCheck[index]
             } else if (yandereDevFileType(file: (directory + fileToCheck[index])) == 5){
                 showSubView[13] = true
-                newViewFilePath = directory + fileToCheck[index]
+                newViewFilePath = directory
                 newViewFileName = fileToCheck[index]
             } else if (yandereDevFileType(file: (directory + fileToCheck[index])) == 6){
                 showSubView[14] = true
