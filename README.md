@@ -27,8 +27,7 @@ What it currently lets you do:
 There's probably more, I lost track.
 
 TODO:
-1. Don't assume a filepath is a directory in ContentView (you can specify a filepath to a non-folder and it will open the proper view)
-(this will probably never happen)
+1. Add fullscreen to VideoPlayerView and ImagePlayerView
 2. Add info to ImageView and VideoPlayerView
 3. Plist editor
 4. Spawn binaries
