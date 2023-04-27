@@ -38,6 +38,8 @@
 "OPEN_SPAWN" = "Spawn As Binary";
 "SHOW_DENIED" = "Permission Denied";
 "SHOW_INFO" = "File Info";
+"INFO_DENIED" = "You don't have permission for that.";
+
 
 //file info
 "INFO_PATH" = "File path: ";

@@ -70,7 +70,8 @@ struct ContentView: View {
             VStack {
                 HStack { //input directory + refresh
                     TextField(NSLocalizedString("INPUT_DIRECTORY", comment: "According to all known laws of aviation"), text: $directory, onCommit: {
-                        updateFiles()
+                        directPathTypeCheckNewViewFileVariableSetter()
+                        defaultAction(index: 0, isDirectPath: true)
                     })
                     Button(action: {
                         updateFiles()
@@ -119,7 +120,7 @@ struct ContentView: View {
                         ForEach(files.indices, id: \.self) { index in
                             if #available(tvOS 14.0, *) {
                                 Button(action: {
-                                    defaultAction(index: index)
+                                    defaultAction(index: index, isDirectPath: false)
                                 }) {
                                     HStack {
                                         if (multiSelect) {
@@ -316,6 +317,13 @@ struct ContentView: View {
                                 }
                             }
                         }
+                        .alert(isPresented: $permissionDenied) {
+                            Alert(
+                                title: Text(NSLocalizedString("SHOW_DENIED", comment: "Here's the graduate.")),
+                                message: Text(NSLocalizedString("INFO_DENIED", comment: "You're monsters!")),
+                                dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "You're sky freaks! I love it! I love it!")))
+                            )
+                        }
                     }
                 }
                 .sheet(isPresented: $showSubView[1]) {
@@ -323,7 +331,7 @@ struct ContentView: View {
                     let opacityInt: CGFloat = 1.0
                     
                     Button(action: {
-                        defaultAction(index: newViewFileIndex)
+                        defaultAction(index: newViewFileIndex, isDirectPath: false)
                         showSubView[1] = false
                     }) {
                         Text(NSLocalizedString("OPEN", comment: "You ever think maybe things work a little too well here?"))
@@ -612,20 +620,22 @@ struct ContentView: View {
                 }
                 .navigationBarHidden(true)
                 .onAppear {
-                    if (directory == "//"){
-                        directory = "/"
+                    for i in 0..<showSubView.count {
+                        showSubView[i] = false
                     }
                     updateFiles()
+                    if(yandereDevFileType(file: directory) != 0) {
+                        directPathTypeCheckNewViewFileVariableSetter()
+                        multiSelect = false
+                        defaultAction(index: 0, isDirectPath: true)
+                        var components = directory.split(separator: "/")
+                        components.removeLast()
+                        directory = "/" + components.joined(separator: "/") + "/"
+                    }
                 }
                 .onPlayPauseCommand {
                     callback = false
                     showSubView[10] = true
-                }
-                .alert(isPresented: $permissionDenied) { //permissions fail!
-                    Alert(
-                        title: Text(NSLocalizedString("SHOW_DENIED", comment: "Here's the graduate.")),
-                        dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "We're very proud of you, son.")))
-                    )
                 }
                 .alert(isPresented: $showSubView[3]) { //file info
                     Alert(
@@ -677,7 +687,7 @@ struct ContentView: View {
                     .opacity(opacityInt)
                 })
                 .sheet(isPresented: $showSubView[4], content: {
-                    TextView(filePath: $newViewFilePath, isPresented: $showSubView[4])
+                    TextView(filePath: $newViewFilePath, fileName: $newViewFileName, isPresented: $showSubView[4])
                 })
                 .sheet(isPresented: $showSubView[19], content: { //search files
                     SearchView(directoryToSearch: $directory, isPresenting: $showSubView[19])
@@ -714,13 +724,13 @@ struct ContentView: View {
                 })
                 .sheet(isPresented: $showSubView[10], content: {
                     if(callback){
-                        AudioPlayerView(callback: callback, audioPath: $newViewFilePath, audioName: $newViewFileName, player: globalAVPlayer)
+                        AudioPlayerView(callback: callback, audioPath: $newViewFilePath, audioName: $newViewFileName, player: globalAVPlayer, isPresented: $showSubView[10])
                     } else {
-                        AudioPlayerView(callback: callback, audioPath: $blankString[0], audioName: $blankString[0], player: globalAVPlayer)
+                        AudioPlayerView(callback: callback, audioPath: $blankString[0], audioName: $blankString[0], player: globalAVPlayer, isPresented: $showSubView[10])
                     }
                 })
                 .sheet(isPresented: $showSubView[12], content: {
-                    ImageView(imagePath: $newViewFilePath)
+                    ImageView(imagePath: $newViewFilePath, imageName: $newViewFileName)
                 })
                 .sheet(isPresented: $showSubView[13], content: {
                     PlistView(filePath: $newViewFilePath, fileName: $newViewFileName)
@@ -744,6 +754,7 @@ struct ContentView: View {
             } else {
                 goBack()
             }
+            print(showSubView)
         }
     }
     
@@ -936,7 +947,12 @@ struct ContentView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
     }
     
-    func defaultAction(index: Int) {
+    func defaultAction(index: Int, isDirectPath: Bool) {
+        var fileToCheck: [String] = files
+        if(isDirectPath) {
+            fileToCheck = [""]
+        }
+    
         if (multiSelect) {
             if(fileWasSelected[index]){
                 let searchedIndex = multiSelectFiles.firstIndex(of: files[index])
@@ -950,38 +966,54 @@ struct ContentView: View {
             }
         } else {
             multiSelect = false
-            if (yandereDevFileType(file: (directory + files[index])) == 0) {
-                directory = directory + files[index]
-                updateFiles()
+            if (yandereDevFileType(file: (directory + fileToCheck[index])) == 0) {
+                do {
+                    try FileManager.default.contentsOfDirectory(atPath: directory + fileToCheck[index])
+                } catch {
+                    if(substring(str: error.localizedDescription, startIndex: error.localizedDescription.index(error.localizedDescription.endIndex, offsetBy: -33), endIndex: error.localizedDescription.index(error.localizedDescription.endIndex, offsetBy: 0)) == "don’t have permission to view it."){
+                        permissionDenied = true
+                        print(permissionDenied)
+                    }
+                }
+                if(!permissionDenied){
+                    if(isDirectPath) {
+                        updateFiles()
+                    } else {
+                        directory = directory + fileToCheck[index]
+                        updateFiles()
+                    }
+                }
                 print(directory)
-            } else if (yandereDevFileType(file: (directory + files[index])) == 1) {
+            } else if (yandereDevFileType(file: (directory + fileToCheck[index])) == 1) {
                 showSubView[10] = true
                 callback = true
-                newViewFilePath = directory + files[index]
-                newViewFileName = files[index]
-            } else if (yandereDevFileType(file: (directory + files[index])) == 2){
+                newViewFilePath = directory + fileToCheck[index]
+                newViewFileName = fileToCheck[index]
+            } else if (yandereDevFileType(file: (directory + fileToCheck[index])) == 2){
                 showSubView[11] = true
-                newViewFilePath = directory + files[index]
-                newViewFileName = files[index]
-            } else if (yandereDevFileType(file: (directory + files[index])) == 3) {
+                newViewFilePath = directory + fileToCheck[index]
+                newViewFileName = fileToCheck[index]
+            } else if (yandereDevFileType(file: (directory + fileToCheck[index])) == 3) {
                 showSubView[12] = true
-                newViewFilePath = directory + files[index]
-            } else if (yandereDevFileType(file: (directory + files[index])) == 4) {
+                newViewFilePath = directory
+                newViewFileName = fileToCheck[index]
+            } else if (yandereDevFileType(file: (directory + fileToCheck[index])) == 4) {
                 showSubView[4] = true
-                newViewFilePath = directory + files[index]
-            } else if (yandereDevFileType(file: (directory + files[index])) == 5){
+                newViewFilePath = directory
+                newViewFileName = fileToCheck[index]
+            } else if (yandereDevFileType(file: (directory + fileToCheck[index])) == 5){
                 showSubView[13] = true
-                newViewFilePath = directory + files[index]
-                newViewFileName = files[index]
-            } else if (yandereDevFileType(file: (directory + files[index])) == 6){
+                newViewFilePath = directory + fileToCheck[index]
+                newViewFileName = fileToCheck[index]
+            } else if (yandereDevFileType(file: (directory + fileToCheck[index])) == 6){
                 showSubView[14] = true
                 uncompressZip = true
-                newViewFileName = files[index]
-            } else if (yandereDevFileType(file: (directory + files[index])) == 7){
+                newViewFileName = fileToCheck[index]
+            } else if (yandereDevFileType(file: (directory + fileToCheck[index])) == 7){
                 showSubView[15] = true
-                newViewFilePath = directory + files[index]
+                newViewFilePath = directory + fileToCheck[index]
             } else {
-                selectedFile = FileInfo(name: files[index], id: UUID())
+                selectedFile = FileInfo(name: fileToCheck[index], id: UUID())
             }
         }
     }
@@ -998,12 +1030,7 @@ struct ContentView: View {
             resizeMultiSelectArrays()
             resetMultiSelectArrays()
         } catch {
-            print(error)
-            if(substring(str: error.localizedDescription, startIndex: error.localizedDescription.index(error.localizedDescription.endIndex, offsetBy: -33), endIndex: error.localizedDescription.index(error.localizedDescription.endIndex, offsetBy: 0)) == "don’t have permission to view it."){
-                permissionDenied = true
-                multiSelect = false
-                goBack()
-            }
+            print(error.localizedDescription)
         }
     }
     
@@ -1012,11 +1039,10 @@ struct ContentView: View {
             return
         }
         var components = directory.split(separator: "/")
-    
-        if components.count > 1 {
-            components.removeLast()
-            directory = "/" + components.joined(separator: "/") + "/"
-        } else if components.count == 1 {
+        
+        components.removeLast()
+        directory = "/" + components.joined(separator: "/") + "/"
+        if (directory == "//"){
             directory = "/"
         }
         multiSelect = false
@@ -1084,7 +1110,7 @@ struct ContentView: View {
             }
             
         } catch {
-            print("Error checking directory contents: \(error.localizedDescription)")
+            //print("Error checking directory contents: \(error.localizedDescription)")
             return 2
         }
     }
@@ -1196,6 +1222,18 @@ struct ContentView: View {
     func iterateOverFileWasSelected(boolToIterate: Bool) {
         for i in 0..<fileWasSelected.count {
             fileWasSelected[i] = boolToIterate
+        }
+    }
+    
+    func directPathTypeCheckNewViewFileVariableSetter() {
+        if(yandereDevFileType(file: directory) != 0){
+            newViewFilePath = String(directory.prefix(through: directory.lastIndex(of: "/")!))
+            print(directory)
+            print(newViewFilePath)
+            let inProgressFileName = directory.split(separator: "/")
+            newViewFileName = String(inProgressFileName.last ?? "")
+            print(newViewFileName)
+            print("did you get it?")
         }
     }
 }
