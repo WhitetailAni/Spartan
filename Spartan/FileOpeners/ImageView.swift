@@ -10,13 +10,14 @@ import UIKit
 
 struct ImageView: View {
     @Binding var imagePath: String
+    @Binding var imageName: String
     
     @GestureState private var isFocused = false
     @State private var infoShow = false
     
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
-            if let image = UIImage(contentsOfFile: imagePath) {
+            if let image = UIImage(contentsOfFile: imagePath + imageName) {
                 GeometryReader { geo in
                     Image(uiImage: image)
                         .resizable()
@@ -29,9 +30,9 @@ struct ImageView: View {
             }
         }
         .sheet(isPresented: $infoShow) {
-            let (width, height, fileSize, encoder) = getImageInfo(from: imagePath) ?? (0, 0, 0, "?")
+            let (width, height, fileSize, encoder) = getImageInfo(from: imagePath + imageName) ?? (0, 0, 0, "?")
             VStack{
-                Text(imagePath)
+                Text(imagePath + imageName)
                     .font(.system(size: 40))
                     .bold()
                     .multilineTextAlignment(.center)

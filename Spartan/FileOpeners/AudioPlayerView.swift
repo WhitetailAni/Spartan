@@ -26,6 +26,8 @@ struct AudioPlayerView: View {
     @State var buttonIsFocused = false
     @State var metadataTitles: [String] = [NSLocalizedString("ALBUM", comment: "- Wonder what it'll be like?"), NSLocalizedString("ARTIST", comment: "- A little scary."), NSLocalizedString("ALBUMARTIST", comment: "Welcome to Honex, a division of Honesco"), NSLocalizedString("GENRE", comment: "and a part of the Hexagon Group."), NSLocalizedString("YEAR", comment: "This is it!"), NSLocalizedString("TRACKNUMBER", comment: "Wow."), NSLocalizedString("DISCNUMBER", comment: "Wow."), NSLocalizedString("BPM", comment: "We know that you, as a bee, have worked your whole life")]
     
+    @Binding var isPresented: Bool
+    
     //i love bad SVG support
     @State var buttonWidth: CGFloat = 0
     @State var buttonHeight: CGFloat = 0
@@ -229,8 +231,6 @@ struct AudioPlayerView: View {
             startWaveformVisualization()*/
         }
     }
-    
-    
 }
 
 extension Double {

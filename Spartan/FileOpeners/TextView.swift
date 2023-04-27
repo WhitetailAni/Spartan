@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TextView: View {
     @Binding var filePath: String
+    @Binding var fileName: String
     @Binding var isPresented: Bool
     @State private var fileContents: [String] = []
     @State private var fileContentsToWrite: String = ""
@@ -35,7 +36,7 @@ struct TextView: View {
                     Spacer()
                     Button(action: {
                         do {
-                            try stringArrayToString(inputArray: fileContents).write(to: URL(fileURLWithPath: filePath), atomically: true, encoding: encoding)
+                            try stringArrayToString(inputArray: fileContents).write(to: URL(fileURLWithPath: filePath + fileName), atomically: true, encoding: encoding)
                         } catch {
                             print("Failed to save file: \(error.localizedDescription)")
                         }
@@ -79,7 +80,7 @@ struct TextView: View {
     
     func readFile() {
         do {
-            let url = URL(fileURLWithPath: filePath)
+            let url = URL(fileURLWithPath: filePath + fileName)
             let fileData = try Data(contentsOf: url)
             let detectedEncoding = NSString.stringEncoding(for: fileData, encodingOptions: nil, convertedString: nil, usedLossyConversion: nil)
             if detectedEncoding != 0 {
