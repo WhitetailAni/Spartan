@@ -149,7 +149,7 @@ struct AudioPlayerView: View {
                 cementedAudioName = audioName
                 duration = 0
                 currentTime = 0
-                player.replaceCurrentItem(with: AVPlayerItem(url: URL(fileURLWithPath: cementedAudioPath)))
+                player.replaceCurrentItem(with: AVPlayerItem(url: URL(fileURLWithPath: (cementedAudioPath + "/" + cementedAudioName))))
                 player.play()
             }
             print(audioPath)

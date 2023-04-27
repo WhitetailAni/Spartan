@@ -12,7 +12,6 @@ struct ImageView: View {
     @Binding var imagePath: String
     @Binding var imageName: String
     
-    @GestureState private var isFocused = false
     @State private var infoShow = false
     
     var body: some View {
@@ -22,8 +21,11 @@ struct ImageView: View {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFit()
-                        .frame(width: geo.size.width, height: geo.size.height)
+                        .frame(width: geo.size.width+50, height: geo.size.height+50)
                         .position(x: geo.size.width / 2, y: geo.size.height / 2)
+                        .background(UIKitTapGesture(action: {
+                            infoShow = true
+                        }))
                 }
             } else {
                 Text(NSLocalizedString("IMAGE_ERROR", comment: "Honey begins when our valiant Pollen Jocks bring the nectar to the hive."))
