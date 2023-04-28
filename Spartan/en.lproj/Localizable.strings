@@ -160,4 +160,4 @@
 
 //mount
 "MOUNT_TITLE" = "Mount Points";
-"MOUNT_DESC" = "is mounted on";
+"MOUNT_DESC" = "is mounted at";
