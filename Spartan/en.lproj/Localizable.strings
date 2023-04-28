@@ -157,3 +157,7 @@
 "CREATE_FILE" = "Create File";
 "CREATE_DIR" = "Create Directory";
 "CREATE_SYM" = "Create Symbolic Link";
+
+//mount
+"MOUNT_TITLE" = "Mount Points";
+"MOUNT_DESC" = "is mounted on";

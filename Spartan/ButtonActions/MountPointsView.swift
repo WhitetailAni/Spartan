@@ -18,7 +18,7 @@ struct MountPointsView: View {
     let null32: Int32 = 0
     
     var body: some View {
-        Text("Mount Points")
+        Text(NSLocalizedString("MOUNT_TITLE", comment: "- I don't know."))
             .font(.system(size: 40))
             .bold()
             .onAppear {
@@ -33,7 +33,7 @@ struct MountPointsView: View {
                 directory = mountPoints[index] + "/"
                 isPresented = false
             }) {
-                Text("\(mountDevices[index]) on \(mountPoints[index])")
+                Text("\(mountDevices[index]) \(NSLocalizedString("MOUNT_DESC", comment: "Their day's not planned.")) \(mountPoints[index])")
             }
         }
     }
