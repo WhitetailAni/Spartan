@@ -36,13 +36,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func displayView(pathToLoad: String) {
-        if UIScreen.main.nativeBounds.height == 2160 {
-            buttonWidth = 1000
-            buttonHeight = 60
-        } else if UIScreen.main.nativeBounds.height == 1080 {
-            buttonWidth = 500
-            buttonHeight = 30
-        }
+        buttonWidth = 500 * (UIScreen.main.nativeBounds.height/1080)
+        buttonHeight = 30 * (UIScreen.main.nativeBounds.height/1080)
         let hostingController = UIHostingController(rootView: ContentView(directory: pathToLoad, buttonWidth: buttonWidth, buttonHeight: buttonHeight))
             window = UIWindow(frame: UIScreen.main.bounds)
             window?.rootViewController = hostingController

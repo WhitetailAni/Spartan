@@ -148,3 +148,19 @@ struct PlistView: View {
         case unknown
     }
 }
+
+struct PlistEditorView: View {
+
+    var body: some View {
+        Text("help")
+            .onAppear {
+                if let filePath = Bundle.main.path(forResource: "yourPlistFileName", ofType: "plist") {
+                    if let plistDict = NSDictionary(contentsOfFile: filePath) as? [String:AnyObject] {
+                        if let value = plistDict["yourKey"] {
+                            print(value)
+                        }
+                    }
+                }
+            }
+    }
+}

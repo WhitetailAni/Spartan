@@ -7,12 +7,13 @@
 
 import SwiftUI
 import AVKit
+import UIKit
 
 struct ContentView: View {
     @State var directory: String
     @State private var files: [String] = []
     @State private var selectedFile: FileInfo?
-    @State private var fileInfo: String = ""
+    @State private var fileInfo: [String] = []
     @State var permissionDenied = false
     @State var deleteOverride = false
     @State var isFocused: Bool = false
@@ -35,7 +36,7 @@ struct ContentView: View {
     @State var renameFileCurrentName: String = ""
     @State var renameFileNewName: String = ""
     
-    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 21)
+    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 22)
     //createFileSelectShow = 0
     //contextMenuShow = 1
     //openInMenu = 2
@@ -57,6 +58,7 @@ struct ContentView: View {
     //settingsShow = 18
     //searchShow = 19
     //symlinkShow = 20
+    //mountPointsShow = 21
     
     @State var globalAVPlayer = AVPlayer()
     @State var isGlobalAVPlayerPlaying = false
@@ -166,7 +168,7 @@ struct ContentView: View {
                                 .contextMenu {
                                     Button(action: {
                                         showSubView[3] = true
-                                        fileInfo = getFileInfo(forFileAtPath: directory + files[index])
+                                        newViewFileName = files[index]
                                     }) {
                                         Text(NSLocalizedString("INFO", comment: "there is no way a bee should be able to fly."))
                                     }
@@ -184,6 +186,7 @@ struct ContentView: View {
                                         showSubView[2] = true
                                         newViewFilePath = directory
                                         newViewArrayNames = [files[index]]
+                                        newViewFileIndex = index
                                     }) {
                                         Text(NSLocalizedString("OPENIN", comment: "The bee, of course, flies anyway"))
                                     }
@@ -272,7 +275,9 @@ struct ContentView: View {
                                         if (multiSelect) {
                                             Image(systemName: fileWasSelected[index] ? "checkmark.circle" : "circle")
                                         }
-                                        if (yandereDevFileType(file: (directory + files[index])) == 0) {
+                                        if(directory == "/private/var/containers/Bundle/Application/" || directory == "/var/containers/Bundle/Application/") {
+                                            Text("app!")
+                                        } else if (yandereDevFileType(file: (directory + files[index])) == 0) {
                                             if (isDirectoryEmpty(atPath: directory + files[index]) == 1) {
                                                 Image(systemName: "folder")
                                             } else if (isDirectoryEmpty(atPath: directory + files[index]) == 0) {
@@ -345,6 +350,7 @@ struct ContentView: View {
                         showSubView[1] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                             showSubView[3] = true
+                            newViewFileName = files[newViewFileIndex]
                         }
                     }) {
                         Text(NSLocalizedString("INFO", comment: "there is no way a bee should be able to fly."))
@@ -516,7 +522,6 @@ struct ContentView: View {
                     .padding(paddingInt)
                     .opacity(opacityInt)
                     
-                    
                     Button(action: {
                         newViewFilePath = directory + files[newViewFileIndex]
                         newViewFileName = files[newViewFileIndex]
@@ -637,12 +642,22 @@ struct ContentView: View {
                     callback = false
                     showSubView[10] = true
                 }
-                .alert(isPresented: $showSubView[3]) { //file info
-                    Alert(
-                        title: Text(NSLocalizedString("SHOW_INFO", comment: "A perfect report card, all B's.")),
-                        message: Text(fileInfo),
-                        dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "Very proud.")))
-                    )
+                .sheet(isPresented: $showSubView[3]) { //file info
+                    VStack {
+                        Text(NSLocalizedString("SHOW_INFO", comment: "A perfect report card, all B's."))
+                            .font(.system(size: 60))
+                        ForEach(fileInfo, id: \.self) { infoPiece in
+                            Text(infoPiece)
+                        }
+                        Button(action: {
+                            showSubView[3] = false
+                        }) {
+                            Text(NSLocalizedString("DISMISS", comment: "Very proud."))
+                        }
+                        .onAppear {
+                            fileInfo = getFileInfo(forFileAtPath: directory + newViewFileName)
+                        }
+                    }
                 }
                 .sheet(isPresented: $showSubView[0], content: {
                     let paddingInt: CGFloat = -7
@@ -745,6 +760,9 @@ struct ContentView: View {
                 .sheet(isPresented: $showSubView[15], content: {
                     SpawnView(binaryPath: $newViewFilePath)
                 })
+                .sheet(isPresented: $showSubView[21], content: {
+                    MountPointsView(isPresented: $showSubView[21])
+                })
                 .accentColor(.accentColor)
             }
         }
@@ -812,11 +830,16 @@ struct ContentView: View {
                     }
                 }
             
-                Button(action: { //unused
-                    print("button goes here")
+                Button(action: { //mount points
+                    showSubView[21] = true
                 }) {
-                    Image(systemName: "questionmark")
-                        .frame(width:50, height:50)
+                    if #available(tvOS 14.0, *) {
+                        Image(systemName: "externaldrive")
+                            .frame(width:50, height:50)
+                    } else {
+                        Image(systemName: "tv")
+                            .frame(width:50, height:50)
+                    }
                 }
                 
                 Button(action: { //favorites
@@ -1062,7 +1085,7 @@ struct ContentView: View {
         }
     }
     
-    func getFileInfo(forFileAtPath: String) -> String {
+    func getFileInfo(forFileAtPath: String) -> [String] {
         let fileManager = FileManager.default
     
         do {
@@ -1083,19 +1106,19 @@ struct ContentView: View {
             dateFormatter.dateStyle = .medium
             dateFormatter.timeStyle = .medium
             
-            let fileInfoString = """
-            \(NSLocalizedString("INFO_PATH", comment: "Ma! I got a thing going here.") + forFileAtPath)
-            \(NSLocalizedString("INFO_SIZE", comment: "- You got lint on your fuzz.") + ByteCountFormatter().string(fromByteCount: Int64(fileSize)))
-            \(NSLocalizedString("INFO_CREATION", comment: "- Ow! That's me!") + dateFormatter.string(from: creationDate))
-            \(NSLocalizedString("INFO_MODIFICATION", comment: "- Wave to us! We'll be in row 118,000.") + dateFormatter.string(from: modificationDate))
-            \(NSLocalizedString("INFO_OWNER", comment: "- Bye!") + fileOwner)
-            \(NSLocalizedString("INFO_OWNERID", comment: "Barry, I told you, stop flying in the house!") + String(fileOwnerID))
-            \(NSLocalizedString("INFO_PERMISSIONS", comment: "- Hey, Adam.") + filePerms)
-            """
-
+            var fileInfoString: [String] = []
+            fileInfoString.append(NSLocalizedString("INFO_PATH", comment: "Ma! I got a thing going here.") + forFileAtPath)
+            fileInfoString.append(NSLocalizedString("INFO_SIZE", comment: "- You got lint on your fuzz.") + ByteCountFormatter().string(fromByteCount: Int64(fileSize)))
+            fileInfoString.append(NSLocalizedString("INFO_CREATION", comment: "- Ow! That's me!") + dateFormatter.string(from: creationDate))
+            fileInfoString.append(NSLocalizedString("INFO_MODIFICATION", comment: "- Wave to us! We'll be in row 118,000.") + dateFormatter.string(from: modificationDate))
+            fileInfoString.append(NSLocalizedString("INFO_OWNER", comment: "- Bye!") + fileOwner)
+            fileInfoString.append(NSLocalizedString("INFO_OWNERID", comment: "Barry, I told you, stop flying in the house!") + String(fileOwnerID))
+            fileInfoString.append(NSLocalizedString("INFO_PERMISSIONS", comment: "- Hey, Adam.") + filePerms)
+            
+            print("help: ", fileInfoString)
             return fileInfoString
         } catch {
-            return "Error: \(error.localizedDescription)"
+            return ["Error: \(error.localizedDescription)"]
         }
     }
     
