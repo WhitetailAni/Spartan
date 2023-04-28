@@ -149,3 +149,8 @@ struct UIKitTapGesture: UIViewRepresentable {
         }
     }
 }
+
+struct Mount {
+    var device: String
+    var mountPoint: String
+}

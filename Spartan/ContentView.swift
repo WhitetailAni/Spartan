@@ -12,7 +12,6 @@ import UIKit
 struct ContentView: View {
     @State var directory: String
     @State private var files: [String] = []
-    @State private var selectedFile: FileInfo?
     @State private var fileInfo: [String] = []
     @State var permissionDenied = false
     @State var deleteOverride = false
@@ -36,7 +35,7 @@ struct ContentView: View {
     @State var renameFileCurrentName: String = ""
     @State var renameFileNewName: String = ""
     
-    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 22)
+    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 23)
     //createFileSelectShow = 0
     //contextMenuShow = 1
     //openInMenu = 2
@@ -59,6 +58,7 @@ struct ContentView: View {
     //searchShow = 19
     //symlinkShow = 20
     //mountPointsShow = 21
+    //spareViewShow = 22
     
     @State var globalAVPlayer = AVPlayer()
     @State var isGlobalAVPlayerPlaying = false
@@ -625,9 +625,7 @@ struct ContentView: View {
                 }
                 .navigationBarHidden(true)
                 .onAppear {
-                    for i in 0..<showSubView.count {
-                        showSubView[i] = false
-                    }
+                    resetShowSubView()
                     updateFiles()
                     if(yandereDevFileType(file: directory) != 0) {
                         directPathTypeCheckNewViewFileVariableSetter()
@@ -760,8 +758,14 @@ struct ContentView: View {
                 .sheet(isPresented: $showSubView[15], content: {
                     SpawnView(binaryPath: $newViewFilePath)
                 })
-                .sheet(isPresented: $showSubView[21], content: {
-                    MountPointsView(isPresented: $showSubView[21])
+                .sheet(isPresented: $showSubView[21], onDismiss: {
+                    updateFiles()
+                    resetShowSubView()
+                }, content: {
+                    MountPointsView(directory: $directory, isPresented: $showSubView[21])
+                })
+                .sheet(isPresented: $showSubView[22], content: {
+                    SpareView()
                 })
                 .accentColor(.accentColor)
             }
@@ -1036,7 +1040,7 @@ struct ContentView: View {
                 showSubView[15] = true
                 newViewFilePath = directory + fileToCheck[index]
             } else {
-                selectedFile = FileInfo(name: fileToCheck[index], id: UUID())
+                showSubView[22] = true
             }
         }
     }
@@ -1259,18 +1263,9 @@ struct ContentView: View {
             print("did you get it?")
         }
     }
-}
-
-struct FileInfo: Identifiable {
-    let name: String
-    let id: UUID
-}
-
-struct ViewOffsetKey: PreferenceKey {
-    typealias Value = CGFloat
-    static var defaultValue: CGFloat = 0
-
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = nextValue()
+    func resetShowSubView() {
+        for i in 0..<showSubView.count {
+            showSubView[i] = false
+        }
     }
 }
