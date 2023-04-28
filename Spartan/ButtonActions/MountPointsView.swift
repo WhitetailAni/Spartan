@@ -40,9 +40,9 @@ struct MountPointsView: View {
     
     func getMountedFileSystems() -> [Mount] {
         var mounts = [Mount]()
-
         var mntbuf: UnsafeMutablePointer<statfs>? = nil
         let count = getmntinfo(&mntbuf, 0)
+        
         if count > 0 {
             for i in 0..<count {
                 var mnt = mntbuf![Int(i)]
@@ -60,9 +60,11 @@ struct MountPointsView: View {
                 mounts.append(mount)
             }
         }
-
         return mounts
     }
 }
 
-
+struct Mount {
+    var device: String
+    var mountPoint: String
+}
