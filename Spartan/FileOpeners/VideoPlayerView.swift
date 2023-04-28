@@ -66,7 +66,7 @@ struct VideoPlayerView: View {
                         Alert(
                             title: Text(videoPath + videoName),
                             message: Text(getVideoInfo(filePath: (videoPath + "/" + videoName))),
-                            dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "You're sky freaks! I love it! I love it!")))
+                            dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "- I wonder where they were.")))
                         )
                     }
                 }

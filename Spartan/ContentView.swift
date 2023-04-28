@@ -841,7 +841,7 @@ struct ContentView: View {
                         Image(systemName: "externaldrive")
                             .frame(width:50, height:50)
                     } else {
-                        Image(systemName: "tv")
+                        Image(systemName: "tray.2")
                             .frame(width:50, height:50)
                     }
                 }
