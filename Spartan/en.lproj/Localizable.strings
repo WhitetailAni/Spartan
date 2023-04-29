@@ -161,3 +161,7 @@
 //mount
 "MOUNT_TITLE" = "Mount Points";
 "MOUNT_DESC" = "is mounted at";
+
+//plist
+"PLIST_KEY" = "Enter key name";
+"PLIST_DATA" = "Enter key value";
