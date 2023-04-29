@@ -34,7 +34,7 @@ struct PlistView: View {
                         .multilineTextAlignment(.center)
                 }
                 Button(action: {
-                    if ((plistDict.write(toFile: filePath + fileName, atomically: true)) != nil) { } else {
+                    if (plistDict.write(toFile: filePath + fileName, atomically: true)) { } else {
                         error = true
                     }
                 }) {
@@ -82,18 +82,9 @@ struct PlistView: View {
     
     private func getContents() -> [String] {
         var contents = [String]()
-        if let data = FileManager.default.contents(atPath: filePath + fileName) {
-            do {
-                let plist = try PropertyListSerialization.propertyList(from: data, options: [], format: nil)
-                if let dict = plist as? [String: Any] {
-                    for (key, value) in dict {
-                        let valueString = processValue(value)
-                        contents.append("\(key): \(valueString) (\(dataTypeString(value)))")
-                    }
-                }
-            } catch {
-                print(error.localizedDescription)
-            }
+        for (key, value) in plistDict {
+            let valueString = processValue(value)
+            contents.append("\(key): \(valueString) (\(dataTypeString(value)))")
         }
         return contents
     }
