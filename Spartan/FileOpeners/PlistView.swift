@@ -12,23 +12,41 @@ struct PlistView: View {
     @Binding var filePath: String
     @Binding var fileName: String
     @State private var editorShow = false
+    @State private var error = false
     
     @State var plistKey: String = ""
     @State var plistData: String = ""
     @State var plistKeyType: String = ""
+    @State var plistDict: NSMutableDictionary = NSMutableDictionary()
     
     var body: some View {
         VStack {
-            if(UserDefaults.settings.bool(forKey: "descriptiveTitles")){
-                Text(filePath)
-                    .font(.system(size: 40))
-                    .bold()
-                    .multilineTextAlignment(.center)
-            } else {
-                Text(fileName)
-                    .font(.system(size: 40))
-                    .bold()
-                    .multilineTextAlignment(.center)
+            HStack {
+                if(UserDefaults.settings.bool(forKey: "descriptiveTitles")){
+                    Text(filePath)
+                        .font(.system(size: 40))
+                        .bold()
+                        .multilineTextAlignment(.center)
+                } else {
+                    Text(fileName)
+                        .font(.system(size: 40))
+                        .bold()
+                        .multilineTextAlignment(.center)
+                }
+                Button(action: {
+                    if ((plistDict.write(toFile: filePath + fileName, atomically: true)) != nil) { } else {
+                        error = true
+                    }
+                }) {
+                    Image(systemName: "square.and.arrow.down")
+                }
+                .alert(isPresented: $error) {
+                    Alert(
+                        title: Text(NSLocalizedString("ERROR", comment: "")),
+                        message: nil,
+                        dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "")))
+                    )
+                }
             }
             List(getContents(), id: \.self) { content in
                 Button(action: {
@@ -49,21 +67,22 @@ struct PlistView: View {
                         let plistKeyTypeSubstring = content[startRange.upperBound..<endRange.lowerBound]
                         plistKeyType = String(plistKeyTypeSubstring)
                     }
-                    print(plistKey)
-                    print(plistData)
-                    print(plistKeyType)
                 }) {
                     Text(content)
                 }
             }
         }
+        .onAppear {
+            plistDict = (NSDictionary(contentsOfFile: filePath + fileName)?.mutableCopy() as? NSMutableDictionary)!
+        }
         .sheet(isPresented: $editorShow, content: {
+            PlistEditorView(filePath: $filePath, fileName: $fileName, isPresented: $editorShow, plistDict: $plistDict, plistKey: $plistKey, plistData: $plistData, plistKeyType: $plistKeyType)
         })
     }
     
     private func getContents() -> [String] {
         var contents = [String]()
-        if let data = FileManager.default.contents(atPath: filePath) {
+        if let data = FileManager.default.contents(atPath: filePath + fileName) {
             do {
                 let plist = try PropertyListSerialization.propertyList(from: data, options: [], format: nil)
                 if let dict = plist as? [String: Any] {
@@ -129,7 +148,7 @@ struct PlistView: View {
 
     
     private func getPlistType() -> PlistType {
-        let data = FileManager.default.contents(atPath: filePath)
+        let data = FileManager.default.contents(atPath: filePath + fileName)
         if let data = data {
             var format: PropertyListSerialization.PropertyListFormat = .xml
             do {
@@ -151,16 +170,54 @@ struct PlistView: View {
 
 struct PlistEditorView: View {
 
+    @Binding var filePath: String
+    @Binding var fileName: String
+    @Binding var isPresented: Bool
+    
+    @Binding var plistDict: NSMutableDictionary
+    @Binding var plistKey: String
+    @Binding var plistData: String
+    @Binding var plistKeyType: String
+    
+    @State private var parsedString: String = ""
+    @State private var parsedInt = 0
+    @State private var parsedArray: [Any] = []
+
     var body: some View {
-        Text("help")
-            .onAppear {
-                if let filePath = Bundle.main.path(forResource: "yourPlistFileName", ofType: "plist") {
-                    if let plistDict = NSDictionary(contentsOfFile: filePath) as? [String:AnyObject] {
-                        if let value = plistDict["yourKey"] {
-                            print(value)
-                        }
-                    }
-                }
+        TextField(NSLocalizedString("PLIST_KEY", comment: ""), text: $plistKey, onCommit: {
+            print("lol")
+        })
+        .onAppear {
+            if(plistKeyType == "Integer") {
+                parsedInt = plistDict[plistKey] as! Int
+            } else if(plistKeyType == "String") {
+                parsedString = plistDict[plistKey] as! String
+            } else if(plistKeyType == "Array") {
+                parsedArray = plistDict[plistKey] as! [Any]
             }
+        }
+        
+        if(plistKeyType == "Integer") {
+            StepperTV(value: $parsedInt)
+        } else if(plistKeyType == "String") {
+            TextField(NSLocalizedString("PLIST_DATA", comment: ""), text: $parsedString)
+        } else if(plistKeyType == "Array") {
+            Text("Support coming soon")
+        } else if(plistKeyType == "Dictionary") {
+            Text("Support coming soon (2x)")
+        } else {
+            Text("Unknown data type")
+        }
+        
+        Button(action: {
+            if(plistKeyType == "Integer") {
+                plistDict.setValue(parsedInt, forKey: plistKey)
+            } else if(plistKeyType == "String") {
+                plistDict.setValue(parsedString, forKey: plistKey)
+            }
+            isPresented = false
+        }) {
+            Text(NSLocalizedString("CONFIRM", comment: ""))
+        }
     }
 }

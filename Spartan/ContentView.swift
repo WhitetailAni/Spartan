@@ -7,7 +7,6 @@
 
 import SwiftUI
 import AVKit
-import UIKit
 
 struct ContentView: View {
     @State var directory: String
@@ -502,7 +501,6 @@ struct ContentView: View {
                     }
                     .padding(paddingInt)
                     .opacity(opacityInt)
-                    
                 }
                 .sheet(isPresented: $showSubView[2]) {
                     let paddingInt: CGFloat = -7
