@@ -30,7 +30,7 @@ There's probably more, I lost track.
 
 TODO:
 - Add fullscreen to VideoPlayerView 
-- Plist editor
+- Plist editor //in progress
 - Spawn binaries
 - Root helper
 - Read app list to show what app container is which if in (/private)/var/containers/Bundle/Application or (/private)/var/mobile/Containers/Data/Application
@@ -42,7 +42,7 @@ It will open /var/mobile/ by default, unless you are sandboxed, in which case it
 Work is ongoing to 
 
 How to use:
-1. Clone the repository and open it in Xcode (14.3+ required).
+1. Clone the repository and open it in Xcode (14.0+ required).
 2. Enter the Xcode.app folder and find the AppleTVOS SDK. Locate /usr/include/spawn.h, give it write permissions, and remove the listings that mark it as unavailable on tvOS.
 3. Build and run to your Apple TV.
 
