@@ -29,7 +29,6 @@ What it currently lets you do:
 There's probably more, I lost track.
 
 TODO:
-- Add fullscreen to VideoPlayerView 
 - Plist editor //in progress
 - Spawn binaries
 - Root helper
