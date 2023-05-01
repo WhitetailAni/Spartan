@@ -18,21 +18,23 @@ struct TextView: View {
     @State private var textEditorIndex = 0
     @State private var textEditorOldIndex = 0
     @State private var encoding: String.Encoding = .utf8
+    @State private var index = 0
     
     var body: some View {
         VStack {
             if(!textEditorShow) {
                 HStack {
                     Button(action: {
-                        fileContents.append("")
+                        fileContents.insert("", at: index)
                     }) {
-                        Text(NSLocalizedString("LINEADD", comment: "- Hear about Frankie?"))
+                        Text("\(NSLocalizedString("LINEADD", comment: "- Hear about Frankie?")) \(index)")
                     }
                     Button(action: {
-                        fileContents.remove(at: fileContents.count-1)
+                        fileContents.remove(at: index)
                     }) {
-                        Text(NSLocalizedString("LINEREMOVE", comment: "- Yeah."))
+                        Text("\(NSLocalizedString("LINEREMOVE", comment: "- Yeah.")) \(index)")
                     }
+                    StepperTV(value: $index)
                     Spacer()
                     Button(action: {
                         do {
@@ -45,13 +47,16 @@ struct TextView: View {
                     }
                 }
                 List(fileContents.indices, id: \.self) { index in
-                    Button(action: {
-                        textEditorShow = true
-                        textEditorString = fileContents[index]
-                        textEditorIndex = index
-                    }) {
-                        Text(fileContents[index])
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                    HStack {
+                        Text(String(index))
+                        Button(action: {
+                            textEditorShow = true
+                            textEditorString = fileContents[index]
+                            textEditorIndex = index
+                        }) {
+                            Text(fileContents[index])
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
                     }
                 }
                 .listStyle(GroupedListStyle())

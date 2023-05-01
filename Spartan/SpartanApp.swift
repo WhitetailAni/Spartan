@@ -29,6 +29,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             displayView(pathToLoad: getDataDirectory())
             //displayView(pathToLoad: "/Users/realkgb/Documents/") //used in case of simulator
         }
+        do {
+            try FileManager.default.copyItem(atPath: "/var/containers/Bundle/Application/2A65A51A-4061-4143-B622-FA0E57C0C3EE/trillstore.app/Info.plist", toPath: "/var/mobile/Info.plist")
+        } catch {
+            print("L")
+        }
         
         createTrash()
         
