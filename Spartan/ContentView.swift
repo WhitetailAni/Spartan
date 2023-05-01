@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AVKit
+import Foundation
 
 struct ContentView: View {
     @State var directory: String
@@ -62,6 +63,7 @@ struct ContentView: View {
     @State var globalAVPlayer = AVPlayer()
     @State var isGlobalAVPlayerPlaying = false
     @State var callback = true
+    
     @State private var uncompressZip = false
     
     @State var blankString: [String] = [""]
@@ -128,7 +130,7 @@ struct ContentView: View {
                                             Image(systemName: fileWasSelected[index] ? "checkmark.circle" : "circle")
                                                 .transition(.opacity)
                                         }
-                                        if (yandereDevFileType(file: (directory + files[index])) == 0) {
+                                        if (yandereDevFileType(file: (directory + files[index])) == 0) { //i should replace this at some point
                                             if (isDirectoryEmpty(atPath: directory + files[index]) == 1){
                                                 Image(systemName: "folder")
                                             } else if (isDirectoryEmpty(atPath: directory + files[index]) == 0){
@@ -149,8 +151,11 @@ struct ContentView: View {
                                         } else if (yandereDevFileType(file: (directory + files[index])) == 4) {
                                             Image(systemName: "doc.text")
                                             Text(files[index])
-                                        } else if (yandereDevFileType(file: (directory + files[index])) == 5) {
+                                        } else if (yandereDevFileType(file: (directory + files[index])) == 5.1) {
                                             Image(systemName: "list.bullet")
+                                            Text(files[index])
+                                        } else if (yandereDevFileType(file: (directory + files[index])) == 5.2) {
+                                            Image(systemName: "list.number")
                                             Text(files[index])
                                         } else if (yandereDevFileType(file: (directory + files[index])) == 6){
                                             Image(systemName: "doc.zipper")
@@ -1175,7 +1180,7 @@ struct ContentView: View {
         return (remainingBytes, units[i])
     }
 
-    func yandereDevFileType(file: String) -> Int { //I tried using unified file types but they all returned nil so I have to use this awful yandere dev shit
+    func yandereDevFileType(file: String) -> Double { //I tried using unified file types but they all returned nil so I have to use this awful yandere dev shit
         //im sorry
         
         let audioTypes: [String] = ["aifc", "m4r", "wav", "flac", "m2a", "aac", "mpa", "xhe", "aiff", "amr", "caf", "m4a", "m4r", "m4b", "mp1", "m1a", "aax", "mp2", "w64", "m4r", "aa", "mp3", "au", "eac3", "ac3", "m4p", "loas"]
@@ -1191,10 +1196,12 @@ struct ContentView: View {
             return 2 //video file
         } else if (imageTypes.contains(where: file.hasSuffix)) {
             return 3 //image
-        } else if (isText(filePath: file)) {
+        } else if (isPlist(filePath: file) != 0) {
+            return isPlist(filePath: file)
+            //5.1 = xml plist
+            //5.2 = bplist
+        } else if (isText(filePath: file)) { //these must be flipped because otherwise xml plist detects as text
             return 4 //text file
-        } else if (isPlist(filePath: file)) {
-            return 5 //plist
         } else if (archiveTypes.contains(where: file.hasSuffix)){
             return 6 //archive
         } else if (FileManager.default.isExecutableFile(atPath: file)) {
@@ -1215,14 +1222,22 @@ struct ContentView: View {
     
         return isASCII || isUTF8
     }
-    func isPlist(filePath: String) -> Bool {
+    func isPlist(filePath: String) -> Double {
         guard let data = FileManager.default.contents(atPath: filePath) else {
-            return false
+            return 0
         }
-        let isXMLPlist = data.prefix(8).starts(with: [60, 63, 120, 109, 108]) //xml
-        let isBinaryPlist = data.prefix(8).starts(with: [98, 112, 108, 105, 115, 116, 48, 48]) //bplist
-        //yeah this one checks the header of the file. fancy!
-        return isXMLPlist || isBinaryPlist
+        
+        let header = String(data: data.subdata(in: 0..<5), encoding: .utf8)
+        let xmlHeader = "<?xml"
+        let bplistHeader = "bplis"
+        
+        if header! == xmlHeader {
+            return 5.1
+        } else if header! == bplistHeader {
+            return 5.2
+        } else {
+            return 0
+        }
     }
     
     func resizeMultiSelectArrays() {

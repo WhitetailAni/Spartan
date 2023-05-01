@@ -18,7 +18,9 @@ struct PlistView: View {
     @State var plistData: String = ""
     @State var plistKeyType: String = ""
     @State var plistDict: NSMutableDictionary = NSMutableDictionary()
-    @State var plistDictString: [String] = []
+    @State var i = 0
+    @State var editOccurred = false
+    @State var plistDictDisplay: [String] = []
     
     @State var valueToSet: Any? = nil
     @State var keyToSet: String = ""
@@ -67,9 +69,9 @@ struct PlistView: View {
                     )
                 }
             }
-            List(plistDictString, id: \.self) { content in
+            List(plistDictDisplay, id: \.self) { content in
                 Button(action: {
-                    //editorShow = true
+                    editorShow = true
                     if let range = content.range(of: ": ") {
                         let plistKeySubstring = content.prefix(upTo: range.lowerBound)
                         plistKey = String(plistKeySubstring)
@@ -92,18 +94,26 @@ struct PlistView: View {
             }
         }
         .onAppear {
-            plistDict = (NSDictionary(contentsOfFile: filePath + fileName)?.mutableCopy() as? NSMutableDictionary)!
-            plistDictString = getContents()
+            if(i == 0) {
+                plistDict = (NSDictionary(contentsOfFile: filePath + fileName)?.mutableCopy() as? NSMutableDictionary) ?? NSMutableDictionary(objects: ["File is not a valid bplist or XML plist"], forKeys: ["Error" as NSCopying])
+                plistDictDisplay = getContents()
+                i += 1
+            }
         }
         .sheet(isPresented: $editorShow, onDismiss: {
-            print(valueToSet as! String)
-            print(keyToSet)
-            plistDict.setValue(valueToSet, forKey: keyToSet)
-            plistDictString = getContents()
-            print(plistDict)
+            if(editOccurred) {
+                plistDict.removeObject(forKey: plistKey)
+                plistDict[keyToSet] = valueToSet
+                plistDictDisplay = getContents()
+            }
         }, content: {
-            PlistEditorView(filePath: $filePath, fileName: $fileName, isPresented: $editorShow, plistDict: $plistDict, plistKey: $plistKey, plistData: $plistData, plistKeyType: $plistKeyType, keyToSet: $keyToSet, valueToSet: $valueToSet)
+            PlistEditorView(filePath: $filePath, fileName: $fileName, isPresented: $editorShow, plistDict: $plistDict, plistKey: $plistKey, plistData: $plistData, plistKeyType: $plistKeyType, editOccurred: $editOccurred, keyToSet: $keyToSet, valueToSet: $valueToSet)
         })
+    }
+    
+    private func editPlist() {
+        plistDict.removeObject(forKey: plistKey)
+        plistDict[keyToSet] = valueToSet
     }
     
     private func getContents() -> [String] {
@@ -165,15 +175,18 @@ struct PlistView: View {
 
     
     func plistType() -> Int {
-        guard let data = FileManager.default.contents(atPath: filePath + fileName) else {
+        guard let data = FileManager.default.contents(atPath: filePath) else {
             return 2
         }
-        let isXMLPlist = data.prefix(8).starts(with: [60, 63, 120, 109, 108]) //xml
-        let isBinaryPlist = data.prefix(8).starts(with: [98, 112, 108, 105, 115, 116, 48, 48]) //bplist
-        //yeah this one checks the header of the file. fancy!
-        if(isXMLPlist) {
+        
+        let header = String(data: data.subdata(in: 0..<5), encoding: .utf8)
+        let xmlHeader = "<?xml"
+        let bplistHeader = "bplis"
+        print(filePath, " ", header!)
+        
+        if header! == xmlHeader {
             return 0
-        } else if(isBinaryPlist) {
+        } else if header! == bplistHeader {
             return 1
         } else {
             return 2
@@ -192,19 +205,24 @@ struct PlistEditorView: View {
     @Binding var plistData: String
     @Binding var plistKeyType: String
     
+    @Binding var editOccurred: Bool
+    
     @State private var parsedString: String = ""
     @State private var parsedInt = 0
     @State private var parsedArray: [Any] = []
+    @State private var plistKeyNew: String = ""
     
     @Binding var keyToSet: String
     @Binding var valueToSet: Any?
 
 
     var body: some View {
-        TextField(NSLocalizedString("PLIST_KEY", comment: ""), text: $plistKey, onCommit: {
+        TextField(NSLocalizedString("PLIST_KEY", comment: ""), text: $plistKeyNew, onCommit: {
             print("lol")
         })
         .onAppear {
+            editOccurred = false
+            plistKeyNew = plistKey
             if(plistKeyType == "Integer") {
                 parsedInt = plistDict[plistKey] as! Int
             } else if(plistKeyType == "String") {
@@ -239,7 +257,8 @@ struct PlistEditorView: View {
             } else {
                 valueToSet = "ERROR"
             }
-            keyToSet = plistKey
+            keyToSet = plistKeyNew
+            editOccurred = true
             isPresented = false
         }) {
             Text(NSLocalizedString("CONFIRM", comment: ""))

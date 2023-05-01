@@ -21,7 +21,7 @@ struct EThree: View {
     @State private var deviceInfo: [String] = []
     @State private var deviceInfoShow = false
     
-    var yandereDevFileTypeDebugTransfer: ((String) -> Int)? = nil
+    var yandereDevFileTypeDebugTransfer: ((String) -> Double)? = nil
     //var realFreeSpace: ((Double) -> (Double, String))? = nil
     
     var body: some View {

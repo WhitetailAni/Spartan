@@ -50,7 +50,9 @@ struct TextView: View {
                     HStack {
                         Text(String(index))
                         Button(action: {
-                            textEditorShow = true
+                            withAnimation {
+                                textEditorShow = true
+                            }
                             textEditorString = fileContents[index]
                             textEditorIndex = index
                         }) {
@@ -61,14 +63,19 @@ struct TextView: View {
                 }
                 .listStyle(GroupedListStyle())
             } else {
-                TextField(NSLocalizedString("LINEADD_DESCRIPTION", comment: "- You going to the funeral?"), text: $textEditorString)
-                Button(action: {
-                    fileContents[textEditorIndex] = textEditorString
-                    print(fileContents)
-                    textEditorShow = false
-                }) {
-                    Text(NSLocalizedString("CONFIRM", comment: "- No, I'm not going."))
+                HStack {
+                    TextField(NSLocalizedString("LINEADD_DESCRIPTION", comment: "- You going to the funeral?"), text: $textEditorString)
+                    Button(action: {
+                        fileContents[textEditorIndex] = textEditorString
+                        print(fileContents)
+                        withAnimation {
+                            textEditorShow = false
+                        }
+                    }) {
+                        Text(NSLocalizedString("CONFIRM", comment: "- No, I'm not going."))
+                    }
                 }
+                .transition(.opacity)
             }
         }
         .onAppear {
@@ -76,7 +83,9 @@ struct TextView: View {
         }
         .onExitCommand {
             if(textEditorShow){
-                textEditorShow = false
+                withAnimation {
+                    textEditorShow = false
+                }
             } else {
                 isPresented = false
             }
