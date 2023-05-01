@@ -302,8 +302,11 @@ struct ContentView: View {
                                         } else if (yandereDevFileType(file: (directory + files[index])) == 4) {
                                             Image(systemName: "doc.text")
                                             Text(files[index])
-                                        } else if (yandereDevFileType(file: (directory + files[index])) == 5) {
+                                        } else if (yandereDevFileType(file: (directory + files[index])) == 5.1) {
                                             Image(systemName: "list.bullet")
+                                            Text(files[index])
+                                        } else if (yandereDevFileType(file: (directory + files[index])) == 5.2) {
+                                            Image(systemName: "list.number")
                                             Text(files[index])
                                         } else if (yandereDevFileType(file: (directory + files[index])) == 6) {
                                             Image(systemName: "rectangle.compress.vertical")
@@ -1031,7 +1034,7 @@ struct ContentView: View {
                 showSubView[4] = true
                 newViewFilePath = directory
                 newViewFileName = fileToCheck[index]
-            } else if (yandereDevFileType(file: (directory + fileToCheck[index])) == 5){
+            } else if (Int(yandereDevFileType(file: (directory + fileToCheck[index]))) == 5){
                 showSubView[13] = true
                 newViewFilePath = directory
                 newViewFileName = fileToCheck[index]
