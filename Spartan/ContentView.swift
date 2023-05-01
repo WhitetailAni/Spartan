@@ -731,7 +731,7 @@ struct ContentView: View {
                     CopyFileView(fileNames: $newViewArrayNames, filePath: $newViewFilePath, multiSelect: $multiSelect, isPresented: $showSubView[9])
                 })
                 .sheet(isPresented: $showSubView[11], content: {
-                    VideoPlayerView(videoPath: $newViewFilePath, videoName: $newViewFileName, player: globalAVPlayer)
+                    VideoPlayerView(videoPath: $newViewFilePath, videoName: $newViewFileName, isPresented: $showSubView[11], player: globalAVPlayer)
                 })
                 .sheet(isPresented: $showSubView[10], content: {
                     if(callback){

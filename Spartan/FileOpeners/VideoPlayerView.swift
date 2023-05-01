@@ -12,6 +12,7 @@ import AVFoundation
 struct VideoPlayerView: View {
     @Binding var videoPath: String
     @Binding var videoName: String
+    @Binding var isPresented: Bool
     @State var player: AVPlayer
     @State private var descriptiveTimestamps = UserDefaults.settings.bool(forKey: "verboseTimestamps")
     @State private var isPlaying = false
@@ -21,53 +22,69 @@ struct VideoPlayerView: View {
     @State private var fastIncrement = 1
     @State private var infoShow = false
     @State private var videoTitle: String = ""
+    @State private var fullScreen = false
     
     var body: some View {
         NavigationView {
             VStack {
-                if(videoTitle == ""){
-                    if(UserDefaults.settings.bool(forKey: "descriptiveTitles")){
-                        Text(videoPath)
-                            .font(.system(size: 40))
-                            .bold()
-                            .multilineTextAlignment(.center)
-                            .padding(-20)
+                if(!fullScreen) {
+                    if(videoTitle == ""){
+                        if(UserDefaults.settings.bool(forKey: "descriptiveTitles")){
+                            Text(videoPath)
+                                .font(.system(size: 40))
+                                .bold()
+                                .multilineTextAlignment(.center)
+                                .padding(-20)
+                        } else {
+                            Text(videoName)
+                                .font(.system(size: 40))
+                                .bold()
+                                .multilineTextAlignment(.center)
+                                .padding(-20)
+                        }
                     } else {
-                        Text(videoName)
+                        Text(videoTitle)
                             .font(.system(size: 40))
                             .bold()
                             .multilineTextAlignment(.center)
                             .padding(-20)
                     }
-                } else {
-                    Text(videoTitle)
-                        .font(.system(size: 40))
-                        .bold()
-                        .multilineTextAlignment(.center)
-                        .padding(-20)
                 }
                 VideoPlayerRenderView(player: player)
                     .padding()
-                timeLabel
-                UIKitProgressView(value: $currentTime, total: duration)
-                    .padding()
-                HStack {
-                    videoStartButton
-                    Spacer()
-                    controlsView
-                    Spacer()
-                    Button(action: {
-                        infoShow = true
-                    }) {
-                        Image(systemName: "info.circle")
-                            .accentColor(.accentColor)
-                    }
-                    .alert(isPresented: $infoShow) {
-                        Alert(
-                            title: Text(videoPath + videoName),
-                            message: Text(getVideoInfo(filePath: (videoPath + "/" + videoName))),
-                            dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "- I wonder where they were.")))
-                        )
+                if (!fullScreen) {
+                    timeLabel
+                    UIKitProgressView(value: $currentTime, total: duration)
+                        .padding()
+                        .transition(.opacity)
+                    HStack {
+                        videoStartButton
+                            .transition(.opacity)
+                        Spacer()
+                        controlsView
+                            .transition(.opacity)
+                        Spacer()
+                        Button(action: {
+                            withAnimation {
+                                fullScreen = true
+                            }
+                        }) {
+                            Image(systemName: "viewfinder")
+                        }
+                            .transition(.opacity)
+                        /*Button(action: {
+                            infoShow = true
+                        }) {
+                            Image(systemName: "info.circle")
+                                .accentColor(.accentColor)
+                        }
+                        .alert(isPresented: $infoShow) {
+                            Alert(
+                                title: Text(videoPath + videoName),
+                                message: Text(getVideoInfo(filePath: (videoPath + "/" + videoName))),
+                                dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "- I wonder where they were.")))
+                            )
+                        }*/
                     }
                 }
             }
@@ -100,6 +117,15 @@ struct VideoPlayerView: View {
         }
         .onReceive(player.publisher(for: \.timeControlStatus)) { timeControlStatus in
             isPlaying = timeControlStatus == .playing
+        }
+        .onExitCommand {
+            if(fullScreen) {
+                withAnimation {
+                    fullScreen = false
+                }
+            } else {
+                player.pause()
+            }
         }
     }
     
