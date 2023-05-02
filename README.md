@@ -26,6 +26,7 @@ What it currently lets you do:
 - Compress and uncompress .zip archives
 - Search a directory and its subdirectories for a file or directory
 - View all mounted devices
+- Hex editor
 There's probably more, I lost track.
 
 TODO:
