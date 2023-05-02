@@ -34,6 +34,7 @@
 		F8CC214429EB9503008C7B88 /* ZipFileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214329EB9503008C7B88 /* ZipFileView.swift */; };
 		F8CC214629EF5838008C7B88 /* SpawnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214529EF5838008C7B88 /* SpawnView.swift */; };
 		F8CC214829EFA165008C7B88 /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214729EFA164008C7B88 /* TextView.swift */; };
+		F8E9A9792A00B4A400706179 /* HexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E9A9782A00B4A400706179 /* HexView.swift */; };
 		F8EA28D429F8C2710063206D /* CreateSymlinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8EA28D329F8C2710063206D /* CreateSymlinkView.swift */; };
 /* End PBXBuildFile section */
 
@@ -78,6 +79,7 @@
 		F8CC214329EB9503008C7B88 /* ZipFileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipFileView.swift; sourceTree = "<group>"; };
 		F8CC214529EF5838008C7B88 /* SpawnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpawnView.swift; sourceTree = "<group>"; };
 		F8CC214729EFA164008C7B88 /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
+		F8E9A9782A00B4A400706179 /* HexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexView.swift; sourceTree = "<group>"; };
 		F8EA28D329F8C2710063206D /* CreateSymlinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSymlinkView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -144,6 +146,7 @@
 				F8CC212229E4FFC5008C7B88 /* PlistView.swift */,
 				F8CC214329EB9503008C7B88 /* ZipFileView.swift */,
 				F8CC214529EF5838008C7B88 /* SpawnView.swift */,
+				F8E9A9782A00B4A400706179 /* HexView.swift */,
 			);
 			path = FileOpeners;
 			sourceTree = "<group>";
@@ -256,6 +259,7 @@
 				F853AB4B29DE21A8006EA2D5 /* CopyFileView.swift in Sources */,
 				F8CC212329E4FFC5008C7B88 /* PlistView.swift in Sources */,
 				F853AB4929DE1D12006EA2D5 /* MoveFileView.swift in Sources */,
+				F8E9A9792A00B4A400706179 /* HexView.swift in Sources */,
 				F8CC214429EB9503008C7B88 /* ZipFileView.swift in Sources */,
 				F853AB4329DE1C41006EA2D5 /* CreateFileView.swift in Sources */,
 				F853AB4729DE1CEC006EA2D5 /* CreateDirectoryView.swift in Sources */,

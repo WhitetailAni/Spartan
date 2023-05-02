@@ -34,6 +34,7 @@
 "OPEN_VIDEO" = "Video Player";
 "OPEN_IMAGE" = "Image Viewer";
 "OPEN_TEXT" = "Text Editor";
+"OPEN_HEX" = "Hex Editor";
 "OPEN_PLIST" = "Plist Editor";
 "OPEN_SPAWN" = "Spawn As Binary";
 "SHOW_DENIED" = "Permission Denied";
@@ -165,3 +166,6 @@
 //plist
 "PLIST_KEY" = "Enter key name";
 "PLIST_DATA" = "Enter key value";
+
+//hex
+"HEX_DATA" = "Enter new bytes";

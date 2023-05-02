@@ -103,17 +103,12 @@ struct PlistView: View {
         .sheet(isPresented: $editorShow, onDismiss: {
             if(editOccurred) {
                 plistDict.removeObject(forKey: plistKey)
-                plistDict[keyToSet] = valueToSet
+                plistDict.setObject(valueToSet as Any, forKey: keyToSet as NSCopying)
                 plistDictDisplay = getContents()
             }
         }, content: {
-            PlistEditorView(filePath: $filePath, fileName: $fileName, isPresented: $editorShow, plistDict: $plistDict, plistKey: $plistKey, plistData: $plistData, plistKeyType: $plistKeyType, editOccurred: $editOccurred, keyToSet: $keyToSet, valueToSet: $valueToSet)
+            PlistEditorView(filePath: $filePath, fileName: $fileName, isPresented: $editorShow, plistDict: $plistDict, plistKey: $plistKey, plistData: $plistData, plistKeyType: $plistKeyType, editOccurred: $editOccurred, keyToSet: $keyToSet, valueToSet: $valueToSet, isNestedView: false)
         })
-    }
-    
-    private func editPlist() {
-        plistDict.removeObject(forKey: plistKey)
-        plistDict[keyToSet] = valueToSet
     }
     
     private func getContents() -> [String] {
@@ -210,26 +205,39 @@ struct PlistEditorView: View {
     @State private var parsedString: String = ""
     @State private var parsedInt = 0
     @State private var parsedArray: [Any] = []
+    @State private var parsedDict: NSMutableDictionary = NSMutableDictionary()
     @State private var plistKeyNew: String = ""
     
     @Binding var keyToSet: String
     @Binding var valueToSet: Any?
+    
+    @State var arrayNestView = false
+    @State var isNestedView: Bool
 
 
     var body: some View {
-        TextField(NSLocalizedString("PLIST_KEY", comment: ""), text: $plistKeyNew, onCommit: {
-            print("lol")
-        })
+        TextField(NSLocalizedString("PLIST_KEY", comment: ""), text: $plistKeyNew)
         .onAppear {
             editOccurred = false
             plistKeyNew = plistKey
             if(plistKeyType == "Integer") {
                 parsedInt = plistDict[plistKey] as! Int
+                valueToSet = parsedInt
             } else if(plistKeyType == "String") {
                 parsedString = plistDict[plistKey] as! String
+                valueToSet = parsedString
             } else if(plistKeyType == "Array") {
                 parsedArray = plistDict[plistKey] as! [Any]
+                valueToSet = parsedArray
+            } else if(plistKeyType == "Dictionary") {
+                if let nsDict = plistDict[plistKey] as? NSDictionary {
+                    parsedDict = NSMutableDictionary(dictionary: nsDict)
+                } else {
+                    parsedDict = NSMutableDictionary(objects: ["Unable to read dictionary"], forKeys: ["Error" as NSCopying])
+                }
+                valueToSet = parsedDict
             }
+            print(valueToSet!)
         }
         
         if(plistKeyType == "Integer") {
@@ -237,9 +245,34 @@ struct PlistEditorView: View {
         } else if(plistKeyType == "String") {
             TextField(NSLocalizedString("PLIST_DATA", comment: ""), text: $parsedString)
         } else if(plistKeyType == "Array") {
-            Text("Support coming soon")
+            ScrollView {
+                ForEach(parsedArray.indices, id: \.self) { index in
+                    if(parsedArray[index] is Int) {
+                        let value = parsedArray[index] as! Int
+                        StepperTV(value: Binding(
+                            get: { value },
+                            set: { parsedArray[index] = $0 }))
+                            .padding()
+                    } else if(parsedArray[index] is String) {
+                        let value = parsedArray[index] as! String
+                        TextField(NSLocalizedString("PLIST_DATA", comment: ""), text: Binding(
+                            get: { value },
+                            set: { parsedArray[index] = $0 }))
+                    } else if(parsedArray[index] is Array<Any> || parsedArray[index] is NSArray) {
+                        Text("Loading...")
+                            .onAppear {
+                                isNestedView = true
+                                arrayNestView = true
+                            }
+                            .sheet(isPresented: $arrayNestView) {
+                                PlistEditorView(filePath: $filePath, fileName: $fileName, isPresented: $arrayNestView, plistDict: $plistDict, plistKey: $plistKey, plistData: $plistData, plistKeyType: $plistKeyType, editOccurred: $editOccurred, keyToSet: $keyToSet, valueToSet: $valueToSet, isNestedView: true)
+                            }
+                    }
+                }
+                .padding()
+            }
         } else if(plistKeyType == "Dictionary") {
-            Text("Support coming soon (2x)")
+            Text("Support coming soon")
         } else {
             Text("Unknown data type")
         }
@@ -251,9 +284,9 @@ struct PlistEditorView: View {
             } else if(plistKeyType == "String") {
                 valueToSet = parsedString
             } else if(plistKeyType == "Array") {
-                
+                valueToSet = parsedArray
             } else if(plistKeyType == "Dictionary") {
-                
+                valueToSet = parsedDict
             } else {
                 valueToSet = "ERROR"
             }

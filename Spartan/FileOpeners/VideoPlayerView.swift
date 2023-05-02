@@ -30,7 +30,7 @@ struct VideoPlayerView: View {
                 if(!fullScreen) {
                     if(videoTitle == ""){
                         if(UserDefaults.settings.bool(forKey: "descriptiveTitles")){
-                            Text(videoPath)
+                            Text(videoPath + videoName)
                                 .font(.system(size: 40))
                                 .bold()
                                 .multilineTextAlignment(.center)

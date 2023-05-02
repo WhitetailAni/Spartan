@@ -58,13 +58,15 @@ struct ContentView: View {
     //searchShow = 19
     //symlinkShow = 20
     //mountPointsShow = 21
-    //spareViewShow = 22
+    //hexShow = 22
     
     @State var globalAVPlayer = AVPlayer()
     @State var isGlobalAVPlayerPlaying = false
     @State var callback = true
     
     @State private var uncompressZip = false
+    
+    @State private var isLoadingView = false
     
     @State var blankString: [String] = [""]
     
@@ -126,46 +128,50 @@ struct ContentView: View {
                                     defaultAction(index: index, isDirectPath: false)
                                 }) {
                                     HStack {
-                                        if (multiSelect) {
-                                            Image(systemName: fileWasSelected[index] ? "checkmark.circle" : "circle")
-                                                .transition(.opacity)
-                                        }
-                                        if (yandereDevFileType(file: (directory + files[index])) == 0) { //i should replace this at some point
-                                            if (isDirectoryEmpty(atPath: directory + files[index]) == 1){
-                                                Image(systemName: "folder")
-                                            } else if (isDirectoryEmpty(atPath: directory + files[index]) == 0){
-                                                Image(systemName: "folder.fill")
-                                            } else {
-                                                Image(systemName: "folder.badge.questionmark")
-                                            }
-                                            Text(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
-                                        } else if (yandereDevFileType(file: (directory + files[index])) == 1) {
-                                            Image(systemName: "waveform")
-                                            Text(files[index])
-                                        } else if (yandereDevFileType(file: (directory + files[index])) == 2){
-                                            Image(systemName: "video")
-                                            Text(files[index])
-                                        } else if (yandereDevFileType(file: (directory + files[index])) == 3) {
-                                            Image(systemName: "photo")
-                                            Text(files[index])
-                                        } else if (yandereDevFileType(file: (directory + files[index])) == 4) {
-                                            Image(systemName: "doc.text")
-                                            Text(files[index])
-                                        } else if (yandereDevFileType(file: (directory + files[index])) == 5.1) {
-                                            Image(systemName: "list.bullet")
-                                            Text(files[index])
-                                        } else if (yandereDevFileType(file: (directory + files[index])) == 5.2) {
-                                            Image(systemName: "list.number")
-                                            Text(files[index])
-                                        } else if (yandereDevFileType(file: (directory + files[index])) == 6){
-                                            Image(systemName: "doc.zipper")
-                                            Text(files[index])
-                                        } else if (yandereDevFileType(file: (directory + files[index])) == 7){
-                                            Image(systemName: "terminal")
-                                            Text(files[index])
+                                        if(isLoadingView) {
+                                            ProgressView()
                                         } else {
-                                            Image(systemName: "doc")
-                                            Text(files[index])
+                                            if (multiSelect) {
+                                                Image(systemName: fileWasSelected[index] ? "checkmark.circle" : "circle")
+                                                    .transition(.opacity)
+                                            }
+                                            if (yandereDevFileType(file: (directory + files[index])) == 0) { //i should replace this at some point
+                                                if (isDirectoryEmpty(atPath: directory + files[index]) == 1){
+                                                    Image(systemName: "folder")
+                                                } else if (isDirectoryEmpty(atPath: directory + files[index]) == 0){
+                                                    Image(systemName: "folder.fill")
+                                                } else {
+                                                    Image(systemName: "folder.badge.questionmark")
+                                                }
+                                                Text(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
+                                            } else if (yandereDevFileType(file: (directory + files[index])) == 1) {
+                                                Image(systemName: "waveform")
+                                                Text(files[index])
+                                            } else if (yandereDevFileType(file: (directory + files[index])) == 2){
+                                                Image(systemName: "video")
+                                                Text(files[index])
+                                            } else if (yandereDevFileType(file: (directory + files[index])) == 3) {
+                                                Image(systemName: "photo")
+                                                Text(files[index])
+                                            } else if (yandereDevFileType(file: (directory + files[index])) == 4) {
+                                                Image(systemName: "doc.text")
+                                                Text(files[index])
+                                            } else if (yandereDevFileType(file: (directory + files[index])) == 5.1) {
+                                                Image(systemName: "list.bullet")
+                                                Text(files[index])
+                                            } else if (yandereDevFileType(file: (directory + files[index])) == 5.2) {
+                                                Image(systemName: "list.number")
+                                                Text(files[index])
+                                            } else if (yandereDevFileType(file: (directory + files[index])) == 6){
+                                                Image(systemName: "doc.zipper")
+                                                Text(files[index])
+                                            } else if (yandereDevFileType(file: (directory + files[index])) == 7){
+                                                Image(systemName: "terminal")
+                                                Text(files[index])
+                                            } else {
+                                                Image(systemName: "doc")
+                                                Text(files[index])
+                                            }
                                         }
                                     }
                                 }
@@ -355,7 +361,7 @@ struct ContentView: View {
                     Button(action: {
                         fileInfo = getFileInfo(forFileAtPath: directory + files[newViewFileIndex])
                         showSubView[1] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             showSubView[3] = true
                             newViewFileName = files[newViewFileIndex]
                         }
@@ -371,7 +377,7 @@ struct ContentView: View {
                         renameFileCurrentName = files[newViewFileIndex]
                         renameFileNewName = files[newViewFileIndex]
                         showSubView[1] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             showSubView[7] = true
                         }
                     }) {
@@ -385,7 +391,7 @@ struct ContentView: View {
                         newViewFilePath = directory
                         newViewArrayNames = [files[newViewFileIndex]]
                         showSubView[1] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             showSubView[2] = true
                         }
                     }) {
@@ -460,7 +466,7 @@ struct ContentView: View {
                             newViewFileName = files[newViewFileIndex]
                         }
                         showSubView[1] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             showSubView[17] = true
                         }
                         UserDefaults.favorites.synchronize()
@@ -490,7 +496,7 @@ struct ContentView: View {
                         newViewFilePath = directory
                         newViewArrayNames = [files[newViewFileIndex]]
                         showSubView[1] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             showSubView[9] = true
                         }
                     }) {
@@ -532,7 +538,7 @@ struct ContentView: View {
                         newViewFilePath = directory + files[newViewFileIndex]
                         newViewFileName = files[newViewFileIndex]
                         showSubView[2] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             showSubView[10] = true
                             callback = true
                         }
@@ -548,7 +554,7 @@ struct ContentView: View {
                         newViewFilePath = directory
                         newViewFileName = files[newViewFileIndex]
                         showSubView[2] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             showSubView[11] = true
                         }
                     }) {
@@ -562,7 +568,7 @@ struct ContentView: View {
                     Button(action: {
                         newViewFilePath = directory + files[newViewFileIndex]
                         showSubView[2] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             showSubView[12] = true
                         }
                     }) {
@@ -576,11 +582,25 @@ struct ContentView: View {
                     Button(action: {
                         newViewFilePath = directory + files[newViewFileIndex]
                         showSubView[2] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             showSubView[4] = true
                         }
                     }) {
                         Text(NSLocalizedString("OPEN_TEXT", comment: "- I can't. I'll pick you up."))
+                            .frame(width: buttonWidth, height: buttonHeight)
+                    }
+                    .padding(paddingInt)
+                    .opacity(opacityInt)
+                    
+                    Button(action: {
+                        newViewFilePath = directory
+                        newViewFileName = files[newViewFileIndex]
+                        showSubView[2] = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            showSubView[22] = true
+                        }
+                    }) {
+                        Text(NSLocalizedString("OPEN_HEX", comment: ""))
                             .frame(width: buttonWidth, height: buttonHeight)
                     }
                     .padding(paddingInt)
@@ -591,7 +611,7 @@ struct ContentView: View {
                         newViewFilePath = directory + files[newViewFileIndex]
                         newViewFileName = files[newViewFileIndex]
                         showSubView[2] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             showSubView[13] = true
                         }
                     }) {
@@ -605,7 +625,7 @@ struct ContentView: View {
                     Button(action: {
                         newViewFilePath = directory + files[newViewFileIndex]
                         showSubView[2] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             showSubView[15] = true
                         }
                     }) {
@@ -671,7 +691,7 @@ struct ContentView: View {
                 
                     Button(action: {
                         showSubView[0] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             showSubView[5] = true
                         }
                     }) {
@@ -682,8 +702,8 @@ struct ContentView: View {
                     .opacity(opacityInt)
                     
                     Button(action: {
-                        showSubView[6] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                        showSubView[0] = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             showSubView[6] = true
                         }
                     }) {
@@ -695,7 +715,7 @@ struct ContentView: View {
                     
                     Button(action: {
                         showSubView[0] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             showSubView[20] = true
                         }
                     }) {
@@ -771,7 +791,10 @@ struct ContentView: View {
                     MountPointsView(directory: $directory, isPresented: $showSubView[21])
                 })
                 .sheet(isPresented: $showSubView[22], content: {
-                    SpareView()
+                    HexView(filePath: $newViewFilePath, fileName: $newViewFileName)
+                        .onAppear {
+                            isLoadingView = false
+                        }
                 })
                 .accentColor(.accentColor)
             }
@@ -1046,7 +1069,12 @@ struct ContentView: View {
                 showSubView[15] = true
                 newViewFilePath = directory + fileToCheck[index]
             } else {
-                showSubView[22] = true
+                isLoadingView = true
+                newViewFilePath = directory
+                newViewFileName = fileToCheck[index]
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    showSubView[22] = true
+                }
             }
         }
     }
@@ -1234,9 +1262,9 @@ struct ContentView: View {
         let xmlHeader = "<?xml"
         let bplistHeader = "bplis"
         
-        if header! == xmlHeader {
+        if header == xmlHeader || filePath.suffix(6) == ".plist" {
             return 5.1
-        } else if header! == bplistHeader {
+        } else if header == bplistHeader {
             return 5.2
         } else {
             return 0
