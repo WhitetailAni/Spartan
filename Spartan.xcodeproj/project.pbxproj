@@ -34,6 +34,7 @@
 		F8CC214429EB9503008C7B88 /* ZipFileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214329EB9503008C7B88 /* ZipFileView.swift */; };
 		F8CC214629EF5838008C7B88 /* SpawnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214529EF5838008C7B88 /* SpawnView.swift */; };
 		F8CC214829EFA165008C7B88 /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214729EFA164008C7B88 /* TextView.swift */; };
+		F8D5795E2A0F2D2D00FDA526 /* DpkgView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D5795D2A0F2D2D00FDA526 /* DpkgView.swift */; };
 		F8E9A9792A00B4A400706179 /* HexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E9A9782A00B4A400706179 /* HexView.swift */; };
 		F8EA28D429F8C2710063206D /* CreateSymlinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8EA28D329F8C2710063206D /* CreateSymlinkView.swift */; };
 /* End PBXBuildFile section */
@@ -79,6 +80,7 @@
 		F8CC214329EB9503008C7B88 /* ZipFileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipFileView.swift; sourceTree = "<group>"; };
 		F8CC214529EF5838008C7B88 /* SpawnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpawnView.swift; sourceTree = "<group>"; };
 		F8CC214729EFA164008C7B88 /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
+		F8D5795D2A0F2D2D00FDA526 /* DpkgView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DpkgView.swift; sourceTree = "<group>"; };
 		F8E9A9782A00B4A400706179 /* HexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexView.swift; sourceTree = "<group>"; };
 		F8EA28D329F8C2710063206D /* CreateSymlinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSymlinkView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -147,6 +149,7 @@
 				F8CC214329EB9503008C7B88 /* ZipFileView.swift */,
 				F8CC214529EF5838008C7B88 /* SpawnView.swift */,
 				F8E9A9782A00B4A400706179 /* HexView.swift */,
+				F8D5795D2A0F2D2D00FDA526 /* DpkgView.swift */,
 			);
 			path = FileOpeners;
 			sourceTree = "<group>";
@@ -275,6 +278,7 @@
 				F845C82F29F6247A0025AC0A /* EThree.swift in Sources */,
 				F853AB4529DE1CB3006EA2D5 /* RenameFileView.swift in Sources */,
 				F853AB5729DE8B46006EA2D5 /* CreditsView.swift in Sources */,
+				F8D5795E2A0F2D2D00FDA526 /* DpkgView.swift in Sources */,
 				F853AB2F29DBCB1A006EA2D5 /* SpartanApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -437,7 +441,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.whitetailani.Spartan;
+				PRODUCT_BUNDLE_IDENTIFIER = lol.whitetailani.Spartan;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "appletvos appletvsimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -474,7 +478,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.whitetailani.Spartan;
+				PRODUCT_BUNDLE_IDENTIFIER = lol.whitetailani.Spartan;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "appletvos appletvsimulator";
 				SUPPORTS_MACCATALYST = NO;

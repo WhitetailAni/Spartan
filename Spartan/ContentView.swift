@@ -135,42 +135,51 @@ struct ContentView: View {
                                                 Image(systemName: fileWasSelected[index] ? "checkmark.circle" : "circle")
                                                     .transition(.opacity)
                                             }
-                                            if (yandereDevFileType(file: (directory + files[index])) == 0) { //i should replace this at some point
-                                                if (isDirectoryEmpty(atPath: directory + files[index]) == 1){
-                                                    Image(systemName: "folder")
-                                                } else if (isDirectoryEmpty(atPath: directory + files[index]) == 0){
-                                                    Image(systemName: "folder.fill")
-                                                } else {
-                                                    Image(systemName: "folder.badge.questionmark")
-                                                }
-                                                Text(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
-                                            } else if (yandereDevFileType(file: (directory + files[index])) == 1) {
-                                                Image(systemName: "waveform")
-                                                Text(files[index])
-                                            } else if (yandereDevFileType(file: (directory + files[index])) == 2){
-                                                Image(systemName: "video")
-                                                Text(files[index])
-                                            } else if (yandereDevFileType(file: (directory + files[index])) == 3) {
-                                                Image(systemName: "photo")
-                                                Text(files[index])
-                                            } else if (yandereDevFileType(file: (directory + files[index])) == 4) {
-                                                Image(systemName: "doc.text")
-                                                Text(files[index])
-                                            } else if (yandereDevFileType(file: (directory + files[index])) == 5.1) {
-                                                Image(systemName: "list.bullet")
-                                                Text(files[index])
-                                            } else if (yandereDevFileType(file: (directory + files[index])) == 5.2) {
-                                                Image(systemName: "list.number")
-                                                Text(files[index])
-                                            } else if (yandereDevFileType(file: (directory + files[index])) == 6){
-                                                Image(systemName: "doc.zipper")
-                                                Text(files[index])
-                                            } else if (yandereDevFileType(file: (directory + files[index])) == 7){
-                                                Image(systemName: "terminal")
-                                                Text(files[index])
-                                            } else {
-                                                Image(systemName: "doc")
-                                                Text(files[index])
+                                            let fileType = yandereDevFileType(file: (directory + files[index]))
+                                            
+                                            switch fileType {
+                                                case 0:
+                                                    if (isDirectoryEmpty(atPath: directory + files[index]) == 1){
+                                                        Image(systemName: "folder")
+                                                    } else if (isDirectoryEmpty(atPath: directory + files[index]) == 0){
+                                                        Image(systemName: "folder.fill")
+                                                    } else {
+                                                        Image(systemName: "folder.badge.questionmark")
+                                                    }
+                                                    Text(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
+                                                case 1:
+                                                    Image(systemName: "waveform")
+                                                    Text(files[index])
+                                                case 2:
+                                                    Image(systemName: "video")
+                                                    Text(files[index])
+                                                case 3:
+                                                    Image(systemName: "photo")
+                                                    Text(files[index])
+                                                case 4:
+                                                    Image(systemName: "doc.text")
+                                                    Text(files[index])
+                                                case 5.1:
+                                                    Image(systemName: "list.bullet")
+                                                    Text(files[index])
+                                                case 5.2:
+                                                    Image(systemName: "list.number")
+                                                    Text(files[index])
+                                                case 6:
+                                                    Image(systemName: "doc.zipper")
+                                                    Text(files[index])
+                                                case 7:
+                                                    Image(systemName: "terminal")
+                                                    Text(files[index])
+                                                case 8:
+                                                    Image(systemName: "link")
+                                                    Text(files[index])
+                                                case 9:
+                                                    Image(systemName: "archivebox")
+                                                    Text(files[index])
+                                                default:
+                                                    Image(systemName: "doc")
+                                                    Text(files[index])
                                             }
                                         }
                                     }
@@ -287,49 +296,57 @@ struct ContentView: View {
                                         }
                                         if(directory == "/private/var/containers/Bundle/Application/" || directory == "/var/containers/Bundle/Application/") {
                                             Text("app!")
-                                        } else if (yandereDevFileType(file: (directory + files[index])) == 0) {
-                                            if (isDirectoryEmpty(atPath: directory + files[index]) == 1) {
-                                                Image(systemName: "folder")
-                                            } else if (isDirectoryEmpty(atPath: directory + files[index]) == 0) {
-                                                Image(systemName: "folder.fill")
-                                            } else {
-                                                Image(systemName: "folder.badge.minus")
-                                            }
-                                            Text(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
-                                        } else if (yandereDevFileType(file: (directory + files[index])) == 1) {
-                                            Image(systemName: "waveform.circle")
-                                            Text(files[index])
-                                        } else if (yandereDevFileType(file: (directory + files[index])) == 2) {
-                                            Image(systemName: "video")
-                                            Text(files[index])
-                                        } else if (yandereDevFileType(file: (directory + files[index])) == 3) {
-                                            Image(systemName: "photo")
-                                            Text(files[index])
-                                        } else if (yandereDevFileType(file: (directory + files[index])) == 4) {
-                                            Image(systemName: "doc.text")
-                                            Text(files[index])
-                                        } else if (yandereDevFileType(file: (directory + files[index])) == 5.1) {
-                                            Image(systemName: "list.bullet")
-                                            Text(files[index])
-                                        } else if (yandereDevFileType(file: (directory + files[index])) == 5.2) {
-                                            Image(systemName: "list.number")
-                                            Text(files[index])
-                                        } else if (yandereDevFileType(file: (directory + files[index])) == 6) {
-                                            Image(systemName: "rectangle.compress.vertical")
-                                            Text(files[index])
-                                        } else if (yandereDevFileType(file: (directory + files[index])) == 7) {
-                                            Image(systemName: "terminal")
-                                            Text(files[index])
-                                        } else if (yandereDevFileType(file: (directory + files[index])) == 8) {
-                                            Image(systemName: "folder")
-                                            Image(systemName: "arrowshape.turn.up.left")
-                                                .resizable()
-                                                .frame(width: 30, height: 30)
-                                                .offset(x: -10, y: -10)
-                                            Text(files[index])
                                         } else {
-                                            Image(systemName: "doc")
-                                            Text(files[index])
+                                            let fileType = yandereDevFileType(file: (directory + files[index]))
+                                            switch fileType {
+                                            case 0:
+                                                if (isDirectoryEmpty(atPath: directory + files[index]) == 1) {
+                                                    Image(systemName: "folder")
+                                                } else if (isDirectoryEmpty(atPath: directory + files[index]) == 0) {
+                                                    Image(systemName: "folder.fill")
+                                                } else {
+                                                    Image(systemName: "folder.badge.minus")
+                                                }
+                                                Text(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
+                                            case 1:
+                                                Image(systemName: "waveform.circle")
+                                                Text(files[index])
+                                            case 2:
+                                                Image(systemName: "video")
+                                                Text(files[index])
+                                            case 3:
+                                                Image(systemName: "photo")
+                                                Text(files[index])
+                                            case 4:
+                                                Image(systemName: "doc.text")
+                                                Text(files[index])
+                                            case 5.1:
+                                                Image(systemName: "list.bullet")
+                                                Text(files[index])
+                                            case 5.2:
+                                                Image(systemName: "list.number")
+                                                Text(files[index])
+                                            case 6:
+                                                Image(systemName: "rectangle.compress.vertical")
+                                                Text(files[index])
+                                            case 7:
+                                                Image(systemName: "terminal")
+                                                Text(files[index])
+                                            case 8:
+                                                /*Image(systemName: "folder")
+                                                Image(systemName: "arrowshape.turn.up.left")
+                                                    .resizable()
+                                                    .frame(width: 30, height: 30)
+                                                    .offset(x: -10, y: -10)*/
+                                                Image(systemName: "link")
+                                                Text(files[index])
+                                            case 9:
+                                                Image(systemName: "archivebox")
+                                                Text(files[index])
+                                            default:
+                                                Image(systemName: "doc")
+                                                Text(files[index])
+                                            }
                                         }
                                     }
                                 }
@@ -1022,7 +1039,9 @@ struct ContentView: View {
             }
         } else {
             multiSelect = false
-            if (yandereDevFileType(file: (directory + fileToCheck[index])) == 0) {
+            let fileType = yandereDevFileType(file: (directory + fileToCheck[index]))
+            switch fileType {
+            case 0:
                 do {
                     try FileManager.default.contentsOfDirectory(atPath: directory + fileToCheck[index])
                 } catch {
@@ -1040,35 +1059,35 @@ struct ContentView: View {
                     }
                 }
                 print(directory)
-            } else if (yandereDevFileType(file: (directory + fileToCheck[index])) == 1) {
+            case 1:
                 showSubView[10] = true
                 callback = true
                 newViewFilePath = directory
                 newViewFileName = fileToCheck[index]
-            } else if (yandereDevFileType(file: (directory + fileToCheck[index])) == 2){
+            case 2:
                 showSubView[11] = true
                 newViewFilePath = directory
                 newViewFileName = fileToCheck[index]
-            } else if (yandereDevFileType(file: (directory + fileToCheck[index])) == 3) {
+            case 3:
                 showSubView[12] = true
                 newViewFilePath = directory
                 newViewFileName = fileToCheck[index]
-            } else if (yandereDevFileType(file: (directory + fileToCheck[index])) == 4) {
+            case 4:
                 showSubView[4] = true
                 newViewFilePath = directory
                 newViewFileName = fileToCheck[index]
-            } else if (Int(yandereDevFileType(file: (directory + fileToCheck[index]))) == 5){
+            case 5:
                 showSubView[13] = true
                 newViewFilePath = directory
                 newViewFileName = fileToCheck[index]
-            } else if (yandereDevFileType(file: (directory + fileToCheck[index])) == 6){
+            case 6:
                 showSubView[14] = true
                 uncompressZip = true
                 newViewFileName = fileToCheck[index]
-            } else if (yandereDevFileType(file: (directory + fileToCheck[index])) == 7){
+            case 7:
                 showSubView[15] = true
                 newViewFilePath = directory + fileToCheck[index]
-            } else {
+            default:
                 isLoadingView = true
                 newViewFilePath = directory
                 newViewFileName = fileToCheck[index]
@@ -1220,7 +1239,6 @@ struct ContentView: View {
         let archiveTypes: [String] = ["zip", "cbz"]
         if file.hasSuffix("/") {
             return 0 //directory
-            //return 8 //symlinks wont detect for some stupid reason.
         } else if (audioTypes.contains(where: file.hasSuffix)) {
             return 1 //audio file
         } else if (videoTypes.contains(where: file.hasSuffix)) {
@@ -1237,6 +1255,10 @@ struct ContentView: View {
             return 6 //archive
         } else if (FileManager.default.isExecutableFile(atPath: file)) {
             return 7 //executable
+        } else if (isSymlink(filePath: file)) {
+            return 8 //symlink
+        } else if (file.hasSuffix(".deb")) {
+            return 9 //deb
         } else {
             return 69 //unknown
         }
@@ -1269,6 +1291,14 @@ struct ContentView: View {
         } else {
             return 0
         }
+    }
+    func isSymlink(filePath: String) -> Bool {
+        var stat = stat()
+        if lstat(filePath, &stat) == 0 {
+            let type = stat.st_mode
+            return (type & S_IFLNK) != 0
+        }
+        return false
     }
     
     func resizeMultiSelectArrays() {
