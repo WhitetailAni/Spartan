@@ -81,6 +81,7 @@
 		F8CC214529EF5838008C7B88 /* SpawnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpawnView.swift; sourceTree = "<group>"; };
 		F8CC214729EFA164008C7B88 /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
 		F8D5795D2A0F2D2D00FDA526 /* DpkgView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DpkgView.swift; sourceTree = "<group>"; };
+		F8D579642A0F3A3A00FDA526 /* NSTask.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSTask.h; sourceTree = "<group>"; };
 		F8E9A9782A00B4A400706179 /* HexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexView.swift; sourceTree = "<group>"; };
 		F8EA28D329F8C2710063206D /* CreateSymlinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSymlinkView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -100,6 +101,7 @@
 		F853AB2229DBCB1A006EA2D5 = {
 			isa = PBXGroup;
 			children = (
+				F8D579642A0F3A3A00FDA526 /* NSTask.h */,
 				F853AB2C29DBCB1A006EA2D5 /* Products */,
 				F853AB2D29DBCB1A006EA2D5 /* Spartan */,
 			);
@@ -354,6 +356,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = appletvos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = NSTask.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
@@ -410,6 +413,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = appletvos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = NSTask.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				TVOS_DEPLOYMENT_TARGET = 13.0;
 				VALIDATE_PRODUCT = YES;

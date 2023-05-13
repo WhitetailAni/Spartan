@@ -35,7 +35,7 @@ struct ContentView: View {
     @State var renameFileCurrentName: String = ""
     @State var renameFileNewName: String = ""
     
-    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 23)
+    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 24)
     //createFileSelectShow = 0
     //contextMenuShow = 1
     //openInMenu = 2
@@ -59,6 +59,7 @@ struct ContentView: View {
     //symlinkShow = 20
     //mountPointsShow = 21
     //hexShow = 22
+    //dpkgViewShow = 23
     
     @State var globalAVPlayer = AVPlayer()
     @State var isGlobalAVPlayerPlaying = false
@@ -799,7 +800,7 @@ struct ContentView: View {
                     }
                 })
                 .sheet(isPresented: $showSubView[15], content: {
-                    SpawnView(binaryPath: $newViewFilePath)
+                    SpawnView(binaryPath: $newViewFilePath, binaryName: $newViewFileName)
                 })
                 .sheet(isPresented: $showSubView[21], onDismiss: {
                     updateFiles()
@@ -812,6 +813,9 @@ struct ContentView: View {
                         .onAppear {
                             isLoadingView = false
                         }
+                })
+                .sheet(isPresented: $showSubView[23], content: {
+                    DpkgView(debPath: $newViewFilePath, debName: $newViewFileName, isPresented: $showSubView[23])
                 })
                 .accentColor(.accentColor)
             }
@@ -1040,6 +1044,8 @@ struct ContentView: View {
         } else {
             multiSelect = false
             let fileType = yandereDevFileType(file: (directory + fileToCheck[index]))
+            newViewFilePath = directory
+            newViewFileName = fileToCheck[index]
             switch fileType {
             case 0:
                 do {
@@ -1062,35 +1068,21 @@ struct ContentView: View {
             case 1:
                 showSubView[10] = true
                 callback = true
-                newViewFilePath = directory
-                newViewFileName = fileToCheck[index]
             case 2:
                 showSubView[11] = true
-                newViewFilePath = directory
-                newViewFileName = fileToCheck[index]
             case 3:
                 showSubView[12] = true
-                newViewFilePath = directory
-                newViewFileName = fileToCheck[index]
             case 4:
                 showSubView[4] = true
-                newViewFilePath = directory
-                newViewFileName = fileToCheck[index]
             case 5:
                 showSubView[13] = true
-                newViewFilePath = directory
-                newViewFileName = fileToCheck[index]
             case 6:
                 showSubView[14] = true
                 uncompressZip = true
-                newViewFileName = fileToCheck[index]
             case 7:
                 showSubView[15] = true
-                newViewFilePath = directory + fileToCheck[index]
             default:
                 isLoadingView = true
-                newViewFilePath = directory
-                newViewFileName = fileToCheck[index]
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     showSubView[22] = true
                 }

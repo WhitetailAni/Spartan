@@ -29,19 +29,11 @@ struct VideoPlayerView: View {
             VStack {
                 if(!fullScreen) {
                     if(videoTitle == ""){
-                        if(UserDefaults.settings.bool(forKey: "descriptiveTitles")){
-                            Text(videoPath + videoName)
-                                .font(.system(size: 40))
-                                .bold()
-                                .multilineTextAlignment(.center)
-                                .padding(-20)
-                        } else {
-                            Text(videoName)
-                                .font(.system(size: 40))
-                                .bold()
-                                .multilineTextAlignment(.center)
-                                .padding(-20)
-                        }
+                        Text(descriptiveTimestamps ? videoPath + videoName : videoName)
+                            .font(.system(size: 40))
+                            .bold()
+                            .multilineTextAlignment(.center)
+                            .padding(-20)
                     } else {
                         Text(videoTitle)
                             .font(.system(size: 40))

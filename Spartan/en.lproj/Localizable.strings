@@ -169,3 +169,7 @@
 
 //hex
 "HEX_DATA" = "Enter new bytes";
+
+//spawn
+"SPAWN_ARGS" = "Enter program arguments";
+"SPAWN_CONFIRM" = "Spawn";

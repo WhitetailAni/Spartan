@@ -151,3 +151,47 @@ struct UIKitTapGesture: UIViewRepresentable {
         }
     }
 }
+
+struct UIKitTextView: UIViewRepresentable {
+    @Binding var text: String
+    
+    func makeUIView(context: Context) -> UITextView {
+        let textView = UITextView()
+        textView.isScrollEnabled = true
+        textView.showsVerticalScrollIndicator = true
+        textView.font = UIFont.preferredFont(forTextStyle: .body)
+        textView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        return textView
+    }
+
+    func updateUIView(_ uiView: UITextView, context: Context) {
+        let attributedText = NSAttributedString(string: text)
+        let mutableAttributedText = NSMutableAttributedString(attributedString: attributedText)
+        
+        let newlineCharacter = NSAttributedString(string: "\n")
+        let newlineRange = (text as NSString).range(of: "\n")
+        mutableAttributedText.replaceCharacters(in: newlineRange, with: newlineCharacter)
+        
+        uiView.attributedText = mutableAttributedText
+
+        let range = NSRange(location: text.count - 1, length: 1)
+        uiView.scrollRangeToVisible(range)
+    }
+}
+
+func task(launchPath: String, arguments: String...) -> NSString {
+    let task = NSTask.init()
+    task?.setLaunchPath(launchPath)
+    task?.arguments = arguments
+
+    let pipe = Pipe()
+    task?.standardOutput = pipe
+
+    task?.launch()
+    task?.waitUntilExit()
+
+    let data = pipe.fileHandleForReading.readDataToEndOfFile()
+    let output = NSString(data: data, encoding: String.Encoding.utf8.rawValue)
+
+    return output!
+}

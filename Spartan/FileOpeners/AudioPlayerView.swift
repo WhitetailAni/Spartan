@@ -43,19 +43,11 @@ struct AudioPlayerView: View {
                                 .multilineTextAlignment(.center)
                                 .padding()
                     } else if(audioData[0] == ""){
-                        if(UserDefaults.settings.bool(forKey: "descriptiveTitles")){
-                            Text(cementedAudioPath)
-                                .font(.system(size: 40))
-                                .bold()
-                                .multilineTextAlignment(.center)
-                                .padding()
-                        } else {
-                            Text(cementedAudioName)
-                                .font(.system(size: 40))
-                                .bold()
-                                .multilineTextAlignment(.center)
-                                .padding()
-                        }
+                        Text(descriptiveTimestamps ? cementedAudioPath + cementedAudioName : cementedAudioName)
+                            .font(.system(size: 40))
+                            .bold()
+                            .multilineTextAlignment(.center)
+                            .padding()
                     } else {
                         Text(audioData[0])
                             .font(.system(size: 40))

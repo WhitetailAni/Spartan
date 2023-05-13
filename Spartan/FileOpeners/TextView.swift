@@ -62,6 +62,7 @@ struct TextView: View {
                     }
                 }
                 .listStyle(GroupedListStyle())
+                .transition(.opacity)
             } else {
                 HStack {
                     TextField(NSLocalizedString("LINEADD_DESCRIPTION", comment: "- You going to the funeral?"), text: $textEditorString)

@@ -18,21 +18,12 @@ struct HexView: View {
         
         HStack {
             Spacer()
-            if(UserDefaults.settings.bool(forKey: "descriptiveTitles")){
-                Text(filePath + fileName)
-                    .font(.system(size: 40))
-                    .bold()
-                    .multilineTextAlignment(.center)
-                    .padding(-10)
-                    .focusable(true) //makes it so you can access the save button
-            } else {
-                Text(fileName)
-                    .font(.system(size: 40))
-                    .bold()
-                    .multilineTextAlignment(.center)
-                    .padding(-10)
-                    .focusable(true)
-            }
+            Text(UserDefaults.settings.bool(forKey: "verboseTimestamps") ? filePath + fileName : fileName)
+                .font(.system(size: 40))
+                .bold()
+                .multilineTextAlignment(.center)
+                .padding(-10)
+                .focusable(true) //makes it so you can access the save button
             Spacer()
             Button(action: {
                 var cleanedHexString: String = ""
@@ -76,7 +67,7 @@ struct HexView: View {
                 for index in stride(from: 0, to: hexString.count, by: 8) {
                     let startIndex = hexString.index(hexString.startIndex, offsetBy: index)
                     let endIndex = hexString.index(startIndex, offsetBy: 8, limitedBy: hexString.endIndex) ?? hexString.endIndex
-                    var chunk = String(hexString[startIndex..<endIndex])
+                    let chunk = String(hexString[startIndex..<endIndex])
                     let one = chunk.prefix(2)
                     let two = chunk.dropFirst(2).prefix(2)
                     let three = chunk.dropFirst(4).prefix(2)

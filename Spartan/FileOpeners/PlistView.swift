@@ -30,17 +30,10 @@ struct PlistView: View {
             HStack {
                 Spacer()
                 VStack(alignment: .center) {
-                    if(UserDefaults.settings.bool(forKey: "descriptiveTitles")){
-                        Text(filePath)
-                            .font(.system(size: 40))
-                            .bold()
-                            .multilineTextAlignment(.center)
-                    } else {
-                        Text(fileName)
-                            .font(.system(size: 40))
-                            .bold()
-                            .multilineTextAlignment(.center)
-                    }
+                    Text(UserDefaults.settings.bool(forKey: "verboseTimestamps") ? filePath + fileName : fileName)
+                        .font(.system(size: 40))
+                        .bold()
+                        .multilineTextAlignment(.center)
                 }
                 Spacer()
                 Button(action: {
