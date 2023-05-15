@@ -52,11 +52,13 @@ struct Checkbox: ToggleStyle {
 
 struct StepperTV: View {
     @Binding var value: Int
+    let onCommit: () -> Void
     
     var body: some View {
         HStack {
             Button(action: {
                 value -= 1
+                onCommit()
             }) {
                 Image(systemName: "minus")
                     .font(.system(size: 30))
@@ -68,6 +70,7 @@ struct StepperTV: View {
             
             Button(action: {
                 value += 1
+                onCommit()
             }) {
                 Image(systemName: "plus")
                     .font(.system(size: 30))
@@ -154,28 +157,45 @@ struct UIKitTapGesture: UIViewRepresentable {
 
 struct UIKitTextView: UIViewRepresentable {
     @Binding var text: String
-    
+    @State var fontSize: Int
+
     func makeUIView(context: Context) -> UITextView {
         let textView = UITextView()
-        textView.isScrollEnabled = true
-        textView.showsVerticalScrollIndicator = true
-        textView.font = UIFont.preferredFont(forTextStyle: .body)
-        textView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        let opacity = 0.25
+        textView.delegate = context.coordinator
+        textView.font = UIFont.systemFont(ofSize: CGFloat(fontSize))
+        
+        if #available(tvOS 15.0, *) {
+            if let dynamicColor = UIColor(named: "systemBackground") {
+                textView.backgroundColor = dynamicColor.withAlphaComponent(opacity)
+            } else {
+                textView.backgroundColor = UIColor.darkGray.withAlphaComponent(opacity)
+            }
+        } else {
+            textView.backgroundColor = UIColor.darkGray.withAlphaComponent(opacity)
+        }
+        
         return textView
     }
 
     func updateUIView(_ uiView: UITextView, context: Context) {
-        let attributedText = NSAttributedString(string: text)
-        let mutableAttributedText = NSMutableAttributedString(attributedString: attributedText)
+        uiView.text = text
+    }
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+    
+    class Coordinator: NSObject, UITextViewDelegate {
+        let parent: UIKitTextView
         
-        let newlineCharacter = NSAttributedString(string: "\n")
-        let newlineRange = (text as NSString).range(of: "\n")
-        mutableAttributedText.replaceCharacters(in: newlineRange, with: newlineCharacter)
+        init(_ parent: UIKitTextView) {
+            self.parent = parent
+        }
         
-        uiView.attributedText = mutableAttributedText
-
-        let range = NSRange(location: text.count - 1, length: 1)
-        uiView.scrollRangeToVisible(range)
+        func textViewDidChange(_ textView: UITextView) {
+            parent.text = textView.text
+        }
     }
 }
 
@@ -195,3 +215,4 @@ func task(launchPath: String, arguments: String...) -> NSString {
 
     return output!
 }
+//https://stackoverflow.com/a/56628715

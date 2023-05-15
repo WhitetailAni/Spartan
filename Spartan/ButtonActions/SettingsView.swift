@@ -13,6 +13,7 @@ struct SettingsView: View {
     @State private var descriptiveTitlesPre = UserDefaults.settings.bool(forKey: "descriptiveTitles")
     @State private var descriptiveTimestampsPre = UserDefaults.settings.bool(forKey: "verboseTimestamps")
     @State private var autoCompletePre = UserDefaults.settings.bool(forKey: "autoComplete")
+    @State private var logWindowFontSizePre = UserDefaults.settings.integer(forKey: "logWindowFontSize")
     @State private var testShow = false
 
 
@@ -21,6 +22,35 @@ struct SettingsView: View {
             .font(.system(size: 60))
             .bold()
         
+        StepperTV(value: $logWindowFontSizePre) {
+            UserDefaults.settings.set(logWindowFontSizePre, forKey: "logWindowFontSize")
+            UserDefaults.settings.synchronize()
+        }
+        .padding(5)
+        Text(NSLocalizedString("SETTINGS_LOGFONTSIZE", comment: "The same job the rest of your life?"))
+                .font(.system(size: 25))
+            
+        descriptiveThings
+        autoCompleteFileExtensions
+        
+        Button(action: { //info
+            infoShow = true
+        }) {
+            HStack {
+                Image(systemName: "info.circle")
+                    .frame(width:50, height:50)
+                Text(NSLocalizedString("CREDITS", comment: """
+                "What's the difference?"
+                """))
+            }
+        }
+        .sheet(isPresented: $infoShow, content: {
+            CreditsView()
+        })
+    }
+    
+    @ViewBuilder
+    var descriptiveThings: some View {
         Button(action: {
             descriptiveTitlesPre.toggle()
             UserDefaults.settings.set(descriptiveTitlesPre, forKey: "descriptiveTitles")
@@ -42,7 +72,10 @@ struct SettingsView: View {
         }
         Text(NSLocalizedString("SETTINGS_TIMESTAMPS_DESC", comment: "You'll be happy to know that bees, as a species"))
             .font(.system(size: 25))
-            
+    }
+    
+    @ViewBuilder
+    var autoCompleteFileExtensions: some View {
         Button(action: {
             autoCompletePre.toggle()
             UserDefaults.settings.set(autoCompletePre, forKey: "autoComplete")
@@ -59,20 +92,5 @@ struct SettingsView: View {
              .multilineTextAlignment(.center)
         Text(NSLocalizedString("SETTINGS_AUTOCOMPLETE_WARNING", comment: "Wow! That blew my mind!"))
             .font(.system(size: 25))
-        
-        Button(action: { //info
-            infoShow = true
-        }) {
-            HStack {
-                Image(systemName: "info.circle")
-                    .frame(width:50, height:50)
-                Text(NSLocalizedString("CREDITS", comment: """
-                "What's the difference?"
-                """))
-            }
-        }
-        .sheet(isPresented: $infoShow, content: {
-            CreditsView()
-        })
     }
 }

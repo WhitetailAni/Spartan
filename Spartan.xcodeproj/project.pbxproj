@@ -35,6 +35,7 @@
 		F8CC214629EF5838008C7B88 /* SpawnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214529EF5838008C7B88 /* SpawnView.swift */; };
 		F8CC214829EFA165008C7B88 /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214729EFA164008C7B88 /* TextView.swift */; };
 		F8D5795E2A0F2D2D00FDA526 /* DpkgView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D5795D2A0F2D2D00FDA526 /* DpkgView.swift */; };
+		F8D579682A11D1D200FDA526 /* SwiftTryCatch.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D579672A11D1D200FDA526 /* SwiftTryCatch.m */; };
 		F8E9A9792A00B4A400706179 /* HexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E9A9782A00B4A400706179 /* HexView.swift */; };
 		F8EA28D429F8C2710063206D /* CreateSymlinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8EA28D329F8C2710063206D /* CreateSymlinkView.swift */; };
 /* End PBXBuildFile section */
@@ -82,6 +83,9 @@
 		F8CC214729EFA164008C7B88 /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
 		F8D5795D2A0F2D2D00FDA526 /* DpkgView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DpkgView.swift; sourceTree = "<group>"; };
 		F8D579642A0F3A3A00FDA526 /* NSTask.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSTask.h; sourceTree = "<group>"; };
+		F8D579652A11D1D100FDA526 /* Spartan-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Spartan-Bridging-Header.h"; sourceTree = "<group>"; };
+		F8D579662A11D1D200FDA526 /* SwiftTryCatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SwiftTryCatch.h; path = Spartan/swifttrycatch/SwiftTryCatch.h; sourceTree = "<group>"; };
+		F8D579672A11D1D200FDA526 /* SwiftTryCatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SwiftTryCatch.m; path = Spartan/swifttrycatch/SwiftTryCatch.m; sourceTree = "<group>"; };
 		F8E9A9782A00B4A400706179 /* HexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexView.swift; sourceTree = "<group>"; };
 		F8EA28D329F8C2710063206D /* CreateSymlinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSymlinkView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -102,6 +106,9 @@
 			isa = PBXGroup;
 			children = (
 				F8D579642A0F3A3A00FDA526 /* NSTask.h */,
+				F8D579662A11D1D200FDA526 /* SwiftTryCatch.h */,
+				F8D579672A11D1D200FDA526 /* SwiftTryCatch.m */,
+				F8D579652A11D1D100FDA526 /* Spartan-Bridging-Header.h */,
 				F853AB2C29DBCB1A006EA2D5 /* Products */,
 				F853AB2D29DBCB1A006EA2D5 /* Spartan */,
 			);
@@ -214,6 +221,7 @@
 				TargetAttributes = {
 					F853AB2A29DBCB1A006EA2D5 = {
 						CreatedOnToolsVersion = 14.3;
+						LastSwiftMigration = 1430;
 					};
 				};
 			};
@@ -260,6 +268,7 @@
 				F853AB5529DE8B3B006EA2D5 /* FavoritesView.swift in Sources */,
 				F853AB3129DBCB1A006EA2D5 /* ContentView.swift in Sources */,
 				F8C1A5D429FB55F100DF4C23 /* MountPointsView.swift in Sources */,
+				F8D579682A11D1D200FDA526 /* SwiftTryCatch.m in Sources */,
 				F8CC214829EFA165008C7B88 /* TextView.swift in Sources */,
 				F853AB4B29DE21A8006EA2D5 /* CopyFileView.swift in Sources */,
 				F8CC212329E4FFC5008C7B88 /* PlistView.swift in Sources */,
@@ -425,6 +434,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_ASSET_PATHS = "\"Spartan/Preview Content\"";
@@ -451,6 +461,8 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Spartan-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 13.0;
@@ -462,6 +474,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_ASSET_PATHS = "\"Spartan/Preview Content\"";
@@ -488,6 +501,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Spartan-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 13.0;

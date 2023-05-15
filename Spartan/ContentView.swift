@@ -1081,6 +1081,12 @@ struct ContentView: View {
                 uncompressZip = true
             case 7:
                 showSubView[15] = true
+            case 8:
+                print("symlink things")
+                //get symlink directory
+                //change directory to that
+            case 9:
+                showSubView[23] = true
             default:
                 isLoadingView = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {

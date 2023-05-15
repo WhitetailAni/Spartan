@@ -19,12 +19,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     
-        UserDefaults.settings.set(true, forKey: "autoComplete")
+        if(!UserDefaults.settings.bool(forKey: "haveLaunchedBefore")) {
+            UserDefaults.settings.set(25, forKey: "logWindowFontSize")
+            UserDefaults.settings.set(true, forKey: "autoComplete")
+            UserDefaults.settings.set(true, forKey: "haveLaunchedBefore")
+            UserDefaults.settings.synchronize()
+        }
         
         if(FileManager.default.isReadableFile(atPath: "/var/mobile/")){ //shows app data directory if sandbox exists
-            displayView(pathToLoad: "/var/mobile/")
+            //displayView(pathToLoad: "/var/mobile/")
             //displayView(pathToLoad:  "/var/containers/Bundle/Application/2A65A51A-4061-4143-B622-FA0E57C0C3EE/trillstore.app/")
-            //displayView(pathToLoad: "/bin/") //for posix_spawn testing
+            displayView(pathToLoad: "/bin/") //for posix_spawn testing
         } else {
             displayView(pathToLoad: getDataDirectory())
             //displayView(pathToLoad: "/Users/realkgb/Documents/") //used in case of simulator

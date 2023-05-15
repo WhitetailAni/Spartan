@@ -12,7 +12,7 @@ struct SpawnView: View {
     @Binding var binaryName: String
     
     @State var programArguments: String = ""
-    @State var spawnLog: String = ""
+    @State var spawnLog: String = "test"
     @State var descriptiveTitles = UserDefaults.settings.bool(forKey: "descriptiveTitles")
 
     var body: some View {
@@ -21,13 +21,19 @@ struct SpawnView: View {
                 .font(.system(size: 40))
                 .bold()
                 .multilineTextAlignment(.center)
-                .padding(-20)
-            TextField(NSLocalizedString("HEX_ARGS", comment: "MY ESTEEM CUSTOMER I SEE YOU ARE ATTEMPTING TO DEPLETE MY HP!"), text: $programArguments)
-            UIKitTextView(text: $spawnLog)
+            TextField(NSLocalizedString("SPAWN_ARGS", comment: "MY ESTEEM CUSTOMER I SEE YOU ARE ATTEMPTING TO DEPLETE MY HP!"), text: $programArguments)
+            UIKitTextView(text: $spawnLog, fontSize: UserDefaults.settings.integer(forKey: "logWindowFontSize"))
+            
             Button(action: {
-                spawnLog = Spartan.task(launchPath: binaryPath + binaryName, arguments: "") as String
+                SwiftTryCatch.try({
+                         spawnLog = Spartan.task(launchPath: binaryPath + binaryName, arguments: "") as String
+                     }, catch: { (error) in
+                         spawnLog = error.description
+                     }, finally: {
+                         print("L")
+                })
             }) {
-                Text(NSLocalizedString("HEX_CONFIRM", comment: "ENJOY THE FIREWORKS, KID!!!!"))
+                Text(NSLocalizedString("SPAWN_CONFIRM", comment: "ENJOY THE FIR3WORKS, KID!!!!"))
             }
         }
     }

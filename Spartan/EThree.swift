@@ -156,6 +156,24 @@ struct EThree: View {
         }
         .padding(10)
         .opacity(opacityInt)
+        
+        Button(action: {
+            print(UserDefaults.settings.bool(forKey: "haveLaunchedBefore"))
+        }) {
+            Text("Print the launch state")
+                .frame(width: buttonWidth, height: buttonHeight)
+        }
+        .padding(paddingInt)
+        .opacity(opacityInt)
+        
+        Button(action: {
+            UserDefaults.settings.set(false, forKey: "haveLaunchedBefore")
+        }) {
+            Text("Enable first launch")
+                .frame(width: buttonWidth, height: buttonHeight)
+        }
+        .padding(paddingInt)
+        .opacity(opacityInt)
     }
 }
 

@@ -34,7 +34,7 @@ struct TextView: View {
                     }) {
                         Text("\(NSLocalizedString("LINEREMOVE", comment: "- Yeah.")) \(index)")
                     }
-                    StepperTV(value: $index)
+                    StepperTV(value: $index) { }
                     Spacer()
                     Button(action: {
                         do {
