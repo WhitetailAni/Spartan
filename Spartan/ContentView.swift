@@ -6,8 +6,8 @@
 //
 
 import SwiftUI
-import AVKit
 import Foundation
+import AVKit
 
 struct ContentView: View {
     @State var directory: String
@@ -21,6 +21,7 @@ struct ContentView: View {
     
     @State var buttonWidth: CGFloat
     @State var buttonHeight: CGFloat
+    @State var isRootless: Bool
     
     @State var multiSelect = false
     @State var allWereSelected = false
@@ -35,7 +36,7 @@ struct ContentView: View {
     @State var renameFileCurrentName: String = ""
     @State var renameFileNewName: String = ""
     
-    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 24)
+    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 25)
     //createFileSelectShow = 0
     //contextMenuShow = 1
     //openInMenu = 2
@@ -60,6 +61,7 @@ struct ContentView: View {
     //mountPointsShow = 21
     //hexShow = 22
     //dpkgViewShow = 23
+    //dpkgDebViewShow = 24
     
     @State var globalAVPlayer = AVPlayer()
     @State var isGlobalAVPlayerPlaying = false
@@ -70,6 +72,9 @@ struct ContentView: View {
     @State private var isLoadingView = false
     
     @State var blankString: [String] = [""]
+    
+    let paddingInt: CGFloat = -7
+    let opacityInt: CGFloat = 1.0
     
     var body: some View {
         NavigationView {
@@ -363,8 +368,6 @@ struct ContentView: View {
                     }
                 }
                 .sheet(isPresented: $showSubView[1]) {
-                    let paddingInt: CGFloat = -7
-                    let opacityInt: CGFloat = 1.0
                     
                     Button(action: {
                         defaultAction(index: newViewFileIndex, isDirectPath: false)
@@ -535,8 +538,6 @@ struct ContentView: View {
                     .opacity(opacityInt)
                 }
                 .sheet(isPresented: $showSubView[2]) {
-                    let paddingInt: CGFloat = -7
-                    let opacityInt: CGFloat = 1.0
                     let buttonWidth: CGFloat = 500
                     let buttonHeight: CGFloat = 30
                     
@@ -552,50 +553,7 @@ struct ContentView: View {
                     .padding(paddingInt)
                     .opacity(opacityInt)
                     
-                    Button(action: {
-                        newViewFilePath = directory + files[newViewFileIndex]
-                        newViewFileName = files[newViewFileIndex]
-                        showSubView[2] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            showSubView[10] = true
-                            callback = true
-                        }
-                    }) {
-                        Text(NSLocalizedString("OPEN_AUDIO", comment: "- Barry?"))
-                            .frame(width: buttonWidth, height: buttonHeight)
-                    }
-                    .padding(paddingInt)
-                    .opacity(opacityInt)
-                    
-                    
-                    Button(action: {
-                        newViewFilePath = directory
-                        newViewFileName = files[newViewFileIndex]
-                        showSubView[2] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            showSubView[11] = true
-                        }
-                    }) {
-                        Text(NSLocalizedString("OPEN_VIDEO", comment: "- Adam?"))
-                            .frame(width: buttonWidth, height: buttonHeight)
-                    }
-                    .padding(paddingInt)
-                    .opacity(opacityInt)
-                    
-                    
-                    Button(action: {
-                        newViewFilePath = directory + files[newViewFileIndex]
-                        showSubView[2] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            showSubView[12] = true
-                        }
-                    }) {
-                        Text(NSLocalizedString("OPEN_IMAGE", comment: "- Can you believe this is happening?"))
-                            .frame(width: buttonWidth, height: buttonHeight)
-                    }
-                    .padding(paddingInt)
-                    .opacity(opacityInt)
-                    
+                    AVFileOpener
                     
                     Button(action: {
                         newViewFilePath = directory + files[newViewFileIndex]
@@ -638,6 +596,22 @@ struct ContentView: View {
                     }
                     .padding(paddingInt)
                     .opacity(opacityInt)
+                    
+                    Button(action: {
+                        newViewFilePath = directory
+                        newViewFileName = files[newViewFileIndex]
+                        showSubView[23] = true
+                    }) {
+                        Text(NSLocalizedString("OPEN_DPKG", comment: ""))
+                    }
+                    
+                    Button(action: {
+                        newViewFilePath = directory
+                        newViewFileName = files[newViewFileIndex]
+                        showSubView[24] = true
+                    }) {
+                        Text(NSLocalizedString("OPEN_DPKGDEB", comment: ""))
+                    }
                     
                     
                     Button(action: {
@@ -702,8 +676,6 @@ struct ContentView: View {
                     }
                 }
                 .sheet(isPresented: $showSubView[0], content: {
-                    let paddingInt: CGFloat = -7
-                    let opacityInt: CGFloat = 1.0
                     let buttonWidth: CGFloat = 500
                     let buttonHeight: CGFloat = 30
                 
@@ -815,7 +787,10 @@ struct ContentView: View {
                         }
                 })
                 .sheet(isPresented: $showSubView[23], content: {
-                    DpkgView(debPath: $newViewFilePath, debName: $newViewFileName, isPresented: $showSubView[23])
+                    DpkgView(debPath: $newViewFilePath, debName: $newViewFileName, isPresented: $showSubView[23], isRootless: $isRootless)
+                })
+                .sheet(isPresented: $showSubView[24], content: {
+                    DpkgBuilderView(debInputDir: $newViewFilePath, debInputName: $newViewFileName, isPresented: $showSubView[24], isRootless: $isRootless)
                 })
                 .accentColor(.accentColor)
             }
@@ -1024,6 +999,56 @@ struct ContentView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
     }
     
+    @ViewBuilder
+    var AVFileOpener: some View {
+        let buttonWidth = 500 * (UIScreen.main.nativeBounds.height/1080)
+        let buttonHeight = 30 * (UIScreen.main.nativeBounds.height/1080)
+        
+        Button(action: {
+            newViewFilePath = directory + files[newViewFileIndex]
+            newViewFileName = files[newViewFileIndex]
+            showSubView[2] = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                showSubView[10] = true
+                callback = true
+            }
+        }) {
+            Text(NSLocalizedString("OPEN_AUDIO", comment: "- Barry?"))
+                .frame(width: buttonWidth, height: buttonHeight)
+        }
+        .padding(paddingInt)
+        .opacity(opacityInt)
+        
+        
+        Button(action: {
+            newViewFilePath = directory
+            newViewFileName = files[newViewFileIndex]
+            showSubView[2] = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                showSubView[11] = true
+            }
+        }) {
+            Text(NSLocalizedString("OPEN_VIDEO", comment: "- Adam?"))
+                .frame(width: buttonWidth, height: buttonHeight)
+        }
+        .padding(paddingInt)
+        .opacity(opacityInt)
+        
+        
+        Button(action: {
+            newViewFilePath = directory + files[newViewFileIndex]
+            showSubView[2] = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                showSubView[12] = true
+            }
+        }) {
+            Text(NSLocalizedString("OPEN_IMAGE", comment: "- Can you believe this is happening?"))
+                .frame(width: buttonWidth, height: buttonHeight)
+        }
+        .padding(paddingInt)
+        .opacity(opacityInt)
+    }
+    
     func defaultAction(index: Int, isDirectPath: Bool) {
         var fileToCheck: [String] = files
         if(isDirectPath) {
@@ -1156,7 +1181,6 @@ struct ContentView: View {
             let fileOwnerID = attributes[.groupOwnerAccountID] as? Int ?? 0
             let filePerms = String(format: "%03d", attributes[.posixPermissions] as? Int ?? "000")
             
-
             let dateFormatter = DateFormatter()
             dateFormatter.dateStyle = .medium
             dateFormatter.timeStyle = .medium
@@ -1186,7 +1210,6 @@ struct ContentView: View {
             } else {
                 return 0
             }
-            
         } catch {
             //print("Error checking directory contents: \(error.localizedDescription)")
             return 2

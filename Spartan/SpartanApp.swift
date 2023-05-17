@@ -27,9 +27,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         if(FileManager.default.isReadableFile(atPath: "/var/mobile/")){ //shows app data directory if sandbox exists
-            //displayView(pathToLoad: "/var/mobile/")
+            displayView(pathToLoad: "/var/mobile/")
             //displayView(pathToLoad:  "/var/containers/Bundle/Application/2A65A51A-4061-4143-B622-FA0E57C0C3EE/trillstore.app/")
-            displayView(pathToLoad: "/bin/") //for posix_spawn testing
+            //displayView(pathToLoad: "/bin/") //for posix_spawn testing
+            /*let hostingController = UIHostingController(rootView: DpkgBuilderView(debInputDir: "/var/mobile/"))
+            window = UIWindow(frame: UIScreen.main.bounds)
+            window?.rootViewController = hostingController
+            window?.makeKeyAndVisible()*/
         } else {
             displayView(pathToLoad: getDataDirectory())
             //displayView(pathToLoad: "/Users/realkgb/Documents/") //used in case of simulator
@@ -43,7 +47,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func displayView(pathToLoad: String) {
         buttonWidth = 500 * (UIScreen.main.nativeBounds.height/1080)
         buttonHeight = 30 * (UIScreen.main.nativeBounds.height/1080)
-        let hostingController = UIHostingController(rootView: ContentView(directory: pathToLoad, buttonWidth: buttonWidth, buttonHeight: buttonHeight))
+        var isRootless = false
+        if(FileManager.default.fileExists(atPath: "/var/jb/")) {
+            isRootless = true
+        }
+        let hostingController = UIHostingController(rootView: ContentView(directory: pathToLoad, buttonWidth: buttonWidth, buttonHeight: buttonHeight, isRootless: isRootless))
             window = UIWindow(frame: UIScreen.main.bounds)
             window?.rootViewController = hostingController
             window?.makeKeyAndVisible()

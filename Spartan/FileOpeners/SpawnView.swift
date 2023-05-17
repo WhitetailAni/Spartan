@@ -10,11 +10,9 @@ import SwiftUI
 struct SpawnView: View {
     @Binding var binaryPath: String
     @Binding var binaryName: String
-    
     @State var programArguments: String = ""
     @State var spawnLog: String = "test"
     @State var descriptiveTitles = UserDefaults.settings.bool(forKey: "descriptiveTitles")
-
     var body: some View {
         VStack {
             Text(descriptiveTitles ? binaryPath + binaryName : binaryName)
@@ -29,12 +27,14 @@ struct SpawnView: View {
                          spawnLog = Spartan.task(launchPath: binaryPath + binaryName, arguments: "") as String
                      }, catch: { (error) in
                          spawnLog = error.description
-                     }, finally: {
-                         print("L")
-                })
+                     }
+                )
             }) {
                 Text(NSLocalizedString("SPAWN_CONFIRM", comment: "ENJOY THE FIR3WORKS, KID!!!!"))
             }
         }
     }
 }
+
+
+

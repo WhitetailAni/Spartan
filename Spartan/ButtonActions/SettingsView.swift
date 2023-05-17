@@ -9,20 +9,18 @@ import SwiftUI
 
 struct SettingsView: View {
 
-    @State private var infoShow = false
+    @State private var showView: [Bool] = [Bool](repeating: false, count: 2)
     @State private var descriptiveTitlesPre = UserDefaults.settings.bool(forKey: "descriptiveTitles")
     @State private var descriptiveTimestampsPre = UserDefaults.settings.bool(forKey: "verboseTimestamps")
     @State private var autoCompletePre = UserDefaults.settings.bool(forKey: "autoComplete")
     @State private var logWindowFontSizePre = UserDefaults.settings.integer(forKey: "logWindowFontSize")
-    @State private var testShow = false
-
 
     var body: some View {
         Text(NSLocalizedString("SETTINGS", comment: "But choose carefully because you'll stay in the job you pick for the rest of your life."))
             .font(.system(size: 60))
             .bold()
         
-        StepperTV(value: $logWindowFontSizePre) {
+        StepperTV(value: $logWindowFontSizePre, isHorizontal: true) {
             UserDefaults.settings.set(logWindowFontSizePre, forKey: "logWindowFontSize")
             UserDefaults.settings.synchronize()
         }
@@ -33,8 +31,18 @@ struct SettingsView: View {
         descriptiveThings
         autoCompleteFileExtensions
         
+        Button(action: {
+            showView[1] = true
+        }) {
+            Image(systemName: "applepencil")
+            Text(NSLocalizedString("APPICON", comment: """
+            LET'S GO BABY LOVE THE [[METS]] HIT A HOME RUN BABY
+            1987 *CAN* HAPPEN AGAIN
+            """))
+        }
+        
         Button(action: { //info
-            infoShow = true
+            showView[0] = true
         }) {
             HStack {
                 Image(systemName: "info.circle")
@@ -44,8 +52,11 @@ struct SettingsView: View {
                 """))
             }
         }
-        .sheet(isPresented: $infoShow, content: {
+        .sheet(isPresented: $showView[0], content: {
             CreditsView()
+        })
+        .sheet(isPresented: $showView[1], content: {
+            IconView()
         })
     }
     
@@ -92,5 +103,30 @@ struct SettingsView: View {
              .multilineTextAlignment(.center)
         Text(NSLocalizedString("SETTINGS_AUTOCOMPLETE_WARNING", comment: "Wow! That blew my mind!"))
             .font(.system(size: 25))
+    }
+}
+
+struct IconView: View {
+
+    @State private var attempt: String = ""
+    @State private var progress = false
+
+    var body: some View {
+        Text("gm")
+        Button(action: {
+            UIApplication.shared.setAlternateIconName("NotFound") { error in
+                if let error = error {
+                    attempt = error.localizedDescription
+                } else {
+                    attempt = "Success!"
+                }
+                progress = true
+            }
+        }) {
+            Text("icon")
+        }
+        .sheet(isPresented: $progress, content: {
+            Text(attempt)
+        })
     }
 }

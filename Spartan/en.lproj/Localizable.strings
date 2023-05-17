@@ -14,6 +14,11 @@
 "UNKNOWN" = "Unknown";
 "OPEN" = "Open";
 "ERROR" = "An error occurred";
+"INSTALL" = "Install";
+"EXTRACT" = "Extract";
+"BUILD" = "Build";
+"ERR_NOJAILBREAK" = "You need to be jailbroken for this function.";
+"APPICON" = "Change App Icon";
 
 //main view
 "FREE_SPACE" = "Free space: ";
@@ -36,7 +41,10 @@
 "OPEN_TEXT" = "Text Editor";
 "OPEN_HEX" = "Hex Editor";
 "OPEN_PLIST" = "Plist Editor";
+"OPEN_DPKG" = "Open in Dpkg Installer";
+"OPEN_DPKGDEB" = "Open in Dpkg Builder";
 "OPEN_SPAWN" = "Spawn As Binary";
+
 "SHOW_DENIED" = "Permission Denied";
 "SHOW_INFO" = "File Info";
 "INFO_DENIED" = "You don't have permission for that.";
@@ -174,3 +182,8 @@
 //spawn
 "SPAWN_ARGS" = "Enter program arguments";
 "SPAWN_CONFIRM" = "Spawn";
+
+//dpkg
+"DPKGDEB_OUTDIR" = "Specify the destination directory";
+"DPKGDEB_OUTNAME" = "Specify the deb's filename";
+"DPKGDEB_COMPTYPE" = "Specify the compression type to use.";

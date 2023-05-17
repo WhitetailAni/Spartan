@@ -52,33 +52,53 @@ struct Checkbox: ToggleStyle {
 
 struct StepperTV: View {
     @Binding var value: Int
+    @State var isHorizontal: Bool
     let onCommit: () -> Void
     
     var body: some View {
-        HStack {
-            Button(action: {
-                value -= 1
-                onCommit()
-            }) {
-                Image(systemName: "minus")
-                    .font(.system(size: 30))
-                    .frame(width: 30, height: 30)
+        if(isHorizontal) {
+            HStack {
+                minus
+                valueText
+                plus
             }
-            
-            Text("\(value)")
-                .font(.headline)
-            
-            Button(action: {
-                value += 1
-                onCommit()
-            }) {
-                Image(systemName: "plus")
-                    .font(.system(size: 30))
-                    .frame(width: 30, height: 30)
+        } else {
+            VStack {
+                plus
+                valueText
+                minus
             }
         }
     }
+    
+    var minus: some View {
+        Button(action: {
+            value -= 1
+            onCommit()
+        }) {
+            Image(systemName: "minus")
+                .font(.system(size: 30))
+                .frame(width: 30, height: 30)
+        }
+    }
+    
+    var valueText: some View {
+        Text("\(value)")
+            .font(.headline)
+    }
+    
+    var plus: some View {
+        Button(action: {
+            value += 1
+            onCommit()
+        }) {
+            Image(systemName: "plus")
+                .font(.system(size: 30))
+                .frame(width: 30, height: 30)
+        }
+    }
 }
+
 
 struct UIViewControllerWrapper<UIViewControllerType: UIViewController>: UIViewControllerRepresentable {
     let viewControllerFactory: () -> UIViewControllerType

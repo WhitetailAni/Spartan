@@ -18,23 +18,46 @@ struct TextView: View {
     @State private var textEditorIndex = 0
     @State private var textEditorOldIndex = 0
     @State private var encoding: String.Encoding = .utf8
-    @State private var index = 0
+    @State private var index: UInt = 0
+    @State private var indexPro: Int = 0
     
     var body: some View {
         VStack {
             if(!textEditorShow) {
                 HStack {
                     Button(action: {
-                        fileContents.insert("", at: index)
+                        fileContents.insert("", at: Int(index))
                     }) {
                         Text("\(NSLocalizedString("LINEADD", comment: "- Hear about Frankie?")) \(index)")
                     }
                     Button(action: {
-                        fileContents.remove(at: index)
+                        fileContents.remove(at: Int(index))
                     }) {
                         Text("\(NSLocalizedString("LINEREMOVE", comment: "- Yeah.")) \(index)")
                     }
-                    StepperTV(value: $index) { }
+                    StepperTV(value: Binding (
+                            get: { Int(index) },
+                            set: { indexPro = $0 }), isHorizontal: true) {
+                                if(!(indexPro < 0) && !(index >= fileContents.count)) {
+                                    index = UInt(indexPro)
+                                    print("success")
+                                }
+                                if(index == fileContents.count) {
+                                    indexPro -= 1
+                                    if(indexPro < 0) {
+                                        indexPro = 0
+                                        index = UInt(indexPro)
+                                    }
+                                    print("equal")
+                                }
+                                if(index > fileContents.count) {
+                                    indexPro = Int(index)
+                                    print("greater")
+                                } //this is bad logic and will be fixed
+                                print(fileContents.count)
+                                print(indexPro)
+                                print(index)
+                            }
                     Spacer()
                     Button(action: {
                         do {
@@ -46,18 +69,29 @@ struct TextView: View {
                         Image(systemName: "square.and.arrow.down")
                     }
                 }
-                List(fileContents.indices, id: \.self) { index in
+                List(fileContents.indices, id: \.self) { indexB in
                     HStack {
-                        Text(String(index))
+                        if(indexB == Int(index)) {
+                            Text(String(indexB))
+                                .foregroundColor(.blue)
+                        } else {
+                            Text(String(indexB))
+                        }
                         Button(action: {
                             withAnimation {
                                 textEditorShow = true
                             }
-                            textEditorString = fileContents[index]
-                            textEditorIndex = index
+                            textEditorString = fileContents[indexB]
+                            textEditorIndex = indexB
                         }) {
-                            Text(fileContents[index])
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                            if(indexB == Int(index)) {
+                                Text(fileContents[indexB])
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .foregroundColor(.blue)
+                            } else {
+                                Text(fileContents[indexB])
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
                         }
                     }
                 }

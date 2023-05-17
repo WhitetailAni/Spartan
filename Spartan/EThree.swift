@@ -6,8 +6,65 @@
 //
 
 import SwiftUI
+import CommonCrypto
 
 struct EThree: View {
+
+    @Binding var directory: String
+    @Binding var files: [String]
+    @Binding var multiSelectFiles: [String]
+    @Binding var fileWasSelected: [Bool]
+    @Binding var showSubView: [Bool]
+    var yandereDevFileTypeDebugTransfer: ((String) -> Double)? = nil
+
+    @State private var EList: [Int] = [0,0,0,0]
+    @State private var show = false
+
+    var body: some View {
+        HStack {
+            ForEach(0..<4, id: \.self) { index in
+                StepperTV(value: $EList[index], isHorizontal: false) {
+                    if(calculateSHA384Hash(value: ListToInt(list: EList))! == "b731b215f8decb9fffd0d5b11b526cc5f23e537a0074ff9026f0c8e0af5c7e73ad2a932c2b7004429b7961bc6fb234f5"){
+                        show = true
+                    }
+                }
+            }
+            .onAppear {
+                EList = [0,0,0,0]
+            }
+        }
+        .sheet(isPresented: $show, content: {
+            EThreePro(directory: $directory, files: $files, multiSelectFiles: $multiSelectFiles, fileWasSelected: $fileWasSelected, showSubView: $showSubView, yandereDevFileTypeDebugTransfer: yandereDevFileTypeDebugTransfer)
+        })
+    }
+    
+    func ListToInt(list: [Int]) -> Int {
+        let int = list.reduce(0) { result, number in
+            result * 10 + number
+        }
+        return int
+    }
+    
+    func calculateSHA384Hash(value: Int) -> String? {
+        var context = CC_SHA512_CTX()
+        guard let data = "\(value)".data(using: .utf8) else { return nil }
+        
+        _ = data.withUnsafeBytes { (bytes: UnsafeRawBufferPointer) -> Bool in
+            guard let pointer = bytes.baseAddress?.assumingMemoryBound(to: UInt8.self) else { return false }
+            CC_SHA384_Init(&context)
+            CC_SHA384_Update(&context, pointer, CC_LONG(data.count))
+            return true
+        }
+        
+        var digest = [UInt8](repeating: 0, count: Int(CC_SHA384_DIGEST_LENGTH))
+        CC_SHA384_Final(&digest, &context)
+        
+        let hashString = digest.map { String(format: "%02hhx", $0) }.joined()
+        return hashString
+    }
+}
+
+struct EThreePro: View {
     
     @Binding var directory: String
     @Binding var files: [String]

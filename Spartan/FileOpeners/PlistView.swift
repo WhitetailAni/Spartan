@@ -234,7 +234,7 @@ struct PlistEditorView: View {
         }
         
         if(plistKeyType == "Integer") {
-            StepperTV(value: $parsedInt) { }
+            StepperTV(value: $parsedInt, isHorizontal: true) { }
         } else if(plistKeyType == "String") {
             TextField(NSLocalizedString("PLIST_DATA", comment: ""), text: $parsedString)
         } else if(plistKeyType == "Array") {
@@ -242,9 +242,9 @@ struct PlistEditorView: View {
                 ForEach(parsedArray.indices, id: \.self) { index in
                     if(parsedArray[index] is Int) {
                         let value = parsedArray[index] as! Int
-                        StepperTV(value: Binding(
+                        StepperTV(value: Binding (
                             get: { value },
-                            set: { parsedArray[index] = $0 })) { }
+                            set: { parsedArray[index] = $0 }), isHorizontal: true) { }
                             .padding()
                     } else if(parsedArray[index] is String) {
                         let value = parsedArray[index] as! String
