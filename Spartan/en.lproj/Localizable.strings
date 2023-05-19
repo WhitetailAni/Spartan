@@ -19,6 +19,7 @@
 "BUILD" = "Build";
 "ERR_NOJAILBREAK" = "You need to be jailbroken for this function.";
 "APPICON" = "Change App Icon";
+"LOADING" = "Loading...";
 
 //main view
 "FREE_SPACE" = "Free space: ";

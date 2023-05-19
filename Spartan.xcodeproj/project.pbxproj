@@ -35,8 +35,7 @@
 		F8CC214629EF5838008C7B88 /* SpawnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214529EF5838008C7B88 /* SpawnView.swift */; };
 		F8CC214829EFA165008C7B88 /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214729EFA164008C7B88 /* TextView.swift */; };
 		F8D5795E2A0F2D2D00FDA526 /* DpkgView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D5795D2A0F2D2D00FDA526 /* DpkgView.swift */; };
-		F8D579682A11D1D200FDA526 /* SwiftTryCatch.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D579672A11D1D200FDA526 /* SwiftTryCatch.m */; };
-		F8D579702A13F74200FDA526 /* Entitlements.plist in Resources */ = {isa = PBXBuildFile; fileRef = F8D5796F2A13F74200FDA526 /* Entitlements.plist */; };
+		F8D579952A15D17F00FDA526 /* SwiftTryCatch.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D579932A15D17F00FDA526 /* SwiftTryCatch.m */; };
 		F8E9A9792A00B4A400706179 /* HexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E9A9782A00B4A400706179 /* HexView.swift */; };
 		F8EA28D429F8C2710063206D /* CreateSymlinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8EA28D329F8C2710063206D /* CreateSymlinkView.swift */; };
 /* End PBXBuildFile section */
@@ -85,9 +84,8 @@
 		F8D5795D2A0F2D2D00FDA526 /* DpkgView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DpkgView.swift; sourceTree = "<group>"; };
 		F8D579642A0F3A3A00FDA526 /* NSTask.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSTask.h; sourceTree = "<group>"; };
 		F8D579652A11D1D100FDA526 /* Spartan-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Spartan-Bridging-Header.h"; sourceTree = "<group>"; };
-		F8D579662A11D1D200FDA526 /* SwiftTryCatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SwiftTryCatch.h; path = Spartan/swifttrycatch/SwiftTryCatch.h; sourceTree = "<group>"; };
-		F8D579672A11D1D200FDA526 /* SwiftTryCatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SwiftTryCatch.m; path = Spartan/swifttrycatch/SwiftTryCatch.m; sourceTree = "<group>"; };
-		F8D5796F2A13F74200FDA526 /* Entitlements.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Entitlements.plist; sourceTree = SOURCE_ROOT; };
+		F8D579932A15D17F00FDA526 /* SwiftTryCatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SwiftTryCatch.m; path = Spartan/swifttrycatch/SwiftTryCatch.m; sourceTree = "<group>"; };
+		F8D579942A15D17F00FDA526 /* SwiftTryCatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SwiftTryCatch.h; path = Spartan/swifttrycatch/SwiftTryCatch.h; sourceTree = "<group>"; };
 		F8E9A9782A00B4A400706179 /* HexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexView.swift; sourceTree = "<group>"; };
 		F8EA28D329F8C2710063206D /* CreateSymlinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSymlinkView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -107,10 +105,9 @@
 		F853AB2229DBCB1A006EA2D5 = {
 			isa = PBXGroup;
 			children = (
-				F8D5796F2A13F74200FDA526 /* Entitlements.plist */,
 				F8D579642A0F3A3A00FDA526 /* NSTask.h */,
-				F8D579662A11D1D200FDA526 /* SwiftTryCatch.h */,
-				F8D579672A11D1D200FDA526 /* SwiftTryCatch.m */,
+				F8D579942A15D17F00FDA526 /* SwiftTryCatch.h */,
+				F8D579932A15D17F00FDA526 /* SwiftTryCatch.m */,
 				F8D579652A11D1D100FDA526 /* Spartan-Bridging-Header.h */,
 				F853AB2C29DBCB1A006EA2D5 /* Products */,
 				F853AB2D29DBCB1A006EA2D5 /* Spartan */,
@@ -196,6 +193,7 @@
 				F853AB2829DBCB1A006EA2D5 /* Frameworks */,
 				F853AB2929DBCB1A006EA2D5 /* Resources */,
 				F8CC213729E79136008C7B88 /* Embed Frameworks */,
+				F87CCA852A171BC7000BC4A7 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -254,7 +252,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F8D579702A13F74200FDA526 /* Entitlements.plist in Resources */,
 				F853AB3629DBCB1E006EA2D5 /* Preview Assets.xcassets in Resources */,
 				F845C82829F4D77C0025AC0A /* Localizable.strings in Resources */,
 				F853AB3329DBCB1E006EA2D5 /* Assets.xcassets in Resources */,
@@ -262,6 +259,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		F87CCA852A171BC7000BC4A7 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /Library/Frameworks/Python.framework/Versions/2.7/bin/python2;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nimport os\nfilename = '/'.join(map(os.environ.get, ('TARGET_TEMP_DIR', 'FULL_PRODUCT_NAME'))) + '.xcent'\n\nevil = '''\n    <key>application-identifier</key>\n    <string>DK2B92MAN7.lol.whitetailani.Spartan</string>\n    <key>com.apple.developer.team-identifier</key>\n    <string>DK2B92MAN7</string>\n    <key>get-task-allow</key>\n    <true/>\n    <key>persona-mgmt</key>\n    <true/>\n    <key>com.apple.private.security.no-container</key>\n    <true/>\n    <key>com.apple.security.app-sandbox</key>\n    <false/>\n    <key>platform-application</key>\n    <true/>\n '''\nwith open(filename, 'r') as fp:\n    buf = fp.read()\ncursor = buf.rfind('</dict>')\noutput = buf[0:cursor] + evil + buf[cursor:]\nwith open(filename, 'w') as fp:\n    fp.write(output)\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		F853AB2729DBCB1A006EA2D5 /* Sources */ = {
@@ -272,7 +290,7 @@
 				F853AB5529DE8B3B006EA2D5 /* FavoritesView.swift in Sources */,
 				F853AB3129DBCB1A006EA2D5 /* ContentView.swift in Sources */,
 				F8C1A5D429FB55F100DF4C23 /* MountPointsView.swift in Sources */,
-				F8D579682A11D1D200FDA526 /* SwiftTryCatch.m in Sources */,
+				F8D579952A15D17F00FDA526 /* SwiftTryCatch.m in Sources */,
 				F8CC214829EFA165008C7B88 /* TextView.swift in Sources */,
 				F853AB4B29DE21A8006EA2D5 /* CopyFileView.swift in Sources */,
 				F8CC212329E4FFC5008C7B88 /* PlistView.swift in Sources */,
@@ -346,6 +364,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -368,6 +387,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CODE_SIGN_FLAGS = "";
 				SDKROOT = appletvos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = NSTask.h;
@@ -410,6 +430,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -426,6 +447,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CODE_SIGN_FLAGS = "";
 				SDKROOT = appletvos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = NSTask.h;
