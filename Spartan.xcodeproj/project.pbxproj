@@ -277,7 +277,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /Library/Frameworks/Python.framework/Versions/2.7/bin/python2;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nimport os\nfilename = '/'.join(map(os.environ.get, ('TARGET_TEMP_DIR', 'FULL_PRODUCT_NAME'))) + '.xcent'\n\nevil = '''\n    <key>application-identifier</key>\n    <string>DK2B92MAN7.lol.whitetailani.Spartan</string>\n    <key>com.apple.developer.team-identifier</key>\n    <string>DK2B92MAN7</string>\n    <key>get-task-allow</key>\n    <true/>\n    <key>persona-mgmt</key>\n    <true/>\n    <key>com.apple.private.security.no-container</key>\n    <true/>\n    <key>com.apple.security.app-sandbox</key>\n    <false/>\n    <key>platform-application</key>\n    <true/>\n '''\nwith open(filename, 'r') as fp:\n    buf = fp.read()\ncursor = buf.rfind('</dict>')\noutput = buf[0:cursor] + evil + buf[cursor:]\nwith open(filename, 'w') as fp:\n    fp.write(output)\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nimport os\nfilename = '/'.join(map(os.environ.get, ('TARGET_TEMP_DIR', 'FULL_PRODUCT_NAME'))) + '.xcent'\n\nent = '''\n    <key>persona-mgmt</key>\n    <true/>\n    <key>com.apple.private.security.no-container</key>\n    <true/>\n    <key>com.apple.security.app-sandbox</key>\n    <false/>\n    <key>platform-application</key>\n    <true/>\n '''\nwith open(filename, 'r') as fp:\n    buf = fp.read()\ncursor = buf.rfind('</dict>')\noutput = buf[0:cursor] + ent + buf[cursor:]\nwith open(filename, 'w') as fp:\n    fp.write(output)\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -465,7 +465,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 32;
+				CURRENT_PROJECT_VERSION = 891;
 				DEVELOPMENT_ASSET_PATHS = "\"Spartan/Preview Content\"";
 				DEVELOPMENT_TEAM = DK2B92MAN7;
 				ENABLE_PREVIEWS = YES;
@@ -484,7 +484,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = lol.whitetailani.Spartan;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -508,7 +508,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 32;
+				CURRENT_PROJECT_VERSION = 891;
 				DEVELOPMENT_ASSET_PATHS = "\"Spartan/Preview Content\"";
 				DEVELOPMENT_TEAM = DK2B92MAN7;
 				ENABLE_PREVIEWS = YES;
@@ -527,7 +527,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = lol.whitetailani.Spartan;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

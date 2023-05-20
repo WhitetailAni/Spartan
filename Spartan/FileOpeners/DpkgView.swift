@@ -42,7 +42,7 @@ struct DpkgView: View {
                         }
                     HStack {
                         Button(action: {
-                            dpkgLog = Spartan.task(launchPath: dpkgPath, arguments: "-i " + debPath + debName) as String
+                            dpkgLog = Spartan.task(launchPath: dpkgPath, arguments: ["-i ", debPath, debName]) as String
                         }) {
                             Text(NSLocalizedString("INSTALL", comment: "THERE WILL BE NO MORE [Miracles] NO MORE [Magic]."))
                         }
@@ -74,7 +74,7 @@ struct DpkgView: View {
                         if(extractToCurrentDir) {
                             extractDest = debPath
                         }
-                        _ = Spartan.task(launchPath: dpkgPath + "-deb", arguments: "-x " + (debPath + debName) + " " + extractDest)
+                        _ = Spartan.task(launchPath: dpkgPath + "-deb", arguments: ["-x ", (debPath + debName), " ", extractDest])
                     }) {
                         Text(NSLocalizedString("EXTRACT", comment: "I GAVE YOU MY [Commemorative Ring] FOR THE PRICE OF [My Favorite Year]!"))
                     }
@@ -140,7 +140,7 @@ struct DpkgBuilderView: View {
                 updateLog()
                 dpkgDebLog += "\n"
                 SwiftTryCatch.try({
-                         dpkgDebLog += Spartan.task(launchPath: dpkgPath, arguments: " -Z " + selectedCompressionType + " -b " + debInputDir + debOutputVars) as String
+                         dpkgDebLog += Spartan.task(launchPath: dpkgPath, arguments: [" -Z ", selectedCompressionType, " -b ", debInputDir, debOutputVars]) as String
                      }, catch: { (error) in
                          dpkgDebLog += "An error occurred: " + error.description
                      }

@@ -17,7 +17,7 @@
 "INSTALL" = "Install";
 "EXTRACT" = "Extract";
 "BUILD" = "Build";
-"ERR_NOJAILBREAK" = "You need to be jailbroken for this function.";
+"ERR_NOJAILBREAK" = "You need to be jailbroken for this function";
 "APPICON" = "Change App Icon";
 "LOADING" = "Loading...";
 
@@ -187,4 +187,4 @@
 //dpkg
 "DPKGDEB_OUTDIR" = "Specify the destination directory";
 "DPKGDEB_OUTNAME" = "Specify the deb's filename";
-"DPKGDEB_COMPTYPE" = "Specify the compression type to use.";
+"DPKGDEB_COMPTYPE" = "Specify the compression type to use";

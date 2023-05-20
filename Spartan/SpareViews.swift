@@ -219,20 +219,32 @@ struct UIKitTextView: UIViewRepresentable {
     }
 }
 
-func task(launchPath: String, arguments: String...) -> NSString {
+func task(launchPath: String, arguments: [String]) -> NSString {
     let task = NSTask.init()
     task?.setLaunchPath(launchPath)
-    task?.arguments = arguments
+    if(!arguments.isEmpty) {
+        task?.arguments = arguments
+    }
+    
+    print(arguments)
 
     let pipe = Pipe()
+    let pipeTwo = Pipe()
     task?.standardOutput = pipe
+    task?.standardError = pipeTwo
 
     task?.launch()
     task?.waitUntilExit()
 
     let data = pipe.fileHandleForReading.readDataToEndOfFile()
-    let output = NSString(data: data, encoding: String.Encoding.utf8.rawValue)
+    let dataTwo = data + pipeTwo.fileHandleForReading.readDataToEndOfFile()
+    let output = NSString(data: dataTwo, encoding: String.Encoding.utf8.rawValue)
+    
+    print(output!)
 
     return output!
 }
 //https://stackoverflow.com/a/56628715
+
+
+

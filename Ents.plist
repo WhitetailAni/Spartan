@@ -10,8 +10,6 @@
 	<true/>
 	<key>com.apple.security.app-sandbox</key>
 	<false/>
-	<key>New item</key>
-	<string></string>
 	<key>platform-application</key>
 	<true/>
 </dict>
