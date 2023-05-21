@@ -79,11 +79,10 @@ struct EThreePro: View {
     @State private var deviceInfoShow = false
     
     var yandereDevFileTypeDebugTransfer: ((String) -> Double)? = nil
-    //var realFreeSpace: ((Double) -> (Double, String))? = nil
+    let paddingInt: CGFloat = -7
+    let opacityInt: CGFloat = 1.0
     
     var body: some View {
-        let paddingInt: CGFloat = -7
-        let opacityInt: CGFloat = 1.0
     
         Text("Welcome to Milliways")
             .font(.system(size: 69))
@@ -214,6 +213,11 @@ struct EThreePro: View {
         .padding(10)
         .opacity(opacityInt)
         
+        firstLaunch
+    }
+    
+    @ViewBuilder
+    var firstLaunch: some View {
         Button(action: {
             print(UserDefaults.settings.bool(forKey: "haveLaunchedBefore"))
         }) {
@@ -227,6 +231,15 @@ struct EThreePro: View {
             UserDefaults.settings.set(false, forKey: "haveLaunchedBefore")
         }) {
             Text("Enable first launch")
+                .frame(width: buttonWidth, height: buttonHeight)
+        }
+        .padding(paddingInt)
+        .opacity(opacityInt)
+        
+        Button(action: {
+            UserDefaults.settings.set(true, forKey: "haveLaunchedBefore")
+        }) {
+            Text("Disable first launch")
                 .frame(width: buttonWidth, height: buttonHeight)
         }
         .padding(paddingInt)

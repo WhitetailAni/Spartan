@@ -6,6 +6,7 @@
 /Users/realkgb/Documents/Spartan/Spartan/ButtonActions/CopyFileView.swift
 /Users/realkgb/Documents/Spartan/Spartan/FileOpeners/PlistView.swift
 /Users/realkgb/Documents/Spartan/Spartan/ButtonActions/MoveFileView.swift
+/Users/realkgb/Documents/Spartan/Spartan/FileOpeners/HexView.swift
 /Users/realkgb/Documents/Spartan/Spartan/FileOpeners/ZipFileView.swift
 /Users/realkgb/Documents/Spartan/Spartan/ButtonActions/CreateFileView.swift
 /Users/realkgb/Documents/Spartan/Spartan/ButtonActions/CreateDirectoryView.swift
@@ -21,4 +22,5 @@
 /Users/realkgb/Documents/Spartan/Spartan/EThree.swift
 /Users/realkgb/Documents/Spartan/Spartan/ButtonActions/RenameFileView.swift
 /Users/realkgb/Documents/Spartan/Spartan/ButtonActions/CreditsView.swift
+/Users/realkgb/Documents/Spartan/Spartan/FileOpeners/DpkgView.swift
 /Users/realkgb/Documents/Spartan/Spartan/SpartanApp.swift

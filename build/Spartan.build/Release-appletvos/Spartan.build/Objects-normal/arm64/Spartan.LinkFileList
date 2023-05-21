@@ -1,3 +1,4 @@
+/Users/realkgb/Documents/Spartan/build/Spartan.build/Release-appletvos/Spartan.build/Objects-normal/arm64/SwiftTryCatch.o
 /Users/realkgb/Documents/Spartan/build/Spartan.build/Release-appletvos/Spartan.build/Objects-normal/arm64/TintColorView.o
 /Users/realkgb/Documents/Spartan/build/Spartan.build/Release-appletvos/Spartan.build/Objects-normal/arm64/FavoritesView.o
 /Users/realkgb/Documents/Spartan/build/Spartan.build/Release-appletvos/Spartan.build/Objects-normal/arm64/ContentView.o
@@ -6,6 +7,7 @@
 /Users/realkgb/Documents/Spartan/build/Spartan.build/Release-appletvos/Spartan.build/Objects-normal/arm64/CopyFileView.o
 /Users/realkgb/Documents/Spartan/build/Spartan.build/Release-appletvos/Spartan.build/Objects-normal/arm64/PlistView.o
 /Users/realkgb/Documents/Spartan/build/Spartan.build/Release-appletvos/Spartan.build/Objects-normal/arm64/MoveFileView.o
+/Users/realkgb/Documents/Spartan/build/Spartan.build/Release-appletvos/Spartan.build/Objects-normal/arm64/HexView.o
 /Users/realkgb/Documents/Spartan/build/Spartan.build/Release-appletvos/Spartan.build/Objects-normal/arm64/ZipFileView.o
 /Users/realkgb/Documents/Spartan/build/Spartan.build/Release-appletvos/Spartan.build/Objects-normal/arm64/CreateFileView.o
 /Users/realkgb/Documents/Spartan/build/Spartan.build/Release-appletvos/Spartan.build/Objects-normal/arm64/CreateDirectoryView.o
@@ -21,6 +23,7 @@
 /Users/realkgb/Documents/Spartan/build/Spartan.build/Release-appletvos/Spartan.build/Objects-normal/arm64/EThree.o
 /Users/realkgb/Documents/Spartan/build/Spartan.build/Release-appletvos/Spartan.build/Objects-normal/arm64/RenameFileView.o
 /Users/realkgb/Documents/Spartan/build/Spartan.build/Release-appletvos/Spartan.build/Objects-normal/arm64/CreditsView.o
+/Users/realkgb/Documents/Spartan/build/Spartan.build/Release-appletvos/Spartan.build/Objects-normal/arm64/DpkgView.o
 /Users/realkgb/Documents/Spartan/build/Spartan.build/Release-appletvos/Spartan.build/Objects-normal/arm64/SpartanApp.o
 /Users/realkgb/Library/Developer/Xcode/DerivedData/Spartan-cniixqqycjwwaocfpdlmyrrtaujc/SourcePackages/checkouts/Zip/build/Release-appletvos/Zip.o
 /Users/realkgb/Library/Developer/Xcode/DerivedData/Spartan-cniixqqycjwwaocfpdlmyrrtaujc/SourcePackages/checkouts/Zip/build/Release-appletvos/Minizip.o

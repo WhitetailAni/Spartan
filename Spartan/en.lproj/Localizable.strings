@@ -182,6 +182,7 @@
 
 //spawn
 "SPAWN_ARGS" = "Enter program arguments";
+"SPAWN_ENV" = "Enter environment variables";
 "SPAWN_CONFIRM" = "Spawn";
 
 //dpkg

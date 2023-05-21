@@ -82,7 +82,6 @@
 		F8CC214529EF5838008C7B88 /* SpawnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpawnView.swift; sourceTree = "<group>"; };
 		F8CC214729EFA164008C7B88 /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
 		F8D5795D2A0F2D2D00FDA526 /* DpkgView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DpkgView.swift; sourceTree = "<group>"; };
-		F8D579642A0F3A3A00FDA526 /* NSTask.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSTask.h; sourceTree = "<group>"; };
 		F8D579652A11D1D100FDA526 /* Spartan-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Spartan-Bridging-Header.h"; sourceTree = "<group>"; };
 		F8D579932A15D17F00FDA526 /* SwiftTryCatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SwiftTryCatch.m; path = Spartan/swifttrycatch/SwiftTryCatch.m; sourceTree = "<group>"; };
 		F8D579942A15D17F00FDA526 /* SwiftTryCatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SwiftTryCatch.h; path = Spartan/swifttrycatch/SwiftTryCatch.h; sourceTree = "<group>"; };
@@ -105,7 +104,6 @@
 		F853AB2229DBCB1A006EA2D5 = {
 			isa = PBXGroup;
 			children = (
-				F8D579642A0F3A3A00FDA526 /* NSTask.h */,
 				F8D579942A15D17F00FDA526 /* SwiftTryCatch.h */,
 				F8D579932A15D17F00FDA526 /* SwiftTryCatch.m */,
 				F8D579652A11D1D100FDA526 /* Spartan-Bridging-Header.h */,
@@ -277,7 +275,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /Library/Frameworks/Python.framework/Versions/2.7/bin/python2;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nimport os\nfilename = '/'.join(map(os.environ.get, ('TARGET_TEMP_DIR', 'FULL_PRODUCT_NAME'))) + '.xcent'\n\nent = '''\n    <key>persona-mgmt</key>\n    <true/>\n    <key>com.apple.private.security.no-container</key>\n    <true/>\n    <key>com.apple.security.app-sandbox</key>\n    <false/>\n    <key>platform-application</key>\n    <true/>\n '''\nwith open(filename, 'r') as fp:\n    buf = fp.read()\ncursor = buf.rfind('</dict>')\noutput = buf[0:cursor] + ent + buf[cursor:]\nwith open(filename, 'w') as fp:\n    fp.write(output)\n";
+			shellScript = "# This adds entitlements necessary for spawning binaries. If you don't have patched installd (whether by jailbreak or WDBRemoveThreeAppLimit) this will cause the install to fail, so comment it out.\n\nimport os\nfilename = '/'.join(map(os.environ.get, ('TARGET_TEMP_DIR', 'FULL_PRODUCT_NAME'))) + '.xcent'\n\nent = '''\n    <key>persona-mgmt</key>\n    <true/>\n    <key>com.apple.private.security.no-container</key>\n    <true/>\n    <key>com.apple.security.app-sandbox</key>\n    <false/>\n    <key>platform-application</key>\n    <true/>\n '''\nwith open(filename, 'r') as fp:\n    buf = fp.read()\ncursor = buf.rfind('</dict>')\noutput = buf[0:cursor] + ent + buf[cursor:]\nwith open(filename, 'w') as fp:\n    fp.write(output)\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

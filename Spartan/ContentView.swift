@@ -179,7 +179,7 @@ struct ContentView: View {
                                                     Text(files[index])
                                                 case 8:
                                                     Image(systemName: "link")
-                                                    Text(files[index])
+                                                    Text(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
                                                 case 9:
                                                     Image(systemName: "archivebox")
                                                     Text(files[index])
@@ -339,13 +339,8 @@ struct ContentView: View {
                                                 Image(systemName: "terminal")
                                                 Text(files[index])
                                             case 8:
-                                                /*Image(systemName: "folder")
-                                                Image(systemName: "arrowshape.turn.up.left")
-                                                    .resizable()
-                                                    .frame(width: 30, height: 30)
-                                                    .offset(x: -10, y: -10)*/
                                                 Image(systemName: "link")
-                                                Text(files[index])
+                                                Text(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
                                             case 9:
                                                 Image(systemName: "archivebox")
                                                 Text(files[index])
@@ -1107,9 +1102,9 @@ struct ContentView: View {
             case 7:
                 showSubView[15] = true
             case 8:
-                print("symlink things")
-                //get symlink directory
-                //change directory to that
+                print(readSymlinkDestination(path: files[index]))
+                directory = readSymlinkDestination(path: files[index]) + "/"
+                updateFiles()
             case 9:
                 showSubView[23] = true
             default:
@@ -1258,7 +1253,10 @@ struct ContentView: View {
         let videoTypes: [String] = ["3gp", "3g2", "avi", "mov", "m4v", "mp4"]
         let imageTypes: [String] = ["png", "tiff", "tif", "jpeg", "jpg", "gif", "bmp", "BMPf", "ico", "cur", "xbm"]
         let archiveTypes: [String] = ["zip", "cbz"]
-        if file.hasSuffix("/") {
+        
+        if (isSymlink(filePath: file)) {
+            return 8 //symlink
+        } else if file.hasSuffix("/") {
             return 0 //directory
         } else if (audioTypes.contains(where: file.hasSuffix)) {
             return 1 //audio file
@@ -1276,8 +1274,6 @@ struct ContentView: View {
             return 6 //archive
         } else if (FileManager.default.isExecutableFile(atPath: file)) {
             return 7 //executable
-        } else if (isSymlink(filePath: file)) {
-            return 8 //symlink
         } else if (file.hasSuffix(".deb")) {
             return 9 //deb
         } else {
@@ -1314,13 +1310,28 @@ struct ContentView: View {
         }
     }
     func isSymlink(filePath: String) -> Bool {
-        var stat = stat()
-        if lstat(filePath, &stat) == 0 {
-            let type = stat.st_mode
-            return (type & S_IFLNK) != 0
+        let fileURL = URL(fileURLWithPath: filePath)
+        do {
+            let resourceValues = try fileURL.resourceValues(forKeys: [.isSymbolicLinkKey])
+            if let isSymbolicLink = resourceValues.isSymbolicLink {
+                return isSymbolicLink
+            }
+        } catch {
+            print("Error: \(error)")
         }
         return false
     }
+    
+    func readSymlinkDestination(path: String) -> String {
+        let fileURL = URL(fileURLWithPath: path)
+        let destinationURL = fileURL.standardizedFileURL.resolvingSymlinksInPath()
+        
+        if destinationURL != fileURL {
+            return destinationURL.path
+        }
+        return fileURL.path
+    }
+
     
     func resizeMultiSelectArrays() {
         let range = abs(files.count - fileWasSelected.count)
