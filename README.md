@@ -30,10 +30,10 @@ What it currently lets you do:
 There's probably more, I lost track.
 
 TODO:
-- Plist editor //in progress
+- Plist editor //was razed
 - Root helper
 - Read app list to show what app container is which if in (/private)/var/containers/Bundle/Application or (/private)/var/mobile/Containers/Data/Application
-- symlink support done right
+- webserver like filza webdav
 
 I keep doing things OTHER than the todo list. Fun!
 
