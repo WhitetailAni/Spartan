@@ -189,3 +189,7 @@
 "DPKGDEB_OUTDIR" = "Specify the destination directory";
 "DPKGDEB_OUTNAME" = "Specify the deb's filename";
 "DPKGDEB_COMPTYPE" = "Specify the compression type to use";
+
+//filenotfound
+"SHOW_NOTFOUND" = "The file does not exist, or it was moved.";
+"SHOW_OLDDEST" = "The listed destination is ";

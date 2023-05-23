@@ -36,7 +36,7 @@ struct ContentView: View {
     @State var renameFileCurrentName: String = ""
     @State var renameFileNewName: String = ""
     
-    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 25)
+    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 27)
     //createFileSelectShow = 0
     //contextMenuShow = 1
     //openInMenu = 2
@@ -62,6 +62,8 @@ struct ContentView: View {
     //hexShow = 22
     //dpkgViewShow = 23
     //dpkgDebViewShow = 24
+    //webServerShow = 25
+    //fileNotFoundView = 26
     
     @State var globalAVPlayer = AVPlayer()
     @State var isGlobalAVPlayerPlaying = false
@@ -72,6 +74,8 @@ struct ContentView: View {
     @State private var isLoadingView = false
     
     @State var blankString: [String] = [""]
+    
+    @State private var nonexistentFile = ""
     
     let paddingInt: CGFloat = -7
     let opacityInt: CGFloat = 1.0
@@ -152,7 +156,7 @@ struct ContentView: View {
                                                     } else {
                                                         Image(systemName: "folder.badge.questionmark")
                                                     }
-                                                    Text(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
+                                                    Text(removeLastChar(string: files[index]))
                                                 case 1:
                                                     Image(systemName: "waveform")
                                                     Text(files[index])
@@ -179,7 +183,7 @@ struct ContentView: View {
                                                     Text(files[index])
                                                 case 8:
                                                     Image(systemName: "link")
-                                                    Text(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
+                                                    Text(removeLastChar(string: files[index]))
                                                 case 9:
                                                     Image(systemName: "archivebox")
                                                     Text(files[index])
@@ -262,7 +266,7 @@ struct ContentView: View {
                                         showSubView[17] = true
                                         newViewFilePath = directory + files[index]
                                         if files[index].hasSuffix("/") {
-                                            newViewFileName = String(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
+                                            newViewFileName = String(removeLastChar(string: files[index]))
                                         } else {
                                             newViewFileName = files[index]
                                         }
@@ -313,7 +317,7 @@ struct ContentView: View {
                                                 } else {
                                                     Image(systemName: "folder.badge.minus")
                                                 }
-                                                Text(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
+                                                Text(removeLastChar(string: files[index]))
                                             case 1:
                                                 Image(systemName: "waveform.circle")
                                                 Text(files[index])
@@ -340,7 +344,7 @@ struct ContentView: View {
                                                 Text(files[index])
                                             case 8:
                                                 Image(systemName: "link")
-                                                Text(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
+                                                Text(removeLastChar(string: files[index]))
                                             case 9:
                                                 Image(systemName: "archivebox")
                                                 Text(files[index])
@@ -477,7 +481,7 @@ struct ContentView: View {
                     Button(action: {
                         newViewFilePath = directory + files[newViewFileIndex]
                         if files[newViewFileIndex].hasSuffix("/") {
-                            newViewFileName = String(substring(str: files[newViewFileIndex], startIndex: files[newViewFileIndex].index(files[newViewFileIndex].startIndex, offsetBy: 0), endIndex: files[newViewFileIndex].index(files[newViewFileIndex].endIndex, offsetBy: -1)))
+                            newViewFileName = String(removeLastChar(string: files[newViewFileIndex]))
                         } else {
                             newViewFileName = files[newViewFileIndex]
                         }
@@ -787,6 +791,16 @@ struct ContentView: View {
                 .sheet(isPresented: $showSubView[24], content: {
                     DpkgBuilderView(debInputDir: $newViewFilePath, debInputName: $newViewFileName, isPresented: $showSubView[24], isRootless: $isRootless)
                 })
+                .sheet(isPresented: $showSubView[25], content: {
+                    WebServerView()
+                })
+                .alert(isPresented: $showSubView[26]) {
+                    Alert(
+                        title: Text(NSLocalizedString("SHOW_NOTFOUND", comment: "")),
+                        message: Text(NSLocalizedString("SHOW_OLDDEST", comment: "") + nonexistentFile),
+                        dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "")))
+                    )
+                }
                 .accentColor(.accentColor)
             }
         }
@@ -796,7 +810,6 @@ struct ContentView: View {
             } else {
                 goBack()
             }
-            print(showSubView)
         }
     }
     
@@ -864,6 +877,12 @@ struct ContentView: View {
                         Image(systemName: "tray.2")
                             .frame(width:50, height:50)
                     }
+                }
+                
+                Button(action: {
+                    showSubView[25] = true
+                }) {
+                    Image(systemName: "server.rack")
                 }
                 
                 Button(action: { //favorites
@@ -1055,15 +1074,13 @@ struct ContentView: View {
                 let searchedIndex = multiSelectFiles.firstIndex(of: files[index])
                 multiSelectFiles.remove(at: searchedIndex!)
                 fileWasSelected[index] = false
-                print(multiSelectFiles)
             } else {
                 fileWasSelected[index] = true
                 multiSelectFiles.append(files[index])
-                print(multiSelectFiles)
             }
         } else {
             multiSelect = false
-            let fileType = yandereDevFileType(file: (directory + fileToCheck[index]))
+            let fileType = Int(yandereDevFileType(file: (directory + fileToCheck[index])))
             newViewFilePath = directory
             newViewFileName = fileToCheck[index]
             switch fileType {
@@ -1323,13 +1340,24 @@ struct ContentView: View {
     }
     
     func readSymlinkDestination(path: String) -> String {
-        let fileURL = URL(fileURLWithPath: path)
-        let destinationURL = fileURL.standardizedFileURL.resolvingSymlinksInPath()
-        
-        if destinationURL != fileURL {
-            return destinationURL.path
+        let truePath = "/" + removeLastChar(string: path)
+        print(path)
+        print(truePath)
+        var dest = "/"
+        do {
+            dest += try FileManager.default.destinationOfSymbolicLink(atPath: truePath)
+            print(try FileManager.default.destinationOfSymbolicLink(atPath: truePath))
+        } catch {
+            print(error.localizedDescription)
         }
-        return fileURL.path
+        if(!FileManager.default.fileExists(atPath: dest)) {
+            nonexistentFile = dest
+            showSubView[26] = true
+        }
+        if(dest == "//") {
+            dest = "/" + path
+        }
+        return dest
     }
 
     
@@ -1373,5 +1401,9 @@ struct ContentView: View {
         for i in 0..<showSubView.count {
             showSubView[i] = false
         }
+    }
+    
+    func removeLastChar(string: String) -> String {
+        return String(substring(str: string, startIndex: string.index(string.startIndex, offsetBy: 0), endIndex: string.index(string.endIndex, offsetBy: -1)))
     }
 }
