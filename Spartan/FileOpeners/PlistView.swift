@@ -100,7 +100,7 @@ struct PlistView: View {
                 plistDictDisplay = getContents()
             }
         }, content: {
-            PlistEditorView(filePath: $filePath, fileName: $fileName, isPresented: $editorShow, plistDict: $plistDict, plistKey: $plistKey, plistData: $plistData, plistKeyType: $plistKeyType, editOccurred: $editOccurred, keyToSet: $keyToSet, valueToSet: $valueToSet, isNestedView: false)
+            Text("Plist editor is currently being immolated. A new one will be made soonTM")
         })
     }
     
@@ -182,7 +182,7 @@ struct PlistView: View {
     }
 }
 
-struct PlistEditorView: View {
+/*struct PlistEditorView: View {
 
     @Binding var filePath: String
     @Binding var fileName: String
@@ -206,7 +206,8 @@ struct PlistEditorView: View {
     
     @State var arrayNestView = false
     @State var isNestedView: Bool
-
+    @State var selectedIndex = 0
+    @State var itemAddShow = true
 
     var body: some View {
         TextField(NSLocalizedString("PLIST_KEY", comment: ""), text: $plistKeyNew)
@@ -219,31 +220,50 @@ struct PlistEditorView: View {
         } else if(plistKeyType == "String") {
             TextField(NSLocalizedString("PLIST_DATA", comment: ""), text: $parsedString)
         } else if(plistKeyType == "Array") {
+            HStack {
+                Button(action: {
+                    parsedArray.remove(at: selectedIndex)
+                }) {
+                    Text("Remove item at \(selectedIndex)")
+                }
+                Button(action: {
+                    itemAddShow = true
+                }) {
+                    Text("Add item after \(selectedIndex)")
+                }
+            }
             ScrollView {
                 ForEach(0..<parsedArray.count, id: \.self) { index in
-                    if(parsedArray[index] is Int) {
-                        let value = parsedArray[index] as! Int
-                        TextField(NSLocalizedString("PLIST_DATA", comment: ""), value: Binding (
-                            get: { String(value) },
-                            set: { parsedArray[index] = Double($0)! }), formatter: NumberFormatter()) { }
-                            .padding()
-                    } else if(parsedArray[index] is String) {
-                        let value = parsedArray[index] as! String
-                        TextField(NSLocalizedString("PLIST_DATA", comment: ""), text: Binding(
-                            get: { value },
-                            set: { parsedArray[index] = $0 }))
-                    } else if(parsedArray[index] is Array<Any> || parsedArray[index] is NSArray) {
-                        Text(NSLocalizedString("LOADING", comment: ""))
-                            .onAppear {
-                                isNestedView = true
-                                arrayNestView = true
-                            }
+                    VStack {
+                        Text(String(index))
+                        if(parsedArray[index] is Int) {
+                            let value = parsedArray[index] as! Int
+                            TextField(NSLocalizedString("PLIST_DATA", comment: ""), value: Binding (
+                                get: { String(value) },
+                                set: { parsedArray[index] = Double($0)! }), formatter: NumberFormatter()) { }
+                                .padding()
+                        } else if(parsedArray[index] is String) {
+                            let value = parsedArray[index] as! String
+                            TextField(NSLocalizedString("PLIST_DATA", comment: ""), text: Binding(
+                                get: { value },
+                                set: { parsedArray[index] = $0 }))
+                        } else if(parsedArray[index] is Array<Any> || parsedArray[index] is NSArray) {
+                            Text(NSLocalizedString("LOADING", comment: ""))
+                                .onAppear {
+                                    isNestedView = true
+                                    arrayNestView = true
+                                }
+                        }
                     }
                 }
                 .padding()
             }
             .sheet(isPresented: $arrayNestView) {
                 PlistEditorView(filePath: $filePath, fileName: $fileName, isPresented: $arrayNestView, plistDict: $plistDict, plistKey: $plistKey, plistData: $plistData, plistKeyType: $plistKeyType, editOccurred: $editOccurred, keyToSet: $keyToSet, valueToSet: $valueToSet, isNestedView: true)
+            }
+            .sheet(isPresented: $itemAddShow) {
+                //PlistAddView(input: )
+                Text("hi")
             }
         } else if(plistKeyType == "Dictionary") {
             Text("Support coming soon")
@@ -299,3 +319,58 @@ struct PlistEditorView: View {
         isPresented = false
     }
 }
+
+struct PlistAddView: View {
+
+    @Binding var input: Any
+    @State var isDict: Bool
+    @State var index: Int
+    
+    @State var inputArray: [Any] = []
+    @State private var inputDict: NSMutableDictionary = NSMutableDictionary()
+
+    @State var itemTypes: [String] = ["Integer", "String", "Array", "Dictionary", "Boolean"]
+    @State var selectedItemType: String = ""
+    @State var keyName: String = ""
+    
+    @State private var newBool = false
+    @State private var newInt = 0
+    @State private var newString: String = ""
+    @State private var newArray: [Any] = []
+    @State private var newDictionary: NSMutableDictionary = NSMutableDictionary()
+    
+    var body: some View {
+        Picker("E", selection: $selectedItemType) {
+            ForEach(itemTypes, id: \.self) { itemType in
+                Text(itemType)
+            }
+        }
+        .pickerStyle(DefaultPickerStyle())
+        .onAppear {
+            if input is NSMutableDictionary {
+                inputDict = input as! NSMutableDictionary
+                isDict = true
+            } else {
+                inputArray = input as! [Any]
+            }
+        }
+        if(isDict) {
+            TextField("set name", text: $keyName)
+        }
+        if(selectedItemType == "Integer") {
+            StepperTV(value: $newInt, isHorizontal: true) { }
+        } else if(selectedItemType == "String") {
+            TextField("set value", text: $newString)
+        }
+        
+        Button(action: {
+            if(isDict) {
+                inputArray.insert(_ at: index)
+            } else {
+                inputDict.setObject(_, forKey: keyName)
+            }
+        }) {
+            Text(NSLocalizedString("CONFIRM", comment: ""))
+        }
+    }
+}*/

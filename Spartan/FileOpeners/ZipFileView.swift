@@ -122,4 +122,3 @@ struct ZipFileView: View {
         return urls
     }
 }
-

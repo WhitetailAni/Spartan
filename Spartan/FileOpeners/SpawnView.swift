@@ -41,6 +41,3 @@ struct SpawnView: View {
         }
     }
 }
-
-
-
