@@ -8,6 +8,7 @@
 import SwiftUI
 import Foundation
 import AVKit
+import MobileCoreServices
 
 struct ContentView: View {
     @State var directory: String
@@ -18,6 +19,8 @@ struct ContentView: View {
     @State var isFocused: Bool = false
     @State var E = false
     @State var E2 = false
+    
+    @State var masterFiles: [SpartanFile] = []
     
     @State var buttonWidth: CGFloat
     @State var buttonHeight: CGFloat
@@ -148,7 +151,10 @@ struct ContentView: View {
                                             let fileType = yandereDevFileType(file: (directory + files[index]))
                                             
                                             switch fileType {
-                                                case 0:
+                                            case 0:
+                                                if (directory.contains( "/private/var/containers/Bundle/Application/") || directory.contains( "/private/var/mobile/Containers/Data/Application/")) {
+                                                    
+                                                } else {
                                                     if (isDirectoryEmpty(atPath: directory + files[index]) == 1){
                                                         Image(systemName: "folder")
                                                     } else if (isDirectoryEmpty(atPath: directory + files[index]) == 0){
@@ -157,39 +163,40 @@ struct ContentView: View {
                                                         Image(systemName: "folder.badge.questionmark")
                                                     }
                                                     Text(removeLastChar(string: files[index]))
-                                                case 1:
-                                                    Image(systemName: "waveform")
-                                                    Text(files[index])
-                                                case 2:
-                                                    Image(systemName: "video")
-                                                    Text(files[index])
-                                                case 3:
-                                                    Image(systemName: "photo")
-                                                    Text(files[index])
-                                                case 4:
-                                                    Image(systemName: "doc.text")
-                                                    Text(files[index])
-                                                case 5.1:
-                                                    Image(systemName: "list.bullet")
-                                                    Text(files[index])
-                                                case 5.2:
-                                                    Image(systemName: "list.number")
-                                                    Text(files[index])
-                                                case 6:
-                                                    Image(systemName: "doc.zipper")
-                                                    Text(files[index])
-                                                case 7:
-                                                    Image(systemName: "terminal")
-                                                    Text(files[index])
-                                                case 8:
-                                                    Image(systemName: "link")
-                                                    Text(removeLastChar(string: files[index]))
-                                                case 9:
-                                                    Image(systemName: "archivebox")
-                                                    Text(files[index])
-                                                default:
-                                                    Image(systemName: "doc")
-                                                    Text(files[index])
+                                                }
+                                            case 1:
+                                                Image(systemName: "waveform")
+                                                Text(files[index])
+                                            case 2:
+                                                Image(systemName: "video")
+                                                Text(files[index])
+                                            case 3:
+                                                Image(systemName: "photo")
+                                                Text(files[index])
+                                            case 4:
+                                                Image(systemName: "doc.text")
+                                                Text(files[index])
+                                            case 5.1:
+                                                Image(systemName: "list.bullet")
+                                                Text(files[index])
+                                            case 5.2:
+                                                Image(systemName: "list.number")
+                                                Text(files[index])
+                                            case 6:
+                                                Image(systemName: "doc.zipper")
+                                                Text(files[index])
+                                            case 7:
+                                                Image(systemName: "terminal")
+                                                Text(files[index])
+                                            case 8:
+                                                Image(systemName: "link")
+                                                Text(removeLastChar(string: files[index]))
+                                            case 9:
+                                                Image(systemName: "archivebox")
+                                                Text(files[index])
+                                            default:
+                                                Image(systemName: "doc")
+                                                Text(files[index])
                                             }
                                         }
                                     }
@@ -1142,6 +1149,11 @@ struct ContentView: View {
                 FileManager.default.fileExists(atPath: filePath, isDirectory: &isDirectory)
                 return isDirectory.boolValue ? "\(file)/" : file
             }
+            masterFiles = []
+            for i in 0..<contents.count {
+                masterFiles.append(SpartanFile(name: contents[i], path: directory, isSelected: false))
+            }
+            print(masterFiles)
             resizeMultiSelectArrays()
             resetMultiSelectArrays()
         } catch {
@@ -1406,4 +1418,10 @@ struct ContentView: View {
     func removeLastChar(string: String) -> String {
         return String(substring(str: string, startIndex: string.index(string.startIndex, offsetBy: 0), endIndex: string.index(string.endIndex, offsetBy: -1)))
     }
+}
+
+struct SpartanFile {
+    var name: String
+    var path: String
+    var isSelected: Bool
 }

@@ -6,6 +6,11 @@
   
 */
 
+///IF THERE IS A SPACE, PRESERVE THAT SPACE IN OTHER LOCALIZED STRINGS. IT IS INTENTIONAL
+///IF THERE IS A SPACE, PRESERVE THAT SPACE IN OTHER LOCALIZED STRINGS. IT IS INTENTIONAL
+///IF THERE IS A SPACE, PRESERVE THAT SPACE IN OTHER LOCALIZED STRINGS. IT IS INTENTIONAL
+///IF THERE IS A SPACE, PRESERVE THAT SPACE IN OTHER LOCALIZED STRINGS. IT IS INTENTIONAL
+
 //general use
 "DISMISS" = "Dismiss";
 "CONFIRM" = "Confirm";
@@ -173,10 +178,6 @@
 "MOUNT_TITLE" = "Mount Points";
 "MOUNT_DESC" = "is mounted at";
 
-//plist
-"PLIST_KEY" = "Enter key name";
-"PLIST_DATA" = "Enter key value";
-
 //hex
 "HEX_DATA" = "Enter new bytes";
 
@@ -193,3 +194,12 @@
 //filenotfound
 "SHOW_NOTFOUND" = "The file does not exist, or it was moved.";
 "SHOW_OLDDEST" = "The listed destination is ";
+
+//plist
+"PLIST_KEY" = "Enter key name";
+"PLIST_DATA" = "Enter key value";
+"PLIST_UNKNOWNTYPE" = "Unknown data type";
+
+//plistarray
+"PLISTARR_ADD" = "Add item after item ";
+"PLISTARR_REMOVE" = "Remove item ";

@@ -64,7 +64,6 @@ struct PlistView: View {
             }
             List(plistDictDisplay, id: \.self) { content in
                 Button(action: {
-                    editorShow = true
                     if let range = content.range(of: ": ") {
                         let plistKeySubstring = content.prefix(upTo: range.lowerBound)
                         plistKey = String(plistKeySubstring)
@@ -81,6 +80,9 @@ struct PlistView: View {
                         let plistKeyTypeSubstring = content[startRange.upperBound..<endRange.lowerBound]
                         plistKeyType = String(plistKeyTypeSubstring)
                     }
+                    print(plistKey)
+                    print(plistKeyType)
+                    editorShow = true
                 }) {
                     Text(content)
                 }
@@ -94,13 +96,32 @@ struct PlistView: View {
             }
         }
         .sheet(isPresented: $editorShow, onDismiss: {
-            if(editOccurred) {
-                plistDict.removeObject(forKey: plistKey)
-                plistDict.setObject(valueToSet as Any, forKey: keyToSet as NSCopying)
-                plistDictDisplay = getContents()
-            }
+            plistDict.setValue(valueToSet, forKey: plistKey)
         }, content: {
-            Text("Plist editor is currently being immolated. A new one will be made soonTM")
+            switch plistKeyType {
+            case "Boolean":
+                PlistBoolView(key: $plistKey, bool: Binding (
+                    get: { plistDict.value(forKey: plistKey) as! Bool },
+                    set: { valueToSet = $0 }), isInDict: true)
+            case "Integer":
+                PlistIntView(key: $plistKey, int: Binding (
+                    get: { plistDict.value(forKey: plistKey) as! Int },
+                    set: { valueToSet = $0 }), isInDict: true)
+            case "String":
+                PlistStringView(key: $plistKey, string: Binding (
+                    get: { plistDict.value(forKey: plistKey) as! String },
+                    set: { valueToSet = $0 }), isInDict: true)
+            case "Array":
+                PlistArrayView(key: $plistKey, array: Binding (
+                    get: { plistDict.value(forKey: plistKey) as! [Any] },
+                    set: { valueToSet = $0 }), isInDict: true)
+            case "NSMutableDictionary":
+                PlistDictView(key: $plistKey, dict: Binding (
+                    get: { plistDict.value(forKey: plistKey) as! NSMutableDictionary },
+                    set: { valueToSet = $0 }), isInDict: true)
+            default:
+                Text("Unknown data type")
+            }
         })
     }
     
@@ -178,6 +199,236 @@ struct PlistView: View {
             return 1
         } else {
             return 2
+        }
+    }
+}
+
+struct PlistDictView: View {
+    @Binding var key: String
+    @Binding var dict: NSMutableDictionary
+    @State var isInDict: Bool
+    @State private var mutableDict: NSMutableDictionary = NSMutableDictionary()
+
+    var body: some View {
+        Text("gm")
+    }
+}
+
+struct PlistKeyView: View {
+    @State var show: Bool
+    @Binding var key: String
+    
+    var body: some View {
+        if(show) {
+            TextField(NSLocalizedString("PLIST_KEY", comment: ""), text: $key)
+        }
+    }
+}
+
+struct PlistBoolView: View {
+    
+    @Binding var key: String
+    @Binding var bool: Bool
+    @State var isInDict: Bool
+    
+    var body: some View {
+        PlistKeyView(show: isInDict, key: $key)
+        Button(action: {
+            bool.toggle()
+        }) {
+            Image(systemName: bool ? "checkmark.square" : "square")
+        }
+    }
+}
+
+struct PlistIntView: View {
+    @Binding var key: String
+    @Binding var int: Int
+    @State var isInDict: Bool
+
+    var body: some View {
+        PlistKeyView(show: isInDict, key: $key)
+        StepperTV(value: $int, isHorizontal: true) { }
+    }
+}
+
+struct PlistStringView: View {
+    @Binding var key: String
+    @Binding var string: String
+    @State var isInDict: Bool
+    
+    var body: some View {
+        PlistKeyView(show: isInDict, key: $key)
+        TextField(NSLocalizedString("PLIST_DATA", comment: ""), text: $string)
+    }
+}
+
+struct PlistArrayView: View {
+    @Binding var key: String
+    @Binding var array: [Any]
+    @State private var mutableArray: [Any] = [Any]()
+    @State var isInDict: Bool
+    @State private var fakeKey = ""
+    @State private var selectedIndex = 0
+    @State private var topBarIndex = 0
+    @State private var showSheet = false
+    @State private var addViewShow = false
+    @State private var fakeDict = NSMutableDictionary()
+    
+    var body: some View {
+        HStack {
+            Button(action: {
+                addViewShow = true
+            }) {
+                Text(NSLocalizedString("PLISTARR_ADD", comment: "") + String(topBarIndex))
+            }
+            Button(action: {
+                mutableArray.remove(at: topBarIndex)
+            }) {
+                Text(NSLocalizedString("PLISTARR_REMOVE", comment: "") + String(topBarIndex))
+            }
+            StepperTV(value: $topBarIndex, isHorizontal: true) { }
+            Spacer()
+            Button(action: {
+                array = mutableArray
+            }) {
+                Image(systemName: "square.and.arrow.down")
+            }
+        }
+        List {
+            PlistKeyView(show: isInDict, key: $key)
+            ForEach(mutableArray.indices, id: \.self) { index in
+                HStack {
+                    if(index == topBarIndex) {
+                        Text(String(index))
+                            .foregroundColor(.blue)
+                    } else {
+                        Text(String(index))
+                    }
+                    Button(action: {
+                        selectedIndex = 0
+                        showSheet = true
+                    }) {
+                        Text(mutableArray[index] as! String)
+                    }
+                }
+            }
+        }
+        .sheet(isPresented: $showSheet, content: {
+            switch mutableArray[selectedIndex] {
+            case is Bool:
+            //if(array[index] is Bool) {
+                PlistBoolView(key: $fakeKey, bool: $mutableArray[selectedIndex] as! Binding<Bool>, isInDict: false)
+            //} else if(array[index] is Int) {
+            case is Int:
+                PlistIntView(key: $fakeKey, int: $mutableArray[selectedIndex] as! Binding<Int>, isInDict: false)
+            //} else if(array[index] is String) {
+            case is String:
+                PlistStringView(key: $fakeKey, string: $mutableArray[selectedIndex] as! Binding<String>, isInDict: false)
+            //} else if(array[index] is [Any]) {
+            case is [Any]:
+                PlistArrayView(key: $fakeKey, array: $mutableArray[selectedIndex] as! Binding<[Any]>, isInDict: false)
+            //} else if(array[index] is NSMutableDictionary) {
+            case is NSMutableDictionary:
+                PlistDictView(key: $fakeKey, dict: $mutableArray[selectedIndex] as! Binding<NSMutableDictionary>, isInDict: false)
+            //}
+            default:
+                Text(NSLocalizedString("PLIST_UNKNOWNTYPE", comment: ""))
+            }
+        })
+        .sheet(isPresented: $addViewShow, content: {
+            PlistAddView(array: $mutableArray, dict: $fakeDict, index: topBarIndex, isAddingToDict: false)
+        })
+    }
+}
+
+struct PlistAddView: View {
+
+    @Binding var array: [Any]
+    @Binding var dict: NSMutableDictionary
+    @State var index: Int
+    @State var isAddingToDict: Bool
+    @State private var dataTypes = ["Boolean", "Integer", "String", "Array", "Dictionary"]
+    @State private var selectedDataType = ""
+    @State private var fakeKey = ""
+    
+    @State var newKey = ""
+    @State var newBool = false
+    @State var newInt = 0
+    @State var newString = ""
+    @State var newArray: [Any] = []
+    @State var newDict: NSMutableDictionary = NSMutableDictionary()
+
+    var body: some View {
+        
+        if(isAddingToDict) {
+            PlistKeyView(show: true, key: $newKey)
+        }
+    
+        Picker("E", selection: $selectedDataType) {
+            ForEach(dataTypes, id: \.self) { dataType in
+                Text(dataType)
+            }
+        }
+        .pickerStyle(DefaultPickerStyle())
+        
+        switch selectedDataType {
+        case "Boolean":
+            PlistBoolView(key: $fakeKey, bool: $newBool, isInDict: false)
+        case "Integer":
+            PlistIntView(key: $fakeKey, int: $newInt, isInDict: false)
+        case "String":
+            PlistStringView(key: $fakeKey, string: $newString, isInDict: false)
+        case "Array":
+            PlistArrayView(key: $fakeKey, array: $newArray, isInDict: false)
+        case "Dictionary":
+            PlistDictView(key: $fakeKey, dict: $newDict, isInDict: false)
+        default:
+            Text("")
+        }
+        
+        Button(action: {
+            if(isAddingToDict) {
+                setToDict()
+            } else {
+                setToArray()
+            }
+        }) {
+            Text(NSLocalizedString("CONFIRM", comment: ""))
+        }
+    }
+    
+    func setToArray() {
+        switch selectedDataType {
+        case "Boolean":
+            array[index] = newBool
+        case "Integer":
+            array[index] = newInt
+        case "String":
+            array[index] = newString
+        case "Array":
+            array[index] = newArray
+        case "Dictionary":
+            array[index] = newDict
+        default:
+            array[index] = "what did you DO to cause this to appear."
+        }
+    }
+    
+    func setToDict() {
+        switch selectedDataType {
+        case "Boolean":
+            dict.setObject(newBool, forKey: newKey as NSCopying)
+        case "Integer":
+            dict.setObject(newInt, forKey: newKey as NSCopying)
+        case "String":
+            dict.setObject(newString, forKey: newKey as NSCopying)
+        case "Array":
+            dict.setObject(newArray, forKey: newKey as NSCopying)
+        case "Dictionary":
+            dict.setObject(newDict, forKey: newKey as NSCopying)
+        default:
+            dict.setObject("DID THIS HAPPEN", forKey: "HOW" as NSCopying)
         }
     }
 }
@@ -319,58 +570,4 @@ struct PlistView: View {
         isPresented = false
     }
 }
-
-struct PlistAddView: View {
-
-    @Binding var input: Any
-    @State var isDict: Bool
-    @State var index: Int
-    
-    @State var inputArray: [Any] = []
-    @State private var inputDict: NSMutableDictionary = NSMutableDictionary()
-
-    @State var itemTypes: [String] = ["Integer", "String", "Array", "Dictionary", "Boolean"]
-    @State var selectedItemType: String = ""
-    @State var keyName: String = ""
-    
-    @State private var newBool = false
-    @State private var newInt = 0
-    @State private var newString: String = ""
-    @State private var newArray: [Any] = []
-    @State private var newDictionary: NSMutableDictionary = NSMutableDictionary()
-    
-    var body: some View {
-        Picker("E", selection: $selectedItemType) {
-            ForEach(itemTypes, id: \.self) { itemType in
-                Text(itemType)
-            }
-        }
-        .pickerStyle(DefaultPickerStyle())
-        .onAppear {
-            if input is NSMutableDictionary {
-                inputDict = input as! NSMutableDictionary
-                isDict = true
-            } else {
-                inputArray = input as! [Any]
-            }
-        }
-        if(isDict) {
-            TextField("set name", text: $keyName)
-        }
-        if(selectedItemType == "Integer") {
-            StepperTV(value: $newInt, isHorizontal: true) { }
-        } else if(selectedItemType == "String") {
-            TextField("set value", text: $newString)
-        }
-        
-        Button(action: {
-            if(isDict) {
-                inputArray.insert(_ at: index)
-            } else {
-                inputDict.setObject(_, forKey: keyName)
-            }
-        }) {
-            Text(NSLocalizedString("CONFIRM", comment: ""))
-        }
-    }
-}*/
+*/
