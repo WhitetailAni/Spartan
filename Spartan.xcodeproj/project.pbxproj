@@ -7,12 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F82095202A2622D100DC6D79 /* CarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F820951F2A2622D100DC6D79 /* CarView.swift */; };
+		F83F052E2A297E2000EB0720 /* Sheikah.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F83F052D2A297CDE00EB0720 /* Sheikah.ttf */; };
+		F83F05312A2993BA00EB0720 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = F83F05302A2993BA00EB0720 /* Introspect */; };
 		F845C82829F4D77C0025AC0A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F845C82A29F4D77C0025AC0A /* Localizable.strings */; };
 		F845C82F29F6247A0025AC0A /* EThree.swift in Sources */ = {isa = PBXBuildFile; fileRef = F845C82E29F6247A0025AC0A /* EThree.swift */; };
 		F853AB2F29DBCB1A006EA2D5 /* SpartanApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB2E29DBCB1A006EA2D5 /* SpartanApp.swift */; };
 		F853AB3129DBCB1A006EA2D5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB3029DBCB1A006EA2D5 /* ContentView.swift */; };
 		F853AB3329DBCB1E006EA2D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F853AB3229DBCB1E006EA2D5 /* Assets.xcassets */; };
-		F853AB3629DBCB1E006EA2D5 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F853AB3529DBCB1E006EA2D5 /* Preview Assets.xcassets */; };
 		F853AB4329DE1C41006EA2D5 /* CreateFileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB4229DE1C41006EA2D5 /* CreateFileView.swift */; };
 		F853AB4529DE1CB3006EA2D5 /* RenameFileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB4429DE1CB3006EA2D5 /* RenameFileView.swift */; };
 		F853AB4729DE1CEC006EA2D5 /* CreateDirectoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB4629DE1CEC006EA2D5 /* CreateDirectoryView.swift */; };
@@ -25,6 +27,7 @@
 		F853AB5929DE8C0E006EA2D5 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB5829DE8C0E006EA2D5 /* SearchView.swift */; };
 		F853AB5B29E09F8A006EA2D5 /* AddToFavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB5A29E09F8A006EA2D5 /* AddToFavoritesView.swift */; };
 		F853AB5D29E0AC3F006EA2D5 /* TintColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB5C29E0AC3F006EA2D5 /* TintColorView.swift */; };
+		F898F66B2A1AFEC300F1B4E4 /* WebServerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F898F66A2A1AFEC300F1B4E4 /* WebServerView.swift */; };
 		F8C1A5D429FB55F100DF4C23 /* MountPointsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C1A5D329FB55F100DF4C23 /* MountPointsView.swift */; };
 		F8CC211F29E2762F008C7B88 /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC211E29E2762F008C7B88 /* ImageView.swift */; };
 		F8CC212329E4FFC5008C7B88 /* PlistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC212229E4FFC5008C7B88 /* PlistView.swift */; };
@@ -40,27 +43,15 @@
 		F8EA28D429F8C2710063206D /* CreateSymlinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8EA28D329F8C2710063206D /* CreateSymlinkView.swift */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		F8CC213729E79136008C7B88 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
+		F820951F2A2622D100DC6D79 /* CarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarView.swift; sourceTree = "<group>"; };
+		F83F052D2A297CDE00EB0720 /* Sheikah.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Sheikah.ttf; sourceTree = "<group>"; };
 		F845C82929F4D77C0025AC0A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F845C82E29F6247A0025AC0A /* EThree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EThree.swift; sourceTree = "<group>"; };
 		F853AB2B29DBCB1A006EA2D5 /* Spartan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spartan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F853AB2E29DBCB1A006EA2D5 /* SpartanApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpartanApp.swift; sourceTree = "<group>"; };
 		F853AB3029DBCB1A006EA2D5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F853AB3229DBCB1E006EA2D5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		F853AB3529DBCB1E006EA2D5 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F853AB4229DE1C41006EA2D5 /* CreateFileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFileView.swift; sourceTree = "<group>"; };
 		F853AB4429DE1CB3006EA2D5 /* RenameFileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameFileView.swift; sourceTree = "<group>"; };
 		F853AB4629DE1CEC006EA2D5 /* CreateDirectoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateDirectoryView.swift; sourceTree = "<group>"; };
@@ -73,6 +64,7 @@
 		F853AB5829DE8C0E006EA2D5 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		F853AB5A29E09F8A006EA2D5 /* AddToFavoritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToFavoritesView.swift; sourceTree = "<group>"; };
 		F853AB5C29E0AC3F006EA2D5 /* TintColorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TintColorView.swift; sourceTree = "<group>"; };
+		F898F66A2A1AFEC300F1B4E4 /* WebServerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebServerView.swift; sourceTree = "<group>"; };
 		F8C1A5D329FB55F100DF4C23 /* MountPointsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MountPointsView.swift; sourceTree = "<group>"; };
 		F8CC211E29E2762F008C7B88 /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
 		F8CC212229E4FFC5008C7B88 /* PlistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistView.swift; sourceTree = "<group>"; };
@@ -82,7 +74,6 @@
 		F8CC214529EF5838008C7B88 /* SpawnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpawnView.swift; sourceTree = "<group>"; };
 		F8CC214729EFA164008C7B88 /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
 		F8D5795D2A0F2D2D00FDA526 /* DpkgView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DpkgView.swift; sourceTree = "<group>"; };
-		F8D579642A0F3A3A00FDA526 /* NSTask.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSTask.h; sourceTree = "<group>"; };
 		F8D579652A11D1D100FDA526 /* Spartan-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Spartan-Bridging-Header.h"; sourceTree = "<group>"; };
 		F8D579932A15D17F00FDA526 /* SwiftTryCatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SwiftTryCatch.m; path = Spartan/swifttrycatch/SwiftTryCatch.m; sourceTree = "<group>"; };
 		F8D579942A15D17F00FDA526 /* SwiftTryCatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SwiftTryCatch.h; path = Spartan/swifttrycatch/SwiftTryCatch.h; sourceTree = "<group>"; };
@@ -96,6 +87,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8CC214229EA68BC008C7B88 /* Zip in Frameworks */,
+				F83F05312A2993BA00EB0720 /* Introspect in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -105,7 +97,6 @@
 		F853AB2229DBCB1A006EA2D5 = {
 			isa = PBXGroup;
 			children = (
-				F8D579642A0F3A3A00FDA526 /* NSTask.h */,
 				F8D579942A15D17F00FDA526 /* SwiftTryCatch.h */,
 				F8D579932A15D17F00FDA526 /* SwiftTryCatch.m */,
 				F8D579652A11D1D100FDA526 /* Spartan-Bridging-Header.h */,
@@ -133,18 +124,10 @@
 				F8CC212629E5206B008C7B88 /* SpareViews.swift */,
 				F845C82E29F6247A0025AC0A /* EThree.swift */,
 				F853AB3229DBCB1E006EA2D5 /* Assets.xcassets */,
-				F853AB3429DBCB1E006EA2D5 /* Preview Content */,
 				F845C82A29F4D77C0025AC0A /* Localizable.strings */,
+				F83F052D2A297CDE00EB0720 /* Sheikah.ttf */,
 			);
 			path = Spartan;
-			sourceTree = "<group>";
-		};
-		F853AB3429DBCB1E006EA2D5 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				F853AB3529DBCB1E006EA2D5 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 		F8EA28D129F8ACAB0063206D /* FileOpeners */ = {
@@ -159,6 +142,7 @@
 				F8CC214529EF5838008C7B88 /* SpawnView.swift */,
 				F8E9A9782A00B4A400706179 /* HexView.swift */,
 				F8D5795D2A0F2D2D00FDA526 /* DpkgView.swift */,
+				F820951F2A2622D100DC6D79 /* CarView.swift */,
 			);
 			path = FileOpeners;
 			sourceTree = "<group>";
@@ -178,6 +162,7 @@
 				F853AB5229DE8AA1006EA2D5 /* SettingsView.swift */,
 				F853AB5629DE8B46006EA2D5 /* CreditsView.swift */,
 				F8C1A5D329FB55F100DF4C23 /* MountPointsView.swift */,
+				F898F66A2A1AFEC300F1B4E4 /* WebServerView.swift */,
 			);
 			path = ButtonActions;
 			sourceTree = "<group>";
@@ -192,7 +177,6 @@
 				F853AB2729DBCB1A006EA2D5 /* Sources */,
 				F853AB2829DBCB1A006EA2D5 /* Frameworks */,
 				F853AB2929DBCB1A006EA2D5 /* Resources */,
-				F8CC213729E79136008C7B88 /* Embed Frameworks */,
 				F87CCA852A171BC7000BC4A7 /* ShellScript */,
 			);
 			buildRules = (
@@ -202,6 +186,7 @@
 			name = Spartan;
 			packageProductDependencies = (
 				F8CC214129EA68BC008C7B88 /* Zip */,
+				F83F05302A2993BA00EB0720 /* Introspect */,
 			);
 			productName = Spartan;
 			productReference = F853AB2B29DBCB1A006EA2D5 /* Spartan.app */;
@@ -237,6 +222,7 @@
 			mainGroup = F853AB2229DBCB1A006EA2D5;
 			packageReferences = (
 				F8CC214029EA68BB008C7B88 /* XCRemoteSwiftPackageReference "Zip" */,
+				F83F052F2A2993BA00EB0720 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 			);
 			productRefGroup = F853AB2C29DBCB1A006EA2D5 /* Products */;
 			projectDirPath = "";
@@ -252,7 +238,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F853AB3629DBCB1E006EA2D5 /* Preview Assets.xcassets in Resources */,
+				F83F052E2A297E2000EB0720 /* Sheikah.ttf in Resources */,
 				F845C82829F4D77C0025AC0A /* Localizable.strings in Resources */,
 				F853AB3329DBCB1E006EA2D5 /* Assets.xcassets in Resources */,
 			);
@@ -277,7 +263,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /Library/Frameworks/Python.framework/Versions/2.7/bin/python2;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nimport os\nfilename = '/'.join(map(os.environ.get, ('TARGET_TEMP_DIR', 'FULL_PRODUCT_NAME'))) + '.xcent'\n\nent = '''\n    <key>persona-mgmt</key>\n    <true/>\n    <key>com.apple.private.security.no-container</key>\n    <true/>\n    <key>com.apple.security.app-sandbox</key>\n    <false/>\n    <key>platform-application</key>\n    <true/>\n '''\nwith open(filename, 'r') as fp:\n    buf = fp.read()\ncursor = buf.rfind('</dict>')\noutput = buf[0:cursor] + ent + buf[cursor:]\nwith open(filename, 'w') as fp:\n    fp.write(output)\n";
+			shellScript = "# This adds entitlements necessary for spawning binaries. If you don't have patched installd (whether by jailbreak or WDBRemoveThreeAppLimit) this will cause the install to fail, so comment it out.\n\nimport os\nfilename = '/'.join(map(os.environ.get, ('TARGET_TEMP_DIR', 'FULL_PRODUCT_NAME'))) + '.xcent'\n\nent = '''\n    <key>persona-mgmt</key>\n    <true/>\n    <key>com.apple.private.security.no-container</key>\n    <true/>\n    <key>com.apple.security.app-sandbox</key>\n    <false/>\n    <key>platform-application</key>\n    <true/>\n    <key>com.apple.security.network.client</key>\n    <true/>\n    <key>com.apple.security.network.server</key>\n    <true/>\n    <key>com.apple.security.files.user-selected.read-write</key>\n    <true/>\n    <key>com.apple.security.network.server-logging</key>\n    <true/>\n '''\nwith open(filename, 'r') as fp:\n    buf = fp.read()\ncursor = buf.rfind('</dict>')\noutput = buf[0:cursor] + ent + buf[cursor:]\nwith open(filename, 'w') as fp:\n    fp.write(output)\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -304,10 +290,12 @@
 				F8CC212729E5206B008C7B88 /* SpareViews.swift in Sources */,
 				F853AB5B29E09F8A006EA2D5 /* AddToFavoritesView.swift in Sources */,
 				F8EA28D429F8C2710063206D /* CreateSymlinkView.swift in Sources */,
+				F898F66B2A1AFEC300F1B4E4 /* WebServerView.swift in Sources */,
 				F853AB4F29DE57D8006EA2D5 /* AudioPlayerView.swift in Sources */,
 				F8CC214629EF5838008C7B88 /* SpawnView.swift in Sources */,
 				F8CC212F29E74DF4008C7B88 /* VideoPlayerView.swift in Sources */,
 				F853AB5929DE8C0E006EA2D5 /* SearchView.swift in Sources */,
+				F82095202A2622D100DC6D79 /* CarView.swift in Sources */,
 				F845C82F29F6247A0025AC0A /* EThree.swift in Sources */,
 				F853AB4529DE1CB3006EA2D5 /* RenameFileView.swift in Sources */,
 				F853AB5729DE8B46006EA2D5 /* CreditsView.swift in Sources */,
@@ -466,7 +454,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 891;
-				DEVELOPMENT_ASSET_PATHS = "\"Spartan/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = DK2B92MAN7;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -478,6 +466,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Spartan;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiredDeviceCapabilities = arm64;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -509,7 +498,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 891;
-				DEVELOPMENT_ASSET_PATHS = "\"Spartan/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = DK2B92MAN7;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -521,6 +510,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Spartan;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiredDeviceCapabilities = arm64;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -566,6 +556,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		F83F052F2A2993BA00EB0720 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/siteline/SwiftUI-Introspect.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.4.0;
+			};
+		};
 		F8CC214029EA68BB008C7B88 /* XCRemoteSwiftPackageReference "Zip" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/marmelroy/Zip";
@@ -577,6 +575,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		F83F05302A2993BA00EB0720 /* Introspect */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F83F052F2A2993BA00EB0720 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
+			productName = Introspect;
+		};
 		F8CC214129EA68BC008C7B88 /* Zip */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F8CC214029EA68BB008C7B88 /* XCRemoteSwiftPackageReference "Zip" */;

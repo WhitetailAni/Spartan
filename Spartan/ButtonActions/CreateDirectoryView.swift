@@ -18,9 +18,14 @@ struct CreateDirectoryView: View {
     var body: some View {
         VStack {
             Text(NSLocalizedString("DIRTOUCH_TITLE", comment: "I guess he could have just gotten out of the way."))
-                .bold()
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
             TextField(NSLocalizedString("DIRTOUCH_NAME", comment: "I love this incorporating an amusement park into our day."), text: $directoryName)
-            Button(NSLocalizedString("CONFIRM", comment: "That's why we don't need vacations.")) {
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
+            Button(action: {
                 do {
                     try FileManager.default.createDirectory(atPath: directoryPath + directoryName, withIntermediateDirectories: true, attributes: nil)
                     print("Directory created successfully")
@@ -33,6 +38,11 @@ struct CreateDirectoryView: View {
                 if(!(errorMessage == "")){
                     wasError = true
                 }
+            }) {
+                Text(NSLocalizedString("CONFIRM", comment: "That's why we don't need vacations."))
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
             }
         }
         .alert(isPresented: $wasError) {

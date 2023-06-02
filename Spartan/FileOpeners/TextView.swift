@@ -29,11 +29,17 @@ struct TextView: View {
                         fileContents.insert("", at: Int(index))
                     }) {
                         Text("\(NSLocalizedString("LINEADD", comment: "- Hear about Frankie?")) \(index)")
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     Button(action: {
                         fileContents.remove(at: Int(index))
                     }) {
                         Text("\(NSLocalizedString("LINEREMOVE", comment: "- Yeah.")) \(index)")
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     StepperTV(value: Binding (
                             get: { Int(index) },
@@ -76,6 +82,9 @@ struct TextView: View {
                                 .foregroundColor(.blue)
                         } else {
                             Text(String(indexB))
+                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                }
                         }
                         Button(action: {
                             withAnimation {
@@ -88,9 +97,15 @@ struct TextView: View {
                                 Text(fileContents[indexB])
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .foregroundColor(.blue)
+                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                    }
                             } else {
                                 Text(fileContents[indexB])
                                     .frame(maxWidth: .infinity, alignment: .leading)
+                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                    }
                             }
                         }
                     }
@@ -108,6 +123,9 @@ struct TextView: View {
                         }
                     }) {
                         Text(NSLocalizedString("CONFIRM", comment: "- No, I'm not going."))
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                 }
                 .transition(.opacity)

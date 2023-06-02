@@ -101,6 +101,9 @@ struct SearchResultsView: View {
 
     var body: some View {
         Text(NSLocalizedString("SEARCH_RESULTS", comment: "Why would you question anything?"))
+            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+            }
         List(resultsList, id: \.self) { string in
             Button(action: {
                 if(!string.hasSuffix("/")){
@@ -113,6 +116,9 @@ struct SearchResultsView: View {
                 showingOriginal = false
             }) {
                 Text(string)
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
             }
         }
     }

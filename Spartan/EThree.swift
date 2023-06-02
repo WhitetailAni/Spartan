@@ -79,15 +79,16 @@ struct EThreePro: View {
     @State private var deviceInfoShow = false
     
     var yandereDevFileTypeDebugTransfer: ((String) -> Double)? = nil
-    //var realFreeSpace: ((Double) -> (Double, String))? = nil
+    let paddingInt: CGFloat = -7
+    let opacityInt: CGFloat = 1.0
     
     var body: some View {
-        let paddingInt: CGFloat = -7
-        let opacityInt: CGFloat = 1.0
     
         Text("Welcome to Milliways")
+            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                view.scaledFont(name: "BotW Sheikah Regular", size: 69)
+            }
             .font(.system(size: 69))
-            .bold()
             .padding(paddingInt)
             .opacity(opacityInt)
             .onAppear {
@@ -126,6 +127,9 @@ struct EThreePro: View {
         }) {
             Text("Print 'directory'")
                 .frame(width: buttonWidth, height: buttonHeight)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
         }
         .padding(paddingInt)
         .opacity(opacityInt)
@@ -158,6 +162,9 @@ struct EThreePro: View {
         }) {
             Text("Print 'files'")
                 .frame(width: buttonWidth, height: buttonHeight)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
         }
         .padding(paddingInt)
         .opacity(opacityInt)
@@ -168,6 +175,9 @@ struct EThreePro: View {
         }) {
             Text("Print 'multiSelectFiles'")
                 .frame(width: buttonWidth, height: buttonHeight)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
         }
         .padding(paddingInt)
         .opacity(opacityInt)
@@ -178,6 +188,9 @@ struct EThreePro: View {
         }) {
             Text("Print 'fileWasSelected'")
                 .frame(width: buttonWidth, height: buttonHeight)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
         }
         .padding(paddingInt)
         .opacity(opacityInt)
@@ -188,6 +201,9 @@ struct EThreePro: View {
         }) {
             Text("Print 'showSubView'")
                 .frame(width: buttonWidth, height: buttonHeight)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
         }
         .padding(paddingInt)
         .opacity(opacityInt)
@@ -197,6 +213,9 @@ struct EThreePro: View {
         }) {
             Text("Show Device Info")
                 .frame(width: buttonWidth, height: buttonHeight)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
         }
         .padding(paddingInt)
         .opacity(opacityInt)
@@ -210,15 +229,26 @@ struct EThreePro: View {
         }) {
             Text("42")
                 .frame(width: buttonWidth, height: buttonHeight)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
         }
         .padding(10)
         .opacity(opacityInt)
         
+        firstLaunch
+    }
+    
+    @ViewBuilder
+    var firstLaunch: some View {
         Button(action: {
             print(UserDefaults.settings.bool(forKey: "haveLaunchedBefore"))
         }) {
             Text("Print the launch state")
                 .frame(width: buttonWidth, height: buttonHeight)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
         }
         .padding(paddingInt)
         .opacity(opacityInt)
@@ -228,6 +258,21 @@ struct EThreePro: View {
         }) {
             Text("Enable first launch")
                 .frame(width: buttonWidth, height: buttonHeight)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
+        }
+        .padding(paddingInt)
+        .opacity(opacityInt)
+        
+        Button(action: {
+            UserDefaults.settings.set(true, forKey: "haveLaunchedBefore")
+        }) {
+            Text("Disable first launch")
+                .frame(width: buttonWidth, height: buttonHeight)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
         }
         .padding(paddingInt)
         .opacity(opacityInt)
@@ -242,32 +287,46 @@ struct EEEE: View {
     
     var body: some View {
         Text("Don't worry, sir. I'll be very humane.")
+            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                view.scaledFont(name: "BotW Sheikah Regular", size: 60)
+            }
             .font(.system(size: 60))
-            .bold()
         ForEach(deviceInfo.indices, id: \.self) { index in
             if(index == 0) {
                 Button(action: {
                     print(deviceInfo[index])
                 }) {
                     Text("Device Name: \(deviceInfo[index])")
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                        }
                 }
             } else if(index == 1) {
                 Button(action: {
                     print(deviceInfo[index])
                 }) {
                     Text("Device Type: \(deviceInfo[index])")
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                        }
                 }
             } else if(index == 3) {
                 Button(action: {
                     print("\(deviceInfo[index]) \(deviceInfo[4])")
                 }) {
                     Text("Software Version: \(deviceInfo[index]) \(deviceInfo[4])")
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                        }
                 }
             } else if(index == 5) {
                 Button(action: {
                     print(deviceInfo[index])
                 }) {
                     Text("Device ID: \(deviceInfo[index])")
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                        }
                 }
             }
         }

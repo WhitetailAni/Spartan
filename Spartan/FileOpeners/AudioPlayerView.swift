@@ -38,20 +38,26 @@ struct AudioPlayerView: View {
                 VStack {
                     if(duration == 0 || audioPath == ""){
                         Text(NSLocalizedString("AUDIO_ERROR", comment: "to get to the point where you can work for your whole life."))
-                                .font(.system(size: 40))
-                                .bold()
-                                .multilineTextAlignment(.center)
-                                .padding()
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
+                            .font(.system(size: 40))
+                            .multilineTextAlignment(.center)
+                            .padding()
                     } else if(audioData[0] == ""){
                         Text(descriptiveTimestamps ? cementedAudioPath + cementedAudioName : cementedAudioName)
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                             .font(.system(size: 40))
-                            .bold()
                             .multilineTextAlignment(.center)
                             .padding()
                     } else {
                         Text(audioData[0])
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                             .font(.system(size: 40))
-                            .bold()
                             .multilineTextAlignment(.center)
                             .padding()
                     }
@@ -64,10 +70,16 @@ struct AudioPlayerView: View {
                 VStack {
                     if(descriptiveTimestamps) {
                         Text("\(currentTime) / \(duration)")
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 30)
+                            }
                             .font(.system(size: 30))
                             .multilineTextAlignment(.leading)
                     } else {
                         Text("\(currentTime.format()) / \(duration.format())")
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 30)
+                            }
                             .font(.system(size: 30))
                             .multilineTextAlignment(.leading)
                     }
@@ -75,6 +87,9 @@ struct AudioPlayerView: View {
                     ForEach(1..<audioData.count, id: \.self) { index in
                         if(!(audioData[index] == "")) {
                             Text("\(metadataTitles[index] + audioData[index])")
+                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                    view.scaledFont(name: "BotW Sheikah Regular", size: 30)
+                                }
                         }
                     }
                     .font(.system(size: 30))

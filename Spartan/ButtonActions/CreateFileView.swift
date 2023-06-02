@@ -15,13 +15,23 @@ struct CreateFileView: View {
     var body: some View {
         VStack {
             Text(NSLocalizedString("TOUCH_TITLE", comment: "Everybody knows, sting someone, you die."))
-                .bold()
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
             TextField(NSLocalizedString("TOUCH_NAME", comment: "Don't waste it on a squirrel."), text: $fileName)
-            Button(NSLocalizedString("CONFIRM", comment: "Such a hothead.")) {
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
+            Button(action: {
                 FileManager.default.createFile(atPath: filePath + fileName, contents: nil, attributes: nil)
                 print("File created successfully")
                 fileName = ""
                 isPresented = false
+            }) {
+                Text(NSLocalizedString("CONFIRM", comment: "Such a hothead."))
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
             }
         }
         .accentColor(.accentColor)

@@ -22,7 +22,7 @@ What it currently lets you do:
 - Copy a file to a new filepath (and optionally, rename it)
 - View images (and view info)
 - View plist files (both xml and bplist)
-- //BROKEN Execute binaries
+- Spawn binaries
 - Compress and uncompress .zip archives
 - Search a directory and its subdirectories for a file or directory
 - View all mounted devices
@@ -30,10 +30,10 @@ What it currently lets you do:
 There's probably more, I lost track.
 
 TODO:
-- Plist editor //in progress
-- Spawn binaries
+- Plist editor //was razed
 - Root helper
 - Read app list to show what app container is which if in (/private)/var/containers/Bundle/Application or (/private)/var/mobile/Containers/Data/Application
+- webserver like filza webdav
 
 I keep doing things OTHER than the todo list. Fun!
 

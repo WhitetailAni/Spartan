@@ -8,6 +8,8 @@
 import SwiftUI
 import Foundation
 import AVKit
+import MobileCoreServices
+import Introspect
 
 struct ContentView: View {
     @State var directory: String
@@ -18,6 +20,8 @@ struct ContentView: View {
     @State var isFocused: Bool = false
     @State var E = false
     @State var E2 = false
+    
+    @State var masterFiles: [SpartanFile] = []
     
     @State var buttonWidth: CGFloat
     @State var buttonHeight: CGFloat
@@ -36,7 +40,9 @@ struct ContentView: View {
     @State var renameFileCurrentName: String = ""
     @State var renameFileNewName: String = ""
     
-    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 25)
+    @State var filePerms = 420
+    
+    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 28)
     //createFileSelectShow = 0
     //contextMenuShow = 1
     //openInMenu = 2
@@ -62,6 +68,8 @@ struct ContentView: View {
     //hexShow = 22
     //dpkgViewShow = 23
     //dpkgDebViewShow = 24
+    //webServerShow = 25
+    //fileNotFoundView = 26
     
     @State var globalAVPlayer = AVPlayer()
     @State var isGlobalAVPlayerPlaying = false
@@ -73,8 +81,12 @@ struct ContentView: View {
     
     @State var blankString: [String] = [""]
     
+    @State private var nonexistentFile = ""
+    
     let paddingInt: CGFloat = -7
     let opacityInt: CGFloat = 1.0
+    
+    @Environment(\.sizeCategory) var sizeCategory
     
     var body: some View {
         NavigationView {
@@ -84,6 +96,10 @@ struct ContentView: View {
                         directPathTypeCheckNewViewFileVariableSetter()
                         defaultAction(index: 0, isDirectPath: true)
                     })
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
+                    
                     Button(action: {
                         updateFiles()
                     }) {
@@ -144,7 +160,10 @@ struct ContentView: View {
                                             let fileType = yandereDevFileType(file: (directory + files[index]))
                                             
                                             switch fileType {
-                                                case 0:
+                                            case 0:
+                                                if (directory.contains( "/private/var/containers/Bundle/Application/") || directory.contains( "/private/var/mobile/Containers/Data/Application/")) {
+                                                    
+                                                } else {
                                                     if (isDirectoryEmpty(atPath: directory + files[index]) == 1){
                                                         Image(systemName: "folder")
                                                     } else if (isDirectoryEmpty(atPath: directory + files[index]) == 0){
@@ -152,40 +171,77 @@ struct ContentView: View {
                                                     } else {
                                                         Image(systemName: "folder.badge.questionmark")
                                                     }
-                                                    Text(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
-                                                case 1:
-                                                    Image(systemName: "waveform")
-                                                    Text(files[index])
-                                                case 2:
-                                                    Image(systemName: "video")
-                                                    Text(files[index])
-                                                case 3:
-                                                    Image(systemName: "photo")
-                                                    Text(files[index])
-                                                case 4:
-                                                    Image(systemName: "doc.text")
-                                                    Text(files[index])
-                                                case 5.1:
-                                                    Image(systemName: "list.bullet")
-                                                    Text(files[index])
-                                                case 5.2:
-                                                    Image(systemName: "list.number")
-                                                    Text(files[index])
-                                                case 6:
-                                                    Image(systemName: "doc.zipper")
-                                                    Text(files[index])
-                                                case 7:
-                                                    Image(systemName: "terminal")
-                                                    Text(files[index])
-                                                case 8:
-                                                    Image(systemName: "link")
-                                                    Text(files[index])
-                                                case 9:
-                                                    Image(systemName: "archivebox")
-                                                    Text(files[index])
-                                                default:
-                                                    Image(systemName: "doc")
-                                                    Text(files[index])
+                                                    Text(removeLastChar(string: files[index]))
+                                                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
+                                                }
+                                            case 1:
+                                                Image(systemName: "waveform")
+                                                Text(files[index])
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
+                                            case 2:
+                                                Image(systemName: "video")
+                                                Text(files[index])
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
+                                            case 3:
+                                                Image(systemName: "photo")
+                                                Text(files[index])
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
+                                            case 4:
+                                                Image(systemName: "doc.text")
+                                                Text(files[index])
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
+                                            case 5.1:
+                                                Image(systemName: "list.bullet")
+                                                Text(files[index])
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
+                                            case 5.2:
+                                                Image(systemName: "list.number")
+                                                Text(files[index])
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
+                                            case 6:
+                                                Image(systemName: "doc.zipper")
+                                                Text(files[index])
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
+                                            case 7:
+                                                Image(systemName: "terminal")
+                                                Text(files[index])
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
+                                            case 8:
+                                                Image(systemName: "link")
+                                                Text(removeLastChar(string: files[index]))
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
+                                            case 9:
+                                                Image(systemName: "archivebox")
+                                                Text(files[index])
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
+                                            default:
+                                                Image(systemName: "doc")
+                                                Text(files[index])
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
                                             }
                                         }
                                     }
@@ -193,9 +249,13 @@ struct ContentView: View {
                                 .contextMenu {
                                     Button(action: {
                                         showSubView[3] = true
+                                        newViewFileIndex = index
                                         newViewFileName = files[index]
                                     }) {
                                         Text(NSLocalizedString("INFO", comment: "there is no way a bee should be able to fly."))
+                                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                            }
                                     }
                                     
                                     Button(action: {
@@ -205,6 +265,9 @@ struct ContentView: View {
                                         showSubView[7] = true
                                     }) {
                                         Text(NSLocalizedString("RENAME", comment: "Its wings are too small to get its fat little body off the ground."))
+                                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                            }
                                     }
                                     
                                     Button(action: {
@@ -214,6 +277,9 @@ struct ContentView: View {
                                         newViewFileIndex = index
                                     }) {
                                         Text(NSLocalizedString("OPENIN", comment: "The bee, of course, flies anyway"))
+                                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                            }
                                     }
                                     
                                     if(directory == "/var/mobile/Media/.Trash/"){
@@ -222,6 +288,9 @@ struct ContentView: View {
                                             updateFiles()
                                         }) {
                                             Text(NSLocalizedString("DELETE", comment: "because bees don't care what humans think is impossible."))
+                                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                }
                                         }
                                         .foregroundColor(.red)
                                     } else if(directory == "/var/mobile/Media/" && files[index] == ".Trash/"){
@@ -239,6 +308,9 @@ struct ContentView: View {
                                             updateFiles()
                                         }) {
                                             Text(NSLocalizedString("TRASHYEET", comment: "Yellow, black. Yellow, black."))
+                                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                }
                                         }
                                     } else {
                                         Button(action: {
@@ -246,6 +318,9 @@ struct ContentView: View {
                                             updateFiles()
                                         }) {
                                             Text(NSLocalizedString("GOTOTRASH", comment: "Yellow, black. Yellow, black."))
+                                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                }
                                         }
                                     }
                                     if(deleteOverride){
@@ -254,6 +329,9 @@ struct ContentView: View {
                                             updateFiles()
                                         }) {
                                             Text(NSLocalizedString("DELETE", comment: "Ooh, black and yellow!"))
+                                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                }
                                         }
                                         .foregroundColor(.red)
                                     }
@@ -262,13 +340,16 @@ struct ContentView: View {
                                         showSubView[17] = true
                                         newViewFilePath = directory + files[index]
                                         if files[index].hasSuffix("/") {
-                                            newViewFileName = String(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
+                                            newViewFileName = String(removeLastChar(string: files[index]))
                                         } else {
                                             newViewFileName = files[index]
                                         }
                                         UserDefaults.favorites.synchronize()
                                     }) {
                                         Text(NSLocalizedString("FAVORITESADD", comment: "Let's shake it up a little."))
+                                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                            }
                                     }
                                     
                                     Button(action: {
@@ -277,6 +358,9 @@ struct ContentView: View {
                                         showSubView[8] = true
                                     }) {
                                         Text(NSLocalizedString("MOVETO", comment: "Barry! Breakfast is ready!"))
+                                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                            }
                                     }
                                     
                                     Button(action: {
@@ -285,6 +369,9 @@ struct ContentView: View {
                                         showSubView[9] = true
                                     }) {
                                         Text(NSLocalizedString("COPYTO", comment: "Coming!"))
+                                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                            }
                                     }
                                     
                                     Button(NSLocalizedString("DISMISS", comment: "Hang on a second.")) { }
@@ -313,45 +400,76 @@ struct ContentView: View {
                                                 } else {
                                                     Image(systemName: "folder.badge.minus")
                                                 }
-                                                Text(substring(str: files[index], startIndex: files[index].index(files[index].startIndex, offsetBy: 0), endIndex: files[index].index(files[index].endIndex, offsetBy: -1)))
+                                                Text(removeLastChar(string: files[index]))
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
                                             case 1:
                                                 Image(systemName: "waveform.circle")
                                                 Text(files[index])
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
                                             case 2:
                                                 Image(systemName: "video")
                                                 Text(files[index])
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
                                             case 3:
                                                 Image(systemName: "photo")
                                                 Text(files[index])
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
                                             case 4:
                                                 Image(systemName: "doc.text")
                                                 Text(files[index])
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
                                             case 5.1:
                                                 Image(systemName: "list.bullet")
                                                 Text(files[index])
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
                                             case 5.2:
                                                 Image(systemName: "list.number")
                                                 Text(files[index])
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
                                             case 6:
                                                 Image(systemName: "rectangle.compress.vertical")
                                                 Text(files[index])
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
                                             case 7:
                                                 Image(systemName: "terminal")
                                                 Text(files[index])
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
                                             case 8:
-                                                /*Image(systemName: "folder")
-                                                Image(systemName: "arrowshape.turn.up.left")
-                                                    .resizable()
-                                                    .frame(width: 30, height: 30)
-                                                    .offset(x: -10, y: -10)*/
                                                 Image(systemName: "link")
-                                                Text(files[index])
+                                                Text(removeLastChar(string: files[index]))
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
                                             case 9:
                                                 Image(systemName: "archivebox")
                                                 Text(files[index])
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
                                             default:
                                                 Image(systemName: "doc")
                                                 Text(files[index])
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
                                             }
                                         }
                                     }
@@ -368,13 +486,15 @@ struct ContentView: View {
                     }
                 }
                 .sheet(isPresented: $showSubView[1]) {
-                    
                     Button(action: {
                         defaultAction(index: newViewFileIndex, isDirectPath: false)
                         showSubView[1] = false
                     }) {
                         Text(NSLocalizedString("OPEN", comment: "You ever think maybe things work a little too well here?"))
                             .frame(width: buttonWidth, height: buttonHeight)
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     .padding(paddingInt)
                     .opacity(opacityInt)
@@ -389,6 +509,9 @@ struct ContentView: View {
                     }) {
                         Text(NSLocalizedString("INFO", comment: "there is no way a bee should be able to fly."))
                             .frame(width: buttonWidth, height: buttonHeight)
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     .padding(paddingInt)
                     .opacity(opacityInt)
@@ -404,6 +527,9 @@ struct ContentView: View {
                     }) {
                         Text(NSLocalizedString("RENAME", comment: "Its wings are too small to get its fat little body off the ground."))
                             .frame(width: buttonWidth, height: buttonHeight)
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     .padding(paddingInt)
                     .opacity(opacityInt)
@@ -418,6 +544,9 @@ struct ContentView: View {
                     }) {
                         Text(NSLocalizedString("OPENIN", comment: "The bee, of course, flies anyway"))
                             .frame(width: buttonWidth, height: buttonHeight)
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     .padding(paddingInt)
                     .opacity(opacityInt)
@@ -431,6 +560,9 @@ struct ContentView: View {
                             Text(NSLocalizedString("DELETE", comment: "because bees don't care what humans think is impossible."))
                                 .foregroundColor(.red)
                                 .frame(width: buttonWidth, height: buttonHeight)
+                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                }
                         }
                         .padding(paddingInt)
                         .opacity(opacityInt)
@@ -450,6 +582,9 @@ struct ContentView: View {
                         }) {
                             Text(NSLocalizedString("TRASHYEET", comment: "Yellow, black. Yellow, black."))
                                 .frame(width: buttonWidth, height: buttonHeight)
+                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                }
                         }
                         .padding(paddingInt)
                         .opacity(opacityInt)
@@ -461,6 +596,9 @@ struct ContentView: View {
                         }) {
                             Text(NSLocalizedString("GOTOTRASH", comment: "Yellow, black. Yellow, black."))
                                 .frame(width: buttonWidth, height: buttonHeight)
+                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                }
                         }
                         .padding(paddingInt)
                         .opacity(opacityInt)
@@ -474,6 +612,9 @@ struct ContentView: View {
                             Text(NSLocalizedString("DELETE", comment: "Ooh, black and yellow!"))
                                 .foregroundColor(.red)
                                 .frame(width: buttonWidth, height: buttonHeight)
+                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                }
                         }
                         .padding(paddingInt)
                         .opacity(opacityInt)
@@ -482,7 +623,7 @@ struct ContentView: View {
                     Button(action: {
                         newViewFilePath = directory + files[newViewFileIndex]
                         if files[newViewFileIndex].hasSuffix("/") {
-                            newViewFileName = String(substring(str: files[newViewFileIndex], startIndex: files[newViewFileIndex].index(files[newViewFileIndex].startIndex, offsetBy: 0), endIndex: files[newViewFileIndex].index(files[newViewFileIndex].endIndex, offsetBy: -1)))
+                            newViewFileName = String(removeLastChar(string: files[newViewFileIndex]))
                         } else {
                             newViewFileName = files[newViewFileIndex]
                         }
@@ -494,6 +635,9 @@ struct ContentView: View {
                     }) {
                         Text(NSLocalizedString("FAVORITESADD", comment: "Let's shake it up a little."))
                             .frame(width: buttonWidth, height: buttonHeight)
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     .padding(paddingInt)
                     .opacity(opacityInt)
@@ -508,6 +652,9 @@ struct ContentView: View {
                     }) {
                         Text(NSLocalizedString("MOVETO", comment: "Barry! Breakfast is ready!"))
                             .frame(width: buttonWidth, height: buttonHeight)
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     .padding(paddingInt)
                     .opacity(opacityInt)
@@ -523,6 +670,9 @@ struct ContentView: View {
                     }) {
                         Text(NSLocalizedString("COPYTO", comment: "Coming!"))
                             .frame(width: buttonWidth, height: buttonHeight)
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     .padding(paddingInt)
                     .opacity(opacityInt)
@@ -533,6 +683,9 @@ struct ContentView: View {
                     }) {
                         Text(NSLocalizedString("DISMISS", comment: "Hang on a second."))
                             .frame(width: buttonWidth, height: buttonHeight)
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     .padding(paddingInt)
                     .opacity(opacityInt)
@@ -549,6 +702,9 @@ struct ContentView: View {
                     }) {
                         Text(NSLocalizedString("OPEN_DIRECTORY", comment: "Hello?"))
                             .frame(width: buttonWidth, height: buttonHeight)
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     .padding(paddingInt)
                     .opacity(opacityInt)
@@ -564,6 +720,9 @@ struct ContentView: View {
                     }) {
                         Text(NSLocalizedString("OPEN_TEXT", comment: "- I can't. I'll pick you up."))
                             .frame(width: buttonWidth, height: buttonHeight)
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     .padding(paddingInt)
                     .opacity(opacityInt)
@@ -578,6 +737,9 @@ struct ContentView: View {
                     }) {
                         Text(NSLocalizedString("OPEN_HEX", comment: ""))
                             .frame(width: buttonWidth, height: buttonHeight)
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     .padding(paddingInt)
                     .opacity(opacityInt)
@@ -593,6 +755,9 @@ struct ContentView: View {
                     }) {
                         Text(NSLocalizedString("OPEN_PLIST", comment: "Looking sharp."))
                             .frame(width: buttonWidth, height: buttonHeight)
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     .padding(paddingInt)
                     .opacity(opacityInt)
@@ -603,6 +768,9 @@ struct ContentView: View {
                         showSubView[23] = true
                     }) {
                         Text(NSLocalizedString("OPEN_DPKG", comment: ""))
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     
                     Button(action: {
@@ -611,6 +779,9 @@ struct ContentView: View {
                         showSubView[24] = true
                     }) {
                         Text(NSLocalizedString("OPEN_DPKGDEB", comment: ""))
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     
                     
@@ -623,6 +794,9 @@ struct ContentView: View {
                     }) {
                         Text(NSLocalizedString("OPEN_SPAWN", comment: "Use the stairs. Your father paid good money for those."))
                             .frame(width: buttonWidth, height: buttonHeight)
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     .padding(paddingInt)
                     .opacity(opacityInt)
@@ -633,6 +807,9 @@ struct ContentView: View {
                     }) {
                         Text(NSLocalizedString("DISMISS", comment: "Sorry. I'm excited."))
                             .frame(width: buttonWidth, height: buttonHeight)
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     .padding(paddingInt)
                     .opacity(opacityInt)
@@ -661,20 +838,53 @@ struct ContentView: View {
                 .sheet(isPresented: $showSubView[3]) { //file info
                     VStack {
                         Text(NSLocalizedString("SHOW_INFO", comment: "A perfect report card, all B's."))
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 60)
+                            }
                             .font(.system(size: 60))
                         ForEach(fileInfo, id: \.self) { infoPiece in
                             Text(infoPiece)
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                         }
+                        Button(action: {
+                            showSubView[3] = false
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                showSubView[27] = true
+                            }
+                        }) {
+                            Text(NSLocalizedString("PERMSEDIT", comment: "I dont know why I added the sheikah function it took two hours"))
+                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                }
+                        }
+                        
                         Button(action: {
                             showSubView[3] = false
                         }) {
                             Text(NSLocalizedString("DISMISS", comment: "Very proud."))
+                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                }
                         }
                         .onAppear {
                             fileInfo = getFileInfo(forFileAtPath: directory + newViewFileName)
                         }
                     }
                 }
+                .sheet(isPresented: $showSubView[27], onDismiss: {
+                    showSubView[3] = true
+                }, content: {
+                    TextField(NSLocalizedString("PERMSEDIT", comment: "This should have been added a long time ago"), value: $filePerms, formatter: NumberFormatter(), onCommit: {
+                        changeFilePerms(filePath: directory + files[newViewFileIndex], permValue: filePerms)
+                    })
+                    .keyboardType(.numberPad)
+                    .textContentType(.oneTimeCode)
+                    .onAppear {
+                        filePerms = try! FileManager.default.attributesOfItem(atPath: directory + files[newViewFileIndex])[.posixPermissions] as? Int ?? 000
+                    }
+                })
                 .sheet(isPresented: $showSubView[0], content: {
                     let buttonWidth: CGFloat = 500
                     let buttonHeight: CGFloat = 30
@@ -687,6 +897,9 @@ struct ContentView: View {
                     }) {
                         Text(NSLocalizedString("CREATE_FILE", comment: "Please clear the gate."))
                             .frame(width: buttonWidth, height: buttonHeight)
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     .padding(paddingInt)
                     .opacity(opacityInt)
@@ -699,6 +912,9 @@ struct ContentView: View {
                     }) {
                         Text(NSLocalizedString("CREATE_DIR", comment: "Royal Nectar Force on approach."))
                             .frame(width: buttonWidth, height: buttonHeight)
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     .padding(paddingInt)
                     .opacity(opacityInt)
@@ -711,6 +927,9 @@ struct ContentView: View {
                     }) {
                         Text(NSLocalizedString("CREATE_SYM", comment: "Wait a second. Check it out."))
                             .frame(width: buttonWidth, height: buttonHeight)
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     .padding(paddingInt)
                     .opacity(opacityInt)
@@ -792,6 +1011,16 @@ struct ContentView: View {
                 .sheet(isPresented: $showSubView[24], content: {
                     DpkgBuilderView(debInputDir: $newViewFilePath, debInputName: $newViewFileName, isPresented: $showSubView[24], isRootless: $isRootless)
                 })
+                .sheet(isPresented: $showSubView[25], content: {
+                    WebServerView()
+                })
+                .alert(isPresented: $showSubView[26]) {
+                    Alert(
+                        title: Text(NSLocalizedString("SHOW_NOTFOUND", comment: "")),
+                        message: Text(NSLocalizedString("SHOW_OLDDEST", comment: "") + nonexistentFile),
+                        dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "")))
+                    )
+                }
                 .accentColor(.accentColor)
             }
         }
@@ -801,7 +1030,6 @@ struct ContentView: View {
             } else {
                 goBack()
             }
-            print(showSubView)
         }
     }
     
@@ -869,6 +1097,12 @@ struct ContentView: View {
                         Image(systemName: "tray.2")
                             .frame(width:50, height:50)
                     }
+                }
+                
+                Button(action: {
+                    showSubView[25] = true
+                }) {
+                    Image(systemName: "server.rack")
                 }
                 
                 Button(action: { //favorites
@@ -978,6 +1212,9 @@ struct ContentView: View {
         return //VStack {
             //Text("/")
             Text(NSLocalizedString("FREE_SPACE", comment: "E") + String(format: "%.2f", doubleValue) + " " + stringValue)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
         //}
         .alignmentGuide(.trailing) {
             $0[HorizontalAlignment.trailing]
@@ -1015,6 +1252,9 @@ struct ContentView: View {
         }) {
             Text(NSLocalizedString("OPEN_AUDIO", comment: "- Barry?"))
                 .frame(width: buttonWidth, height: buttonHeight)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
         }
         .padding(paddingInt)
         .opacity(opacityInt)
@@ -1030,6 +1270,9 @@ struct ContentView: View {
         }) {
             Text(NSLocalizedString("OPEN_VIDEO", comment: "- Adam?"))
                 .frame(width: buttonWidth, height: buttonHeight)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
         }
         .padding(paddingInt)
         .opacity(opacityInt)
@@ -1044,6 +1287,9 @@ struct ContentView: View {
         }) {
             Text(NSLocalizedString("OPEN_IMAGE", comment: "- Can you believe this is happening?"))
                 .frame(width: buttonWidth, height: buttonHeight)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
         }
         .padding(paddingInt)
         .opacity(opacityInt)
@@ -1060,15 +1306,13 @@ struct ContentView: View {
                 let searchedIndex = multiSelectFiles.firstIndex(of: files[index])
                 multiSelectFiles.remove(at: searchedIndex!)
                 fileWasSelected[index] = false
-                print(multiSelectFiles)
             } else {
                 fileWasSelected[index] = true
                 multiSelectFiles.append(files[index])
-                print(multiSelectFiles)
             }
         } else {
             multiSelect = false
-            let fileType = yandereDevFileType(file: (directory + fileToCheck[index]))
+            let fileType = Int(yandereDevFileType(file: (directory + fileToCheck[index])))
             newViewFilePath = directory
             newViewFileName = fileToCheck[index]
             switch fileType {
@@ -1107,9 +1351,9 @@ struct ContentView: View {
             case 7:
                 showSubView[15] = true
             case 8:
-                print("symlink things")
-                //get symlink directory
-                //change directory to that
+                print(readSymlinkDestination(path: files[index]))
+                directory = readSymlinkDestination(path: files[index]) + "/"
+                updateFiles()
             case 9:
                 showSubView[23] = true
             default:
@@ -1130,6 +1374,11 @@ struct ContentView: View {
                 FileManager.default.fileExists(atPath: filePath, isDirectory: &isDirectory)
                 return isDirectory.boolValue ? "\(file)/" : file
             }
+            masterFiles = []
+            for i in 0..<contents.count {
+                masterFiles.append(SpartanFile(name: contents[i], path: directory, isSelected: false))
+            }
+            //print(masterFiles)
             resizeMultiSelectArrays()
             resetMultiSelectArrays()
         } catch {
@@ -1194,7 +1443,6 @@ struct ContentView: View {
             fileInfoString.append(NSLocalizedString("INFO_OWNERID", comment: "Barry, I told you, stop flying in the house!") + String(fileOwnerID))
             fileInfoString.append(NSLocalizedString("INFO_PERMISSIONS", comment: "- Hey, Adam.") + filePerms)
             
-            print("help: ", fileInfoString)
             return fileInfoString
         } catch {
             return ["Error: \(error.localizedDescription)"]
@@ -1258,7 +1506,10 @@ struct ContentView: View {
         let videoTypes: [String] = ["3gp", "3g2", "avi", "mov", "m4v", "mp4"]
         let imageTypes: [String] = ["png", "tiff", "tif", "jpeg", "jpg", "gif", "bmp", "BMPf", "ico", "cur", "xbm"]
         let archiveTypes: [String] = ["zip", "cbz"]
-        if file.hasSuffix("/") {
+        
+        if (isSymlink(filePath: file)) {
+            return 8 //symlink
+        } else if file.hasSuffix("/") {
             return 0 //directory
         } else if (audioTypes.contains(where: file.hasSuffix)) {
             return 1 //audio file
@@ -1276,8 +1527,6 @@ struct ContentView: View {
             return 6 //archive
         } else if (FileManager.default.isExecutableFile(atPath: file)) {
             return 7 //executable
-        } else if (isSymlink(filePath: file)) {
-            return 8 //symlink
         } else if (file.hasSuffix(".deb")) {
             return 9 //deb
         } else {
@@ -1314,13 +1563,39 @@ struct ContentView: View {
         }
     }
     func isSymlink(filePath: String) -> Bool {
-        var stat = stat()
-        if lstat(filePath, &stat) == 0 {
-            let type = stat.st_mode
-            return (type & S_IFLNK) != 0
+        let fileURL = URL(fileURLWithPath: filePath)
+        do {
+            let resourceValues = try fileURL.resourceValues(forKeys: [.isSymbolicLinkKey])
+            if let isSymbolicLink = resourceValues.isSymbolicLink {
+                return isSymbolicLink
+            }
+        } catch {
+            print("Error: \(error)")
         }
         return false
     }
+    
+    func readSymlinkDestination(path: String) -> String {
+        let truePath = "/" + removeLastChar(string: path)
+        print(path)
+        print(truePath)
+        var dest = "/"
+        do {
+            dest += try FileManager.default.destinationOfSymbolicLink(atPath: truePath)
+            print(try FileManager.default.destinationOfSymbolicLink(atPath: truePath))
+        } catch {
+            print(error.localizedDescription)
+        }
+        if(!FileManager.default.fileExists(atPath: dest)) {
+            nonexistentFile = dest
+            showSubView[26] = true
+        }
+        if(dest == "//") {
+            dest = "/" + path
+        }
+        return dest
+    }
+
     
     func resizeMultiSelectArrays() {
         let range = abs(files.count - fileWasSelected.count)
@@ -1363,4 +1638,28 @@ struct ContentView: View {
             showSubView[i] = false
         }
     }
+    
+    func removeLastChar(string: String) -> String {
+        return String(substring(str: string, startIndex: string.index(string.startIndex, offsetBy: 0), endIndex: string.index(string.endIndex, offsetBy: -1)))
+    }
+    
+    func changeFilePerms(filePath: String, permValue: Int) {
+        guard FileManager.default.fileExists(atPath: filePath) else {
+            print("File does not exist at path: \(filePath)")
+            return
+        }
+        
+        do {
+            try FileManager.default.setAttributes([FileAttributeKey.posixPermissions: NSNumber(value: permValue)], ofItemAtPath: filePath)
+        } catch {
+            print("Error changing file permissions: \(error.localizedDescription)")
+        }
+    }
+
+}
+
+struct SpartanFile {
+    var name: String
+    var path: String
+    var isSelected: Bool
 }

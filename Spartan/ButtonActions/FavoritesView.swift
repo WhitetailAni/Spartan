@@ -28,20 +28,26 @@ struct FavoritesView: View {
                 print(index)
             }) {
                 HStack {
-                    if(favoritesDisplayName.firstIndex(of: favoriteDisplayName) ?? 0 < 4){
-                        if(favoritesDisplayName.firstIndex(of: favoriteDisplayName) ?? 4 == 0){
+                    if(favoritesDisplayName.firstIndex(of: favoriteDisplayName)! < 4){
+                        switch favoritesDisplayName.firstIndex(of: favoriteDisplayName)! {
+                        case 0:
                             Image(systemName: "doc.text")
-                        } else if (favoritesDisplayName.firstIndex(of: favoriteDisplayName) ?? 4 == 1) {
+                        case 1:
                             Image(systemName: "applescript")
-                        } else if (favoritesDisplayName.firstIndex(of: favoriteDisplayName) ?? 4 == 2) {
+                        case 2:
                             Image(systemName: "person.crop.circle")
-                        } else if (favoritesDisplayName.firstIndex(of: favoriteDisplayName) ?? 4 == 3) {
+                        case 3:
                             Image(systemName: "trash")
-                        } else if (favoritesDisplayName.firstIndex(of: favoriteDisplayName) ?? 4 == 4) {
+                        case 4:
                             Image(systemName: "questionmark.square.dashed")
+                        default:
+                            Image(systemName: "questionmark")
                         }
                     }
                     Text(favoriteDisplayName)
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                        }
                 }
             }
         }
@@ -50,6 +56,9 @@ struct FavoritesView: View {
             addToFavoritesShow = true
         }) {
             Text(NSLocalizedString("FAVORITESADD", comment: "that hangs after you pour it."))
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
         }
         .sheet(isPresented: $addToFavoritesShow){
             AddToFavoritesView(filePath: $blank, displayName: $blank, showView: $addToFavoritesShow)

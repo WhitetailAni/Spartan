@@ -35,16 +35,30 @@ struct ImageView: View {
             let (width, height, fileSize, encoder) = getImageInfo(from: imagePath + imageName) ?? (0, 0, 0, "?")
             VStack{
                 Text(imagePath + imageName)
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
                     .font(.system(size: 40))
-                    .bold()
                     .multilineTextAlignment(.center)
                 Text(NSLocalizedString("DIMENSIONS", comment: "Our top-secret formula") + String(width) + "x" + String(height))
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
                 Text(NSLocalizedString("INFO_SIZE", comment: "is automatically color-corrected, scent-adjusted and bubble-contoured") + String(fileSize) + " " + NSLocalizedString("BYTES", comment: "into this soothing sweet syrup"))
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
                 Text(NSLocalizedString("IMAGE_ENCODING", comment: "with its distinctive golden glow you know as...") + encoder)
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
                 Button(action: {
                     infoShow = false
                 }) {
                     Text(NSLocalizedString("DISMISS", comment: "Honey!"))
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                        }
                 }
             }
         }

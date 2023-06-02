@@ -6,6 +6,11 @@
   
 */
 
+///IF THERE IS A SPACE, PRESERVE THAT SPACE IN OTHER LOCALIZED STRINGS. IT IS INTENTIONAL
+///IF THERE IS A SPACE, PRESERVE THAT SPACE IN OTHER LOCALIZED STRINGS. IT IS INTENTIONAL
+///IF THERE IS A SPACE, PRESERVE THAT SPACE IN OTHER LOCALIZED STRINGS. IT IS INTENTIONAL
+///IF THERE IS A SPACE, PRESERVE THAT SPACE IN OTHER LOCALIZED STRINGS. IT IS INTENTIONAL
+
 //general use
 "DISMISS" = "Dismiss";
 "CONFIRM" = "Confirm";
@@ -24,6 +29,7 @@
 //main view
 "FREE_SPACE" = "Free space: ";
 "INPUT_DIRECTORY" = "Input directory";
+"PERMSEDIT" = "Edit file permissions";
 
 //context menu
 "INFO" = "Info";
@@ -155,6 +161,7 @@
 "SETTINGS_AUTOCOMPLETE_DESC_2" = "such as adding '/' when changing directory or '.zip' to archives.";
 "SETTINGS_AUTOCOMPLETE_WARNING" = "WARNING: Make sure you type your filepaths **exactly** if you disable this!";
 "SETTINGS_LOGFONTSIZE" = "Sets the font size for log windows when installing a package or running a binary.";
+"SETTINGS_SHEIKAH" = "Sheikah font in app";
 "CREDITS" = "Credits";
 
 
@@ -173,18 +180,28 @@
 "MOUNT_TITLE" = "Mount Points";
 "MOUNT_DESC" = "is mounted at";
 
-//plist
-"PLIST_KEY" = "Enter key name";
-"PLIST_DATA" = "Enter key value";
-
 //hex
 "HEX_DATA" = "Enter new bytes";
 
 //spawn
 "SPAWN_ARGS" = "Enter program arguments";
+"SPAWN_ENV" = "Enter environment variables";
 "SPAWN_CONFIRM" = "Spawn";
 
 //dpkg
 "DPKGDEB_OUTDIR" = "Specify the destination directory";
 "DPKGDEB_OUTNAME" = "Specify the deb's filename";
 "DPKGDEB_COMPTYPE" = "Specify the compression type to use";
+
+//filenotfound
+"SHOW_NOTFOUND" = "The file does not exist, or it was moved.";
+"SHOW_OLDDEST" = "The listed destination is ";
+
+//plist
+"PLIST_KEY" = "Enter key name";
+"PLIST_DATA" = "Enter key value";
+"PLIST_UNKNOWNTYPE" = "Unknown data type";
+
+//plistarray
+"PLISTARR_ADD" = "Add item after item ";
+"PLISTARR_REMOVE" = "Remove item ";

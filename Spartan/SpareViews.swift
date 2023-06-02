@@ -7,6 +7,7 @@
 
 import SwiftUI
 import UIKit
+import Foundation
 
 //this is to put extra views that are used by other views - UIKit progress bar, checkbox, etc.
 
@@ -84,6 +85,9 @@ struct StepperTV: View {
     
     var valueText: some View {
         Text("\(value)")
+            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+            }
             .font(.headline)
     }
     
@@ -182,6 +186,7 @@ struct UIKitTextView: UIViewRepresentable {
     func makeUIView(context: Context) -> UITextView {
         let textView = UITextView()
         let opacity = 0.25
+        let sheikahFont = UIFont(name: "BotW Sheikah Regular", size: CGFloat(fontSize))
         textView.delegate = context.coordinator
         textView.font = UIFont.systemFont(ofSize: CGFloat(fontSize))
         
@@ -194,6 +199,7 @@ struct UIKitTextView: UIViewRepresentable {
         } else {
             textView.backgroundColor = UIColor.darkGray.withAlphaComponent(opacity)
         }
+        textView.font = sheikahFont
         
         return textView
     }
@@ -219,32 +225,73 @@ struct UIKitTextView: UIViewRepresentable {
     }
 }
 
-func task(launchPath: String, arguments: [String]) -> NSString {
-    let task = NSTask.init()
-    task?.setLaunchPath(launchPath)
-    if(!arguments.isEmpty) {
-        task?.arguments = arguments
-    }
-    
-    print(arguments)
+func task(launchPath: String, arguments: String, envVars: String) {
+    var pid: pid_t = 0
 
-    let pipe = Pipe()
-    let pipeTwo = Pipe()
-    task?.standardOutput = pipe
-    task?.standardError = pipeTwo
+    let argumentsC = strdup(arguments)
+    let argv: [UnsafeMutablePointer<CChar>?] = [argumentsC, nil]
+    let envC = strdup(envVars)
+    let envv: [UnsafeMutablePointer<CChar>?] = [envC, nil]
 
-    task?.launch()
-    task?.waitUntilExit()
-
-    let data = pipe.fileHandleForReading.readDataToEndOfFile()
-    let dataTwo = data + pipeTwo.fileHandleForReading.readDataToEndOfFile()
-    let output = NSString(data: dataTwo, encoding: String.Encoding.utf8.rawValue)
-    
-    print(output!)
-
-    return output!
+    posix_spawnp(&pid, launchPath, nil, nil, argv, envv)
 }
-//https://stackoverflow.com/a/56628715
 
+func taskSnoop(_ closure: () -> Void) -> String {
+    let outPipe = Pipe()
+    var outString = ""
+    let sema = DispatchSemaphore(value: 0)
+    outPipe.fileHandleForReading.readabilityHandler = { fileHandle in
+        let data = fileHandle.availableData
+        if data.isEmpty  { // end-of-file condition
+            fileHandle.readabilityHandler = nil
+            sema.signal()
+        } else {
+            outString += String(data: data,  encoding: .utf8)!
+        }
+    }
+    print("Capturing command line")
 
+    // Redirect
+    setvbuf(stdout, nil, _IONBF, 0)
+    let savedStdout = dup(STDOUT_FILENO)
+    dup2(outPipe.fileHandleForWriting.fileDescriptor, STDOUT_FILENO)
 
+    closure()
+
+    // Undo redirection
+    dup2(savedStdout, STDOUT_FILENO)
+    try! outPipe.fileHandleForWriting.close()
+    close(savedStdout)
+    sema.wait() // Wait until read handler is done
+
+    print("Ending capture")
+    return outString
+}
+//https://stackoverflow.com/questions/73034426/swift-stdout-redirect-to-a-string
+
+struct ScaledFont: ViewModifier {
+    @Environment(\.sizeCategory) var sizeCategory
+    var name: String
+    var size: Double
+
+    func body(content: Content) -> some View {
+       let scaledSize = UIFontMetrics.default.scaledValue(for: size)
+        return content.font(.custom(name, size: scaledSize))
+    }
+}
+extension View {
+    func scaledFont(name: String, size: Double) -> some View {
+        return self.modifier(ScaledFont(name: name, size: size))
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func `if`<Content: View>(_ condition: Bool, content: (Self) -> Content) -> some View {
+        if condition {
+            content(self)
+        } else {
+            self
+        }
+    }
+}

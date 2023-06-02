@@ -34,6 +34,9 @@ struct MountPointsView: View {
                 isPresented = false
             }) {
                 Text("\(mountDevices[index]) \(NSLocalizedString("MOUNT_DESC", comment: "Their day's not planned.")) \(mountPoints[index])")
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
             }
         }
     }

@@ -42,7 +42,14 @@ struct DpkgView: View {
                         }
                     HStack {
                         Button(action: {
-                            dpkgLog = Spartan.task(launchPath: dpkgPath, arguments: ["-i ", debPath, debName]) as String
+                            let arguments: String = "-i " + debPath + debName
+                            SwiftTryCatch.try({
+                                dpkgLog = Spartan.taskSnoop {
+                                    Spartan.task(launchPath: dpkgPath, arguments: arguments, envVars: "")
+                                }
+                            }, catch: { (error) in
+                                dpkgLog = error.description
+                            })
                         }) {
                             Text(NSLocalizedString("INSTALL", comment: "THERE WILL BE NO MORE [Miracles] NO MORE [Magic]."))
                         }
@@ -74,7 +81,7 @@ struct DpkgView: View {
                         if(extractToCurrentDir) {
                             extractDest = debPath
                         }
-                        _ = Spartan.task(launchPath: dpkgPath + "-deb", arguments: ["-x ", (debPath + debName), " ", extractDest])
+                        _ = Spartan.task(launchPath: dpkgPath + "-deb", arguments: "-x " + (debPath + debName) + " " + extractDest, envVars: "")
                     }) {
                         Text(NSLocalizedString("EXTRACT", comment: "I GAVE YOU MY [Commemorative Ring] FOR THE PRICE OF [My Favorite Year]!"))
                     }
@@ -106,24 +113,39 @@ struct DpkgBuilderView: View {
         //if(0 == 1) {
         if !(FileManager.default.fileExists(atPath: "/usr/bin/dpkg/") || FileManager.default.fileExists(atPath: "/var/jb/usr/bin/dpkg/")) {
             Text(NSLocalizedString("ERR_NOJAILBREAK", comment: "AND THIS IS HOW YOU [Repay] ME!? TREATING ME LIKE [DLC]!?"))
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 60)
+                }
                 .font(.system(size: 60))
         } else {
             Text(debInputDir)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
                 .font(.system(size: 40))
                 
             TextField(NSLocalizedString("DPKGDEB_OUTDIR", comment: "NO, I GET IT! IT'S YOU AND THAT [Hochi Mama]!") + NSLocalizedString("OPTIONAL", comment: "YOU'VE BEEN MAKING [Hyperlink Blocked]!"), text: $debOutputDir, onCommit: {
                 updateLog()
             })
+            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+            }
         
             TextField(NSLocalizedString("DPKGDEB_OUTNAME", comment: "I WAS TOO [Trusting] TOO [Honest]") + NSLocalizedString("OPTIONAL", comment: ""), text: $debOutputName, onCommit: {
                 print(debOutputName)
                 updateLog()
             })
+            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+            }
         
             Text(NSLocalizedString("DPKGDEB_COMPTYPE", comment: "I SHOULD HAVE KNOWN YOU WOULD HAVE USED MY [Ring] FOR [Evil]..."))
             Picker("E", selection: $selectedCompressionType) {
                 ForEach(compressionTypes, id: \.self) { compressionType in
                     Text(compressionType)
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 35)
+                        }
                 }
             }
             .pickerStyle(DefaultPickerStyle())
@@ -140,7 +162,15 @@ struct DpkgBuilderView: View {
                 updateLog()
                 dpkgDebLog += "\n"
                 SwiftTryCatch.try({
-                         dpkgDebLog += Spartan.task(launchPath: dpkgPath, arguments: [" -Z ", selectedCompressionType, " -b ", debInputDir, debOutputVars]) as String
+                        let arguments: String = " -Z " + selectedCompressionType + " -b " + debInputDir + debOutputVars
+                        SwiftTryCatch.try({
+                                dpkgDebLog = Spartan.taskSnoop {
+                                    Spartan.task(launchPath: dpkgPath, arguments: arguments, envVars: "")
+                                }
+                            }, catch: { (error) in
+                                dpkgDebLog = error.description
+                            }
+                        )
                      }, catch: { (error) in
                          dpkgDebLog += "An error occurred: " + error.description
                      }
