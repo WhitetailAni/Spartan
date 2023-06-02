@@ -29,6 +29,7 @@
 //main view
 "FREE_SPACE" = "Free space: ";
 "INPUT_DIRECTORY" = "Input directory";
+"PERMSEDIT" = "Edit file permissions";
 
 //context menu
 "INFO" = "Info";

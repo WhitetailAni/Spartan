@@ -17,6 +17,9 @@ struct CreditsView: View {
         Text("""
         "Hopefully not the only tvOS file browser ever"
         """)
+            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                view.scaledFont(name: "BotW Sheikah Regular", size: 25)
+            }
         Text("")
         Text("""
         Credits to:
@@ -27,6 +30,9 @@ struct CreditsView: View {
         ChatGPT: Explaining stuff better than StackOverflow™
         ...and also writing me UIKit
         """)
-            .multilineTextAlignment(.center)
+        .multilineTextAlignment(.center)
+        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+            view.scaledFont(name: "BotW Sheikah Regular", size: 25)
+        }
     }
 }

@@ -40,7 +40,9 @@ struct ContentView: View {
     @State var renameFileCurrentName: String = ""
     @State var renameFileNewName: String = ""
     
-    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 27)
+    @State var filePerms = 420
+    
+    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 28)
     //createFileSelectShow = 0
     //contextMenuShow = 1
     //openInMenu = 2
@@ -247,6 +249,7 @@ struct ContentView: View {
                                 .contextMenu {
                                     Button(action: {
                                         showSubView[3] = true
+                                        newViewFileIndex = index
                                         newViewFileName = files[index]
                                     }) {
                                         Text(NSLocalizedString("INFO", comment: "there is no way a bee should be able to fly."))
@@ -483,7 +486,6 @@ struct ContentView: View {
                     }
                 }
                 .sheet(isPresented: $showSubView[1]) {
-                    
                     Button(action: {
                         defaultAction(index: newViewFileIndex, isDirectPath: false)
                         showSubView[1] = false
@@ -836,6 +838,9 @@ struct ContentView: View {
                 .sheet(isPresented: $showSubView[3]) { //file info
                     VStack {
                         Text(NSLocalizedString("SHOW_INFO", comment: "A perfect report card, all B's."))
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 60)
+                            }
                             .font(.system(size: 60))
                         ForEach(fileInfo, id: \.self) { infoPiece in
                             Text(infoPiece)
@@ -843,6 +848,18 @@ struct ContentView: View {
                                 view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                             }
                         }
+                        Button(action: {
+                            showSubView[3] = false
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                showSubView[27] = true
+                            }
+                        }) {
+                            Text(NSLocalizedString("PERMSEDIT", comment: "I dont know why I added the sheikah function it took two hours"))
+                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                }
+                        }
+                        
                         Button(action: {
                             showSubView[3] = false
                         }) {
@@ -856,6 +873,18 @@ struct ContentView: View {
                         }
                     }
                 }
+                .sheet(isPresented: $showSubView[27], onDismiss: {
+                    showSubView[3] = true
+                }, content: {
+                    TextField(NSLocalizedString("PERMSEDIT", comment: "This should have been added a long time ago"), value: $filePerms, formatter: NumberFormatter(), onCommit: {
+                        changeFilePerms(filePath: directory + files[newViewFileIndex], permValue: filePerms)
+                    })
+                    .keyboardType(.numberPad)
+                    .textContentType(.oneTimeCode)
+                    .onAppear {
+                        filePerms = try! FileManager.default.attributesOfItem(atPath: directory + files[newViewFileIndex])[.posixPermissions] as? Int ?? 000
+                    }
+                })
                 .sheet(isPresented: $showSubView[0], content: {
                     let buttonWidth: CGFloat = 500
                     let buttonHeight: CGFloat = 30
@@ -1349,7 +1378,7 @@ struct ContentView: View {
             for i in 0..<contents.count {
                 masterFiles.append(SpartanFile(name: contents[i], path: directory, isSelected: false))
             }
-            print(masterFiles)
+            //print(masterFiles)
             resizeMultiSelectArrays()
             resetMultiSelectArrays()
         } catch {
@@ -1414,7 +1443,6 @@ struct ContentView: View {
             fileInfoString.append(NSLocalizedString("INFO_OWNERID", comment: "Barry, I told you, stop flying in the house!") + String(fileOwnerID))
             fileInfoString.append(NSLocalizedString("INFO_PERMISSIONS", comment: "- Hey, Adam.") + filePerms)
             
-            print("help: ", fileInfoString)
             return fileInfoString
         } catch {
             return ["Error: \(error.localizedDescription)"]
@@ -1614,6 +1642,20 @@ struct ContentView: View {
     func removeLastChar(string: String) -> String {
         return String(substring(str: string, startIndex: string.index(string.startIndex, offsetBy: 0), endIndex: string.index(string.endIndex, offsetBy: -1)))
     }
+    
+    func changeFilePerms(filePath: String, permValue: Int) {
+        guard FileManager.default.fileExists(atPath: filePath) else {
+            print("File does not exist at path: \(filePath)")
+            return
+        }
+        
+        do {
+            try FileManager.default.setAttributes([FileAttributeKey.posixPermissions: NSNumber(value: permValue)], ofItemAtPath: filePath)
+        } catch {
+            print("Error changing file permissions: \(error.localizedDescription)")
+        }
+    }
+
 }
 
 struct SpartanFile {

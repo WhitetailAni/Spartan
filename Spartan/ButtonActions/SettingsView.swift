@@ -57,6 +57,9 @@ struct SettingsView: View {
                 Text(NSLocalizedString("CREDITS", comment: """
                 "What's the difference?"
                 """))
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
             }
         }
         .sheet(isPresented: $showView[0], content: {
