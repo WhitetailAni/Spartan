@@ -1,9 +1,0 @@
-Target dependency graph (4 targets)
-Minizip in Zip, no dependencies
-Zip in Zip, depends on:
-Minizip in Zip (explicit)
-Zip in Zip, depends on:
-Zip in Zip (explicit)
-Minizip in Zip (explicit)
-Spartan in Spartan, depends on:
-Zip in Zip (explicit)
