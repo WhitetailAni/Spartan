@@ -17,13 +17,20 @@ struct SpawnView: View {
     var body: some View {
         VStack {
             Text(descriptiveTitles ? binaryPath + binaryName : binaryName)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
                 .font(.system(size: 40))
-                .bold()
                 .multilineTextAlignment(.center)
-            TextField(NSLocalizedString("SPAWN_ARGS", comment: "MY ESTEEM CUSTOMER I SEE YOU ARE ATTEMPTING TO DEPLETE MY HP!"), text: $programArguments, onCommit: {
-            })
+            TextField(NSLocalizedString("SPAWN_ARGS", comment: "MY ESTEEM CUSTOMER I SEE YOU ARE ATTEMPTING TO DEPLETE MY HP!"), text: $programArguments)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
             TextField(NSLocalizedString("SPAWN_ENV", comment: "KRIS! ISN'T THIS [Body] JUST [Heaven]LY!?"), text: $envVars, onCommit: {
             })
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
             UIKitTextView(text: $spawnLog, fontSize: UserDefaults.settings.integer(forKey: "logWindowFontSize"))
             
             Button(action: {
@@ -37,6 +44,9 @@ struct SpawnView: View {
                 )
             }) {
                 Text(NSLocalizedString("SPAWN_CONFIRM", comment: "ENJOY THE FIR3WORKS, KID!!!!"))
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
             }
         }
     }

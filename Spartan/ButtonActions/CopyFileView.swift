@@ -18,7 +18,9 @@ struct CopyFileView: View {
     var body: some View {
         VStack{
             Text(NSLocalizedString("COPY_TITLE", comment: "please welcome Dean Buzzwell."))
-                .bold()
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 60)
+                }
             TextField(NSLocalizedString("DEST_PATH", comment: "Welcome, New Hive City graduating class of..."), text: $newFilePath, onEditingChanged: { (isEditing) in
                 if !isEditing {
                     if(!(newFilePath.hasSuffix("/"))){
@@ -26,11 +28,17 @@ struct CopyFileView: View {
                     }
                 }
             })
+            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+            }
             if(fileNames.count == 1){
                 TextField(NSLocalizedString("NEW_FILENAME", comment: "...9:15.") + NSLocalizedString("OPTIONAL", comment: "That concludes our ceremonies."), text: $newFileName)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
             }
         
-            Button(NSLocalizedString("CONFIRM", comment: "And begins your career at Honex Industries!")) {
+            Button(action: {
                 print(multiSelect)
                 print(fileNames)
                 if(multiSelect){
@@ -52,6 +60,11 @@ struct CopyFileView: View {
                 fileNames[0] = ""
                 multiSelect = false
                 isPresented = false
+            }) {
+                Text(NSLocalizedString("CONFIRM", comment: "And begins your career at Honex Industries!"))
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
             }
         }
         .onAppear {

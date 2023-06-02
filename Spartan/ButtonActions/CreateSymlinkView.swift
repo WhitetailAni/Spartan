@@ -19,8 +19,13 @@ struct CreateSymlinkView: View {
     var body: some View {
         VStack {
             Text(NSLocalizedString("SYMTOUCH_TITLE", comment: "- Hey, those are Pollen Jocks!"))
-                .bold()
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
             TextField(NSLocalizedString("SYMTOUCH_NAME", comment: "- Wow."), text: $symlinkName)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
             TextField(NSLocalizedString("SYMTOUCH_DEST", comment: "I've never seen them this close."), text: $symlinkDest, onEditingChanged: { (isEditing) in
                     if !isEditing {
                         if(symlinkName.hasSuffix("/")) && UserDefaults.settings.bool(forKey: "autoComplete"){
@@ -29,7 +34,10 @@ struct CreateSymlinkView: View {
                     }
                 }
             )
-            Button(NSLocalizedString("CONFIRM", comment: "They know what it's like outside the hive.")) {
+            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+            }
+            Button(action: {
                 do {
                     try FileManager.default.createSymbolicLink(atPath: symlinkPath + symlinkName, withDestinationPath: symlinkDest)
                     print("Symlink created successfully")
@@ -43,6 +51,11 @@ struct CreateSymlinkView: View {
                 if(!(errorMessage == "")){
                     wasError = true
                 }
+            }) {
+                Text(NSLocalizedString("CONFIRM", comment: "They know what it's like outside the hive."))
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
             }
         }
         .alert(isPresented: $wasError) {

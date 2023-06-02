@@ -15,8 +15,13 @@ struct RenameFileView: View {
     
     var body: some View {
         Text(NSLocalizedString("RENAME_TITLE", comment: "Boy, quite a bit of pomp..."))
-            .bold()
+            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                view.scaledFont(name: "BotW Sheikah Regular", size: 60)
+            }
         TextField(NSLocalizedString("RENAME_NAME", comment: "under the circumstances."), text: $newFileName)
+            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+            }
         Button(NSLocalizedString("CONFIRM", comment: "Well, Adam, today we are men.")) {
             print(fileName)
             print(newFileName)

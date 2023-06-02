@@ -19,8 +19,10 @@ struct HexView: View {
         HStack {
             Spacer()
             Text(UserDefaults.settings.bool(forKey: "verboseTimestamps") ? filePath + fileName : fileName)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
                 .font(.system(size: 40))
-                .bold()
                 .multilineTextAlignment(.center)
                 .padding(-10)
                 .focusable(true) //makes it so you can access the save button
@@ -52,11 +54,20 @@ struct HexView: View {
                         }
                     }
                     .padding()
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
                 TextField(NSLocalizedString("HEX_DATA", comment: ""), text: $hexArray[index])
                     .frame(width: UIScreen.main.nativeBounds.width - 500)
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
                 let cleanedHexString = hexArray[index].replacingOccurrences(of: " ", with: "")
                 let hexData = Data(fromHexEncodedString: cleanedHexString)
                 Text(String(data: hexData!, encoding: .utf8) ?? "Unable to read file")
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
             }
         }
         .onAppear {

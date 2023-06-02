@@ -30,14 +30,18 @@ struct VideoPlayerView: View {
                 if(!fullScreen) {
                     if(videoTitle == ""){
                         Text(descriptiveTimestamps ? videoPath + videoName : videoName)
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                             .font(.system(size: 40))
-                            .bold()
                             .multilineTextAlignment(.center)
                             .padding(-20)
                     } else {
                         Text(videoTitle)
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                             .font(.system(size: 40))
-                            .bold()
                             .multilineTextAlignment(.center)
                             .padding(-20)
                     }
@@ -63,7 +67,7 @@ struct VideoPlayerView: View {
                         }) {
                             Image(systemName: "viewfinder")
                         }
-                            .transition(.opacity)
+                        .transition(.opacity)
                         /*Button(action: {
                             infoShow = true
                         }) {
@@ -155,10 +159,16 @@ struct VideoPlayerView: View {
     var timeLabel: some View {
         if(descriptiveTimestamps) {
             Text("\(currentTime) / \(duration)")
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 30)
+                }
                 .font(.system(size: 30))
                 .multilineTextAlignment(.leading)
         } else {
             Text("\(currentTime.format()) / \(duration.format())")
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 30)
+                }
                 .font(.system(size: 30))
                 .multilineTextAlignment(.leading)
         }

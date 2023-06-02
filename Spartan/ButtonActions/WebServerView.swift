@@ -20,6 +20,9 @@ struct WebServerView: View {
             webdavLog = "I have no idea what I'm doing please send help"
         }) {
             Text("start")
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
         }
     }
 }

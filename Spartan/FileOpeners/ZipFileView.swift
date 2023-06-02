@@ -32,7 +32,9 @@ struct ZipFileView: View {
         VStack{
             if(unzip){
                 Text(NSLocalizedString("UNZIP_TITLE", comment: "- She's my cousin!"))
-                    .bold()
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
                 TextField(NSLocalizedString("UNZIP_DIR", comment: "- She is?"), text: $extractFilePath, onEditingChanged: { (isEditing) in
                     if !isEditing {
                         if(!(extractFilePath.hasSuffix("/")) && UserDefaults.settings.bool(forKey: "autoComplete")){
@@ -40,21 +42,35 @@ struct ZipFileView: View {
                         }
                     }
                 })
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
                 TextField(NSLocalizedString("UNZIP_PASSWORD", comment: "- Yes, we're all cousins.") + NSLocalizedString("OPTIONAL", comment: "- Right. You're right."), text: $zipPassword)
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
                 Button(action: {
                     overwriteFiles.toggle()
                 }) {
                     Text(NSLocalizedString("UNZIP_OVERWRITE", comment: "- At Honex, we constantly strive"))
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                        }
                     Image(systemName: overwriteFiles ? "checkmark.square" : "square")
                 }
                 Button(action: {
                     uncompressFile(pathToZip: filePath + zipFileName, password: zipPassword, overwrite: overwriteFiles, destination: extractFilePath)
                 }) {
                     Text(NSLocalizedString("CONFIRM", comment: "to improve every aspect of bee existence."))
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                        }
                 }
             } else {
                 Text(NSLocalizedString("ZIP_TITLE", comment: "These bees are stress-testing a new helmet technology."))
-                    .bold()
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
                 TextField(NSLocalizedString("ZIP_FILENAME", comment: "- What do you think he makes?"), text: $zipFileName, onEditingChanged: { (isEditing) in
                     if !isEditing{
                         if(!(zipFileName.hasSuffix(".zip")) && UserDefaults.settings.bool(forKey: "autoComplete")){
@@ -62,7 +78,13 @@ struct ZipFileView: View {
                         }
                     }
                 })
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
                 TextField(NSLocalizedString("ZIP_PASSWORD", comment: "Here we have our latest advancement, the Krelman.") + NSLocalizedString("OPTIONAL", comment: ""), text: $zipPassword)
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
                 
                 if(showProgress) {
                     UIKitProgressView(value: $actionProgress, total: 100)
@@ -73,6 +95,9 @@ struct ZipFileView: View {
                     showProgress = true
                 }) {
                     Text(NSLocalizedString("CONFIRM", comment: "- What does that do?"))
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                        }
                 }
                 
             }

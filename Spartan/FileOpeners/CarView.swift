@@ -14,13 +14,18 @@ struct CarView: View {
 
     var body: some View {
         Text(UserDefaults.settings.bool(forKey: "verboseTimestamps") ? filePath + fileName : fileName)
-            .font(.system(size: 40))
-            .bold()
+            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                view.scaledFont(name: "BotW Sheikah Regular", size: 60)
+            }
+            .font(.system(size: 60))
             .multilineTextAlignment(.center)
         List(trunkOpener(), id: \.self) { assetName in
             HStack {
                 boxOpener(named: assetName)
                 Text(assetName)
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
             }
         }
     }

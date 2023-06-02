@@ -31,8 +31,10 @@ struct PlistView: View {
                 Spacer()
                 VStack(alignment: .center) {
                     Text(UserDefaults.settings.bool(forKey: "verboseTimestamps") ? filePath + fileName : fileName)
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                        }
                         .font(.system(size: 40))
-                        .bold()
                         .multilineTextAlignment(.center)
                 }
                 Spacer()
@@ -85,6 +87,9 @@ struct PlistView: View {
                     editorShow = true
                 }) {
                     Text(content)
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                        }
                 }
             }
         }
@@ -211,6 +216,9 @@ struct PlistDictView: View {
 
     var body: some View {
         Text("gm")
+            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+            }
     }
 }
 
@@ -221,6 +229,9 @@ struct PlistKeyView: View {
     var body: some View {
         if(show) {
             TextField(NSLocalizedString("PLIST_KEY", comment: ""), text: $key)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
         }
     }
 }
@@ -260,6 +271,9 @@ struct PlistStringView: View {
     var body: some View {
         PlistKeyView(show: isInDict, key: $key)
         TextField(NSLocalizedString("PLIST_DATA", comment: ""), text: $string)
+            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+            }
     }
 }
 
@@ -281,11 +295,17 @@ struct PlistArrayView: View {
                 addViewShow = true
             }) {
                 Text(NSLocalizedString("PLISTARR_ADD", comment: "") + String(topBarIndex))
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
             }
             Button(action: {
                 mutableArray.remove(at: topBarIndex)
             }) {
                 Text(NSLocalizedString("PLISTARR_REMOVE", comment: "") + String(topBarIndex))
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
             }
             StepperTV(value: $topBarIndex, isHorizontal: true) { }
             Spacer()
@@ -304,12 +324,18 @@ struct PlistArrayView: View {
                             .foregroundColor(.blue)
                     } else {
                         Text(String(index))
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     Button(action: {
                         selectedIndex = 0
                         showSheet = true
                     }) {
                         Text(mutableArray[index] as! String)
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                 }
             }
@@ -334,6 +360,9 @@ struct PlistArrayView: View {
             //}
             default:
                 Text(NSLocalizedString("PLIST_UNKNOWNTYPE", comment: ""))
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
             }
         })
         .sheet(isPresented: $addViewShow, content: {
@@ -368,6 +397,9 @@ struct PlistAddView: View {
         Picker("E", selection: $selectedDataType) {
             ForEach(dataTypes, id: \.self) { dataType in
                 Text(dataType)
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
             }
         }
         .pickerStyle(DefaultPickerStyle())
@@ -395,6 +427,9 @@ struct PlistAddView: View {
             }
         }) {
             Text(NSLocalizedString("CONFIRM", comment: ""))
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
         }
     }
     

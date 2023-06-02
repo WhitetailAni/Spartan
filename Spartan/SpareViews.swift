@@ -85,6 +85,9 @@ struct StepperTV: View {
     
     var valueText: some View {
         Text("\(value)")
+            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+            }
             .font(.headline)
     }
     
@@ -183,6 +186,7 @@ struct UIKitTextView: UIViewRepresentable {
     func makeUIView(context: Context) -> UITextView {
         let textView = UITextView()
         let opacity = 0.25
+        let sheikahFont = UIFont(name: "BotW Sheikah Regular", size: CGFloat(fontSize))
         textView.delegate = context.coordinator
         textView.font = UIFont.systemFont(ofSize: CGFloat(fontSize))
         
@@ -195,6 +199,7 @@ struct UIKitTextView: UIViewRepresentable {
         } else {
             textView.backgroundColor = UIColor.darkGray.withAlphaComponent(opacity)
         }
+        textView.font = sheikahFont
         
         return textView
     }
@@ -263,3 +268,30 @@ func taskSnoop(_ closure: () -> Void) -> String {
     return outString
 }
 //https://stackoverflow.com/questions/73034426/swift-stdout-redirect-to-a-string
+
+struct ScaledFont: ViewModifier {
+    @Environment(\.sizeCategory) var sizeCategory
+    var name: String
+    var size: Double
+
+    func body(content: Content) -> some View {
+       let scaledSize = UIFontMetrics.default.scaledValue(for: size)
+        return content.font(.custom(name, size: scaledSize))
+    }
+}
+extension View {
+    func scaledFont(name: String, size: Double) -> some View {
+        return self.modifier(ScaledFont(name: name, size: size))
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func `if`<Content: View>(_ condition: Bool, content: (Self) -> Content) -> some View {
+        if condition {
+            content(self)
+        } else {
+            self
+        }
+    }
+}
