@@ -43,7 +43,10 @@ Work is ongoing to
 
 How to use:
 1. Clone the repository and open it in Xcode (14.0+ required).
-2. Enter the Xcode.app folder and find the AppleTVOS SDK. Locate /usr/include/spawn.h, give it write permissions, and remove the listings that mark it as unavailable on tvOS.
+2. Unless you are using Xcode 15 (Apple enabled posix_spawn in Xcode 15 
+by default and so this step is no longer required), enter the Xcode.app 
+folder and find the AppleTVOS SDK. Locate 
+/usr/include/spawn.h, give it write permissions, and remove the listings that mark it as unavailable on tvOS.
 3. Build and run to your Apple TV.
 
 Good luck have fun. Hopefully this isn't the only tvOS file browser ever.

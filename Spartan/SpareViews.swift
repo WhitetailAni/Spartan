@@ -199,7 +199,9 @@ struct UIKitTextView: UIViewRepresentable {
         } else {
             textView.backgroundColor = UIColor.darkGray.withAlphaComponent(opacity)
         }
-        textView.font = sheikahFont
+        if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) {
+            textView.font = sheikahFont
+        }
         
         return textView
     }

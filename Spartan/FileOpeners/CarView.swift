@@ -19,40 +19,11 @@ struct CarView: View {
             }
             .font(.system(size: 60))
             .multilineTextAlignment(.center)
-        List(trunkOpener(), id: \.self) { assetName in
-            HStack {
-                boxOpener(named: assetName)
-                Text(assetName)
-                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                    }
-            }
+        List(["E"] ?? ["An error occurred while trying to read the file"], id: \.self) { passenger in
+            Text(passenger)
         }
-    }
-    
-    @ViewBuilder
-    func boxOpener(named imageName: String) -> some View {
-        Image(imageName)
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-            .frame(height: 100)
-            .padding()
-    }
-    
-    func trunkOpener() -> [String] {
-        let assetURL = URL(fileURLWithPath: filePath + fileName)
-        
-        do {
-            let assetData = try Data(contentsOf: assetURL)
-            let assetCatalog = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSArray.self, from: assetData)
+        .onAppear {
             
-            return assetCatalog?.compactMap { asset in
-                guard let imageName = (asset as? NSDictionary)?["name"] as? String else { return nil }
-                return imageName
-            } ?? []
-        } catch {
-            print("Error: \(error.localizedDescription)")
-            return []
         }
     }
 }

@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		F82095202A2622D100DC6D79 /* CarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F820951F2A2622D100DC6D79 /* CarView.swift */; };
 		F83F052E2A297E2000EB0720 /* Sheikah.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F83F052D2A297CDE00EB0720 /* Sheikah.ttf */; };
-		F83F05312A2993BA00EB0720 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = F83F05302A2993BA00EB0720 /* Introspect */; };
 		F845C82829F4D77C0025AC0A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F845C82A29F4D77C0025AC0A /* Localizable.strings */; };
 		F845C82F29F6247A0025AC0A /* EThree.swift in Sources */ = {isa = PBXBuildFile; fileRef = F845C82E29F6247A0025AC0A /* EThree.swift */; };
 		F853AB2F29DBCB1A006EA2D5 /* SpartanApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB2E29DBCB1A006EA2D5 /* SpartanApp.swift */; };
@@ -87,7 +86,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8CC214229EA68BC008C7B88 /* Zip in Frameworks */,
-				F83F05312A2993BA00EB0720 /* Introspect in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -186,7 +184,6 @@
 			name = Spartan;
 			packageProductDependencies = (
 				F8CC214129EA68BC008C7B88 /* Zip */,
-				F83F05302A2993BA00EB0720 /* Introspect */,
 			);
 			productName = Spartan;
 			productReference = F853AB2B29DBCB1A006EA2D5 /* Spartan.app */;
@@ -222,7 +219,6 @@
 			mainGroup = F853AB2229DBCB1A006EA2D5;
 			packageReferences = (
 				F8CC214029EA68BB008C7B88 /* XCRemoteSwiftPackageReference "Zip" */,
-				F83F052F2A2993BA00EB0720 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 			);
 			productRefGroup = F853AB2C29DBCB1A006EA2D5 /* Products */;
 			projectDirPath = "";
@@ -556,14 +552,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		F83F052F2A2993BA00EB0720 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/siteline/SwiftUI-Introspect.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.4.0;
-			};
-		};
 		F8CC214029EA68BB008C7B88 /* XCRemoteSwiftPackageReference "Zip" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/marmelroy/Zip";
@@ -575,11 +563,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		F83F05302A2993BA00EB0720 /* Introspect */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F83F052F2A2993BA00EB0720 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
-			productName = Introspect;
-		};
 		F8CC214129EA68BC008C7B88 /* Zip */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F8CC214029EA68BB008C7B88 /* XCRemoteSwiftPackageReference "Zip" */;

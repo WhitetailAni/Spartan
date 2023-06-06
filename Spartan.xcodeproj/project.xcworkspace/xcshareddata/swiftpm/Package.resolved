@@ -1,15 +1,6 @@
 {
   "pins" : [
     {
-      "identity" : "swiftui-introspect",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/siteline/SwiftUI-Introspect.git",
-      "state" : {
-        "revision" : "f17535bedacba845350076269824f47fbb786bb4",
-        "version" : "0.4.0"
-      }
-    },
-    {
       "identity" : "zip",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/marmelroy/Zip",

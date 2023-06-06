@@ -9,7 +9,6 @@ import SwiftUI
 import Foundation
 import AVKit
 import MobileCoreServices
-import Introspect
 
 struct ContentView: View {
     @State var directory: String
@@ -42,7 +41,7 @@ struct ContentView: View {
     
     @State var filePerms = 420
     
-    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 28)
+    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 29)
     //createFileSelectShow = 0
     //contextMenuShow = 1
     //openInMenu = 2
@@ -70,6 +69,8 @@ struct ContentView: View {
     //dpkgDebViewShow = 24
     //webServerShow = 25
     //fileNotFoundView = 26
+    //filePermsEdit = 27
+    //carView = 28
     
     @State var globalAVPlayer = AVPlayer()
     @State var isGlobalAVPlayerPlaying = false
@@ -150,7 +151,7 @@ struct ContentView: View {
                                     defaultAction(index: index, isDirectPath: false)
                                 }) {
                                     HStack {
-                                        if(isLoadingView) {
+                                        if(isLoadingView && newViewFileName == files[index]) {
                                             ProgressView()
                                         } else {
                                             if (multiSelect) {
@@ -162,7 +163,7 @@ struct ContentView: View {
                                             switch fileType {
                                             case 0:
                                                 if (directory.contains( "/private/var/containers/Bundle/Application/") || directory.contains( "/private/var/mobile/Containers/Data/Application/")) {
-                                                    
+                                                    Text("Listing app names coming soon")
                                                 } else {
                                                     if (isDirectoryEmpty(atPath: directory + files[index]) == 1){
                                                         Image(systemName: "folder")
@@ -232,6 +233,12 @@ struct ContentView: View {
                                                     }
                                             case 9:
                                                 Image(systemName: "archivebox")
+                                                Text(files[index])
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
+                                            case 10:
+                                                Image(systemName: "tray.full")
                                                 Text(files[index])
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
@@ -460,6 +467,12 @@ struct ContentView: View {
                                                     }
                                             case 9:
                                                 Image(systemName: "archivebox")
+                                                Text(files[index])
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
+                                            case 10:
+                                                Image(systemName: "tray.full")
                                                 Text(files[index])
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
@@ -1014,6 +1027,9 @@ struct ContentView: View {
                 .sheet(isPresented: $showSubView[25], content: {
                     WebServerView()
                 })
+                .sheet(isPresented: $showSubView[28], content: {
+                    CarView(filePath: $newViewFilePath, fileName: $newViewFileName)
+                })
                 .alert(isPresented: $showSubView[26]) {
                     Alert(
                         title: Text(NSLocalizedString("SHOW_NOTFOUND", comment: "")),
@@ -1356,6 +1372,8 @@ struct ContentView: View {
                 updateFiles()
             case 9:
                 showSubView[23] = true
+            case 10:
+                showSubView[28] = true
             default:
                 isLoadingView = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -1521,6 +1539,8 @@ struct ContentView: View {
             return isPlist(filePath: file)
             //5.1 = xml plist
             //5.2 = bplist
+        } else if(isCar(filePath: file)) {
+            return 10 //asset catalog
         } else if (isText(filePath: file)) { //these must be flipped because otherwise xml plist detects as text
             return 4 //text file
         } else if (archiveTypes.contains(where: file.hasSuffix)){
@@ -1554,7 +1574,7 @@ struct ContentView: View {
         let xmlHeader = "<?xml"
         let bplistHeader = "bplis"
         
-        if header == xmlHeader || filePath.suffix(6) == ".plist" {
+        if header == xmlHeader {
             return 5.1
         } else if header == bplistHeader {
             return 5.2
@@ -1574,6 +1594,20 @@ struct ContentView: View {
         }
         return false
     }
+    func isCar(filePath: String) -> Bool {
+        guard let data = FileManager.default.contents(atPath: filePath) else {
+            return false
+        }
+        
+        let header = String(data: data.subdata(in: 0..<8), encoding: .utf8)
+        let carHeader = "BOMStore"
+        
+        if header == carHeader {
+            return true
+        }
+        return false
+    }
+
     
     func readSymlinkDestination(path: String) -> String {
         let truePath = "/" + removeLastChar(string: path)
