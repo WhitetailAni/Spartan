@@ -125,6 +125,7 @@ struct ContentView: View {
                         if #available(tvOS 14.0, *) {
                             Button(action: {
                                 goBack()
+                                print(directory)
                             }) {
                                 HStack {
                                     Image(systemName: "arrowshape.turn.up.left")
@@ -1047,9 +1048,10 @@ struct ContentView: View {
         }
         .onExitCommand {
             if(directory == "/"){
-                exit(69420)
+                UIApplicationSuspend.suspendNow()
             } else {
                 goBack()
+                print(directory)
             }
         }
     }
