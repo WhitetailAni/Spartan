@@ -100,6 +100,11 @@ struct ContentView: View {
                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                     }
+                    .onAppear {
+                        if (substring(str: directory, startIndex: directory.index(directory.startIndex, offsetBy: 0), endIndex: directory.index(directory.startIndex, offsetBy: 5)) == "/var/") {
+                            directory = "/private/var/" + substring(str: directory, startIndex: directory.index(directory.startIndex, offsetBy: 5), endIndex: directory.index(directory.endIndex, offsetBy: 0))
+                        } //i dont have a way to check if every part of a filepath is a symlink, but this should fix most issues
+                    }
                     
                     Button(action: {
                         updateFiles()
@@ -162,7 +167,7 @@ struct ContentView: View {
                                             
                                             switch fileType {
                                             case 0:
-                                                if (directory.contains( "/private/var/containers/Bundle/Application/") || directory.contains( "/private/var/mobile/Containers/Data/Application/")) {
+                                                if ((directory == "/private/var/containers/Bundle/Application/") || (directory == "/private/var/mobile/Containers/Data/Application/")) {
                                                     Text("Listing app names coming soon")
                                                 } else {
                                                     if (isDirectoryEmpty(atPath: directory + files[index]) == 1){
