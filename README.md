@@ -30,7 +30,7 @@ What it currently lets you do:
 There's probably more, I lost track.
 
 TODO:
-- Plist editor //was razed
+- Plist editor //everything done but dictionary
 - Root helper
 - Read app list to show what app container is which if in (/private)/var/containers/Bundle/Application or (/private)/var/mobile/Containers/Data/Application
 - webserver like filza webdav

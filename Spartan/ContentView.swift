@@ -9,6 +9,7 @@ import SwiftUI
 import Foundation
 import AVKit
 import MobileCoreServices
+import Swifter
 
 struct ContentView: View {
     @State var directory: String
@@ -72,17 +73,16 @@ struct ContentView: View {
     //filePermsEdit = 27
     //carView = 28
     
-    @State var globalAVPlayer = AVPlayer()
+    @State var globalAVPlayer: AVPlayer = AVPlayer()
     @State var isGlobalAVPlayerPlaying = false
     @State var callback = true
     
     @State private var uncompressZip = false
-    
     @State private var isLoadingView = false
-    
     @State var blankString: [String] = [""]
-    
     @State private var nonexistentFile = ""
+    
+    @State var globalHttpServer: HttpServer = HttpServer()
     
     let paddingInt: CGFloat = -7
     let opacityInt: CGFloat = 1.0
@@ -1030,7 +1030,7 @@ struct ContentView: View {
                     DpkgBuilderView(debInputDir: $newViewFilePath, debInputName: $newViewFileName, isPresented: $showSubView[24], isRootless: $isRootless)
                 })
                 .sheet(isPresented: $showSubView[25], content: {
-                    WebServerView()
+                    WebServerView(inputServer: $globalHttpServer)
                 })
                 .sheet(isPresented: $showSubView[28], content: {
                     CarView(filePath: $newViewFilePath, fileName: $newViewFileName)
@@ -1107,23 +1107,31 @@ struct ContentView: View {
                             .frame(width:50, height:50)
                     }
                 }
-            
-                Button(action: { //mount points
-                    showSubView[21] = true
-                }) {
-                    if #available(tvOS 14.0, *) {
-                        Image(systemName: "externaldrive")
-                            .frame(width:50, height:50)
-                    } else {
-                        Image(systemName: "tray.2")
-                            .frame(width:50, height:50)
-                    }
-                }
                 
-                Button(action: {
-                    showSubView[25] = true
-                }) {
-                    Image(systemName: "server.rack")
+                if #available(tvOS 14.0, *) {
+                    Button(action: {
+                        showSubView[25] = true
+                    }) {
+                        Image(systemName: "server.rack")
+                    }
+                    .contextMenu {
+                        Button(action: { //mount points
+                            showSubView[21] = true
+                        }) {
+                            Text(NSLocalizedString("MOUNTPOINTS", comment: ""))
+                        }
+                        Button(action: {
+                            WebServerView(inputServer: $globalHttpServer).serverStart(server: globalHttpServer)
+                        }) {
+                            Text(NSLocalizedString("SERVERHEADLESS", comment: ""))
+                        }
+                    }
+                } else {
+                    Button(action: {
+                        showSubView[25] = true
+                    }) {
+                        Image(systemName: "server.rack")
+                    }
                 }
                 
                 Button(action: { //favorites

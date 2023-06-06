@@ -41,6 +41,9 @@
 "TRASHYEET" = "Empty Trash";
 "GOTOTRASH" = "Move to Trash";
 
+"MOUNTPOINTS" = "List mounted devices";
+"SERVERHEADLESS" = "Start webserver headless";
+
 "OPEN_DIRECTORY" = "Directory Viewer";
 "OPEN_AUDIO" = "Audio Player";
 "OPEN_VIDEO" = "Video Player";
