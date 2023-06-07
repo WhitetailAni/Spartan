@@ -18,15 +18,18 @@ struct TextView: View {
     @State private var textEditorIndex = 0
     @State private var textEditorOldIndex = 0
     @State private var encoding: String.Encoding = .utf8
-    @State private var index: UInt = 0
-    @State private var indexPro: Int = 0
+    @State private var index: Int = 0
     
     var body: some View {
         VStack {
             if(!textEditorShow) {
                 HStack {
                     Button(action: {
-                        fileContents.insert("", at: Int(index))
+                        if(index == 0) {
+                            fileContents.insert("", at: 1)
+                        } else {
+                            fileContents.insert("", at: index)
+                        }
                     }) {
                         Text("\(NSLocalizedString("LINEADD", comment: "- Hear about Frankie?")) \(index)")
                             .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
@@ -34,36 +37,14 @@ struct TextView: View {
                             }
                     }
                     Button(action: {
-                        fileContents.remove(at: Int(index))
+                        fileContents.remove(at: index)
                     }) {
                         Text("\(NSLocalizedString("LINEREMOVE", comment: "- Yeah.")) \(index)")
                             .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                 view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                             }
                     }
-                    StepperTV(value: Binding (
-                            get: { Int(index) },
-                            set: { indexPro = $0 }), isHorizontal: true) {
-                                if(!(indexPro < 0) && !(index >= fileContents.count)) {
-                                    index = UInt(indexPro)
-                                    print("success")
-                                }
-                                if(index == fileContents.count) {
-                                    indexPro -= 1
-                                    if(indexPro < 0) {
-                                        indexPro = 0
-                                        index = UInt(indexPro)
-                                    }
-                                    print("equal")
-                                }
-                                if(index > fileContents.count) {
-                                    indexPro = Int(index)
-                                    print("greater")
-                                } //this is bad logic and will be fixed
-                                print(fileContents.count)
-                                print(indexPro)
-                                print(index)
-                            }
+                    StepperTV(value: $index, isHorizontal: true) { }
                     Spacer()
                     Button(action: {
                         do {
@@ -77,9 +58,12 @@ struct TextView: View {
                 }
                 List(fileContents.indices, id: \.self) { indexB in
                     HStack {
-                        if(indexB == Int(index)) {
+                        if(indexB == index) {
                             Text(String(indexB))
                                 .foregroundColor(.blue)
+                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                }
                         } else {
                             Text(String(indexB))
                                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
@@ -93,7 +77,7 @@ struct TextView: View {
                             textEditorString = fileContents[indexB]
                             textEditorIndex = indexB
                         }) {
-                            if(indexB == Int(index)) {
+                            if(indexB == index) {
                                 Text(fileContents[indexB])
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .foregroundColor(.blue)

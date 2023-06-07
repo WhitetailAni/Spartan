@@ -25,7 +25,6 @@ struct FavoritesView: View {
                 let index = favoritesDisplayName.firstIndex(of: favoriteDisplayName) ?? 0
                 directory = favoritesFilePath[index]
                 showView = false
-                print(index)
             }) {
                 HStack {
                     if(favoritesDisplayName.firstIndex(of: favoriteDisplayName)! < 4){
