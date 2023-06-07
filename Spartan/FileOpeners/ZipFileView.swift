@@ -49,6 +49,7 @@ struct ZipFileView: View {
                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                     }
+                    
                 Button(action: {
                     overwriteFiles.toggle()
                 }) {

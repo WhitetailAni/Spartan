@@ -31,6 +31,7 @@ struct MoveFileView: View {
             .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                 view.scaledFont(name: "BotW Sheikah Regular", size: 40)
             }
+            
             if(fileNames.count == 1){
                 TextField(NSLocalizedString("NEW_FILENAME", comment: "- Amen!") + NSLocalizedString("OPTIONAL", comment: "Hallelujah!"), text: $newFileName)
                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in

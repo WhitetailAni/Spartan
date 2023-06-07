@@ -99,6 +99,9 @@ struct TextView: View {
             } else {
                 HStack {
                     TextField(NSLocalizedString("LINEADD_DESCRIPTION", comment: "- You going to the funeral?"), text: $textEditorString)
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                        }
                     Button(action: {
                         fileContents[textEditorIndex] = textEditorString
                         print(fileContents)

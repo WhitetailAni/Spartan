@@ -31,6 +31,7 @@ struct CopyFileView: View {
             .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                 view.scaledFont(name: "BotW Sheikah Regular", size: 40)
             }
+            
             if(fileNames.count == 1){
                 TextField(NSLocalizedString("NEW_FILENAME", comment: "...9:15.") + NSLocalizedString("OPTIONAL", comment: "That concludes our ceremonies."), text: $newFileName)
                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in

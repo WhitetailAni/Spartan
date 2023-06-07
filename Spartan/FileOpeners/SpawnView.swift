@@ -26,11 +26,11 @@ struct SpawnView: View {
                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                     view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                 }
-            TextField(NSLocalizedString("SPAWN_ENV", comment: "KRIS! ISN'T THIS [Body] JUST [Heaven]LY!?"), text: $envVars, onCommit: {
-            })
+            TextField(NSLocalizedString("SPAWN_ENV", comment: "KRIS! ISN'T THIS [Body] JUST [Heaven]LY!?"), text: $envVars)
                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                     view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                 }
+                
             UIKitTextView(text: $spawnLog, fontSize: UserDefaults.settings.integer(forKey: "logWindowFontSize"))
             
             Button(action: {

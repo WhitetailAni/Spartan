@@ -90,10 +90,11 @@ struct AudioPlayerView: View {
                                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                     view.scaledFont(name: "BotW Sheikah Regular", size: 30)
                                 }
+                                .font(.system(size: 30))
+                                .multilineTextAlignment(.leading)
                         }
                     }
-                    .font(.system(size: 30))
-                            .multilineTextAlignment(.leading)
+                    
                 }
             }
             

@@ -27,6 +27,9 @@ struct MountPointsView: View {
                     mountPoints.append(mount.mountPoint)
                 }
             }
+            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+            }
             
         List(mountDevices.indices, id: \.self) { index in
             Button(action: {

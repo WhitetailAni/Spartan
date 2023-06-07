@@ -25,6 +25,7 @@ struct CreateDirectoryView: View {
                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                     view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                 }
+                
             Button(action: {
                 do {
                     try FileManager.default.createDirectory(atPath: directoryPath + directoryName, withIntermediateDirectories: true, attributes: nil)

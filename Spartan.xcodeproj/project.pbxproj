@@ -25,7 +25,6 @@
 		F853AB5729DE8B46006EA2D5 /* CreditsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB5629DE8B46006EA2D5 /* CreditsView.swift */; };
 		F853AB5929DE8C0E006EA2D5 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB5829DE8C0E006EA2D5 /* SearchView.swift */; };
 		F853AB5B29E09F8A006EA2D5 /* AddToFavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB5A29E09F8A006EA2D5 /* AddToFavoritesView.swift */; };
-		F853AB5D29E0AC3F006EA2D5 /* TintColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB5C29E0AC3F006EA2D5 /* TintColorView.swift */; };
 		F88FBB0A2A2FE44500E31EDA /* Swifter in Frameworks */ = {isa = PBXBuildFile; productRef = F88FBB092A2FE44500E31EDA /* Swifter */; };
 		F88FBB0D2A2FEFA700E31EDA /* UIApplicationSuspend.m in Sources */ = {isa = PBXBuildFile; fileRef = F88FBB0C2A2FEFA700E31EDA /* UIApplicationSuspend.m */; };
 		F898F66B2A1AFEC300F1B4E4 /* WebServerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F898F66A2A1AFEC300F1B4E4 /* WebServerView.swift */; };
@@ -77,7 +76,6 @@
 		F853AB5629DE8B46006EA2D5 /* CreditsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreditsView.swift; sourceTree = "<group>"; };
 		F853AB5829DE8C0E006EA2D5 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		F853AB5A29E09F8A006EA2D5 /* AddToFavoritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToFavoritesView.swift; sourceTree = "<group>"; };
-		F853AB5C29E0AC3F006EA2D5 /* TintColorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TintColorView.swift; sourceTree = "<group>"; };
 		F88FBB0B2A2FEF9000E31EDA /* UIApplicationSuspend.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UIApplicationSuspend.h; sourceTree = "<group>"; };
 		F88FBB0C2A2FEFA700E31EDA /* UIApplicationSuspend.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UIApplicationSuspend.m; sourceTree = "<group>"; };
 		F898F66A2A1AFEC300F1B4E4 /* WebServerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebServerView.swift; sourceTree = "<group>"; };
@@ -138,7 +136,6 @@
 				F853AB3029DBCB1A006EA2D5 /* ContentView.swift */,
 				F8EA28D229F8ACCF0063206D /* ButtonActions */,
 				F8EA28D129F8ACAB0063206D /* FileOpeners */,
-				F853AB5C29E0AC3F006EA2D5 /* TintColorView.swift */,
 				F8CC212629E5206B008C7B88 /* SpareViews.swift */,
 				F845C82E29F6247A0025AC0A /* EThree.swift */,
 				F853AB3229DBCB1E006EA2D5 /* Assets.xcassets */,
@@ -291,7 +288,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F853AB5D29E0AC3F006EA2D5 /* TintColorView.swift in Sources */,
 				F853AB5529DE8B3B006EA2D5 /* FavoritesView.swift in Sources */,
 				F853AB3129DBCB1A006EA2D5 /* ContentView.swift in Sources */,
 				F8C1A5D429FB55F100DF4C23 /* MountPointsView.swift in Sources */,

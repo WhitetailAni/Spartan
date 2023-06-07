@@ -37,6 +37,7 @@ struct CreateSymlinkView: View {
             .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                 view.scaledFont(name: "BotW Sheikah Regular", size: 40)
             }
+            
             Button(action: {
                 do {
                     try FileManager.default.createSymbolicLink(atPath: symlinkPath + symlinkName, withDestinationPath: symlinkDest)

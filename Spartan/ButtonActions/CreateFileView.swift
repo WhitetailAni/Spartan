@@ -22,6 +22,7 @@ struct CreateFileView: View {
                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                     view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                 }
+                
             Button(action: {
                 FileManager.default.createFile(atPath: filePath + fileName, contents: nil, attributes: nil)
                 print("File created successfully")

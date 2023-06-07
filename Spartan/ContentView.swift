@@ -898,11 +898,15 @@ struct ContentView: View {
                     TextField(NSLocalizedString("PERMSEDIT", comment: "This should have been added a long time ago"), value: $filePerms, formatter: NumberFormatter(), onCommit: {
                         changeFilePerms(filePath: directory + files[newViewFileIndex], permValue: filePerms)
                     })
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
                     .keyboardType(.numberPad)
                     .textContentType(.oneTimeCode)
                     .onAppear {
                         filePerms = try! FileManager.default.attributesOfItem(atPath: directory + files[newViewFileIndex])[.posixPermissions] as? Int ?? 000
                     }
+                    
                 })
                 .sheet(isPresented: $showSubView[0], content: {
                     let buttonWidth: CGFloat = 500
