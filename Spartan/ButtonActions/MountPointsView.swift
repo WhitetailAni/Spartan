@@ -19,7 +19,6 @@ struct MountPointsView: View {
     
     var body: some View {
         Text(NSLocalizedString("MOUNT_TITLE", comment: "- I don't know."))
-            .font(.system(size: 40))
             .bold()
             .onAppear {
                 for mount in getMountedFileSystems() {
@@ -30,6 +29,7 @@ struct MountPointsView: View {
             .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                 view.scaledFont(name: "BotW Sheikah Regular", size: 40)
             }
+            .font(.system(size: 40))
             
         List(mountDevices.indices, id: \.self) { index in
             Button(action: {

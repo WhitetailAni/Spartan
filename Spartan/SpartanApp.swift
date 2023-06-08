@@ -40,13 +40,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func displayView(pathToLoad: String) {
-        buttonWidth = 500 * (UIScreen.main.nativeBounds.height/1080)
-        buttonHeight = 30 * (UIScreen.main.nativeBounds.height/1080)
         var isRootless = false
         if(FileManager.default.fileExists(atPath: "/var/jb/")) {
             isRootless = true
         }
-        let hostingController = UIHostingController(rootView: ContentView(directory: pathToLoad, buttonWidth: buttonWidth, buttonHeight: buttonHeight, isRootless: isRootless))
+        let hostingController = UIHostingController(rootView: ContentView(directory: pathToLoad, isRootless: isRootless))
             window = UIWindow(frame: UIScreen.main.bounds)
             window?.rootViewController = hostingController
             window?.makeKeyAndVisible()

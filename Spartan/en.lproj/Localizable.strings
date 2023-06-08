@@ -41,6 +41,7 @@
 "TRASHYEET" = "Empty Trash";
 "GOTOTRASH" = "Move to Trash";
 
+"SERVERHEAD" = "Start webserver";
 "MOUNTPOINTS" = "List mounted devices";
 "SERVERHEADLESS" = "Start webserver headless";
 

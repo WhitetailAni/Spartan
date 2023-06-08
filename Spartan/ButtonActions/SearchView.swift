@@ -24,15 +24,25 @@ struct SearchView: View {
     var body: some View {
         TextField(NSLocalizedString("SEARCH_TERM", comment: "How can you say that? One job forever?"), text: $searchTerm)
             .disabled(currentlySearching)
+            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+            }
         TextField(NSLocalizedString("SEARCH_PATH", comment: "That's an insane choice to have to make."), text: $directoryToSearch)
             .disabled(currentlySearching)
+            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+            }
         Button(action: {
             matchCase.toggle()
         }) {
             Text(NSLocalizedString("SEARCH_CASE", comment: "I'm relieved. Now we only have to make one decision in life."))
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
             Image(systemName: matchCase ? "checkmark.square" : "square")
         }
         .disabled(currentlySearching)
+        
         Button(action: {
             currentlySearching = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.001) { //so the loading symbol shows
@@ -47,6 +57,9 @@ struct SearchView: View {
                 }
             } else {
                 Text(NSLocalizedString("CONFIRM", comment: "But, Adam, how could they never have told us that?"))
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
             }
         }
         .disabled(currentlySearching)

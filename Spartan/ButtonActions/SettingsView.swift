@@ -9,6 +9,8 @@ import SwiftUI
 
 struct SettingsView: View {
 
+    @Binding var buttonWidth: CGFloat
+
     @State private var showView: [Bool] = [Bool](repeating: false, count: 2)
     @State private var descriptiveTitlesPre = UserDefaults.settings.bool(forKey: "descriptiveTitles")
     @State private var descriptiveTimestampsPre = UserDefaults.settings.bool(forKey: "verboseTimestamps")
@@ -142,8 +144,11 @@ struct SettingsView: View {
             sheikahFontApplyPre.toggle()
             UserDefaults.settings.set(sheikahFontApplyPre, forKey: "sheikahFontApply")
             UserDefaults.settings.synchronize()
-            print(sheikahFontApplyPre)
-            print(UserDefaults.settings.bool(forKey: "sheikahFontApply"))
+            if(sheikahFontApplyPre) {
+                buttonWidth *= 1.5
+            } else {
+                buttonWidth /= 1.5
+            }
         }) {
             Text(NSLocalizedString("SETTINGS_SHEIKAH", comment: "YOU LOST IT WHEN YOU TRIED TO SEE TOO FAR"))
                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in

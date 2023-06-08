@@ -20,12 +20,13 @@ struct ContentView: View {
     @State var isFocused: Bool = false
     @State var E = false
     @State var E2 = false
-    
     @State var masterFiles: [SpartanFile] = []
     
-    @State var buttonWidth: CGFloat
-    @State var buttonHeight: CGFloat
     @State var isRootless: Bool
+    
+    @State var buttonCalc = false
+    @State var buttonWidth: CGFloat = 500
+    @State var buttonHeight: CGFloat = 30
     
     @State var multiSelect = false
     @State var allWereSelected = false
@@ -42,7 +43,7 @@ struct ContentView: View {
     
     @State var filePerms = 420
     
-    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 29)
+    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 30)
     //createFileSelectShow = 0
     //contextMenuShow = 1
     //openInMenu = 2
@@ -72,6 +73,7 @@ struct ContentView: View {
     //fileNotFoundView = 26
     //filePermsEdit = 27
     //carView = 28
+    //tvos13serverShow = 29
     
     @State var globalAVPlayer: AVPlayer = AVPlayer()
     @State var isGlobalAVPlayerPlaying = false
@@ -101,6 +103,15 @@ struct ContentView: View {
                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                     }
                     .onAppear {
+                        if(!buttonCalc) {
+                            buttonWidth *= (UIScreen.main.nativeBounds.height/1080)
+                            buttonHeight *= (UIScreen.main.nativeBounds.height/1080) //it wasnt calculating properly in SpartanApp... not sure why but it works now
+                            if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) {
+                                buttonWidth *= 1.5
+                            }
+                            buttonCalc = true
+                        }
+
                         if (substring(str: directory, startIndex: directory.index(directory.startIndex, offsetBy: 0), endIndex: directory.index(directory.startIndex, offsetBy: 5)) == "/var/") {
                             directory = "/private/var/" + substring(str: directory, startIndex: directory.index(directory.startIndex, offsetBy: 5), endIndex: directory.index(directory.endIndex, offsetBy: 0))
                         } //i dont have a way to check if every part of a filepath is a symlink, but this should fix most issues
@@ -909,9 +920,6 @@ struct ContentView: View {
                     
                 })
                 .sheet(isPresented: $showSubView[0], content: {
-                    let buttonWidth: CGFloat = 500
-                    let buttonHeight: CGFloat = 30
-                
                     Button(action: {
                         showSubView[0] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -979,7 +987,7 @@ struct ContentView: View {
                     AddToFavoritesView(filePath: $newViewFilePath, displayName: $newViewFileName, showView: $showSubView[17])
                 })
                 .sheet(isPresented: $showSubView[18], content: {
-                    SettingsView()
+                    SettingsView(buttonWidth: $buttonWidth)
                 })
                 .sheet(isPresented: $showSubView[7], content: {
                     RenameFileView(fileName: $renameFileCurrentName, newFileName: $renameFileNewName, filePath: $newViewFilePath, isPresented: $showSubView[7])
@@ -1114,30 +1122,24 @@ struct ContentView: View {
                     }
                 }
                 
-                if #available(tvOS 14.0, *) {
+                if #available(tvOS 16.0, *) {
                     Button(action: {
                         showSubView[25] = true
                     }) {
                         Image(systemName: "server.rack")
                     }
                     .contextMenu {
-                        Button(action: { //mount points
-                            showSubView[21] = true
-                        }) {
-                            Text(NSLocalizedString("MOUNTPOINTS", comment: ""))
-                        }
-                        Button(action: {
-                            WebServerView(inputServer: $globalHttpServer).serverStart(server: globalHttpServer)
-                        }) {
-                            Text(NSLocalizedString("SERVERHEADLESS", comment: ""))
-                        }
+                        serverButton
                     }
                 } else {
                     Button(action: {
-                        showSubView[25] = true
+                        showSubView[29] = true
                     }) {
                         Image(systemName: "server.rack")
                     }
+                    .sheet(isPresented: $showSubView[29], content: {
+                        serverButton
+                    })
                 }
                 
                 Button(action: { //favorites
@@ -1242,13 +1244,57 @@ struct ContentView: View {
         .frame(maxWidth: .infinity, alignment: .center)
     }
     
+    @ViewBuilder
+    var serverButton: some View {
+        if #unavailable(tvOS 16.0) {
+            Button(action: {
+                showSubView[29] = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    showSubView[25] = true
+                }
+            }) {
+                Text(NSLocalizedString("SERVERHEAD", comment: ""))
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
+                    .frame(width: buttonWidth, height: buttonHeight)
+            }
+            .padding(paddingInt)
+            .opacity(opacityInt)
+        }
+    
+        Button(action: { //mount points
+            showSubView[21] = true
+        }) {
+            Text(NSLocalizedString("MOUNTPOINTS", comment: ""))
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
+                .frame(width: buttonWidth, height: buttonHeight)
+        }
+        .padding(paddingInt)
+        .opacity(opacityInt)
+        
+        Button(action: {
+            WebServerView(inputServer: $globalHttpServer).serverStart(server: globalHttpServer)
+        }) {
+            Text(NSLocalizedString("SERVERHEADLESS", comment: ""))
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
+                .frame(width: buttonWidth, height: buttonHeight)
+        }
+        .padding(paddingInt)
+        .opacity(opacityInt)
+    }
+    
     var freeSpace: some View { //this is hardcoded for now, returning mount points wasnt working
         let (doubleValue, stringValue) = freeSpace(path: "/")
         return //VStack {
             //Text("/")
             Text(NSLocalizedString("FREE_SPACE", comment: "E") + String(format: "%.2f", doubleValue) + " " + stringValue)
                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 35)
                 }
         //}
         .alignmentGuide(.trailing) {
