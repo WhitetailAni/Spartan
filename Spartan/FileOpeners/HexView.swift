@@ -106,7 +106,6 @@ extension Data {
             data.append(byte)
             hexString = String(hexString.dropFirst(2))
         }
-        
         self = data
     }
 }

@@ -53,8 +53,9 @@
 "OPEN_HEX" = "Hex Editor";
 "OPEN_PLIST" = "Plist Editor";
 "OPEN_DPKG" = "Open in Dpkg Installer";
-"OPEN_DPKGDEB" = "Open in Dpkg Builder";
+"OPEN_DPKGDEB" = "Open in Deb Builder";
 "OPEN_SPAWN" = "Spawn As Binary";
+"OPEN_CAR" = "Asset Catalog Viewer";
 
 "SHOW_DENIED" = "Permission Denied";
 "SHOW_INFO" = "File Info";

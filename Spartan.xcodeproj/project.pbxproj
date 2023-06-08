@@ -148,15 +148,15 @@
 		F8EA28D129F8ACAB0063206D /* FileOpeners */ = {
 			isa = PBXGroup;
 			children = (
-				F8CC214729EFA164008C7B88 /* TextView.swift */,
 				F853AB4E29DE57D8006EA2D5 /* AudioPlayerView.swift */,
 				F8CC212E29E74DF4008C7B88 /* VideoPlayerView.swift */,
 				F8CC211E29E2762F008C7B88 /* ImageView.swift */,
+				F8CC214729EFA164008C7B88 /* TextView.swift */,
+				F8E9A9782A00B4A400706179 /* HexView.swift */,
 				F8CC212229E4FFC5008C7B88 /* PlistView.swift */,
+				F8D5795D2A0F2D2D00FDA526 /* DpkgView.swift */,
 				F8CC214329EB9503008C7B88 /* ZipFileView.swift */,
 				F8CC214529EF5838008C7B88 /* SpawnView.swift */,
-				F8E9A9782A00B4A400706179 /* HexView.swift */,
-				F8D5795D2A0F2D2D00FDA526 /* DpkgView.swift */,
 				F820951F2A2622D100DC6D79 /* CarView.swift */,
 			);
 			path = FileOpeners;
