@@ -10,7 +10,6 @@ import SwiftUI
 struct CarView: View {
     @Binding var filePath: String
     @Binding var fileName: String
-    
 
     var body: some View {
         Text(UserDefaults.settings.bool(forKey: "verboseTimestamps") ? filePath + fileName : fileName)

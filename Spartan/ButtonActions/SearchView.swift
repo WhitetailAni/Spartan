@@ -45,7 +45,7 @@ struct SearchView: View {
         
         Button(action: {
             currentlySearching = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.001) { //so the loading symbol shows
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) { //so the loading symbol shows
             //horribly hacky but it works
                 resultsList = dirSearch(directoryPath: directoryToSearch, searchTerm: searchTerm)
                 showResults = true
