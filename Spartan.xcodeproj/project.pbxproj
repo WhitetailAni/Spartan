@@ -140,6 +140,7 @@
 				F853AB2E29DBCB1A006EA2D5 /* SpartanApp.swift */,
 				F853AB3029DBCB1A006EA2D5 /* ContentView.swift */,
 				F8EA28D229F8ACCF0063206D /* ButtonActions */,
+				F8EA28D129F8ACAB0063206D /* FileOpeners */,
 				F8CC212629E5206B008C7B88 /* SpareViews.swift */,
 				F845C82E29F6247A0025AC0A /* EThree.swift */,
 				F853AB3229DBCB1E006EA2D5 /* Assets.xcassets */,
@@ -181,7 +182,6 @@
 			children = (
 				F853AB4429DE1CB3006EA2D5 /* RenameFileView.swift */,
 				F853AB4829DE1D12006EA2D5 /* MoveFileView.swift */,
-				F8EA28D129F8ACAB0063206D /* FileOpeners */,
 				F853AB4A29DE21A8006EA2D5 /* CopyFileView.swift */,
 				F853AB5829DE8C0E006EA2D5 /* SearchView.swift */,
 				F853AB4229DE1C41006EA2D5 /* CreateFileView.swift */,
