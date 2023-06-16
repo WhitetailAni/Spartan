@@ -1,7 +1,8 @@
 # Spartan now supports localization! Please contribute to localizing it!
 
 # Spartan
-tvOS file browser built in SwiftUI. Supports tvOS 13.0+
+tvOS file browser built in SwiftUI. Supports tvOS 13.0+. Will not work in 
+a simulator.
 
 Note that tvOS 13.x has a different user experience than 14.0+ due to SwiftUI limitations - it is still capable of everything, though.
 

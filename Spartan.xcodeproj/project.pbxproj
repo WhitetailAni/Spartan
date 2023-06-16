@@ -38,11 +38,11 @@
 		F8CC214629EF5838008C7B88 /* SpawnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214529EF5838008C7B88 /* SpawnView.swift */; };
 		F8CC214829EFA165008C7B88 /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214729EFA164008C7B88 /* TextView.swift */; };
 		F8CD35D52A3C453F0077F132 /* ApplicationsWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35D42A3C453F0077F132 /* ApplicationsWrapper */; };
-		F8CD35D72A3C453F0077F132 /* AssetCatalogWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35D62A3C453F0077F132 /* AssetCatalogWrapper */; };
-		F8CD35D92A3C453F0077F132 /* CompressionWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35D82A3C453F0077F132 /* CompressionWrapper */; };
-		F8CD35DB2A3C453F0077F132 /* DiskImagesWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35DA2A3C453F0077F132 /* DiskImagesWrapper */; };
-		F8CD35DD2A3C453F0077F132 /* FSOperations in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35DC2A3C453F0077F132 /* FSOperations */; };
-		F8CD35DF2A3C453F0077F132 /* NSTask in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35DE2A3C453F0077F132 /* NSTask */; };
+		F8CD35D72A3C453F0077F132 /* AssetCatalogWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35D62A3C453F0077F132 /* AssetCatalogWrapper */; settings = {ATTRIBUTES = (Required, ); }; };
+		F8CD35D92A3C453F0077F132 /* CompressionWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35D82A3C453F0077F132 /* CompressionWrapper */; settings = {ATTRIBUTES = (Required, ); }; };
+		F8CD35DB2A3C453F0077F132 /* DiskImagesWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35DA2A3C453F0077F132 /* DiskImagesWrapper */; settings = {ATTRIBUTES = (Required, ); }; };
+		F8CD35DD2A3C453F0077F132 /* FSOperations in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35DC2A3C453F0077F132 /* FSOperations */; settings = {ATTRIBUTES = (Required, ); }; };
+		F8CD35DF2A3C453F0077F132 /* NSTask in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35DE2A3C453F0077F132 /* NSTask */; settings = {ATTRIBUTES = (Required, ); }; };
 		F8CD35E12A3C453F0077F132 /* SVGWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35E02A3C453F0077F132 /* SVGWrapper */; };
 		F8D5795E2A0F2D2D00FDA526 /* DpkgView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D5795D2A0F2D2D00FDA526 /* DpkgView.swift */; };
 		F8D579952A15D17F00FDA526 /* SwiftTryCatch.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D579932A15D17F00FDA526 /* SwiftTryCatch.m */; };
@@ -140,7 +140,6 @@
 				F853AB2E29DBCB1A006EA2D5 /* SpartanApp.swift */,
 				F853AB3029DBCB1A006EA2D5 /* ContentView.swift */,
 				F8EA28D229F8ACCF0063206D /* ButtonActions */,
-				F8EA28D129F8ACAB0063206D /* FileOpeners */,
 				F8CC212629E5206B008C7B88 /* SpareViews.swift */,
 				F845C82E29F6247A0025AC0A /* EThree.swift */,
 				F853AB3229DBCB1E006EA2D5 /* Assets.xcassets */,
@@ -182,6 +181,7 @@
 			children = (
 				F853AB4429DE1CB3006EA2D5 /* RenameFileView.swift */,
 				F853AB4829DE1D12006EA2D5 /* MoveFileView.swift */,
+				F8EA28D129F8ACAB0063206D /* FileOpeners */,
 				F853AB4A29DE21A8006EA2D5 /* CopyFileView.swift */,
 				F853AB5829DE8C0E006EA2D5 /* SearchView.swift */,
 				F853AB4229DE1C41006EA2D5 /* CreateFileView.swift */,

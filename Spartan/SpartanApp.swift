@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+@_exported import LaunchServicesBridge
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -29,6 +30,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UserDefaults.settings.synchronize()
         }
         
+        print(LSApplicationWorkspace.default().allApplications())
+        
         if(fileManager.isReadableFile(atPath: "/var/mobile/")){ //shows app data directory if sandbox exists
             displayView(pathToLoad: "/")
             //displayView(pathToLoad: "/private/var/mobile/")
@@ -48,7 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if(fileManager.fileExists(atPath: "/var/jb/")) {
             isRootless = true
         }
-        let hostingController = UIHostingController(rootView: ContentView(directory: pathToLoad, isRootless: isRootless))
+        let hostingController = UIHostingController(rootView: ContentView(directory: pathToLoad, isRootless: isRootless, currentAppList: calculateAppList()))
             window = UIWindow(frame: UIScreen.main.bounds)
             window?.rootViewController = hostingController
             window?.makeKeyAndVisible()
@@ -85,6 +88,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         var path = appDataDirectory.path.split(separator: "/")
         path.removeLast()
         return "/" + path.joined(separator: "/") + "/"
+    }
+    
+    func calculateAppList() -> AppList {
+        let bundlePaths = ["lol"]
+        let dataPaths = ["lmao"]
+        let groupPaths = ["imagine"]
+        return AppList(bundlePaths: bundlePaths, dataPaths: dataPaths, groupPaths: groupPaths)
     }
 }
 

@@ -319,3 +319,9 @@ class AppInfo {
         }
     }
 }
+
+struct AppList {
+    var bundlePaths: [String]
+    var dataPaths: [String]
+    var groupPaths: [String]
+}

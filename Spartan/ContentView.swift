@@ -20,12 +20,13 @@ struct ContentView: View {
     @State var E = false
     @State var E2 = false
     @State var masterFiles: [SpartanFile] = []
-    
     @State var isRootless: Bool
     
     @State var buttonCalc = false
     @State var buttonWidth: CGFloat = 500
     @State var buttonHeight: CGFloat = 30
+    
+    @State var currentAppList: AppList
     
     @State var multiSelect = false
     @State var allWereSelected = false
@@ -1742,8 +1743,6 @@ struct ContentView: View {
 
     
     func readSymlinkDestination(path: String) -> String {
-        print("we r parsing")
-        print(path)
         print(try! fileManager.destinationOfSymbolicLink(atPath: path))
         var dest = "/"
         do {
