@@ -17,6 +17,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     @State private var buttonWidth: CGFloat = 0
     @State private var buttonHeight: CGFloat = 0
     
+    let fileManager = FileManager.default
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     
         if(!UserDefaults.settings.bool(forKey: "haveLaunchedBefore")) {
@@ -26,8 +28,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UserDefaults.settings.synchronize()
         }
         
-        if(FileManager.default.isReadableFile(atPath: "/var/mobile/")){ //shows app data directory if sandbox exists
-            displayView(pathToLoad: "/private/var/mobile/")
+        if(fileManager.isReadableFile(atPath: "/var/mobile/")){ //shows app data directory if sandbox exists
+            displayView(pathToLoad: "/")
+            //displayView(pathToLoad: "/private/var/mobile/")
             //displayView(pathToLoad:  "/private/var/containers/Bundle/Application/2A65A51A-4061-4143-B622-FA0E57C0C3EE/trillstore.app/")
         } else {
             displayView(pathToLoad: getDataDirectory())
@@ -41,7 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func displayView(pathToLoad: String) {
         var isRootless = false
-        if(FileManager.default.fileExists(atPath: "/var/jb/")) {
+        if(fileManager.fileExists(atPath: "/var/jb/")) {
             isRootless = true
         }
         let hostingController = UIHostingController(rootView: ContentView(directory: pathToLoad, isRootless: isRootless))
@@ -51,7 +54,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func createTrash() {
-        if(!(FileManager.default.fileExists(atPath: "/var/mobile/Media/.Trash"))){
+        if(!(fileManager.fileExists(atPath: "/var/mobile/Media/.Trash"))){
             do {
                 try createDirectoryAtPath(path: "/var/mobile/Media", directoryName: ".Trash")
                 print("Created trash directory")
@@ -64,16 +67,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func createDirectoryAtPath(path: String, directoryName: String) throws {
-        guard FileManager.default.fileExists(atPath: "/var/mobile/Media/.Trash/") else {
+        guard fileManager.fileExists(atPath: "/var/mobile/Media/.Trash/") else {
             print("Trash already exists")
             return
         }
         let directoryPath = (path as NSString).appendingPathComponent(directoryName)
-        try FileManager.default.createDirectory(atPath: directoryPath, withIntermediateDirectories: true, attributes: nil)
+        try fileManager.createDirectory(atPath: directoryPath, withIntermediateDirectories: true, attributes: nil)
     }
     
     func getDataDirectory() -> String {
-        let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        let urls = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
         guard let appDataDirectory = urls.first else {
             return "Data directory not found"
         }

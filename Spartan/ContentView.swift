@@ -13,7 +13,6 @@ import Swifter
 
 struct ContentView: View {
     @State var directory: String
-    @State private var files: [String] = []
     @State private var fileInfo: [String] = []
     @State var permissionDenied = false
     @State var deleteOverride = false
@@ -31,11 +30,11 @@ struct ContentView: View {
     @State var multiSelect = false
     @State var allWereSelected = false
     @State var multiSelectFiles: [String] = []
-    @State var fileWasSelected: [Bool] = [false]
     
     @State var newViewFilePath: String = ""
     @State var newViewArrayNames: [String] = [""]
     @State var newViewFileName: String = ""
+    @State var newViewFileURL: URL = URL(fileURLWithPath: "")
     @State private var newViewFileIndex = 0
     
     @State var renameFileCurrentName: String = ""
@@ -89,6 +88,8 @@ struct ContentView: View {
     let paddingInt: CGFloat = -7
     let opacityInt: CGFloat = 1.0
     
+    let fileManager = FileManager.default
+    
     @Environment(\.sizeCategory) var sizeCategory
     
     var body: some View {
@@ -112,7 +113,7 @@ struct ContentView: View {
                             buttonCalc = true
                         }
 
-                        if (substring(str: directory, startIndex: directory.index(directory.startIndex, offsetBy: 0), endIndex: directory.index(directory.startIndex, offsetBy: 5)) == "/var/") {
+                        if (directory.count >= 5 && substring(str: directory, startIndex: directory.index(directory.startIndex, offsetBy: 0), endIndex: directory.index(directory.startIndex, offsetBy: 5)) == "/var/") {
                             directory = "/private/var/" + substring(str: directory, startIndex: directory.index(directory.startIndex, offsetBy: 5), endIndex: directory.index(directory.endIndex, offsetBy: 0))
                         } //i dont have a way to check if every part of a filepath is a symlink, but this should fix most issues
                     }
@@ -162,107 +163,110 @@ struct ContentView: View {
                                 }
                             }
                         }
-                        ForEach(files.indices, id: \.self) { index in
+                        ForEach(masterFiles.indices, id: \.self) { index in
                             if #available(tvOS 14.0, *) {
                                 Button(action: {
+                                    print("calling default action")
+                                    print(masterFiles[index].name)
+                                    print(index)
                                     defaultAction(index: index, isDirectPath: false)
                                 }) {
                                     HStack {
-                                        if(isLoadingView && newViewFileName == files[index]) {
+                                        if(isLoadingView && newViewFileName == masterFiles[index].name) {
                                             ProgressView()
                                         } else {
                                             if (multiSelect) {
-                                                Image(systemName: fileWasSelected[index] ? "checkmark.circle" : "circle")
+                                                Image(systemName: masterFiles[index].isSelected ? "checkmark.circle" : "circle")
                                                     .transition(.opacity)
                                             }
-                                            let fileType = yandereDevFileType(file: (directory + files[index]))
+                                            let fileType = yandereDevFileType(file: (masterFiles[index].fullPath))
                                             
                                             switch fileType {
                                             case 0:
                                                 if ((directory == "/private/var/containers/Bundle/Application/") || (directory == "/private/var/mobile/Containers/Data/Application/")) {
                                                     Text("Listing app names coming soon")
                                                 } else {
-                                                    if (isDirectoryEmpty(atPath: directory + files[index]) == 1){
+                                                    if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 1){
                                                         Image(systemName: "folder")
-                                                    } else if (isDirectoryEmpty(atPath: directory + files[index]) == 0){
+                                                    } else if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 0){
                                                         Image(systemName: "folder.fill")
                                                     } else {
                                                         Image(systemName: "folder.badge.questionmark")
                                                     }
-                                                    Text(removeLastChar(string: files[index]))
+                                                    Text(masterFiles[index].name)
                                                         .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                                                    }
+                                                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                        }
                                                 }
                                             case 1:
                                                 Image(systemName: "waveform")
-                                                Text(files[index])
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
                                             case 2:
                                                 Image(systemName: "video")
-                                                Text(files[index])
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
                                             case 3:
                                                 Image(systemName: "photo")
-                                                Text(files[index])
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
                                             case 4:
                                                 Image(systemName: "doc.text")
-                                                Text(files[index])
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
                                             case 5.1:
                                                 Image(systemName: "list.bullet")
-                                                Text(files[index])
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
                                             case 5.2:
                                                 Image(systemName: "list.number")
-                                                Text(files[index])
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
                                             case 6:
                                                 Image(systemName: "doc.zipper")
-                                                Text(files[index])
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
                                             case 7:
                                                 Image(systemName: "terminal")
-                                                Text(files[index])
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
                                             case 8:
                                                 Image(systemName: "link")
-                                                Text(removeLastChar(string: files[index]))
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
                                             case 9:
                                                 Image(systemName: "archivebox")
-                                                Text(files[index])
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
                                             case 10:
                                                 Image(systemName: "tray.full")
-                                                Text(files[index])
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
                                             default:
                                                 Image(systemName: "doc")
-                                                Text(files[index])
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
@@ -274,7 +278,7 @@ struct ContentView: View {
                                     Button(action: {
                                         showSubView[3] = true
                                         newViewFileIndex = index
-                                        newViewFileName = files[index]
+                                        newViewFileName = masterFiles[index].name
                                     }) {
                                         Text(NSLocalizedString("INFO", comment: "there is no way a bee should be able to fly."))
                                             .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
@@ -284,8 +288,8 @@ struct ContentView: View {
                                     
                                     Button(action: {
                                         newViewFilePath = directory
-                                        renameFileCurrentName = files[index]
-                                        renameFileNewName = files[index]
+                                        renameFileCurrentName = masterFiles[index].name
+                                        renameFileNewName = masterFiles[index].name
                                         showSubView[7] = true
                                     }) {
                                         Text(NSLocalizedString("RENAME", comment: "Its wings are too small to get its fat little body off the ground."))
@@ -297,7 +301,7 @@ struct ContentView: View {
                                     Button(action: {
                                         showSubView[2] = true
                                         newViewFilePath = directory
-                                        newViewArrayNames = [files[index]]
+                                        newViewArrayNames = [masterFiles[index].name]
                                         newViewFileIndex = index
                                     }) {
                                         Text(NSLocalizedString("OPENIN", comment: "The bee, of course, flies anyway"))
@@ -308,7 +312,7 @@ struct ContentView: View {
                                     
                                     if(directory == "/var/mobile/Media/.Trash/"){
                                         Button(action: {
-                                            deleteFile(atPath: directory + files[index])
+                                            deleteFile(atPath: masterFiles[index].fullPath)
                                             updateFiles()
                                         }) {
                                             Text(NSLocalizedString("DELETE", comment: "because bees don't care what humans think is impossible."))
@@ -317,15 +321,15 @@ struct ContentView: View {
                                                 }
                                         }
                                         .foregroundColor(.red)
-                                    } else if(directory == "/var/mobile/Media/" && files[index] == ".Trash/"){
+                                    } else if(directory == "/var/mobile/Media/" && masterFiles[index].name == ".Trash/"){
                                         Button(action: {
                                             do {
-                                                try FileManager.default.removeItem(atPath: "/var/mobile/Media/.Trash/")
+                                                try fileManager.removeItem(atPath: "/var/mobile/Media/.Trash/")
                                             } catch {
                                                 print("Error emptying Trash: \(error)")
                                             }
                                             do {
-                                                try FileManager.default.createDirectory(atPath: "/var/mobile/Media/.Trash/", withIntermediateDirectories: true, attributes: nil)
+                                                try fileManager.createDirectory(atPath: "/var/mobile/Media/.Trash/", withIntermediateDirectories: true, attributes: nil)
                                             } catch {
                                                 print("Error emptying Trash: \(error)")
                                             }
@@ -338,7 +342,7 @@ struct ContentView: View {
                                         }
                                     } else {
                                         Button(action: {
-                                            moveFile(path: directory + files[index], newPath: ("/var/mobile/Media/.Trash/" + files[index]))
+                                            moveFile(path: masterFiles[index].fullPath, newPath: ("/var/mobile/Media/.Trash/" + masterFiles[index].name))
                                             updateFiles()
                                         }) {
                                             Text(NSLocalizedString("GOTOTRASH", comment: "Yellow, black. Yellow, black."))
@@ -349,7 +353,7 @@ struct ContentView: View {
                                     }
                                     if(deleteOverride){
                                         Button(action: {
-                                            deleteFile(atPath: directory + files[index])
+                                            deleteFile(atPath: masterFiles[index].fullPath)
                                             updateFiles()
                                         }) {
                                             Text(NSLocalizedString("DELETE", comment: "Ooh, black and yellow!"))
@@ -362,11 +366,11 @@ struct ContentView: View {
                                     
                                     Button(action: {
                                         showSubView[17] = true
-                                        newViewFilePath = directory + files[index]
-                                        if files[index].hasSuffix("/") {
-                                            newViewFileName = String(removeLastChar(string: files[index]))
+                                        newViewFilePath = masterFiles[index].fullPath
+                                        if masterFiles[index].name.hasSuffix("/") {
+                                            newViewFileName = masterFiles[index].name
                                         } else {
-                                            newViewFileName = files[index]
+                                            newViewFileName = masterFiles[index].name
                                         }
                                         UserDefaults.favorites.synchronize()
                                     }) {
@@ -378,7 +382,7 @@ struct ContentView: View {
                                     
                                     Button(action: {
                                         newViewFilePath = directory
-                                        newViewArrayNames = [files[index]]
+                                        newViewArrayNames = [masterFiles[index].name]
                                         showSubView[8] = true
                                     }) {
                                         Text(NSLocalizedString("MOVETO", comment: "Barry! Breakfast is ready!"))
@@ -389,7 +393,7 @@ struct ContentView: View {
                                     
                                     Button(action: {
                                         newViewFilePath = directory
-                                        newViewArrayNames = [files[index]]
+                                        newViewArrayNames = [masterFiles[index].name]
                                         showSubView[9] = true
                                     }) {
                                         Text(NSLocalizedString("COPYTO", comment: "Coming!"))
@@ -404,99 +408,99 @@ struct ContentView: View {
                                 Button(action: {
                                     showSubView[1] = true
                                     newViewFilePath = directory
-                                    newViewFileName = files[index]
+                                    newViewFileName = masterFiles[index].name
                                     newViewFileIndex = index
                                 }) {
                                     HStack {
                                         if (multiSelect) {
-                                            Image(systemName: fileWasSelected[index] ? "checkmark.circle" : "circle")
+                                            Image(systemName: masterFiles[index].isSelected ? "checkmark.circle" : "circle")
                                         }
                                         if(directory == "/private/var/containers/Bundle/Application/" || directory == "/var/containers/Bundle/Application/") {
                                             Text("app!")
                                         } else {
-                                            let fileType = yandereDevFileType(file: (directory + files[index]))
+                                            let fileType = yandereDevFileType(file: (masterFiles[index].fullPath))
                                             switch fileType {
                                             case 0:
-                                                if (isDirectoryEmpty(atPath: directory + files[index]) == 1) {
+                                                if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 1) {
                                                     Image(systemName: "folder")
-                                                } else if (isDirectoryEmpty(atPath: directory + files[index]) == 0) {
+                                                } else if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 0) {
                                                     Image(systemName: "folder.fill")
                                                 } else {
                                                     Image(systemName: "folder.badge.minus")
                                                 }
-                                                Text(removeLastChar(string: files[index]))
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
                                             case 1:
                                                 Image(systemName: "waveform.circle")
-                                                Text(files[index])
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
                                             case 2:
                                                 Image(systemName: "video")
-                                                Text(files[index])
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
                                             case 3:
                                                 Image(systemName: "photo")
-                                                Text(files[index])
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
                                             case 4:
                                                 Image(systemName: "doc.text")
-                                                Text(files[index])
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
                                             case 5.1:
                                                 Image(systemName: "list.bullet")
-                                                Text(files[index])
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
                                             case 5.2:
                                                 Image(systemName: "list.number")
-                                                Text(files[index])
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
                                             case 6:
                                                 Image(systemName: "rectangle.compress.vertical")
-                                                Text(files[index])
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
                                             case 7:
                                                 Image(systemName: "terminal")
-                                                Text(files[index])
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
                                             case 8:
                                                 Image(systemName: "link")
-                                                Text(removeLastChar(string: files[index]))
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
                                             case 9:
                                                 Image(systemName: "archivebox")
-                                                Text(files[index])
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
                                             case 10:
                                                 Image(systemName: "tray.full")
-                                                Text(files[index])
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
                                             default:
                                                 Image(systemName: "doc")
-                                                Text(files[index])
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
@@ -530,11 +534,11 @@ struct ContentView: View {
                     .opacity(opacityInt)
     
                     Button(action: {
-                        fileInfo = getFileInfo(forFileAtPath: directory + files[newViewFileIndex])
+                        fileInfo = getFileInfo(forFileAtPath: masterFiles[newViewFileIndex].fullPath)
                         showSubView[1] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             showSubView[3] = true
-                            newViewFileName = files[newViewFileIndex]
+                            newViewFileName = masterFiles[newViewFileIndex].name
                         }
                     }) {
                         Text(NSLocalizedString("INFO", comment: "there is no way a bee should be able to fly."))
@@ -548,8 +552,8 @@ struct ContentView: View {
                     
                     Button(action: {
                         newViewFilePath = directory
-                        renameFileCurrentName = files[newViewFileIndex]
-                        renameFileNewName = files[newViewFileIndex]
+                        renameFileCurrentName = masterFiles[newViewFileIndex].name
+                        renameFileNewName = masterFiles[newViewFileIndex].name
                         showSubView[1] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             showSubView[7] = true
@@ -566,7 +570,7 @@ struct ContentView: View {
                     
                     Button(action: {
                         newViewFilePath = directory
-                        newViewArrayNames = [files[newViewFileIndex]]
+                        newViewArrayNames = [masterFiles[newViewFileIndex].name]
                         showSubView[1] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             showSubView[2] = true
@@ -583,7 +587,7 @@ struct ContentView: View {
                     
                     if(directory == "/var/mobile/Media/.Trash/"){
                         Button(action: {
-                            deleteFile(atPath: directory + files[newViewFileIndex])
+                            deleteFile(atPath: masterFiles[newViewFileIndex].fullPath)
                             updateFiles()
                             showSubView[1] = false
                         }) {
@@ -596,15 +600,15 @@ struct ContentView: View {
                         }
                         .padding(paddingInt)
                         .opacity(opacityInt)
-                    } else if(directory == "/var/mobile/Media/" && files[newViewFileIndex] == ".Trash/"){
+                    } else if(directory == "/var/mobile/Media/" && masterFiles[newViewFileIndex].name == ".Trash/"){
                         Button(action: {
                             do {
-                                try FileManager.default.removeItem(atPath: "/var/mobile/Media/.Trash/")
+                                try fileManager.removeItem(atPath: "/var/mobile/Media/.Trash/")
                             } catch {
                                 print("Error emptying Trash: \(error)")
                             }
                             do {
-                                try FileManager.default.createDirectory(atPath: "/var/mobile/Media/.Trash/", withIntermediateDirectories: true, attributes: nil)
+                                try fileManager.createDirectory(atPath: "/var/mobile/Media/.Trash/", withIntermediateDirectories: true, attributes: nil)
                             } catch {
                                 print("Error emptying Trash: \(error)")
                             }
@@ -620,7 +624,7 @@ struct ContentView: View {
                         .opacity(opacityInt)
                     } else {
                         Button(action: {
-                            moveFile(path: directory + files[newViewFileIndex], newPath: ("/var/mobile/Media/.Trash/" + files[newViewFileIndex]))
+                            moveFile(path: masterFiles[newViewFileIndex].fullPath, newPath: ("/var/mobile/Media/.Trash/" + masterFiles[newViewFileIndex].name))
                             updateFiles()
                             showSubView[1] = false
                         }) {
@@ -635,7 +639,7 @@ struct ContentView: View {
                     }
                     if(deleteOverride){
                         Button(action: {
-                            deleteFile(atPath: directory + files[newViewFileIndex])
+                            deleteFile(atPath: masterFiles[newViewFileIndex].fullPath)
                             updateFiles()
                             showSubView[1] = false
                         }) {
@@ -651,11 +655,11 @@ struct ContentView: View {
                     }
                     
                     Button(action: {
-                        newViewFilePath = directory + files[newViewFileIndex]
-                        if files[newViewFileIndex].hasSuffix("/") {
-                            newViewFileName = String(removeLastChar(string: files[newViewFileIndex]))
+                        newViewFilePath = masterFiles[newViewFileIndex].fullPath
+                        if masterFiles[newViewFileIndex].name.hasSuffix("/") {
+                            newViewFileName = masterFiles[newViewFileIndex].name
                         } else {
-                            newViewFileName = files[newViewFileIndex]
+                            newViewFileName = masterFiles[newViewFileIndex].name
                         }
                         showSubView[1] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -674,7 +678,7 @@ struct ContentView: View {
                     
                     Button(action: {
                         newViewFilePath = directory
-                        newViewArrayNames = [files[newViewFileIndex]]
+                        newViewArrayNames = [masterFiles[newViewFileIndex].name]
                         showSubView[1] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             showSubView[8] = true
@@ -692,7 +696,7 @@ struct ContentView: View {
                     
                     Button(action: {
                         newViewFilePath = directory
-                        newViewArrayNames = [files[newViewFileIndex]]
+                        newViewArrayNames = [masterFiles[newViewFileIndex].name]
                         showSubView[1] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             showSubView[9] = true
@@ -724,7 +728,7 @@ struct ContentView: View {
                     HStack {
                         VStack {
                             Button(action: {
-                                directory = directory + files[newViewFileIndex]
+                                directory = directory + masterFiles[newViewFileIndex].name
                                 updateFiles()
                                 print(directory)
                                 showSubView[2] = false
@@ -741,7 +745,7 @@ struct ContentView: View {
                             AVFileOpener
                             
                             Button(action: {
-                                newViewFilePath = directory + files[newViewFileIndex]
+                                newViewFilePath = masterFiles[newViewFileIndex].fullPath
                                 showSubView[2] = false
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                     showSubView[4] = true
@@ -758,7 +762,7 @@ struct ContentView: View {
                             
                             Button(action: {
                                 newViewFilePath = directory
-                                newViewFileName = files[newViewFileIndex]
+                                newViewFileName = masterFiles[newViewFileIndex].name
                                 showSubView[2] = false
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                     showSubView[22] = true
@@ -775,7 +779,7 @@ struct ContentView: View {
                             
                             Button(action: {
                                 newViewFilePath = directory
-                                newViewFileName = files[newViewFileIndex]
+                                newViewFileName = masterFiles[newViewFileIndex].name
                                 showSubView[2] = false
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                     showSubView[17] = true
@@ -793,8 +797,8 @@ struct ContentView: View {
                     
                     VStack {
                         Button(action: {
-                            newViewFilePath = directory + files[newViewFileIndex]
-                            newViewFileName = files[newViewFileIndex]
+                            newViewFilePath = masterFiles[newViewFileIndex].fullPath
+                            newViewFileName = masterFiles[newViewFileIndex].name
                             showSubView[2] = false
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                 showSubView[13] = true
@@ -811,7 +815,8 @@ struct ContentView: View {
                         
                         Button(action: {
                             newViewFilePath = directory
-                            newViewFileName = files[newViewFileIndex]
+                            newViewFileName = masterFiles[newViewFileIndex].name
+                            newViewFileURL = masterFiles[newViewFileIndex].url
                             showSubView[2] = false
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                 showSubView[28] = true
@@ -830,7 +835,7 @@ struct ContentView: View {
                         
                         Button(action: {
                             newViewFilePath = directory
-                            newViewFileName = files[newViewFileIndex]
+                            newViewFileName = masterFiles[newViewFileIndex].name
                             uncompressZip = true
                             showSubView[2] = false
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -847,7 +852,7 @@ struct ContentView: View {
                         .opacity(opacityInt)
                         
                         Button(action: {
-                            newViewFilePath = directory + files[newViewFileIndex]
+                            newViewFilePath = masterFiles[newViewFileIndex].fullPath
                             showSubView[2] = false
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                 showSubView[15] = true
@@ -879,7 +884,15 @@ struct ContentView: View {
                     
                 }
                 .sheet(isPresented: $E2) {
-                    EThree(directory: $directory, files: $files, multiSelectFiles: $multiSelectFiles, fileWasSelected: $fileWasSelected, showSubView: $showSubView, yandereDevFileTypeDebugTransfer: yandereDevFileType)
+                    EThree(directory: $directory, files: Binding<[String]>(get: { self.masterFiles.map { $0.name } }, set: { newNames in
+                        for (index, newName) in newNames.enumerated() {
+                            self.masterFiles[index].name = newName
+                        }
+                    }), multiSelectFiles: $multiSelectFiles, fileWasSelected: Binding<[Bool]>(get: { self.masterFiles.map { $0.isSelected } }, set: { selected in
+                        for (index, selected) in selected.enumerated() {
+                            self.masterFiles[index].isSelected = selected
+                        }
+                    }), showSubView: $showSubView, yandereDevFileTypeDebugTransfer: yandereDevFileType)
                 }
                 .navigationBarHidden(true)
                 .onAppear {
@@ -939,7 +952,7 @@ struct ContentView: View {
                     showSubView[3] = true
                 }, content: {
                     TextField(NSLocalizedString("PERMSEDIT", comment: "This should have been added a long time ago"), value: $filePerms, formatter: NumberFormatter(), onCommit: {
-                        changeFilePerms(filePath: directory + files[newViewFileIndex], permValue: filePerms)
+                        changeFilePerms(filePath: masterFiles[newViewFileIndex].fullPath, permValue: filePerms)
                     })
                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
@@ -947,7 +960,7 @@ struct ContentView: View {
                     .keyboardType(.numberPad)
                     .textContentType(.oneTimeCode)
                     .onAppear {
-                        filePerms = try! FileManager.default.attributesOfItem(atPath: directory + files[newViewFileIndex])[.posixPermissions] as? Int ?? 000
+                        filePerms = try! fileManager.attributesOfItem(atPath: masterFiles[newViewFileIndex].fullPath)[.posixPermissions] as? Int ?? 000
                     }
                     
                 })
@@ -1078,7 +1091,7 @@ struct ContentView: View {
                     WebServerView(inputServer: $globalHttpServer)
                 })
                 .sheet(isPresented: $showSubView[28], content: {
-                    CarView(filePath: $newViewFilePath, fileName: $newViewFileName)
+                    CarView(filePath: $newViewFilePath, fileName: $newViewFileName, fileURL: $newViewFileURL)
                 })
                 .alert(isPresented: $showSubView[26]) {
                     Alert(
@@ -1104,7 +1117,7 @@ struct ContentView: View {
         HStack {
             Button(action: {
                 if(multiSelect) {
-                    multiSelectFiles = files
+                    multiSelectFiles = masterFiles.map { $0.name }
                     allWereSelected.toggle()
                     if(allWereSelected) {
                         iterateOverFileWasSelected(boolToIterate: true)
@@ -1112,7 +1125,6 @@ struct ContentView: View {
                         iterateOverFileWasSelected(boolToIterate: false)
                     }
                 } else {
-                    resizeMultiSelectArrays()
                     resetMultiSelectArrays()
                     withAnimation {
                         multiSelect = true
@@ -1192,7 +1204,6 @@ struct ContentView: View {
                     showSubView[8] = true
                     newViewFilePath = directory
                     newViewArrayNames = multiSelectFiles
-                    resizeMultiSelectArrays()
                     resetMultiSelectArrays()
                 }) {
                     ZStack {
@@ -1209,7 +1220,6 @@ struct ContentView: View {
                     showSubView[9] = true
                     newViewFilePath = directory
                     newViewArrayNames = multiSelectFiles
-                    resizeMultiSelectArrays()
                     resetMultiSelectArrays()
                 }) {
                     ZStack {
@@ -1227,7 +1237,6 @@ struct ContentView: View {
                     uncompressZip = false
                     newViewFilePath = directory
                     newViewArrayNames = multiSelectFiles
-                    resizeMultiSelectArrays()
                 }) {
                     Image(systemName: "doc.zipper")
                         .frame(width:50, height:50)
@@ -1239,7 +1248,6 @@ struct ContentView: View {
                             deleteFile(atPath: directory + file)
                             updateFiles()
                         }
-                        resizeMultiSelectArrays()
                     } else {
                         for file in multiSelectFiles {
                             moveFile(path: directory + file, newPath: "/var/mobile/Media/.Trash/" + file)
@@ -1355,8 +1363,8 @@ struct ContentView: View {
         let buttonHeight = 30 * (UIScreen.main.nativeBounds.height/1080)
         
         Button(action: {
-            newViewFilePath = directory + files[newViewFileIndex]
-            newViewFileName = files[newViewFileIndex]
+            newViewFilePath = masterFiles[newViewFileIndex].fullPath
+            newViewFileName = masterFiles[newViewFileIndex].name
             showSubView[2] = false
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 showSubView[10] = true
@@ -1375,7 +1383,7 @@ struct ContentView: View {
         
         Button(action: {
             newViewFilePath = directory
-            newViewFileName = files[newViewFileIndex]
+            newViewFileName = masterFiles[newViewFileIndex].name
             showSubView[2] = false
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 showSubView[11] = true
@@ -1392,7 +1400,7 @@ struct ContentView: View {
         
         
         Button(action: {
-            newViewFilePath = directory + files[newViewFileIndex]
+            newViewFilePath = masterFiles[newViewFileIndex].fullPath
             showSubView[2] = false
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 showSubView[12] = true
@@ -1412,7 +1420,7 @@ struct ContentView: View {
     var DpkgFileOpener: some View {
         Button(action: {
             newViewFilePath = directory
-            newViewFileName = files[newViewFileIndex]
+            newViewFileName = masterFiles[newViewFileIndex].name
             showSubView[2] = false
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 showSubView[23] = true
@@ -1429,7 +1437,7 @@ struct ContentView: View {
         
         Button(action: {
             newViewFilePath = directory
-            newViewFileName = files[newViewFileIndex]
+            newViewFileName = masterFiles[newViewFileIndex].name
             showSubView[2] = false
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 showSubView[24] = true
@@ -1446,19 +1454,22 @@ struct ContentView: View {
     }
     
     func defaultAction(index: Int, isDirectPath: Bool) {
-        var fileToCheck: [String] = files
+        var fileToCheck: [String] = masterFiles.map { $0.name }
         if(isDirectPath) {
             fileToCheck = [""]
         }
+        print("default actioning at the beginning")
+        print(fileToCheck)
+        print(masterFiles[index].name)
     
         if (multiSelect) {
-            if(fileWasSelected[index]){
-                let searchedIndex = multiSelectFiles.firstIndex(of: files[index])
+            if(masterFiles[index].isSelected){
+                let searchedIndex = multiSelectFiles.firstIndex(of: masterFiles[newViewFileIndex].name)
                 multiSelectFiles.remove(at: searchedIndex!)
-                fileWasSelected[index] = false
+                masterFiles[index].isSelected = false
             } else {
-                fileWasSelected[index] = true
-                multiSelectFiles.append(files[index])
+                masterFiles[index].isSelected = true
+                multiSelectFiles.append(masterFiles[newViewFileIndex].name)
             }
         } else {
             multiSelect = false
@@ -1468,18 +1479,17 @@ struct ContentView: View {
             switch fileType {
             case 0:
                 do {
-                    try FileManager.default.contentsOfDirectory(atPath: directory + fileToCheck[index])
+                    try fileManager.contentsOfDirectory(atPath: directory + fileToCheck[index])
                 } catch {
                     if(substring(str: error.localizedDescription, startIndex: error.localizedDescription.index(error.localizedDescription.endIndex, offsetBy: -33), endIndex: error.localizedDescription.index(error.localizedDescription.endIndex, offsetBy: 0)) == "don’t have permission to view it."){
                         permissionDenied = true
-                        print(permissionDenied)
                     }
                 }
                 if(!permissionDenied){
                     if(isDirectPath) {
                         updateFiles()
                     } else {
-                        directory = directory + fileToCheck[index]
+                        directory = directory + fileToCheck[index] + "/"
                         updateFiles()
                     }
                 }
@@ -1501,8 +1511,7 @@ struct ContentView: View {
             case 7:
                 showSubView[15] = true
             case 8:
-                print(readSymlinkDestination(path: files[index]))
-                directory = readSymlinkDestination(path: files[index]) + "/"
+                directory = readSymlinkDestination(path: directory + fileToCheck[index]) + "/"
                 updateFiles()
             case 9:
                 showSubView[23] = true
@@ -1519,19 +1528,14 @@ struct ContentView: View {
 
     func updateFiles() {
         do {
-            let contents = try FileManager.default.contentsOfDirectory(atPath: directory)
-            files = contents.map { file in
-                let filePath = "/" + directory + "/" + file
-                var isDirectory: ObjCBool = false
-                FileManager.default.fileExists(atPath: filePath, isDirectory: &isDirectory)
-                return isDirectory.boolValue ? "\(file)/" : file
-            }
+            let contents = try fileManager.contentsOfDirectory(atPath: directory)
+            print(contents)
             masterFiles = []
+            
             for i in 0..<contents.count {
-                masterFiles.append(SpartanFile(name: contents[i], path: directory, isSelected: false))
+                masterFiles.append(SpartanFile(name: contents[i], url: URL(fileURLWithPath: directory + contents[i]), fullPath: directory + contents[i], isSelected: false))
             }
-            //print(masterFiles)
-            resizeMultiSelectArrays()
+            print(masterFiles)
             resetMultiSelectArrays()
         } catch {
             print(error.localizedDescription)
@@ -1560,14 +1564,14 @@ struct ContentView: View {
     
     func deleteFile(atPath path: String) {
         do {
-            try FileManager.default.removeItem(atPath: path)
+            try fileManager.removeItem(atPath: path)
         } catch {
             print("Failed to delete file: \(error.localizedDescription)")
         }
     }
     
     func getFileInfo(forFileAtPath: String) -> [String] {
-        let fileManager = FileManager.default
+        let fileManager = fileManager
     
         do {
             let attributes = try fileManager.attributesOfItem(atPath: forFileAtPath)
@@ -1601,24 +1605,22 @@ struct ContentView: View {
         }
     }
     
-    func isDirectoryEmpty(atPath path: String) -> Int {
-        let fileManager = FileManager.default
+    func isDirectoryEmpty(atPath: String) -> Int {
         do {
-            let files = try fileManager.contentsOfDirectory(atPath: path)
+            let files = try fileManager.contentsOfDirectory(atPath: atPath)
             if(files.isEmpty){
                 return 1
             } else {
                 return 0
             }
         } catch {
-            //print("Error checking directory contents: \(error.localizedDescription)")
             return 2
         }
     }
     
     func moveFile(path: String, newPath: String) {
         do {
-            try FileManager.default.moveItem(atPath: path, toPath: newPath)
+            try fileManager.moveItem(atPath: path, toPath: newPath)
         } catch {
             print("Failed to move file: \(error.localizedDescription)")
         }
@@ -1626,7 +1628,7 @@ struct ContentView: View {
     
     func freeSpace(path: String) -> (Double, String) {
         do {
-            let systemAttributes = try FileManager.default.attributesOfFileSystem(forPath: path)
+            let systemAttributes = try fileManager.attributesOfFileSystem(forPath: path)
             let freeSpace = systemAttributes[.systemFreeSize] as? NSNumber
             if let freeSpace = freeSpace {
                 return convertBytes(bytes: freeSpace.doubleValue)
@@ -1659,9 +1661,12 @@ struct ContentView: View {
         let imageTypes: [String] = ["png", "tiff", "tif", "jpeg", "jpg", "gif", "bmp", "BMPf", "ico", "cur", "xbm"]
         let archiveTypes: [String] = ["zip", "cbz"]
         
+        var isDirectory: ObjCBool = false
+        _ = fileManager.fileExists(atPath: file, isDirectory: &isDirectory)
+        
         if (isSymlink(filePath: file)) {
             return 8 //symlink
-        } else if file.hasSuffix("/") {
+        } else if isDirectory.boolValue {
             return 0 //directory
         } else if (audioTypes.contains(where: file.hasSuffix)) {
             return 1 //audio file
@@ -1679,7 +1684,7 @@ struct ContentView: View {
             return 4 //text file
         } else if (archiveTypes.contains(where: file.hasSuffix)){
             return 6 //archive
-        } else if (FileManager.default.isExecutableFile(atPath: file)) {
+        } else if (fileManager.isExecutableFile(atPath: file)) {
             return 7 //executable
         } else if (file.hasSuffix(".deb")) {
             return 9 //deb
@@ -1688,7 +1693,7 @@ struct ContentView: View {
         }
     }
     func isText(filePath: String) -> Bool {
-        guard let data = FileManager.default.contents(atPath: filePath) else {
+        guard let data = fileManager.contents(atPath: filePath) else {
             return false
         }
     
@@ -1700,7 +1705,7 @@ struct ContentView: View {
         return isASCII || isUTF8
     }
     func isPlist(filePath: String) -> Double {
-        guard let data = FileManager.default.contents(atPath: filePath) else {
+        guard let data = fileManager.contents(atPath: filePath) else {
             return 0
         }
         
@@ -1718,6 +1723,7 @@ struct ContentView: View {
     }
     func isSymlink(filePath: String) -> Bool {
         let fileURL = URL(fileURLWithPath: filePath)
+        
         do {
             let resourceValues = try fileURL.resourceValues(forKeys: [.isSymbolicLinkKey])
             if let isSymbolicLink = resourceValues.isSymbolicLink {
@@ -1729,7 +1735,7 @@ struct ContentView: View {
         return false
     }
     func isCar(filePath: String) -> Bool {
-        guard let data = FileManager.default.contents(atPath: filePath) else {
+        guard let data = fileManager.contents(atPath: filePath) else {
             return false
         }
         
@@ -1744,17 +1750,16 @@ struct ContentView: View {
 
     
     func readSymlinkDestination(path: String) -> String {
-        let truePath = "/" + removeLastChar(string: path)
+        print("we r parsing")
         print(path)
-        print(truePath)
+        print(try! fileManager.destinationOfSymbolicLink(atPath: path))
         var dest = "/"
         do {
-            dest += try FileManager.default.destinationOfSymbolicLink(atPath: truePath)
-            print(try FileManager.default.destinationOfSymbolicLink(atPath: truePath))
+            dest += try fileManager.destinationOfSymbolicLink(atPath: path)
         } catch {
             print(error.localizedDescription)
         }
-        if(!FileManager.default.fileExists(atPath: dest)) {
+        if(!fileManager.fileExists(atPath: dest)) {
             nonexistentFile = dest
             showSubView[26] = true
         }
@@ -1763,21 +1768,6 @@ struct ContentView: View {
         }
         return dest
     }
-
-    
-    func resizeMultiSelectArrays() {
-        let range = abs(files.count - fileWasSelected.count)
-        if(fileWasSelected.count > files.count){
-            fileWasSelected.removeLast(range)
-            if(fileWasSelected.count == 0){
-                fileWasSelected.append(false)
-            }
-        } else if(fileWasSelected.count < files.count){
-            for _ in 0..<range {
-                fileWasSelected.append(false)
-            }
-        }
-    }
     func resetMultiSelectArrays(){
         iterateOverFileWasSelected(boolToIterate: false)
         for i in 0..<multiSelectFiles.count {
@@ -1785,20 +1775,16 @@ struct ContentView: View {
         }
     }
     func iterateOverFileWasSelected(boolToIterate: Bool) {
-        for i in 0..<fileWasSelected.count {
-            fileWasSelected[i] = boolToIterate
+        for i in 0..<masterFiles.count {
+            masterFiles[i].isSelected = boolToIterate
         }
     }
     
     func directPathTypeCheckNewViewFileVariableSetter() {
         if(yandereDevFileType(file: directory) != 0){
             newViewFilePath = String(directory.prefix(through: directory.lastIndex(of: "/")!))
-            print(directory)
-            print(newViewFilePath)
             let inProgressFileName = directory.split(separator: "/")
             newViewFileName = String(inProgressFileName.last ?? "")
-            print(newViewFileName)
-            print("did you get it?")
         }
     }
     func resetShowSubView() {
@@ -1807,18 +1793,14 @@ struct ContentView: View {
         }
     }
     
-    func removeLastChar(string: String) -> String {
-        return String(substring(str: string, startIndex: string.index(string.startIndex, offsetBy: 0), endIndex: string.index(string.endIndex, offsetBy: -1)))
-    }
-    
     func changeFilePerms(filePath: String, permValue: Int) {
-        guard FileManager.default.fileExists(atPath: filePath) else {
+        guard fileManager.fileExists(atPath: filePath) else {
             print("File does not exist at path: \(filePath)")
             return
         }
         
         do {
-            try FileManager.default.setAttributes([FileAttributeKey.posixPermissions: NSNumber(value: permValue)], ofItemAtPath: filePath)
+            try fileManager.setAttributes([FileAttributeKey.posixPermissions: NSNumber(value: permValue)], ofItemAtPath: filePath)
         } catch {
             print("Error changing file permissions: \(error.localizedDescription)")
         }
@@ -1828,6 +1810,7 @@ struct ContentView: View {
 
 struct SpartanFile {
     var name: String
-    var path: String
+    var url: URL
+    var fullPath: String
     var isSelected: Bool
 }

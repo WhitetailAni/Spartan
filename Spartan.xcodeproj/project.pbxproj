@@ -28,13 +28,6 @@
 		F88FBB0A2A2FE44500E31EDA /* Swifter in Frameworks */ = {isa = PBXBuildFile; productRef = F88FBB092A2FE44500E31EDA /* Swifter */; };
 		F88FBB0D2A2FEFA700E31EDA /* UIApplicationSuspend.m in Sources */ = {isa = PBXBuildFile; fileRef = F88FBB0C2A2FEFA700E31EDA /* UIApplicationSuspend.m */; };
 		F898F66B2A1AFEC300F1B4E4 /* WebServerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F898F66A2A1AFEC300F1B4E4 /* WebServerView.swift */; };
-		F8B617C92A3A3A3D002D5DFC /* ApplicationsWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F8B617C82A3A3A3D002D5DFC /* ApplicationsWrapper */; };
-		F8B617CB2A3A3A3D002D5DFC /* AssetCatalogWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F8B617CA2A3A3A3D002D5DFC /* AssetCatalogWrapper */; };
-		F8B617CD2A3A3A3D002D5DFC /* CompressionWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F8B617CC2A3A3A3D002D5DFC /* CompressionWrapper */; };
-		F8B617CF2A3A3A3D002D5DFC /* DiskImagesWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F8B617CE2A3A3A3D002D5DFC /* DiskImagesWrapper */; };
-		F8B617D12A3A3A3D002D5DFC /* FSOperations in Frameworks */ = {isa = PBXBuildFile; productRef = F8B617D02A3A3A3D002D5DFC /* FSOperations */; };
-		F8B617D32A3A3A3D002D5DFC /* NSTask in Frameworks */ = {isa = PBXBuildFile; productRef = F8B617D22A3A3A3D002D5DFC /* NSTask */; };
-		F8B617D52A3A3A3D002D5DFC /* SVGWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F8B617D42A3A3A3D002D5DFC /* SVGWrapper */; };
 		F8C1A5D429FB55F100DF4C23 /* MountPointsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C1A5D329FB55F100DF4C23 /* MountPointsView.swift */; };
 		F8CC211F29E2762F008C7B88 /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC211E29E2762F008C7B88 /* ImageView.swift */; };
 		F8CC212329E4FFC5008C7B88 /* PlistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC212229E4FFC5008C7B88 /* PlistView.swift */; };
@@ -44,6 +37,13 @@
 		F8CC214429EB9503008C7B88 /* ZipFileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214329EB9503008C7B88 /* ZipFileView.swift */; };
 		F8CC214629EF5838008C7B88 /* SpawnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214529EF5838008C7B88 /* SpawnView.swift */; };
 		F8CC214829EFA165008C7B88 /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214729EFA164008C7B88 /* TextView.swift */; };
+		F8CD35D52A3C453F0077F132 /* ApplicationsWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35D42A3C453F0077F132 /* ApplicationsWrapper */; };
+		F8CD35D72A3C453F0077F132 /* AssetCatalogWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35D62A3C453F0077F132 /* AssetCatalogWrapper */; };
+		F8CD35D92A3C453F0077F132 /* CompressionWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35D82A3C453F0077F132 /* CompressionWrapper */; };
+		F8CD35DB2A3C453F0077F132 /* DiskImagesWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35DA2A3C453F0077F132 /* DiskImagesWrapper */; };
+		F8CD35DD2A3C453F0077F132 /* FSOperations in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35DC2A3C453F0077F132 /* FSOperations */; };
+		F8CD35DF2A3C453F0077F132 /* NSTask in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35DE2A3C453F0077F132 /* NSTask */; };
+		F8CD35E12A3C453F0077F132 /* SVGWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35E02A3C453F0077F132 /* SVGWrapper */; };
 		F8D5795E2A0F2D2D00FDA526 /* DpkgView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D5795D2A0F2D2D00FDA526 /* DpkgView.swift */; };
 		F8D579952A15D17F00FDA526 /* SwiftTryCatch.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D579932A15D17F00FDA526 /* SwiftTryCatch.m */; };
 		F8E9A9792A00B4A400706179 /* HexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E9A9782A00B4A400706179 /* HexView.swift */; };
@@ -95,14 +95,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8CC214229EA68BC008C7B88 /* Zip in Frameworks */,
-				F8B617D52A3A3A3D002D5DFC /* SVGWrapper in Frameworks */,
-				F8B617D12A3A3A3D002D5DFC /* FSOperations in Frameworks */,
-				F8B617D32A3A3A3D002D5DFC /* NSTask in Frameworks */,
-				F8B617C92A3A3A3D002D5DFC /* ApplicationsWrapper in Frameworks */,
+				F8CD35E12A3C453F0077F132 /* SVGWrapper in Frameworks */,
+				F8CD35DD2A3C453F0077F132 /* FSOperations in Frameworks */,
+				F8CD35DF2A3C453F0077F132 /* NSTask in Frameworks */,
+				F8CD35D52A3C453F0077F132 /* ApplicationsWrapper in Frameworks */,
 				F88FBB0A2A2FE44500E31EDA /* Swifter in Frameworks */,
-				F8B617CB2A3A3A3D002D5DFC /* AssetCatalogWrapper in Frameworks */,
-				F8B617CD2A3A3A3D002D5DFC /* CompressionWrapper in Frameworks */,
-				F8B617CF2A3A3A3D002D5DFC /* DiskImagesWrapper in Frameworks */,
+				F8CD35D72A3C453F0077F132 /* AssetCatalogWrapper in Frameworks */,
+				F8CD35D92A3C453F0077F132 /* CompressionWrapper in Frameworks */,
+				F8CD35DB2A3C453F0077F132 /* DiskImagesWrapper in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,13 +203,13 @@
 			packageProductDependencies = (
 				F8CC214129EA68BC008C7B88 /* Zip */,
 				F88FBB092A2FE44500E31EDA /* Swifter */,
-				F8B617C82A3A3A3D002D5DFC /* ApplicationsWrapper */,
-				F8B617CA2A3A3A3D002D5DFC /* AssetCatalogWrapper */,
-				F8B617CC2A3A3A3D002D5DFC /* CompressionWrapper */,
-				F8B617CE2A3A3A3D002D5DFC /* DiskImagesWrapper */,
-				F8B617D02A3A3A3D002D5DFC /* FSOperations */,
-				F8B617D22A3A3A3D002D5DFC /* NSTask */,
-				F8B617D42A3A3A3D002D5DFC /* SVGWrapper */,
+				F8CD35D42A3C453F0077F132 /* ApplicationsWrapper */,
+				F8CD35D62A3C453F0077F132 /* AssetCatalogWrapper */,
+				F8CD35D82A3C453F0077F132 /* CompressionWrapper */,
+				F8CD35DA2A3C453F0077F132 /* DiskImagesWrapper */,
+				F8CD35DC2A3C453F0077F132 /* FSOperations */,
+				F8CD35DE2A3C453F0077F132 /* NSTask */,
+				F8CD35E02A3C453F0077F132 /* SVGWrapper */,
 			);
 			productName = Spartan;
 			productReference = F853AB2B29DBCB1A006EA2D5 /* Spartan.app */;
@@ -246,7 +246,7 @@
 			packageReferences = (
 				F8CC214029EA68BB008C7B88 /* XCRemoteSwiftPackageReference "Zip" */,
 				F88FBB082A2FE44500E31EDA /* XCRemoteSwiftPackageReference "swifter" */,
-				F8B617C72A3A3A3D002D5DFC /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */,
+				F8CD35D32A3C453F0077F132 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */,
 			);
 			productRefGroup = F853AB2C29DBCB1A006EA2D5 /* Products */;
 			projectDirPath = "";
@@ -588,20 +588,20 @@
 				minimumVersion = 1.5.0;
 			};
 		};
-		F8B617C72A3A3A3D002D5DFC /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/RealKGB/PrivateKits-tvOS";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
 		F8CC214029EA68BB008C7B88 /* XCRemoteSwiftPackageReference "Zip" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/marmelroy/Zip";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.0.0;
+			};
+		};
+		F8CD35D32A3C453F0077F132 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RealKGB/PrivateKits-tvOS";
+			requirement = {
+				branch = main;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -612,45 +612,45 @@
 			package = F88FBB082A2FE44500E31EDA /* XCRemoteSwiftPackageReference "swifter" */;
 			productName = Swifter;
 		};
-		F8B617C82A3A3A3D002D5DFC /* ApplicationsWrapper */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F8B617C72A3A3A3D002D5DFC /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
-			productName = ApplicationsWrapper;
-		};
-		F8B617CA2A3A3A3D002D5DFC /* AssetCatalogWrapper */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F8B617C72A3A3A3D002D5DFC /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
-			productName = AssetCatalogWrapper;
-		};
-		F8B617CC2A3A3A3D002D5DFC /* CompressionWrapper */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F8B617C72A3A3A3D002D5DFC /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
-			productName = CompressionWrapper;
-		};
-		F8B617CE2A3A3A3D002D5DFC /* DiskImagesWrapper */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F8B617C72A3A3A3D002D5DFC /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
-			productName = DiskImagesWrapper;
-		};
-		F8B617D02A3A3A3D002D5DFC /* FSOperations */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F8B617C72A3A3A3D002D5DFC /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
-			productName = FSOperations;
-		};
-		F8B617D22A3A3A3D002D5DFC /* NSTask */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F8B617C72A3A3A3D002D5DFC /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
-			productName = NSTask;
-		};
-		F8B617D42A3A3A3D002D5DFC /* SVGWrapper */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F8B617C72A3A3A3D002D5DFC /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
-			productName = SVGWrapper;
-		};
 		F8CC214129EA68BC008C7B88 /* Zip */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F8CC214029EA68BB008C7B88 /* XCRemoteSwiftPackageReference "Zip" */;
 			productName = Zip;
+		};
+		F8CD35D42A3C453F0077F132 /* ApplicationsWrapper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F8CD35D32A3C453F0077F132 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
+			productName = ApplicationsWrapper;
+		};
+		F8CD35D62A3C453F0077F132 /* AssetCatalogWrapper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F8CD35D32A3C453F0077F132 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
+			productName = AssetCatalogWrapper;
+		};
+		F8CD35D82A3C453F0077F132 /* CompressionWrapper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F8CD35D32A3C453F0077F132 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
+			productName = CompressionWrapper;
+		};
+		F8CD35DA2A3C453F0077F132 /* DiskImagesWrapper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F8CD35D32A3C453F0077F132 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
+			productName = DiskImagesWrapper;
+		};
+		F8CD35DC2A3C453F0077F132 /* FSOperations */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F8CD35D32A3C453F0077F132 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
+			productName = FSOperations;
+		};
+		F8CD35DE2A3C453F0077F132 /* NSTask */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F8CD35D32A3C453F0077F132 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
+			productName = NSTask;
+		};
+		F8CD35E02A3C453F0077F132 /* SVGWrapper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F8CD35D32A3C453F0077F132 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
+			productName = SVGWrapper;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -12,6 +12,7 @@ import AssetCatalogWrapper
 struct CarView: View {
     @Binding var filePath: String
     @Binding var fileName: String
+    @Binding var fileURL: URL
 
     var body: some View {
         Text(UserDefaults.settings.bool(forKey: "verboseTimestamps") ? filePath + fileName : fileName)

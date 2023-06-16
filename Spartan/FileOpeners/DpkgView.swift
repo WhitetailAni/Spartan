@@ -21,10 +21,12 @@ struct DpkgView: View {
     @State var isExtracting = false
     @State var extractToCurrentDir = true
     @State var extractDest: String = ""
+    
+    let fileManager = FileManager.default
 
     var body: some View {
         //if(0 == 1) {
-        if !(FileManager.default.fileExists(atPath: "/usr/bin/dpkg/") || FileManager.default.fileExists(atPath: "/var/jb/usr/bin/dpkg/")) {
+        if !(fileManager.fileExists(atPath: "/usr/bin/dpkg/") || fileManager.fileExists(atPath: "/var/jb/usr/bin/dpkg/")) {
             Text(NSLocalizedString("ERR_NOJAILBREAK", comment: "GO AHEAD AND [Scream] INTO THE [Receiver]."))
                 .font(.system(size: 60))
         } else {
@@ -108,10 +110,11 @@ struct DpkgBuilderView: View {
     @State private var dpkgDebLog: String = ""
     @State private var dpkgPath: String = ""
     
+    let fileManager = FileManager.default
     
     var body: some View {
         //if(0 == 1) {
-        if !(FileManager.default.fileExists(atPath: "/usr/bin/dpkg/") || FileManager.default.fileExists(atPath: "/var/jb/usr/bin/dpkg/")) {
+        if !(fileManager.fileExists(atPath: "/usr/bin/dpkg/") || fileManager.fileExists(atPath: "/var/jb/usr/bin/dpkg/")) {
             Text(NSLocalizedString("ERR_NOJAILBREAK", comment: "AND THIS IS HOW YOU [Repay] ME!? TREATING ME LIKE [DLC]!?"))
                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                     view.scaledFont(name: "BotW Sheikah Regular", size: 60)
