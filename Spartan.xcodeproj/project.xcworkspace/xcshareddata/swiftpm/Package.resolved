@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "privatekits-tvos",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/RealKGB/PrivateKits-tvOS",
+      "state" : {
+        "branch" : "main",
+        "revision" : "d42a2aa584a2ed058234bbafa78365b9706d21b8"
+      }
+    },
+    {
       "identity" : "swifter",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/httpswift/swifter",

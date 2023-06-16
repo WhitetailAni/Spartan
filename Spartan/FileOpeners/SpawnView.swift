@@ -14,6 +14,7 @@ struct SpawnView: View {
     @State var envVars: String = ""
     @State var spawnLog: String = ""
     @State var descriptiveTitles = UserDefaults.settings.bool(forKey: "descriptiveTitles")
+    
     var body: some View {
         VStack {
             Text(descriptiveTitles ? binaryPath + binaryName : binaryName)

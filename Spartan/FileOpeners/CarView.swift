@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import UIKit
+import AssetCatalogWrapper
 
 struct CarView: View {
     @Binding var filePath: String
