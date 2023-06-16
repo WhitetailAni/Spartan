@@ -166,9 +166,6 @@ struct ContentView: View {
                         ForEach(masterFiles.indices, id: \.self) { index in
                             if #available(tvOS 14.0, *) {
                                 Button(action: {
-                                    print("calling default action")
-                                    print(masterFiles[index].name)
-                                    print(index)
                                     defaultAction(index: index, isDirectPath: false)
                                 }) {
                                     HStack {
@@ -1458,9 +1455,6 @@ struct ContentView: View {
         if(isDirectPath) {
             fileToCheck = [""]
         }
-        print("default actioning at the beginning")
-        print(fileToCheck)
-        print(masterFiles[index].name)
     
         if (multiSelect) {
             if(masterFiles[index].isSelected){
@@ -1529,13 +1523,11 @@ struct ContentView: View {
     func updateFiles() {
         do {
             let contents = try fileManager.contentsOfDirectory(atPath: directory)
-            print(contents)
             masterFiles = []
             
             for i in 0..<contents.count {
                 masterFiles.append(SpartanFile(name: contents[i], url: URL(fileURLWithPath: directory + contents[i]), fullPath: directory + contents[i], isSelected: false))
             }
-            print(masterFiles)
             resetMultiSelectArrays()
         } catch {
             print(error.localizedDescription)
