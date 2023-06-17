@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F81F77E42A3D7320003AABB0 /* ApplicationsWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F81F77E32A3D7320003AABB0 /* ApplicationsWrapper */; };
+		F81F77E62A3D7320003AABB0 /* AssetCatalogWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F81F77E52A3D7320003AABB0 /* AssetCatalogWrapper */; };
+		F81F77E82A3D7320003AABB0 /* CompressionWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F81F77E72A3D7320003AABB0 /* CompressionWrapper */; };
+		F81F77EA2A3D7320003AABB0 /* DiskImagesWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F81F77E92A3D7320003AABB0 /* DiskImagesWrapper */; };
+		F81F77EC2A3D7320003AABB0 /* FSOperations in Frameworks */ = {isa = PBXBuildFile; productRef = F81F77EB2A3D7320003AABB0 /* FSOperations */; };
+		F81F77EE2A3D7320003AABB0 /* SVGWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F81F77ED2A3D7320003AABB0 /* SVGWrapper */; };
 		F82095202A2622D100DC6D79 /* CarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F820951F2A2622D100DC6D79 /* CarView.swift */; };
 		F83F052E2A297E2000EB0720 /* Sheikah.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F83F052D2A297CDE00EB0720 /* Sheikah.ttf */; };
 		F845C82829F4D77C0025AC0A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F845C82A29F4D77C0025AC0A /* Localizable.strings */; };
@@ -37,13 +43,6 @@
 		F8CC214429EB9503008C7B88 /* ZipFileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214329EB9503008C7B88 /* ZipFileView.swift */; };
 		F8CC214629EF5838008C7B88 /* SpawnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214529EF5838008C7B88 /* SpawnView.swift */; };
 		F8CC214829EFA165008C7B88 /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214729EFA164008C7B88 /* TextView.swift */; };
-		F8CD35D52A3C453F0077F132 /* ApplicationsWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35D42A3C453F0077F132 /* ApplicationsWrapper */; };
-		F8CD35D72A3C453F0077F132 /* AssetCatalogWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35D62A3C453F0077F132 /* AssetCatalogWrapper */; settings = {ATTRIBUTES = (Required, ); }; };
-		F8CD35D92A3C453F0077F132 /* CompressionWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35D82A3C453F0077F132 /* CompressionWrapper */; settings = {ATTRIBUTES = (Required, ); }; };
-		F8CD35DB2A3C453F0077F132 /* DiskImagesWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35DA2A3C453F0077F132 /* DiskImagesWrapper */; settings = {ATTRIBUTES = (Required, ); }; };
-		F8CD35DD2A3C453F0077F132 /* FSOperations in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35DC2A3C453F0077F132 /* FSOperations */; settings = {ATTRIBUTES = (Required, ); }; };
-		F8CD35DF2A3C453F0077F132 /* NSTask in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35DE2A3C453F0077F132 /* NSTask */; settings = {ATTRIBUTES = (Required, ); }; };
-		F8CD35E12A3C453F0077F132 /* SVGWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F8CD35E02A3C453F0077F132 /* SVGWrapper */; };
 		F8D5795E2A0F2D2D00FDA526 /* DpkgView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D5795D2A0F2D2D00FDA526 /* DpkgView.swift */; };
 		F8D579952A15D17F00FDA526 /* SwiftTryCatch.m in Sources */ = {isa = PBXBuildFile; fileRef = F8D579932A15D17F00FDA526 /* SwiftTryCatch.m */; };
 		F8E9A9792A00B4A400706179 /* HexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E9A9782A00B4A400706179 /* HexView.swift */; };
@@ -53,7 +52,6 @@
 /* Begin PBXFileReference section */
 		F820951F2A2622D100DC6D79 /* CarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarView.swift; sourceTree = "<group>"; };
 		F83F052D2A297CDE00EB0720 /* Sheikah.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Sheikah.ttf; sourceTree = "<group>"; };
-		F841DA2D2A3CD57D004B7EC0 /* FrontBoardServices.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = FrontBoardServices.tbd; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/System/Library/PrivateFrameworks/FrontBoardServices.framework/FrontBoardServices.tbd; sourceTree = DEVELOPER_DIR; };
 		F845C82929F4D77C0025AC0A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F845C82E29F6247A0025AC0A /* EThree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EThree.swift; sourceTree = "<group>"; };
 		F853AB2B29DBCB1A006EA2D5 /* Spartan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spartan.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -86,8 +84,6 @@
 		F8D579652A11D1D100FDA526 /* Spartan-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Spartan-Bridging-Header.h"; sourceTree = "<group>"; };
 		F8D579932A15D17F00FDA526 /* SwiftTryCatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SwiftTryCatch.m; path = Spartan/swifttrycatch/SwiftTryCatch.m; sourceTree = "<group>"; };
 		F8D579942A15D17F00FDA526 /* SwiftTryCatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SwiftTryCatch.h; path = Spartan/swifttrycatch/SwiftTryCatch.h; sourceTree = "<group>"; };
-		F8DE58482A3CCF7B009523FA /* FrontBoardServices.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = FrontBoardServices.tbd; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/PrivateFrameworks/FrontBoardServices.framework/FrontBoardServices.tbd; sourceTree = DEVELOPER_DIR; };
-		F8DE584A2A3CCFB7009523FA /* FrontBoardServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FrontBoardServices.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/PrivateFrameworks/FrontBoardServices.framework; sourceTree = DEVELOPER_DIR; };
 		F8E9A9782A00B4A400706179 /* HexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexView.swift; sourceTree = "<group>"; };
 		F8EA28D329F8C2710063206D /* CreateSymlinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSymlinkView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -98,14 +94,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8CC214229EA68BC008C7B88 /* Zip in Frameworks */,
-				F8CD35E12A3C453F0077F132 /* SVGWrapper in Frameworks */,
-				F8CD35DD2A3C453F0077F132 /* FSOperations in Frameworks */,
-				F8CD35DF2A3C453F0077F132 /* NSTask in Frameworks */,
-				F8CD35D52A3C453F0077F132 /* ApplicationsWrapper in Frameworks */,
+				F81F77EC2A3D7320003AABB0 /* FSOperations in Frameworks */,
+				F81F77E42A3D7320003AABB0 /* ApplicationsWrapper in Frameworks */,
+				F81F77EE2A3D7320003AABB0 /* SVGWrapper in Frameworks */,
 				F88FBB0A2A2FE44500E31EDA /* Swifter in Frameworks */,
-				F8CD35D72A3C453F0077F132 /* AssetCatalogWrapper in Frameworks */,
-				F8CD35D92A3C453F0077F132 /* CompressionWrapper in Frameworks */,
-				F8CD35DB2A3C453F0077F132 /* DiskImagesWrapper in Frameworks */,
+				F81F77E62A3D7320003AABB0 /* AssetCatalogWrapper in Frameworks */,
+				F81F77E82A3D7320003AABB0 /* CompressionWrapper in Frameworks */,
+				F81F77EA2A3D7320003AABB0 /* DiskImagesWrapper in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -122,7 +117,6 @@
 				F8D579652A11D1D100FDA526 /* Spartan-Bridging-Header.h */,
 				F853AB2C29DBCB1A006EA2D5 /* Products */,
 				F853AB2D29DBCB1A006EA2D5 /* Spartan */,
-				F8CD35E52A3CCEE70077F132 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -148,16 +142,6 @@
 				F83F052D2A297CDE00EB0720 /* Sheikah.ttf */,
 			);
 			path = Spartan;
-			sourceTree = "<group>";
-		};
-		F8CD35E52A3CCEE70077F132 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				F841DA2D2A3CD57D004B7EC0 /* FrontBoardServices.tbd */,
-				F8DE584A2A3CCFB7009523FA /* FrontBoardServices.framework */,
-				F8DE58482A3CCF7B009523FA /* FrontBoardServices.tbd */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		F8EA28D129F8ACAB0063206D /* FileOpeners */ = {
@@ -217,13 +201,12 @@
 			packageProductDependencies = (
 				F8CC214129EA68BC008C7B88 /* Zip */,
 				F88FBB092A2FE44500E31EDA /* Swifter */,
-				F8CD35D42A3C453F0077F132 /* ApplicationsWrapper */,
-				F8CD35D62A3C453F0077F132 /* AssetCatalogWrapper */,
-				F8CD35D82A3C453F0077F132 /* CompressionWrapper */,
-				F8CD35DA2A3C453F0077F132 /* DiskImagesWrapper */,
-				F8CD35DC2A3C453F0077F132 /* FSOperations */,
-				F8CD35DE2A3C453F0077F132 /* NSTask */,
-				F8CD35E02A3C453F0077F132 /* SVGWrapper */,
+				F81F77E32A3D7320003AABB0 /* ApplicationsWrapper */,
+				F81F77E52A3D7320003AABB0 /* AssetCatalogWrapper */,
+				F81F77E72A3D7320003AABB0 /* CompressionWrapper */,
+				F81F77E92A3D7320003AABB0 /* DiskImagesWrapper */,
+				F81F77EB2A3D7320003AABB0 /* FSOperations */,
+				F81F77ED2A3D7320003AABB0 /* SVGWrapper */,
 			);
 			productName = Spartan;
 			productReference = F853AB2B29DBCB1A006EA2D5 /* Spartan.app */;
@@ -260,7 +243,7 @@
 			packageReferences = (
 				F8CC214029EA68BB008C7B88 /* XCRemoteSwiftPackageReference "Zip" */,
 				F88FBB082A2FE44500E31EDA /* XCRemoteSwiftPackageReference "swifter" */,
-				F8CD35D32A3C453F0077F132 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */,
+				F81F77E22A3D7320003AABB0 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */,
 			);
 			productRefGroup = F853AB2C29DBCB1A006EA2D5 /* Products */;
 			projectDirPath = "";
@@ -596,6 +579,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		F81F77E22A3D7320003AABB0 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RealKGB/PrivateKits-tvOS";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		F88FBB082A2FE44500E31EDA /* XCRemoteSwiftPackageReference "swifter" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/httpswift/swifter";
@@ -612,17 +603,39 @@
 				minimumVersion = 2.0.0;
 			};
 		};
-		F8CD35D32A3C453F0077F132 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/RealKGB/PrivateKits-tvOS";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		F81F77E32A3D7320003AABB0 /* ApplicationsWrapper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F81F77E22A3D7320003AABB0 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
+			productName = ApplicationsWrapper;
+		};
+		F81F77E52A3D7320003AABB0 /* AssetCatalogWrapper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F81F77E22A3D7320003AABB0 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
+			productName = AssetCatalogWrapper;
+		};
+		F81F77E72A3D7320003AABB0 /* CompressionWrapper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F81F77E22A3D7320003AABB0 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
+			productName = CompressionWrapper;
+		};
+		F81F77E92A3D7320003AABB0 /* DiskImagesWrapper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F81F77E22A3D7320003AABB0 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
+			productName = DiskImagesWrapper;
+		};
+		F81F77EB2A3D7320003AABB0 /* FSOperations */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F81F77E22A3D7320003AABB0 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
+			productName = FSOperations;
+		};
+		F81F77ED2A3D7320003AABB0 /* SVGWrapper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F81F77E22A3D7320003AABB0 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
+			productName = SVGWrapper;
+		};
 		F88FBB092A2FE44500E31EDA /* Swifter */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F88FBB082A2FE44500E31EDA /* XCRemoteSwiftPackageReference "swifter" */;
@@ -632,41 +645,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F8CC214029EA68BB008C7B88 /* XCRemoteSwiftPackageReference "Zip" */;
 			productName = Zip;
-		};
-		F8CD35D42A3C453F0077F132 /* ApplicationsWrapper */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F8CD35D32A3C453F0077F132 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
-			productName = ApplicationsWrapper;
-		};
-		F8CD35D62A3C453F0077F132 /* AssetCatalogWrapper */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F8CD35D32A3C453F0077F132 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
-			productName = AssetCatalogWrapper;
-		};
-		F8CD35D82A3C453F0077F132 /* CompressionWrapper */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F8CD35D32A3C453F0077F132 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
-			productName = CompressionWrapper;
-		};
-		F8CD35DA2A3C453F0077F132 /* DiskImagesWrapper */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F8CD35D32A3C453F0077F132 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
-			productName = DiskImagesWrapper;
-		};
-		F8CD35DC2A3C453F0077F132 /* FSOperations */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F8CD35D32A3C453F0077F132 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
-			productName = FSOperations;
-		};
-		F8CD35DE2A3C453F0077F132 /* NSTask */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F8CD35D32A3C453F0077F132 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
-			productName = NSTask;
-		};
-		F8CD35E02A3C453F0077F132 /* SVGWrapper */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F8CD35D32A3C453F0077F132 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
-			productName = SVGWrapper;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

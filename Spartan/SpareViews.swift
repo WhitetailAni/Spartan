@@ -298,28 +298,6 @@ extension View {
     }
 }
 
-class AppInfo {
-    func bundleDir(bundleID: String) -> String {
-        return Bundle.main.bundleURL.appendingPathComponent(bundleID).path
-    }
-    
-    func dataDir(bundleID: String) -> String? {
-        if let dataDirectoryURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?.appendingPathComponent(bundleID) {
-            return dataDirectoryURL.path
-        } else {
-            return nil
-        }
-    }
-    
-    func appGroupDir(bundleID: String) -> String? {
-        if let appGroupDirectoryURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group." + bundleID)?.appendingPathComponent("Library") {
-            return appGroupDirectoryURL.path
-        } else {
-            return nil
-        }
-    }
-}
-
 struct AppList {
     var bundlePaths: [String]
     var dataPaths: [String]

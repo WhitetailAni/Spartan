@@ -30,10 +30,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UserDefaults.settings.synchronize()
         }
         
-        print(LSApplicationWorkspace.default().allApplications())
-        
         if(fileManager.isReadableFile(atPath: "/var/mobile/")){ //shows app data directory if sandbox exists
-            displayView(pathToLoad: "/")
+            displayView(pathToLoad: "/private/var/containers/Bundle/Application/")
+            //displayView(pathToLoad: "/private/var/mobile/Containers/Data/Application/")
             //displayView(pathToLoad: "/private/var/mobile/")
             //displayView(pathToLoad:  "/private/var/containers/Bundle/Application/2A65A51A-4061-4143-B622-FA0E57C0C3EE/trillstore.app/")
         } else {
@@ -51,7 +50,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if(fileManager.fileExists(atPath: "/var/jb/")) {
             isRootless = true
         }
-        let hostingController = UIHostingController(rootView: ContentView(directory: pathToLoad, isRootless: isRootless, currentAppList: calculateAppList()))
+        let hostingController = UIHostingController(rootView: ContentView(directory: pathToLoad, isRootless: isRootless, scaleFactor: UIScreen.main.nativeBounds.height/1080, currentAppList: calculateAppList()))
             window = UIWindow(frame: UIScreen.main.bounds)
             window?.rootViewController = hostingController
             window?.makeKeyAndVisible()

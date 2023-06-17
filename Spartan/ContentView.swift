@@ -10,6 +10,7 @@ import Foundation
 import AVKit
 import MobileCoreServices
 import Swifter
+import ApplicationsWrapper
 
 struct ContentView: View {
     @State var directory: String
@@ -22,6 +23,7 @@ struct ContentView: View {
     @State var masterFiles: [SpartanFile] = []
     @State var isRootless: Bool
     
+    @State var scaleFactor: CGFloat
     @State var buttonCalc = false
     @State var buttonWidth: CGFloat = 500
     @State var buttonHeight: CGFloat = 30
@@ -106,8 +108,8 @@ struct ContentView: View {
                     }
                     .onAppear {
                         if(!buttonCalc) {
-                            buttonWidth *= (UIScreen.main.nativeBounds.height/1080)
-                            buttonHeight *= (UIScreen.main.nativeBounds.height/1080) //it wasnt calculating properly in SpartanApp... not sure why but it works now
+                            buttonWidth *= scaleFactor
+                            buttonHeight *= scaleFactor
                             if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) {
                                 buttonWidth *= 1.5
                             }
@@ -181,8 +183,42 @@ struct ContentView: View {
                                             
                                             switch fileType {
                                             case 0:
-                                                if ((directory == "/private/var/containers/Bundle/Application/") || (directory == "/private/var/mobile/Containers/Data/Application/")) {
-                                                    Text("Listing app names coming soon")
+                                                if (directory == "/private/var/containers/Bundle/Application/") {
+                                                    let manager = ApplicationsManager(allApps: LSApplicationWorkspace.default().allApplications())
+
+                                                    let currentDirContents = try! fileManager.contentsOfDirectory(atPath: masterFiles[index].fullPath)
+                                                    let appFolder = currentDirContents.first { contents in
+                                                        contents.hasSuffix(".app")
+                                                    }
+                                                    let pathPlus = masterFiles[index].fullPath + "/" + appFolder!
+                                                    let app = manager.application(forBundleURL: URL(fileURLWithPath: pathPlus))
+                                                    HStack {
+                                                        if (fileManager.fileExists(atPath: pathPlus + "/Assets.car")) {
+                                                            let image = manager.icon(forApplication: app!)
+                                                            Image(uiImage: image)
+                                                                .resizable()
+                                                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                                                .frame(width: 280 * scaleFactor, height: 168 * scaleFactor)
+                                                        } else { //if Assets.car doesn't exist the app has no icon (and Assets.car is required on tvOS 13.0+, so we can make this assumption) and so no image is retrieved, because if there isn't Assets.car UIApplication crashes
+                                                            Image("Default")
+                                                                .resizable()
+                                                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                                                .frame(width: 280 * scaleFactor, height: 168 * scaleFactor)
+                                                        }
+                                                        VStack(alignment: .leading) {
+                                                            Text(app!.localizedName())
+                                                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                                }
+                                                            Text(masterFiles[index].name)
+                                                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40).foregroundColor(.gray)
+                                                                }
+                                                                .foregroundColor(.gray)
+                                                        }
+                                                    }
+                                                //} else if (directory == "/private/var/mobile/Containers/Data/Application/") {
+                                                    //have to work out sandboxing system on tvOS
                                                 } else {
                                                     if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 1){
                                                         Image(systemName: "folder")
