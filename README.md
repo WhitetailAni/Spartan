@@ -48,8 +48,6 @@ How to use:
 by default and so this step is no longer required), enter the Xcode.app 
 folder and find the AppleTVOS SDK. Locate 
 /usr/include/spawn.h, give it write permissions, and remove the listings that mark it as unavailable on tvOS.
-3a. Download the patched SDK corresponding to your Xcode's SDK version from https://github.com/itsnebulalol/sdks/tree/main/iPhoneOS17.0.sdk. Then take just the PrivateFrameworks folder and add it to your existing AppleTVOS.sdk folder
-3b. Remove AVFCapture.framework, AVFCore.framework, AudioToolboxCore.framework
-4. Build and run to your Apple TV.
+3. Build and run to your Apple TV.
 
 Good luck have fun. Hopefully this isn't the only tvOS file browser ever.
