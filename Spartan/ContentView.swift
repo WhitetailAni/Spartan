@@ -38,7 +38,6 @@ struct ContentView: View {
     @State var newViewFilePath: String = ""
     @State var newViewArrayNames: [String] = [""]
     @State var newViewFileName: String = ""
-    @State var newViewFileURL: URL = URL(fileURLWithPath: "")
     @State private var newViewFileIndex = 0
     
     @State var renameFileCurrentName: String = ""
@@ -93,6 +92,11 @@ struct ContentView: View {
     let opacityInt: CGFloat = 1.0
     
     let fileManager = FileManager.default
+    let appsManager = ApplicationsManager(allApps: LSApplicationWorkspace.default().allApplications())
+    
+    @State var selectedLSAppPath: String = ""
+    @State var selectedLSApplication: LSApplicationProxy?
+    @State var LSApplications: [LSApplicationProxy?] = []
     
     @Environment(\.sizeCategory) var sizeCategory
     
@@ -185,23 +189,21 @@ struct ContentView: View {
                                             switch fileType {
                                             case 0:
                                                 if (directory == "/private/var/containers/Bundle/Application/") {
-                                                    let manager = ApplicationsManager(allApps: LSApplicationWorkspace.default().allApplications())
-
                                                     let currentDirContents = try! fileManager.contentsOfDirectory(atPath: masterFiles[index].fullPath)
                                                     let appFolder = currentDirContents.first { contents in
                                                         contents.hasSuffix(".app")
                                                     }
                                                     let pathPlus = masterFiles[index].fullPath +  appFolder! + "/"
-                                                    let app = manager.application(forBundleURL: URL(fileURLWithPath: pathPlus))
+                                                    let app = appsManager.application(forBundleURL: URL(fileURLWithPath: pathPlus))
                                                     HStack {
                                                         if (fileManager.fileExists(atPath: pathPlus + "Assets.car")) {
-                                                            let image = manager.icon(forApplication: app!)
+                                                            let image = appsManager.icon(forApplication: app!)
                                                             Image(uiImage: image)
                                                                 .resizable()
                                                                 .clipShape(RoundedRectangle(cornerRadius: 8))
                                                                 .frame(width: 280 * scaleFactor, height: 168 * scaleFactor)
                                                         } else { //if Assets.car doesn't exist the app has no icon (and Assets.car is required on tvOS 13.0+, so we can make this assumption) and so no image is retrieved, because if there isn't Assets.car UIApplication crashes
-                                                            Image("Default")
+                                                            Image("DefaultIcon")
                                                                 .resizable()
                                                                 .clipShape(RoundedRectangle(cornerRadius: 8))
                                                                 .frame(width: 280 * scaleFactor, height: 168 * scaleFactor)
@@ -218,8 +220,49 @@ struct ContentView: View {
                                                                 .foregroundColor(.gray)
                                                         }
                                                     }
-                                                //} else if (directory == "/private/var/mobile/Containers/Data/Application/") {
-                                                    //have to work out sandboxing system on tvOS
+                                                } else if (directory == "/private/var/mobile/Containers/Data/Application/") {
+                                                    HStack {
+                                                        if (fileManager.fileExists(atPath: selectedLSAppPath + "Assets.car")) {
+                                                            /*let image = manager.icon(forApplication: selectedLSApplication)
+                                                            Image(uiImage: image)
+                                                                .resizable()
+                                                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                                                .frame(width: 280 * scaleFactor, height: 168 * scaleFactor)*/
+                                                        } else { //if Assets.car doesn't exist the app has no icon (and Assets.car is required on tvOS 13.0+, so we can make this assumption) and so no image is retrieved, because if there isn't Assets.car UIApplication crashes
+                                                            Image("DefaultIcon")
+                                                                .resizable()
+                                                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                                                .frame(width: 280 * scaleFactor, height: 168 * scaleFactor)
+                                                        }
+                                                        VStack(alignment: .leading) {
+                                                            /*Text(selectedLSApplication.localizedName())
+                                                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                                }*/
+                                                            Text(removeLastChar(masterFiles[index].name))
+                                                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40).foregroundColor(.gray)
+                                                                }
+                                                                .foregroundColor(.gray)
+                                                                .onAppear {
+                                                                    let containerDirContents = try! fileManager.contentsOfDirectory(atPath: "/private/var/containers/Bundle/Application/")
+                                                                    for folder in containerDirContents {
+                                                                        let folderDirContents = try! fileManager.contentsOfDirectory(atPath: "/private/var/containers/Bundle/Application/" + folder)
+                                                                        let bundlePath = folderDirContents.first { contents in
+                                                                            contents.hasSuffix(".app")
+                                                                        }
+                                                                        let bundlePathPlus = "/private/var/containers/Bundle/Application/" + folder + "/" + bundlePath! + "/"
+                                                                        LSApplications.append(appsManager.application(forBundleURL: URL(fileURLWithPath: bundlePathPlus)))
+                                                                    }
+                                                                    /*for application in LSApplications {
+                                                                        print(application?.bundleContainerURL)
+                                                                        if(application.dataContainerURL == URL(fileURLWithPath: masterFiles[index].fullPath)) {
+                                                                            selectedLSApplication = application
+                                                                        }
+                                                                    }*/
+                                                                }
+                                                        }
+                                                    }
                                                 } else {
                                                     if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 1){
                                                         Image(systemName: "folder")
@@ -450,8 +493,42 @@ struct ContentView: View {
                                         if (multiSelect) {
                                             Image(systemName: masterFiles[index].isSelected ? "checkmark.circle" : "circle")
                                         }
-                                        if(directory == "/private/var/containers/Bundle/Application/" || directory == "/var/containers/Bundle/Application/") {
-                                            Text("app!")
+                                        if (directory == "/private/var/containers/Bundle/Application/") {
+                                            let manager = ApplicationsManager(allApps: LSApplicationWorkspace.default().allApplications())
+
+                                            let currentDirContents = try! fileManager.contentsOfDirectory(atPath: masterFiles[index].fullPath)
+                                            let appFolder = currentDirContents.first { contents in
+                                                contents.hasSuffix(".app")
+                                            }
+                                            let pathPlus = masterFiles[index].fullPath +  appFolder! + "/"
+                                            let app = manager.application(forBundleURL: URL(fileURLWithPath: pathPlus))
+                                            HStack {
+                                                if (fileManager.fileExists(atPath: pathPlus + "Assets.car")) {
+                                                    let image = manager.icon(forApplication: app!)
+                                                    Image(uiImage: image)
+                                                        .resizable()
+                                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                                        .frame(width: 280 * scaleFactor, height: 168 * scaleFactor)
+                                                } else { //if Assets.car doesn't exist the app has no icon (and Assets.car is required on tvOS 13.0+, so we can make this assumption) and so no image is retrieved, because if there isn't Assets.car UIApplication crashes
+                                                    Image("DefaultIcon")
+                                                        .resizable()
+                                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                                        .frame(width: 280 * scaleFactor, height: 168 * scaleFactor)
+                                                }
+                                                VStack(alignment: .leading) {
+                                                    Text(app!.localizedName())
+                                                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                        }
+                                                    Text(removeLastChar(masterFiles[index].name))
+                                                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                            view.scaledFont(name: "BotW Sheikah Regular", size: 40).foregroundColor(.gray)
+                                                        }
+                                                        .foregroundColor(.gray)
+                                                }
+                                            }
+                                        } else if (directory == "/private/var/mobile/Containers/Data/Application/") {
+                                            Text("E")
                                         } else {
                                             let fileType = yandereDevFileType(file: (masterFiles[index].fullPath))
                                             switch fileType {
@@ -851,7 +928,6 @@ struct ContentView: View {
                         Button(action: {
                             newViewFilePath = directory
                             newViewFileName = masterFiles[newViewFileIndex].name
-                            newViewFileURL = masterFiles[newViewFileIndex].url
                             showSubView[2] = false
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 showSubView[28] = true
@@ -1054,7 +1130,7 @@ struct ContentView: View {
                             directory = newViewFilePath
                         } else {
                             directory = URL(fileURLWithPath: newViewFilePath).deletingLastPathComponent().path + "/"
-                            masterFiles.append(SpartanFile(name: URL(fileURLWithPath: newViewFilePath).lastPathComponent, url: URL(fileURLWithPath: newViewFilePath), fullPath: newViewFilePath, isSelected: false))
+                            masterFiles.append(SpartanFile(name: URL(fileURLWithPath: newViewFilePath).lastPathComponent, fullPath: newViewFilePath, isSelected: false))
                             defaultAction(index: masterFiles.count-1, isDirectPath: false)
                         }
                         didSearch = false
@@ -1137,7 +1213,7 @@ struct ContentView: View {
                     WebServerView(inputServer: $globalHttpServer)
                 })
                 .sheet(isPresented: $showSubView[28], content: {
-                    CarView(filePath: $newViewFilePath, fileName: $newViewFileName, fileURL: $newViewFileURL)
+                    CarView(filePath: $newViewFilePath, fileName: $newViewFileName)
                 })
                 .alert(isPresented: $showSubView[26]) {
                     Alert(
@@ -1583,7 +1659,7 @@ struct ContentView: View {
             }
             masterFiles = []
             for i in 0..<contents.count {
-                masterFiles.append(SpartanFile(name: files[i], url: URL(fileURLWithPath: directory + files[i]), fullPath: directory + files[i], isSelected: false))
+                masterFiles.append(SpartanFile(name: files[i], fullPath: directory + files[i], isSelected: false))
             }
             resetMultiSelectArrays()
         } catch {
@@ -1862,7 +1938,6 @@ struct ContentView: View {
 
 struct SpartanFile {
     var name: String
-    var url: URL
     var fullPath: String
     var isSelected: Bool
 }
