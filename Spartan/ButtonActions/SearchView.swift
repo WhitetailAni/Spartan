@@ -10,11 +10,15 @@ import SwiftUI
 struct SearchView: View {
 
     @State var searchTerm: String = ""
-    @Binding var directoryToSearch: String
+    @Binding var directory: String
+    @State var directoryToSearch = ""
     @Binding var isPresenting: Bool
     @State private var matchCase = false
     @State var showResults = false
     @State private var currentlySearching = false
+    
+    @Binding var selectedFile: String
+    @Binding var didSearch: Bool
     
     @State private var entireResults: [String] = []
     @State private var filteredResults: [String] = []
@@ -22,52 +26,87 @@ struct SearchView: View {
     
     
     var body: some View {
-        TextField(NSLocalizedString("SEARCH_TERM", comment: "How can you say that? One job forever?"), text: $searchTerm)
-            .disabled(currentlySearching)
-            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-            }
-        TextField(NSLocalizedString("SEARCH_PATH", comment: "That's an insane choice to have to make."), text: $directoryToSearch)
-            .disabled(currentlySearching)
-            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-            }
-        Button(action: {
-            matchCase.toggle()
-        }) {
-            Text(NSLocalizedString("SEARCH_CASE", comment: "I'm relieved. Now we only have to make one decision in life."))
+        if (!showResults) {
+            TextField(NSLocalizedString("SEARCH_TERM", comment: "How can you say that? One job forever?"), text: $searchTerm)
+                .disabled(currentlySearching)
                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                     view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                 }
-            Image(systemName: matchCase ? "checkmark.square" : "square")
-        }
-        .disabled(currentlySearching)
-        
-        Button(action: {
-            currentlySearching = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) { //so the loading symbol shows
-            //horribly hacky but it works
-                resultsList = dirSearch(directoryPath: directoryToSearch, searchTerm: searchTerm)
-                showResults = true
-            }
-        }) {
-            if(currentlySearching){
-                if #available(tvOS 14.0, *) {
-                    ProgressView()
+            TextField(NSLocalizedString("SEARCH_PATH", comment: "That's an insane choice to have to make."), text: $directoryToSearch)
+                .disabled(currentlySearching)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                 }
-            } else {
-                Text(NSLocalizedString("CONFIRM", comment: "But, Adam, how could they never have told us that?"))
+                .onAppear {
+                    directoryToSearch = directory
+                }
+            Button(action: {
+                matchCase.toggle()
+            }) {
+                Text(NSLocalizedString("SEARCH_CASE", comment: "I'm relieved. Now we only have to make one decision in life."))
                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                     }
+                Image(systemName: matchCase ? "checkmark.square" : "square")
             }
-        }
-        .disabled(currentlySearching)
-        .sheet(isPresented: $showResults, content: { //search files
-            SearchResultsView(resultsList: $resultsList, currentDirectory: $directoryToSearch, showingNest: $showResults, showingOriginal: $isPresenting)
-        })
-        .onAppear {
-            currentlySearching = false
+            .disabled(currentlySearching)
+            
+            Button(action: {
+                withAnimation {
+                    currentlySearching = true
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) { //so the loading symbol shows
+                //horribly hacky but it works
+                    resultsList = dirSearch(directoryPath: directoryToSearch, searchTerm: searchTerm)
+                    showResults = true
+                }
+            }) {
+                if #available(tvOS 14.0, *) {
+                    if (currentlySearching) {
+                        ProgressView()
+                    } else {
+                        Text(NSLocalizedString("CONFIRM", comment: "But, Adam, how could they never have told us that?"))
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
+                    }
+                } else {
+                    Text(NSLocalizedString("CONFIRM", comment: "But, Adam, how could they never have told us that?"))
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                        }
+                }
+            }
+            .disabled(currentlySearching)
+            .onAppear {
+                currentlySearching = false
+            }
+        } else {
+            Text(NSLocalizedString("SEARCH_RESULTS", comment: "Why would you question anything?"))
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                }
+            List(resultsList, id: \.self) { result in
+                Button(action: {
+                    selectedFile = result
+                    isPresenting = false
+                }) {
+                    Text(result)
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                        }
+                }
+            }
+            .onAppear {
+                didSearch = true
+                for i in 0..<resultsList.count {
+                    var isDirectory: ObjCBool = false
+                    FileManager.default.fileExists(atPath: resultsList[i], isDirectory: &isDirectory)
+                    if(isDirectory.boolValue) {
+                        resultsList[i].append("/")
+                    }
+                }
+            }
         }
     }
     
@@ -100,39 +139,5 @@ struct SearchView: View {
             }
         }
         return foundResults
-    }
-}
-
-struct SearchResultsView: View {
-
-    @Binding var resultsList: [String]
-    @Binding var currentDirectory: String
-    @Binding var showingNest: Bool
-    @Binding var showingOriginal: Bool
-    
-    @Environment(\.presentationMode) var presentationMode
-
-    var body: some View {
-        Text(NSLocalizedString("SEARCH_RESULTS", comment: "Why would you question anything?"))
-            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-            }
-        List(resultsList, id: \.self) { string in
-            Button(action: {
-                if(!string.hasSuffix("/")){
-                    let index = string.lastIndex(of: "/")
-                    currentDirectory = String(string.prefix(upTo: index!)) + "/"
-                } else {
-                    currentDirectory = string
-                }
-                showingNest = false
-                showingOriginal = false
-            }) {
-                Text(string)
-                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                    }
-            }
-        }
     }
 }

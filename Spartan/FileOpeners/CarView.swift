@@ -21,7 +21,7 @@ struct CarView: View {
             }
             .font(.system(size: 60))
             .multilineTextAlignment(.center)
-        List(["E"] ?? ["An error occurred while trying to read the file"], id: \.self) { passenger in
+        List(["eta wen I learn how to use serenaware"] ?? ["An error occurred while trying to read the file"], id: \.self) { passenger in
             Text(passenger)
         }
         .onAppear {

@@ -29,6 +29,7 @@ struct ContentView: View {
     @State var buttonHeight: CGFloat = 30
     
     @State var currentAppList: AppList
+    @State var didSearch = false
     
     @State var multiSelect = false
     @State var allWereSelected = false
@@ -190,10 +191,10 @@ struct ContentView: View {
                                                     let appFolder = currentDirContents.first { contents in
                                                         contents.hasSuffix(".app")
                                                     }
-                                                    let pathPlus = masterFiles[index].fullPath + "/" + appFolder!
+                                                    let pathPlus = masterFiles[index].fullPath +  appFolder! + "/"
                                                     let app = manager.application(forBundleURL: URL(fileURLWithPath: pathPlus))
                                                     HStack {
-                                                        if (fileManager.fileExists(atPath: pathPlus + "/Assets.car")) {
+                                                        if (fileManager.fileExists(atPath: pathPlus + "Assets.car")) {
                                                             let image = manager.icon(forApplication: app!)
                                                             Image(uiImage: image)
                                                                 .resizable()
@@ -210,7 +211,7 @@ struct ContentView: View {
                                                                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                                     view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                                 }
-                                                            Text(masterFiles[index].name)
+                                                            Text(removeLastChar(masterFiles[index].name))
                                                                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                                     view.scaledFont(name: "BotW Sheikah Regular", size: 40).foregroundColor(.gray)
                                                                 }
@@ -227,7 +228,7 @@ struct ContentView: View {
                                                     } else {
                                                         Image(systemName: "folder.badge.questionmark")
                                                     }
-                                                    Text(masterFiles[index].name)
+                                                    Text(removeLastChar(masterFiles[index].name))
                                                         .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                             view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                         }
@@ -282,7 +283,7 @@ struct ContentView: View {
                                                     }
                                             case 8:
                                                 Image(systemName: "link")
-                                                Text(masterFiles[index].name)
+                                                Text(removeLastChar(masterFiles[index].name))
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
@@ -462,7 +463,7 @@ struct ContentView: View {
                                                 } else {
                                                     Image(systemName: "folder.badge.minus")
                                                 }
-                                                Text(masterFiles[index].name)
+                                                Text(removeLastChar(masterFiles[index].name))
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
@@ -516,7 +517,7 @@ struct ContentView: View {
                                                     }
                                             case 8:
                                                 Image(systemName: "link")
-                                                Text(masterFiles[index].name)
+                                                Text(removeLastChar(masterFiles[index].name))
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
@@ -570,7 +571,7 @@ struct ContentView: View {
                     Button(action: {
                         fileInfo = getFileInfo(forFileAtPath: masterFiles[newViewFileIndex].fullPath)
                         showSubView[1] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             showSubView[3] = true
                             newViewFileName = masterFiles[newViewFileIndex].name
                         }
@@ -589,7 +590,7 @@ struct ContentView: View {
                         renameFileCurrentName = masterFiles[newViewFileIndex].name
                         renameFileNewName = masterFiles[newViewFileIndex].name
                         showSubView[1] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             showSubView[7] = true
                         }
                     }) {
@@ -606,7 +607,7 @@ struct ContentView: View {
                         newViewFilePath = directory
                         newViewArrayNames = [masterFiles[newViewFileIndex].name]
                         showSubView[1] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             showSubView[2] = true
                         }
                     }) {
@@ -696,7 +697,7 @@ struct ContentView: View {
                             newViewFileName = masterFiles[newViewFileIndex].name
                         }
                         showSubView[1] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             showSubView[17] = true
                         }
                         UserDefaults.favorites.synchronize()
@@ -714,7 +715,7 @@ struct ContentView: View {
                         newViewFilePath = directory
                         newViewArrayNames = [masterFiles[newViewFileIndex].name]
                         showSubView[1] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             showSubView[8] = true
                         }
                     }) {
@@ -732,7 +733,7 @@ struct ContentView: View {
                         newViewFilePath = directory
                         newViewArrayNames = [masterFiles[newViewFileIndex].name]
                         showSubView[1] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             showSubView[9] = true
                         }
                     }) {
@@ -781,7 +782,7 @@ struct ContentView: View {
                             Button(action: {
                                 newViewFilePath = masterFiles[newViewFileIndex].fullPath
                                 showSubView[2] = false
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                     showSubView[4] = true
                                 }
                             }) {
@@ -798,7 +799,7 @@ struct ContentView: View {
                                 newViewFilePath = directory
                                 newViewFileName = masterFiles[newViewFileIndex].name
                                 showSubView[2] = false
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                     showSubView[22] = true
                                 }
                             }) {
@@ -815,7 +816,7 @@ struct ContentView: View {
                                 newViewFilePath = directory
                                 newViewFileName = masterFiles[newViewFileIndex].name
                                 showSubView[2] = false
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                     showSubView[17] = true
                                 }
                             }) {
@@ -834,7 +835,7 @@ struct ContentView: View {
                             newViewFilePath = masterFiles[newViewFileIndex].fullPath
                             newViewFileName = masterFiles[newViewFileIndex].name
                             showSubView[2] = false
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 showSubView[13] = true
                             }
                         }) {
@@ -852,7 +853,7 @@ struct ContentView: View {
                             newViewFileName = masterFiles[newViewFileIndex].name
                             newViewFileURL = masterFiles[newViewFileIndex].url
                             showSubView[2] = false
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 showSubView[28] = true
                             }
                         }) {
@@ -872,7 +873,7 @@ struct ContentView: View {
                             newViewFileName = masterFiles[newViewFileIndex].name
                             uncompressZip = true
                             showSubView[2] = false
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 showSubView[14] = true
                             }
                         }) {
@@ -888,7 +889,7 @@ struct ContentView: View {
                         Button(action: {
                             newViewFilePath = masterFiles[newViewFileIndex].fullPath
                             showSubView[2] = false
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 showSubView[15] = true
                             }
                         }) {
@@ -960,7 +961,7 @@ struct ContentView: View {
                         }
                         Button(action: {
                             showSubView[3] = false
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 showSubView[27] = true
                             }
                         }) {
@@ -1001,7 +1002,7 @@ struct ContentView: View {
                 .sheet(isPresented: $showSubView[0], content: {
                     Button(action: {
                         showSubView[0] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             showSubView[5] = true
                         }
                     }) {
@@ -1016,7 +1017,7 @@ struct ContentView: View {
                     
                     Button(action: {
                         showSubView[0] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             showSubView[6] = true
                         }
                     }) {
@@ -1031,7 +1032,7 @@ struct ContentView: View {
                     
                     Button(action: {
                         showSubView[0] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             showSubView[20] = true
                         }
                     }) {
@@ -1047,8 +1048,19 @@ struct ContentView: View {
                 .sheet(isPresented: $showSubView[4], content: {
                     TextView(filePath: $newViewFilePath, fileName: $newViewFileName, isPresented: $showSubView[4])
                 })
-                .sheet(isPresented: $showSubView[19], content: { //search files
-                    SearchView(directoryToSearch: $directory, isPresenting: $showSubView[19])
+                .sheet(isPresented: $showSubView[19], onDismiss: {
+                    if(didSearch) {
+                        if(isDirectory(filePath: newViewFilePath)) {
+                            directory = newViewFilePath
+                        } else {
+                            directory = URL(fileURLWithPath: newViewFilePath).deletingLastPathComponent().path + "/"
+                            masterFiles.append(SpartanFile(name: URL(fileURLWithPath: newViewFilePath).lastPathComponent, url: URL(fileURLWithPath: newViewFilePath), fullPath: newViewFilePath, isSelected: false))
+                            defaultAction(index: masterFiles.count-1, isDirectPath: false)
+                        }
+                        didSearch = false
+                    }
+                }, content: { //search files
+                    SearchView(directory: $directory, isPresenting: $showSubView[19], selectedFile: $newViewFilePath, didSearch: $didSearch)
                 })
                 .sheet(isPresented: $showSubView[6], content: { //create dir
                     CreateDirectoryView(directoryPath: $directory, isPresented: $showSubView[6])
@@ -1200,11 +1212,12 @@ struct ContentView: View {
                     }
                 }
                 
-                if #available(tvOS 16.0, *) {
+                if #available(tvOS 14.0, *) {
                     Button(action: {
                         showSubView[25] = true
                     }) {
                         Image(systemName: "server.rack")
+                            .frame(width:50, height:50)
                     }
                     .contextMenu {
                         serverButton
@@ -1214,6 +1227,7 @@ struct ContentView: View {
                         showSubView[29] = true
                     }) {
                         Image(systemName: "server.rack")
+                            .frame(width:50, height:50)
                     }
                     .sheet(isPresented: $showSubView[29], content: {
                         serverButton
@@ -1323,7 +1337,7 @@ struct ContentView: View {
         if #unavailable(tvOS 16.0) {
             Button(action: {
                 showSubView[29] = false
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     showSubView[25] = true
                 }
             }) {
@@ -1400,7 +1414,7 @@ struct ContentView: View {
             newViewFilePath = masterFiles[newViewFileIndex].fullPath
             newViewFileName = masterFiles[newViewFileIndex].name
             showSubView[2] = false
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 showSubView[10] = true
                 callback = true
             }
@@ -1419,7 +1433,7 @@ struct ContentView: View {
             newViewFilePath = directory
             newViewFileName = masterFiles[newViewFileIndex].name
             showSubView[2] = false
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 showSubView[11] = true
             }
         }) {
@@ -1436,7 +1450,7 @@ struct ContentView: View {
         Button(action: {
             newViewFilePath = masterFiles[newViewFileIndex].fullPath
             showSubView[2] = false
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 showSubView[12] = true
             }
         }) {
@@ -1456,7 +1470,7 @@ struct ContentView: View {
             newViewFilePath = directory
             newViewFileName = masterFiles[newViewFileIndex].name
             showSubView[2] = false
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 showSubView[23] = true
             }
         }) {
@@ -1473,7 +1487,7 @@ struct ContentView: View {
             newViewFilePath = directory
             newViewFileName = masterFiles[newViewFileIndex].name
             showSubView[2] = false
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 showSubView[24] = true
             }
         }) {
@@ -1520,7 +1534,7 @@ struct ContentView: View {
                     if(isDirectPath) {
                         updateFiles()
                     } else {
-                        directory = directory + fileToCheck[index] + "/"
+                        directory = directory + fileToCheck[index]
                         updateFiles()
                     }
                 }
@@ -1550,7 +1564,7 @@ struct ContentView: View {
                 showSubView[28] = true
             default:
                 isLoadingView = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     showSubView[22] = true
                 }
             }
@@ -1559,11 +1573,17 @@ struct ContentView: View {
 
     func updateFiles() {
         do {
-            let contents = try fileManager.contentsOfDirectory(atPath: directory)
+            let contents = try FileManager.default.contentsOfDirectory(atPath: directory)
+            var files: [String]
+            files = contents.map { file in
+                let filePath = "/" + directory + "/" + file
+                var isDirectory: ObjCBool = false
+                FileManager.default.fileExists(atPath: filePath, isDirectory: &isDirectory)
+                return isDirectory.boolValue ? "\(file)/" : file
+            }
             masterFiles = []
-            
             for i in 0..<contents.count {
-                masterFiles.append(SpartanFile(name: contents[i], url: URL(fileURLWithPath: directory + contents[i]), fullPath: directory + contents[i], isSelected: false))
+                masterFiles.append(SpartanFile(name: files[i], url: URL(fileURLWithPath: directory + files[i]), fullPath: directory + files[i], isSelected: false))
             }
             resetMultiSelectArrays()
         } catch {
@@ -1690,12 +1710,9 @@ struct ContentView: View {
         let imageTypes: [String] = ["png", "tiff", "tif", "jpeg", "jpg", "gif", "bmp", "BMPf", "ico", "cur", "xbm"]
         let archiveTypes: [String] = ["zip", "cbz"]
         
-        var isDirectory: ObjCBool = false
-        _ = fileManager.fileExists(atPath: file, isDirectory: &isDirectory)
-        
         if (isSymlink(filePath: file)) {
             return 8 //symlink
-        } else if isDirectory.boolValue {
+        } else if (isDirectory(filePath: file)) {
             return 0 //directory
         } else if (audioTypes.contains(where: file.hasSuffix)) {
             return 1 //audio file
@@ -1776,6 +1793,11 @@ struct ContentView: View {
         }
         return false
     }
+    func isDirectory(filePath: String) -> Bool {
+        var isDirectory: ObjCBool = false
+        FileManager.default.fileExists(atPath: filePath, isDirectory: &isDirectory)
+        return isDirectory.boolValue
+    }
 
     
     func readSymlinkDestination(path: String) -> String {
@@ -1833,6 +1855,9 @@ struct ContentView: View {
         }
     }
 
+    func removeLastChar(_ string: String) -> String {
+        return String(substring(str: string, startIndex: string.index(string.startIndex, offsetBy: 0), endIndex: string.index(string.endIndex, offsetBy: -1)))
+    }
 }
 
 struct SpartanFile {
