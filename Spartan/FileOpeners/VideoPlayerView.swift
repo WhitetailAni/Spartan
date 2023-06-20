@@ -120,7 +120,7 @@ struct VideoPlayerView: View {
                     fullScreen = false
                 }
             } else {
-                player.pause()
+                isPresented = false
             }
         }
     }

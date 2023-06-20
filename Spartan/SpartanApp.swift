@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     @State var directoryToLoad: String = ""
     
     @State var favoritesDisplayName: [String] = (UserDefaults.favorites.stringArray(forKey: "favoritesDisplayName") ?? [NSLocalizedString("NOFAVORITES", comment: "The Bee Movie Script Will Be Located In NSLocalizedString Comments")])
-    @State var favoritesFilePath: [String] = (UserDefaults.favorites.stringArray(forKey: "favoritesFilePath") ?? ["/var/mobile/Media/.Trash/"])
+    @State var favoritesFilePath: [String] = (UserDefaults.favorites.stringArray(forKey: "favoritesFilePath") ?? ["/private/var/mobile/Media/.Trash/"])
     
     @State private var buttonWidth: CGFloat = 0
     @State private var buttonHeight: CGFloat = 0
@@ -23,6 +23,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     
+        UserDefaults.settings.set(false, forKey: "haveLaunchedBefore")
+    
         if(!UserDefaults.settings.bool(forKey: "haveLaunchedBefore")) {
             UserDefaults.settings.set(25, forKey: "logWindowFontSize")
             UserDefaults.settings.set(true, forKey: "autoComplete")
@@ -30,11 +32,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UserDefaults.settings.synchronize()
         }
         
-        if(fileManager.isReadableFile(atPath: "/var/mobile/")){ //shows app data directory if sandbox exists
+        if(fileManager.isReadableFile(atPath: "/private/var/mobile/")){ //shows app data directory if sandbox exists
             //displayView(pathToLoad: "/private/var/containers/Bundle/Application/")
-            displayView(pathToLoad: "/private/var/mobile/Containers/Data/Application/")
+            //displayView(pathToLoad: "/private/var/mobile/Containers/Shared/AppGroup/")
             //displayView(pathToLoad: "/private/var/mobile/")
-            //displayView(pathToLoad:  "/private/var/containers/Bundle/Application/2A65A51A-4061-4143-B622-FA0E57C0C3EE/trillstore.app/")
+            displayView(pathToLoad:  "/private/var/containers/Bundle/Application/")
         } else {
             displayView(pathToLoad: getDataDirectory())
             //displayView(pathToLoad: "/Users/realkgb/Documents/") //used in case of simulator
@@ -47,19 +49,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func displayView(pathToLoad: String) {
         var isRootless = false
-        if(fileManager.fileExists(atPath: "/var/jb/")) {
+        if(fileManager.fileExists(atPath: "/private/var/jb/")) {
             isRootless = true
         }
-        let hostingController = UIHostingController(rootView: ContentView(directory: pathToLoad, isRootless: isRootless, scaleFactor: UIScreen.main.nativeBounds.height/1080, currentAppList: calculateAppList()))
+        let hostingController = UIHostingController(rootView: ContentView(directory: pathToLoad, isRootless: isRootless, scaleFactor: UIScreen.main.nativeBounds.height/1080))
             window = UIWindow(frame: UIScreen.main.bounds)
             window?.rootViewController = hostingController
             window?.makeKeyAndVisible()
     }
     
     func createTrash() {
-        if(!(fileManager.fileExists(atPath: "/var/mobile/Media/.Trash"))){
+        if(!(fileManager.fileExists(atPath: "/private/var/mobile/Media/.Trash"))){
             do {
-                try createDirectoryAtPath(path: "/var/mobile/Media", directoryName: ".Trash")
+                try createDirectoryAtPath(path: "/private/var/mobile/Media", directoryName: ".Trash")
                 print("Created trash directory")
             } catch {
                 print("Failed to create trash")
@@ -70,7 +72,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func createDirectoryAtPath(path: String, directoryName: String) throws {
-        guard fileManager.fileExists(atPath: "/var/mobile/Media/.Trash/") else {
+        guard fileManager.fileExists(atPath: "/private/var/mobile/Media/.Trash/") else {
             print("Trash already exists")
             return
         }
@@ -87,13 +89,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         var path = appDataDirectory.path.split(separator: "/")
         path.removeLast()
         return "/" + path.joined(separator: "/") + "/"
-    }
-    
-    func calculateAppList() -> AppList {
-        let bundlePaths = ["lol"]
-        let dataPaths = ["lmao"]
-        let groupPaths = ["imagine"]
-        return AppList(bundlePaths: bundlePaths, dataPaths: dataPaths, groupPaths: groupPaths)
     }
 }
 

@@ -15,7 +15,7 @@ struct CarView: View {
     @State var fileURL = URL(fileURLWithPath: "/")
     
     @State var producedCUICatalog = CUICatalog()
-    @State var producedRendition = RenditionCollection()
+    @State var producedRenditions: [Rendition] = []
     @State var itemLabelList: [String] = []
     
     let wrapper = AssetCatalogWrapper()
@@ -27,22 +27,30 @@ struct CarView: View {
             }
             .font(.system(size: 60))
             .multilineTextAlignment(.center)
-        /*List(itemLabelList, id: \.self) { passenger in
-            Text(passenger)
-        }*/
+        
+        List(producedRenditions, id: \.self) { rendition in
+            Button(action: {
+                print("lol")
+            }) {
+                if(rendition._getImage() != nil) {
+                    Image(uiImage: UIImage(cgImage: rendition._getImage()!))
+                }
+                
+                Text(rendition.name)
+            }
+        }
+        
         .onAppear {
             fileURL = URL(fileURLWithPath: filePath + fileName)
-            print(fileName)
-            print(filePath)
-            print(fileURL)
             do {
                 try producedCUICatalog = wrapper.renditions(forCarArchive: fileURL).0
-                try producedRendition = wrapper.renditions(forCarArchive: fileURL).1
+                let producedRenditionCollection = try wrapper.renditions(forCarArchive: fileURL).1
+                for (_, renditions) in producedRenditionCollection {
+                    producedRenditions.append(contentsOf: renditions)
+                }
             } catch {
                 itemLabelList = ["An error occurred while trying to read the file", "It could not exist, be invalid, or be corrupted.", "Ensure you opened the right file, and then try again."]
             }
-            print(producedCUICatalog)
-            print(producedRendition)
         }
     }
 }

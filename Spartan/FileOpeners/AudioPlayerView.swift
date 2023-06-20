@@ -126,7 +126,6 @@ struct AudioPlayerView: View {
                 
                 Button(action: {
                     loop.toggle()
-                    print("loop: ", loop)
                 }) {
                     if (loop) {
                         Image(systemName: "repeat.1")
@@ -160,9 +159,6 @@ struct AudioPlayerView: View {
                 player.replaceCurrentItem(with: AVPlayerItem(url: URL(fileURLWithPath: (cementedAudioPath + "/" + cementedAudioName))))
                 player.play()
             }
-            print(audioPath)
-            print(audioName)
-            print(callback)
             
             player.currentItem?.asset.loadValuesAsynchronously(forKeys: ["duration"]) {
                 DispatchQueue.main.async {
@@ -179,31 +175,22 @@ struct AudioPlayerView: View {
                     if let commonKey = metadata.commonKey?.rawValue, let value = metadata.value {
                         if commonKey == "title" {
                             audioData[0] = value as! String
-                            print("0", value)
                         } else if commonKey == "artist" {
                             audioData[1] = value as! String
-                            print("1", value)
                         } else if commonKey == "albumName" {
                             audioData[2] = value as! String
-                            print("2", value)
                         } else if commonKey == "albumArtist" {
                             audioData[3] = value as! String
-                            print("3", value)
                         }  else if commonKey == "BPM" {
                             audioData[4] = value as! String
-                            print("4", value)
                         } else if commonKey == "discNumber" {
                             audioData[5] = value as! String
-                            print("5", value)
                         } else if commonKey == "Genre" {
                             audioData[6] = value as! String
-                            print("6", value)
                         } else if commonKey == "Year" {
                             audioData[7] = value as! String
-                            print("7", value)
                         } else if commonKey == "trackNumber" {
                             audioData[8] = value as! String
-                            print("8", value)
                         }
                     }
                     if let key = metadata.commonKey?.rawValue, key == "artwork" {

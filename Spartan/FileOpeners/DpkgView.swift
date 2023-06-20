@@ -26,7 +26,7 @@ struct DpkgView: View {
 
     var body: some View {
         //if(0 == 1) {
-        if !(fileManager.fileExists(atPath: "/usr/bin/dpkg/") || fileManager.fileExists(atPath: "/var/jb/usr/bin/dpkg/")) {
+        if !(fileManager.fileExists(atPath: "/usr/bin/dpkg/") || fileManager.fileExists(atPath: "/private/var/jb/usr/bin/dpkg/")) {
             Text(NSLocalizedString("ERR_NOJAILBREAK", comment: "GO AHEAD AND [Scream] INTO THE [Receiver]."))
                 .font(.system(size: 60))
         } else {
@@ -37,7 +37,7 @@ struct DpkgView: View {
                     UIKitTextView(text: $dpkgLog, fontSize: UserDefaults.settings.integer(forKey: "logWindowFontSize"))
                         .onAppear {
                             if(isRootless) {
-                                dpkgPath = "/var/jb/usr/bin/dpkg"
+                                dpkgPath = "/private/var/jb/usr/bin/dpkg"
                             } else {
                                 dpkgPath = "/usr/bin/dpkg"
                             }
@@ -114,7 +114,7 @@ struct DpkgBuilderView: View {
     
     var body: some View {
         //if(0 == 1) {
-        if !(fileManager.fileExists(atPath: "/usr/bin/dpkg/") || fileManager.fileExists(atPath: "/var/jb/usr/bin/dpkg/")) {
+        if !(fileManager.fileExists(atPath: "/usr/bin/dpkg/") || fileManager.fileExists(atPath: "/private/var/jb/usr/bin/dpkg/")) {
             Text(NSLocalizedString("ERR_NOJAILBREAK", comment: "AND THIS IS HOW YOU [Repay] ME!? TREATING ME LIKE [DLC]!?"))
                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                     view.scaledFont(name: "BotW Sheikah Regular", size: 60)
@@ -183,7 +183,7 @@ struct DpkgBuilderView: View {
             }
             .onAppear {
                 if(isRootless) {
-                    dpkgPath = "/var/jb/usr/bin/dpkg-deb"
+                    dpkgPath = "/private/var/jb/usr/bin/dpkg-deb"
                 } else {
                     dpkgPath = "/usr/bin/dpkg-deb"
                 }

@@ -28,7 +28,6 @@ struct ContentView: View {
     @State var buttonWidth: CGFloat = 500
     @State var buttonHeight: CGFloat = 30
     
-    @State var currentAppList: AppList
     @State var didSearch = false
     
     @State var multiSelect = false
@@ -45,7 +44,7 @@ struct ContentView: View {
     
     @State var filePerms = 420
     
-    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 30)
+    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 31)
     //createFileSelectShow = 0
     //contextMenuShow = 1
     //openInMenu = 2
@@ -76,6 +75,7 @@ struct ContentView: View {
     //filePermsEdit = 27
     //carView = 28
     //tvOS13serverShow = 29
+    //fontViewShow = 30
     
     @State var globalAVPlayer: AVPlayer = AVPlayer()
     @State var isGlobalAVPlayerPlaying = false
@@ -93,10 +93,6 @@ struct ContentView: View {
     
     let fileManager = FileManager.default
     let appsManager = ApplicationsManager(allApps: LSApplicationWorkspace.default().allApplications())
-    
-    @State var selectedLSAppPath: String = ""
-    @State var selectedLSApplication: LSApplicationProxy?
-    @State var LSApplications: [LSApplicationProxy?] = []
     
     @Environment(\.sizeCategory) var sizeCategory
     
@@ -188,79 +184,47 @@ struct ContentView: View {
                                             
                                             switch fileType {
                                             case 0:
-                                                if (directory == "/private/var/containers/Bundle/Application/") {
-                                                    let currentDirContents = try! fileManager.contentsOfDirectory(atPath: masterFiles[index].fullPath)
-                                                    let appFolder = currentDirContents.first { contents in
-                                                        contents.hasSuffix(".app")
-                                                    }
-                                                    let pathPlus = masterFiles[index].fullPath +  appFolder! + "/"
-                                                    let app = appsManager.application(forBundleURL: URL(fileURLWithPath: pathPlus))
+                                                if (directory == "/private/var/containers/Bundle/Application/" || directory == "/private/var/mobile/Containers/Data/Application/" || directory == "/private/var/mobile/Containers/Shared/AppGroup/") {
+                                                    let plistDict = NSDictionary(contentsOfFile: masterFiles[index].fullPath + ".com.apple.mobile_container_manager.metadata.plist")
+                                                    let bundleID = defineBundleID(plistDict!)
+                                                    let groupBundleID = plistDict!["MCMMetadataIdentifier"] as! String
+                                                    
+                                                    let app = LSApplicationProxy(forIdentifier: bundleID)
                                                     HStack {
-                                                        if (fileManager.fileExists(atPath: pathPlus + "Assets.car")) {
-                                                            let image = appsManager.icon(forApplication: app!)
-                                                            Image(uiImage: image)
+                                                        let image: UIImage? = appsManager.icon(forApplication: app)
+                                                        if(image != nil) {
+                                                            Image(uiImage: image!)
                                                                 .resizable()
                                                                 .clipShape(RoundedRectangle(cornerRadius: 8))
                                                                 .frame(width: 280 * scaleFactor, height: 168 * scaleFactor)
-                                                        } else { //if Assets.car doesn't exist the app has no icon (and Assets.car is required on tvOS 13.0+, so we can make this assumption) and so no image is retrieved, because if there isn't Assets.car UIApplication crashes
+                                                        } else {
                                                             Image("DefaultIcon")
                                                                 .resizable()
                                                                 .clipShape(RoundedRectangle(cornerRadius: 8))
                                                                 .frame(width: 280 * scaleFactor, height: 168 * scaleFactor)
                                                         }
                                                         VStack(alignment: .leading) {
-                                                            Text(app!.localizedName())
+                                                            Text(app.localizedName())
                                                                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                                     view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                                 }
-                                                            Text(removeLastChar(masterFiles[index].name))
-                                                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                                                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40).foregroundColor(.gray)
-                                                                }
-                                                                .foregroundColor(.gray)
-                                                        }
-                                                    }
-                                                } else if (directory == "/private/var/mobile/Containers/Data/Application/") {
-                                                    HStack {
-                                                        if (fileManager.fileExists(atPath: selectedLSAppPath + "Assets.car")) {
-                                                            /*let image = manager.icon(forApplication: selectedLSApplication)
-                                                            Image(uiImage: image)
-                                                                .resizable()
-                                                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                                                                .frame(width: 280 * scaleFactor, height: 168 * scaleFactor)*/
-                                                        } else { //if Assets.car doesn't exist the app has no icon (and Assets.car is required on tvOS 13.0+, so we can make this assumption) and so no image is retrieved, because if there isn't Assets.car UIApplication crashes
-                                                            Image("DefaultIcon")
-                                                                .resizable()
-                                                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                                                                .frame(width: 280 * scaleFactor, height: 168 * scaleFactor)
-                                                        }
-                                                        VStack(alignment: .leading) {
-                                                            /*Text(selectedLSApplication.localizedName())
-                                                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                                                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                                                                }*/
-                                                            Text(removeLastChar(masterFiles[index].name))
-                                                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                                                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40).foregroundColor(.gray)
-                                                                }
-                                                                .foregroundColor(.gray)
-                                                                .onAppear {
-                                                                    let containerDirContents = try! fileManager.contentsOfDirectory(atPath: "/private/var/containers/Bundle/Application/")
-                                                                    for folder in containerDirContents {
-                                                                        let folderDirContents = try! fileManager.contentsOfDirectory(atPath: "/private/var/containers/Bundle/Application/" + folder)
-                                                                        let bundlePath = folderDirContents.first { contents in
-                                                                            contents.hasSuffix(".app")
-                                                                        }
-                                                                        let bundlePathPlus = "/private/var/containers/Bundle/Application/" + folder + "/" + bundlePath! + "/"
-                                                                        LSApplications.append(appsManager.application(forBundleURL: URL(fileURLWithPath: bundlePathPlus)))
+                                                                .foregroundColor(.blue)
+                                                            if (directory == "/private/var/mobile/Containers/Shared/AppGroup/") {
+                                                                Text(groupBundleID)
+                                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                                     }
-                                                                    /*for application in LSApplications {
-                                                                        print(application?.bundleContainerURL)
-                                                                        if(application.dataContainerURL == URL(fileURLWithPath: masterFiles[index].fullPath)) {
-                                                                            selectedLSApplication = application
-                                                                        }
-                                                                    }*/
+                                                            } else {
+                                                                Text(bundleID)
+                                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                                    }
+                                                            }
+                                                            Text(removeLastChar(masterFiles[index].name))
+                                                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40).foregroundColor(.gray)
                                                                 }
+                                                                .foregroundColor(.gray)
                                                         }
                                                     }
                                                 } else {
@@ -342,6 +306,12 @@ struct ContentView: View {
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
+                                            case 11:
+                                                Image(systemName: "textformat")
+                                                Text(masterFiles[index].name)
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
                                             default:
                                                 Image(systemName: "doc")
                                                 Text(masterFiles[index].name)
@@ -388,7 +358,7 @@ struct ContentView: View {
                                             }
                                     }
                                     
-                                    if(directory == "/var/mobile/Media/.Trash/"){
+                                    if(directory == "/private/var/mobile/Media/.Trash/"){
                                         Button(action: {
                                             deleteFile(atPath: masterFiles[index].fullPath)
                                             updateFiles()
@@ -399,15 +369,15 @@ struct ContentView: View {
                                                 }
                                         }
                                         .foregroundColor(.red)
-                                    } else if(directory == "/var/mobile/Media/" && masterFiles[index].name == ".Trash/"){
+                                    } else if(directory == "/private/var/mobile/Media/" && masterFiles[index].name == ".Trash/"){
                                         Button(action: {
                                             do {
-                                                try fileManager.removeItem(atPath: "/var/mobile/Media/.Trash/")
+                                                try fileManager.removeItem(atPath: "/private/var/mobile/Media/.Trash/")
                                             } catch {
                                                 print("Error emptying Trash: \(error)")
                                             }
                                             do {
-                                                try fileManager.createDirectory(atPath: "/var/mobile/Media/.Trash/", withIntermediateDirectories: true, attributes: nil)
+                                                try fileManager.createDirectory(atPath: "/private/var/mobile/Media/.Trash/", withIntermediateDirectories: true, attributes: nil)
                                             } catch {
                                                 print("Error emptying Trash: \(error)")
                                             }
@@ -420,7 +390,7 @@ struct ContentView: View {
                                         }
                                     } else {
                                         Button(action: {
-                                            moveFile(path: masterFiles[index].fullPath, newPath: ("/var/mobile/Media/.Trash/" + masterFiles[index].name))
+                                            moveFile(path: masterFiles[index].fullPath, newPath: ("/private/var/mobile/Media/.Trash/" + masterFiles[index].name))
                                             updateFiles()
                                         }) {
                                             Text(NSLocalizedString("GOTOTRASH", comment: "Yellow, black. Yellow, black."))
@@ -610,6 +580,12 @@ struct ContentView: View {
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
+                                            case 11:
+                                                Image(systemName: "textformat")
+                                                Text(masterFiles[index].name)
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
                                             default:
                                                 Image(systemName: "doc")
                                                 Text(masterFiles[index].name)
@@ -697,7 +673,7 @@ struct ContentView: View {
                     .padding(paddingInt)
                     .opacity(opacityInt)
                     
-                    if(directory == "/var/mobile/Media/.Trash/"){
+                    if(directory == "/private/var/mobile/Media/.Trash/"){
                         Button(action: {
                             deleteFile(atPath: masterFiles[newViewFileIndex].fullPath)
                             updateFiles()
@@ -712,15 +688,15 @@ struct ContentView: View {
                         }
                         .padding(paddingInt)
                         .opacity(opacityInt)
-                    } else if(directory == "/var/mobile/Media/" && masterFiles[newViewFileIndex].name == ".Trash/"){
+                    } else if(directory == "/private/var/mobile/Media/" && masterFiles[newViewFileIndex].name == ".Trash/"){
                         Button(action: {
                             do {
-                                try fileManager.removeItem(atPath: "/var/mobile/Media/.Trash/")
+                                try fileManager.removeItem(atPath: "/private/var/mobile/Media/.Trash/")
                             } catch {
                                 print("Error emptying Trash: \(error)")
                             }
                             do {
-                                try fileManager.createDirectory(atPath: "/var/mobile/Media/.Trash/", withIntermediateDirectories: true, attributes: nil)
+                                try fileManager.createDirectory(atPath: "/private/var/mobile/Media/.Trash/", withIntermediateDirectories: true, attributes: nil)
                             } catch {
                                 print("Error emptying Trash: \(error)")
                             }
@@ -736,7 +712,7 @@ struct ContentView: View {
                         .opacity(opacityInt)
                     } else {
                         Button(action: {
-                            moveFile(path: masterFiles[newViewFileIndex].fullPath, newPath: ("/var/mobile/Media/.Trash/" + masterFiles[newViewFileIndex].name))
+                            moveFile(path: masterFiles[newViewFileIndex].fullPath, newPath: ("/private/var/mobile/Media/.Trash/" + masterFiles[newViewFileIndex].name))
                             updateFiles()
                             showSubView[1] = false
                         }) {
@@ -930,10 +906,10 @@ struct ContentView: View {
                             newViewFileName = masterFiles[newViewFileIndex].name
                             showSubView[2] = false
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                showSubView[28] = true
+                                showSubView[30] = true
                             }
                         }) {
-                            Text(NSLocalizedString("OPEN_CAR", comment: ""))
+                            Text(NSLocalizedString("OPEN_FONT", comment: ""))
                                 .frame(width: buttonWidth, height: buttonHeight)
                                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                     view.scaledFont(name: "BotW Sheikah Regular", size: 40)
@@ -963,7 +939,8 @@ struct ContentView: View {
                         .opacity(opacityInt)
                         
                         Button(action: {
-                            newViewFilePath = masterFiles[newViewFileIndex].fullPath
+                            newViewFileName = masterFiles[newViewFileIndex].name
+                            newViewFilePath = directory
                             showSubView[2] = false
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 showSubView[15] = true
@@ -1147,7 +1124,9 @@ struct ContentView: View {
                 .sheet(isPresented: $showSubView[20], content: {
                     CreateSymlinkView(symlinkPath: $directory, isPresented: $showSubView[20])
                 })
-                .sheet(isPresented: $showSubView[16], content: {
+                .sheet(isPresented: $showSubView[16], onDismiss: {
+                    updateFiles()
+                }, content: {
                     FavoritesView(directory: $directory, showView: $showSubView[16])
                 })
                 .sheet(isPresented: $showSubView[17], content: {
@@ -1189,7 +1168,7 @@ struct ContentView: View {
                     }
                 })
                 .sheet(isPresented: $showSubView[15], content: {
-                    SpawnView(binaryPath: $newViewFilePath, binaryName: $newViewFileName)
+                    SpawnView(filePath: $newViewFilePath, fileName: $newViewFileName)
                 })
                 .sheet(isPresented: $showSubView[21], onDismiss: {
                     updateFiles()
@@ -1214,6 +1193,9 @@ struct ContentView: View {
                 })
                 .sheet(isPresented: $showSubView[28], content: {
                     CarView(filePath: $newViewFilePath, fileName: $newViewFileName)
+                })
+                .sheet(isPresented: $showSubView[30], content: {
+                    FontView(filePath: $newViewFilePath, fileName: $newViewFileName)
                 })
                 .alert(isPresented: $showSubView[26]) {
                     Alert(
@@ -1367,20 +1349,20 @@ struct ContentView: View {
                 }
             
                 Button(action: {
-                    if(directory == "/var/mobile/Media/.Trash/"){
+                    if(directory == "/private/var/mobile/Media/.Trash/"){
                         for file in multiSelectFiles {
                             deleteFile(atPath: directory + file)
                             updateFiles()
                         }
                     } else {
                         for file in multiSelectFiles {
-                            moveFile(path: directory + file, newPath: "/var/mobile/Media/.Trash/" + file)
+                            moveFile(path: directory + file, newPath: "/private/var/mobile/Media/.Trash/" + file)
                             updateFiles()
                         }
                     }
                 }) {
                     ZStack {
-                        if(directory == "/var/mobile/Media/.Trash/"){
+                        if(directory == "/private/var/mobile/Media/.Trash/"){
                             Image(systemName: "trash")
                                 .frame(width:50, height:50)
                                 .foregroundColor(.red)
@@ -1638,6 +1620,8 @@ struct ContentView: View {
                 showSubView[23] = true
             case 10:
                 showSubView[28] = true
+            case 11:
+                showSubView[30] = true
             default:
                 isLoadingView = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -1648,6 +1632,9 @@ struct ContentView: View {
     }
 
     func updateFiles() {
+        if UserDefaults.settings.bool(forKey: "autoComplete") && !directory.hasSuffix("/") && isDirectory(filePath: directory) {
+            directory = directory + "/"
+        }
         do {
             let contents = try FileManager.default.contentsOfDirectory(atPath: directory)
             var files: [String]
@@ -1785,6 +1772,7 @@ struct ContentView: View {
         let videoTypes: [String] = ["3gp", "3g2", "avi", "mov", "m4v", "mp4"]
         let imageTypes: [String] = ["png", "tiff", "tif", "jpeg", "jpg", "gif", "bmp", "BMPf", "ico", "cur", "xbm"]
         let archiveTypes: [String] = ["zip", "cbz"]
+        let fontTypes: [String] = ["ttf", "otf", "ttc", "pfb", "pfa"]
         
         if (isSymlink(filePath: file)) {
             return 8 //symlink
@@ -1800,6 +1788,8 @@ struct ContentView: View {
             return isPlist(filePath: file)
             //5.1 = xml plist
             //5.2 = bplist
+        } else if (fontTypes.contains(where: file.hasSuffix)) {
+            return 11
         } else if(isCar(filePath: file)) {
             return 10 //asset catalog
         } else if (isText(filePath: file)) { //these must be flipped because otherwise xml plist detects as text
@@ -1813,6 +1803,11 @@ struct ContentView: View {
         } else {
             return 69 //unknown
         }
+    }
+    func isDirectory(filePath: String) -> Bool {
+        var isDirectory: ObjCBool = false
+        FileManager.default.fileExists(atPath: filePath, isDirectory: &isDirectory)
+        return isDirectory.boolValue
     }
     func isText(filePath: String) -> Bool {
         guard let data = fileManager.contents(atPath: filePath) else {
@@ -1869,12 +1864,6 @@ struct ContentView: View {
         }
         return false
     }
-    func isDirectory(filePath: String) -> Bool {
-        var isDirectory: ObjCBool = false
-        FileManager.default.fileExists(atPath: filePath, isDirectory: &isDirectory)
-        return isDirectory.boolValue
-    }
-
     
     func readSymlinkDestination(path: String) -> String {
         print(try! fileManager.destinationOfSymbolicLink(atPath: path))
@@ -1933,6 +1922,22 @@ struct ContentView: View {
 
     func removeLastChar(_ string: String) -> String {
         return String(substring(str: string, startIndex: string.index(string.startIndex, offsetBy: 0), endIndex: string.index(string.endIndex, offsetBy: -1)))
+    }
+    
+    func defineBundleID(_ plistDict: NSDictionary) -> String {
+        if (directory == "/private/var/mobile/Containers/Shared/AppGroup/") {
+            return trimGroupBundleID(plistDict["MCMMetadataIdentifier"] as! String)!
+        } else {
+            return plistDict["MCMMetadataIdentifier"] as! String
+        }
+    }
+    
+    func trimGroupBundleID(_ string: String) -> String? {
+        let components = string.components(separatedBy: ".")
+        guard components.count >= 3 else {
+            return nil
+        }
+        return components.suffix(3).joined(separator: ".")
     }
 }
 

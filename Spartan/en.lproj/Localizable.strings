@@ -56,6 +56,7 @@
 "OPEN_DPKGDEB" = "Open in Deb Builder";
 "OPEN_SPAWN" = "Spawn As Binary";
 "OPEN_CAR" = "Asset Catalog Viewer";
+"OPEN_FONT" = "Font Viewer";
 
 "SHOW_DENIED" = "Permission Denied";
 "SHOW_INFO" = "File Info";

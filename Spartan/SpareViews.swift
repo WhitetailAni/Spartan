@@ -298,8 +298,9 @@ extension View {
     }
 }
 
-struct AppList {
-    var bundlePaths: [String]
-    var dataPaths: [String]
-    var groupPaths: [String]
+extension Font {
+    init(cgFont: CGFont, size: CGFloat) {
+        let fontName = cgFont.postScriptName as String?
+        self = Font.custom(fontName!, size: size) // Adjust the size as per your requirements
+    }
 }

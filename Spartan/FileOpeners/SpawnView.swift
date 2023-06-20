@@ -8,16 +8,15 @@
 import SwiftUI
 
 struct SpawnView: View {
-    @Binding var binaryPath: String
-    @Binding var binaryName: String
+    @Binding var filePath: String
+    @Binding var fileName: String
     @State var programArguments: String = ""
     @State var envVars: String = ""
     @State var spawnLog: String = ""
-    @State var descriptiveTitles = UserDefaults.settings.bool(forKey: "descriptiveTitles")
     
     var body: some View {
         VStack {
-            Text(descriptiveTitles ? binaryPath + binaryName : binaryName)
+            Text(UserDefaults.settings.bool(forKey: "descriptiveTitles") ? filePath + fileName : fileName)
                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                     view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                 }
@@ -37,7 +36,7 @@ struct SpawnView: View {
             Button(action: {
                 SwiftTryCatch.try({
                         spawnLog = Spartan.taskSnoop {
-                            Spartan.task(launchPath: binaryPath + binaryName, arguments: programArguments, envVars: envVars)
+                            Spartan.task(launchPath: filePath + fileName, arguments: programArguments, envVars: envVars)
                         }
                     }, catch: { (error) in
                         spawnLog = error.description
@@ -48,6 +47,10 @@ struct SpawnView: View {
                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                     }
+            }
+            .onAppear {
+                print(filePath)
+                print(fileName)
             }
         }
     }
