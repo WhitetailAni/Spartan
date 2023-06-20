@@ -304,3 +304,9 @@ extension Font {
         self = Font.custom(fontName!, size: size) // Adjust the size as per your requirements
     }
 }
+
+extension Image {
+    init(cgImage: CGImage) {
+        self = Image(uiImage: UIImage(cgImage: cgImage))
+    }
+}

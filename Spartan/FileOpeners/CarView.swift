@@ -14,9 +14,8 @@ struct CarView: View {
     @Binding var fileName: String
     @State var fileURL = URL(fileURLWithPath: "/")
     
-    @State var producedCUICatalog = CUICatalog()
     @State var producedRenditions: [Rendition] = []
-    @State var itemLabelList: [String] = []
+    @State var errorMsg = ""
     
     let wrapper = AssetCatalogWrapper()
 
@@ -29,27 +28,57 @@ struct CarView: View {
             .multilineTextAlignment(.center)
         
         List(producedRenditions, id: \.self) { rendition in
+            if (errorMsg != "") {
+                Text(errorMsg)
+            }
             Button(action: {
                 print("lol")
             }) {
-                if(rendition._getImage() != nil) {
-                    Image(uiImage: UIImage(cgImage: rendition._getImage()!))
+                /*if(rendition.name.prefix(4) != "ZZZZ" || rendition.name == "App Icon") {
+                    switch RenditionType(namedLookup: rendition.namedLookup) {
+                    case .image:
+                        Text("image")
+                    case .icon:
+                        Text("icon")
+                    case .imageSet:
+                        Text("image set")
+                    case .multiSizeImageSet:
+                        Text("multisize image set")
+                    case .pdf:
+                        Text("pdf")
+                    case .color:
+                        Text("color")
+                    case .svg:
+                        Text("svg")
+                    case .rawData:
+                        Text("data")
+                    case .unknown:
+                        Text("The asset type could not be determined.")
+                    }
+                }*/
+                VStack(alignment: .leading) {
+                    Text(rendition.name)
+                    switch rendition.representation {
+                    case .image:
+                        Text("image")
+                    case .color:
+                        Text("color")
+                    default:
+                        Text("no clue")
+                    }
                 }
-                
-                Text(rendition.name)
             }
         }
         
         .onAppear {
             fileURL = URL(fileURLWithPath: filePath + fileName)
             do {
-                try producedCUICatalog = wrapper.renditions(forCarArchive: fileURL).0
                 let producedRenditionCollection = try wrapper.renditions(forCarArchive: fileURL).1
                 for (_, renditions) in producedRenditionCollection {
                     producedRenditions.append(contentsOf: renditions)
                 }
             } catch {
-                itemLabelList = ["An error occurred while trying to read the file", "It could not exist, be invalid, or be corrupted.", "Ensure you opened the right file, and then try again."]
+                errorMsg = error.localizedDescription
             }
         }
     }
