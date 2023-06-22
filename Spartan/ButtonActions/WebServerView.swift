@@ -13,6 +13,7 @@ struct WebServerView: View {
     @Binding var inputServer: HttpServer
     @State var webdavLog: String = ""
     @State var port: UInt16 = 11111
+    @State var isTapped = false
 
     var body: some View {
         Text("welcome to web server")
@@ -24,10 +25,14 @@ struct WebServerView: View {
                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                     view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                 }
+                .disabled(isTapped)
         }
-        UIKitTextView(text: $webdavLog, fontSize: UserDefaults.settings.integer(forKey: "logWindowFontSize"))
+        UIKitTextView(text: $webdavLog, fontSize: CGFloat(UserDefaults.settings.integer(forKey: "logWindowFontSize")), isTapped: $isTapped)
             .onAppear {
                 serverStart(server: inputServer)
+            }
+            .onExitCommand {
+                isTapped = false
             }
     }
     

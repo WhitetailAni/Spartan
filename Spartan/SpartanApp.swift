@@ -33,10 +33,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         if(fileManager.isReadableFile(atPath: "/private/var/mobile/")){ //shows app data directory if sandbox exists
-            //displayView(pathToLoad: "/private/var/containers/Bundle/Application/")
-            //displayView(pathToLoad: "/private/var/mobile/Containers/Shared/AppGroup/")
+            displayView(pathToLoad: "/bin/")
             //displayView(pathToLoad: "/private/var/mobile/")
-            displayView(pathToLoad:  "/private/var/containers/Bundle/Application/")
         } else {
             displayView(pathToLoad: getDataDirectory())
             //displayView(pathToLoad: "/Users/realkgb/Documents/") //used in case of simulator
@@ -48,10 +46,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func displayView(pathToLoad: String) {
-        var isRootless = false
-        if(fileManager.fileExists(atPath: "/private/var/jb/")) {
-            isRootless = true
-        }
+        let isRootless = {
+            if(fileManager.fileExists(atPath: "/private/var/jb/")) {
+                return true
+            }
+            return false
+        }()
         let hostingController = UIHostingController(rootView: ContentView(directory: pathToLoad, isRootless: isRootless, scaleFactor: UIScreen.main.nativeBounds.height/1080))
             window = UIWindow(frame: UIScreen.main.bounds)
             window?.rootViewController = hostingController

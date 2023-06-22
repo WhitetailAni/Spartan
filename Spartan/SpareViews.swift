@@ -181,14 +181,15 @@ struct UIKitTapGesture: UIViewRepresentable {
 
 struct UIKitTextView: UIViewRepresentable {
     @Binding var text: String
-    @State var fontSize: Int
+    @State var fontSize: CGFloat
+    @Binding var isTapped: Bool
 
     func makeUIView(context: Context) -> UITextView {
         let textView = UITextView()
         let opacity = 0.25
-        let sheikahFont = UIFont(name: "BotW Sheikah Regular", size: CGFloat(fontSize))
         textView.delegate = context.coordinator
-        textView.font = UIFont.systemFont(ofSize: CGFloat(fontSize))
+        textView.isUserInteractionEnabled = !text.isEmpty
+        textView.isSelectable = true
         
         if #available(tvOS 15.0, *) {
             if let dynamicColor = UIColor(named: "systemBackground") {
@@ -200,7 +201,18 @@ struct UIKitTextView: UIViewRepresentable {
             textView.backgroundColor = UIColor.darkGray.withAlphaComponent(opacity)
         }
         if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) {
-            textView.font = sheikahFont
+            textView.font = UIFont(name: "BotW Sheikah Regular", size: fontSize)
+        } else {
+            textView.font = UIFont.monospacedSystemFont(ofSize: fontSize, weight: .regular)
+        }
+        
+        let tapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.textViewTapped))
+        textView.addGestureRecognizer(tapGesture)
+        
+        if isTapped {
+            textView.panGestureRecognizer.allowedTouchTypes = [NSNumber(value: UITouch.TouchType.indirect.rawValue)]
+        } else {
+            textView.panGestureRecognizer.allowedTouchTypes = [0]
         }
         
         return textView
@@ -208,68 +220,36 @@ struct UIKitTextView: UIViewRepresentable {
 
     func updateUIView(_ uiView: UITextView, context: Context) {
         uiView.text = text
+        uiView.isUserInteractionEnabled = !text.isEmpty
+        if isTapped {
+            uiView.panGestureRecognizer.allowedTouchTypes = [NSNumber(value: UITouch.TouchType.indirect.rawValue)]
+        } else {
+            uiView.panGestureRecognizer.allowedTouchTypes = [0]
+        }
     }
     
     func makeCoordinator() -> Coordinator {
-        Coordinator(self)
+        Coordinator(self, isTapped: $isTapped)
     }
     
     class Coordinator: NSObject, UITextViewDelegate {
         let parent: UIKitTextView
-        
-        init(_ parent: UIKitTextView) {
+        @Binding var isTapped: Bool
+    
+        init(_ parent: UIKitTextView, isTapped: Binding<Bool>) {
             self.parent = parent
+            _isTapped = isTapped
         }
         
         func textViewDidChange(_ textView: UITextView) {
             parent.text = textView.text
         }
-    }
-}
-
-func task(launchPath: String, arguments: String, envVars: String) {
-    var pid: pid_t = 0
-
-    let argumentsC = strdup(arguments)
-    let argv: [UnsafeMutablePointer<CChar>?] = [argumentsC, nil]
-    let envC = strdup(envVars)
-    let envv: [UnsafeMutablePointer<CChar>?] = [envC, nil]
-
-    posix_spawnp(&pid, launchPath, nil, nil, argv, envv)
-}
-
-func taskSnoop(_ closure: () -> Void) -> String {
-    let outPipe = Pipe()
-    var outString = ""
-    let sema = DispatchSemaphore(value: 0)
-    outPipe.fileHandleForReading.readabilityHandler = { fileHandle in
-        let data = fileHandle.availableData
-        if data.isEmpty  { // end-of-file condition
-            fileHandle.readabilityHandler = nil
-            sema.signal()
-        } else {
-            outString += String(data: data,  encoding: .utf8)!
+        
+        @objc func textViewTapped() {
+            parent.isTapped.toggle()
         }
     }
-    print("Capturing command line")
-
-    // Redirect
-    setvbuf(stdout, nil, _IONBF, 0)
-    let savedStdout = dup(STDOUT_FILENO)
-    dup2(outPipe.fileHandleForWriting.fileDescriptor, STDOUT_FILENO)
-
-    closure()
-
-    // Undo redirection
-    dup2(savedStdout, STDOUT_FILENO)
-    try! outPipe.fileHandleForWriting.close()
-    close(savedStdout)
-    sema.wait() // Wait until read handler is done
-
-    print("Ending capture")
-    return outString
 }
-//https://stackoverflow.com/questions/73034426/swift-stdout-redirect-to-a-string
 
 struct ScaledFont: ViewModifier {
     @Environment(\.sizeCategory) var sizeCategory

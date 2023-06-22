@@ -11,6 +11,7 @@ import AVKit
 import MobileCoreServices
 import Swifter
 import ApplicationsWrapper
+import AssetCatalogWrapper
 
 struct ContentView: View {
     @State var directory: String
@@ -119,7 +120,7 @@ struct ContentView: View {
 
                         if (directory.count >= 5 && substring(str: directory, startIndex: directory.index(directory.startIndex, offsetBy: 0), endIndex: directory.index(directory.startIndex, offsetBy: 5)) == "/var/") {
                             directory = "/private/var/" + substring(str: directory, startIndex: directory.index(directory.startIndex, offsetBy: 5), endIndex: directory.index(directory.endIndex, offsetBy: 0))
-                        } //i dont have a way to check if every part of a filepath is a symlink, but this should fix most issues
+                        } //i dont have a way to check if every part of a filepath is a symlink but that doesn't matter. all that matters is that /var/ always becomes /private/var/
                     }
                     
                     Button(action: {
@@ -168,7 +169,7 @@ struct ContentView: View {
                             }
                         }
                         ForEach(masterFiles.indices, id: \.self) { index in
-                            if #available(tvOS 14.0, *) {
+                            if #available(tvOS 14.0, *) { //While the .if modifier does allow displaying on a conditional, it can't be used with if #available as #available is a compile-time check, not a runtime check. Which is annoying because that means a large chunk of this view is duplicated code
                                 Button(action: {
                                     defaultAction(index: index, isDirectPath: false)
                                 }) {
@@ -188,6 +189,8 @@ struct ContentView: View {
                                                     let plistDict = NSDictionary(contentsOfFile: masterFiles[index].fullPath + ".com.apple.mobile_container_manager.metadata.plist")
                                                     let bundleID = defineBundleID(plistDict!)
                                                     let groupBundleID = plistDict!["MCMMetadataIdentifier"] as! String
+                                                    //in every container folder (whether it's the bundle container, data container, or group container) is a file that contains the app's bundle ID. santander macros do support determining an LSApplicationProxy? from bundle/container/data container folder on **iOS** but not tvOS since sandboxing system is different. Reading from bundle ID ensures that the app definitely exists and someone didn't just create a folder in here, so no issues with nil LSApplicationProxy? elements
+                                                    //then the rest of this just reads properties from the LSApplicationProxy.
                                                     
                                                     let app = LSApplicationProxy(forIdentifier: bundleID)
                                                     HStack {
@@ -220,21 +223,25 @@ struct ContentView: View {
                                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                                     }
                                                             }
-                                                            Text(removeLastChar(masterFiles[index].name))
+                                                            Text(removeLastChar(masterFiles[index].name)) //Spartan appends a "/" to every directory element to make other actions easier, but it doesn't look too great when displayed. So removeLastChar just removes the last character in a string (in this case, a slash).
                                                                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                                     view.scaledFont(name: "BotW Sheikah Regular", size: 40).foregroundColor(.gray)
                                                                 }
                                                                 .foregroundColor(.gray)
                                                         }
                                                     }
+                                                    Text("")
+                                                        .onAppear {
+                                                            print(masterFiles[index].fullPath + ".com.apple.mobile_container_manager.metadata.plist")
+                                                        } //without this, if you go to UserApplications in Favorites the app crashes. why?? i have absolutely no idea but this fixes it
                                                 } else {
-                                                    if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 1){
+                                                    if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 1) {
                                                         Image(systemName: "folder")
-                                                    } else if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 0){
+                                                    } else if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 0) {
                                                         Image(systemName: "folder.fill")
                                                     } else {
                                                         Image(systemName: "folder.badge.questionmark")
-                                                    }
+                                                    } //It's a small thing but useful. Spartan will check if a directory has contents or not and display a filled or empty folder based on that. If it doesn't know, it will display a question mark (which usually means you don't have permission to access it)
                                                     Text(removeLastChar(masterFiles[index].name))
                                                         .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                             view.scaledFont(name: "BotW Sheikah Regular", size: 40)
@@ -368,15 +375,10 @@ struct ContentView: View {
                                                     view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                 }
                                         }
-                                        .foregroundColor(.red)
                                     } else if(directory == "/private/var/mobile/Media/" && masterFiles[index].name == ".Trash/"){
                                         Button(action: {
                                             do {
                                                 try fileManager.removeItem(atPath: "/private/var/mobile/Media/.Trash/")
-                                            } catch {
-                                                print("Error emptying Trash: \(error)")
-                                            }
-                                            do {
                                                 try fileManager.createDirectory(atPath: "/private/var/mobile/Media/.Trash/", withIntermediateDirectories: true, attributes: nil)
                                             } catch {
                                                 print("Error emptying Trash: \(error)")
@@ -399,7 +401,7 @@ struct ContentView: View {
                                                 }
                                         }
                                     }
-                                    if(deleteOverride){
+                                    if(deleteOverride) { //this never activates, but I leave it in just in case I ever change how this works
                                         Button(action: {
                                             deleteFile(atPath: masterFiles[index].fullPath)
                                             updateFiles()
@@ -409,7 +411,6 @@ struct ContentView: View {
                                                     view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                 }
                                         }
-                                        .foregroundColor(.red)
                                     }
                                     
                                     Button(action: {
@@ -452,7 +453,7 @@ struct ContentView: View {
                                     
                                     Button(NSLocalizedString("DISMISS", comment: "Hang on a second.")) { }
                                 }
-                            } else {
+                            } else { //this is the tvOS 13 code. Tapping on an object opens up a select menu since there's no context menus in swiftUI on tvOS 13. You can do the default action, which is the Open button. Then the rest of the context menu is shown in a Sheet
                                 Button(action: {
                                     showSubView[1] = true
                                     newViewFilePath = directory
@@ -463,42 +464,51 @@ struct ContentView: View {
                                         if (multiSelect) {
                                             Image(systemName: masterFiles[index].isSelected ? "checkmark.circle" : "circle")
                                         }
-                                        if (directory == "/private/var/containers/Bundle/Application/") {
-                                            let manager = ApplicationsManager(allApps: LSApplicationWorkspace.default().allApplications())
-
-                                            let currentDirContents = try! fileManager.contentsOfDirectory(atPath: masterFiles[index].fullPath)
-                                            let appFolder = currentDirContents.first { contents in
-                                                contents.hasSuffix(".app")
-                                            }
-                                            let pathPlus = masterFiles[index].fullPath +  appFolder! + "/"
-                                            let app = manager.application(forBundleURL: URL(fileURLWithPath: pathPlus))
+                                        if (directory == "/private/var/containers/Bundle/Application/" || directory == "/private/var/mobile/Containers/Data/Application/" || directory == "/private/var/mobile/Containers/Shared/AppGroup/") {
+                                            let plistDict = NSDictionary(contentsOfFile: masterFiles[index].fullPath + ".com.apple.mobile_container_manager.metadata.plist")
+                                            let bundleID = defineBundleID(plistDict!)
+                                            let groupBundleID = plistDict!["MCMMetadataIdentifier"] as! String
+                                            //in every container folder (whether it's the bundle container, data container, or group container) is a file that contains the app's bundle ID. santander macros do support determining an LSApplicationProxy? from bundle/container/data container folder on **iOS** but not tvOS since sandboxing system is different. Reading from bundle ID ensures that the app definitely exists and someone didn't just create a folder in here, so no issues with nil LSApplicationProxy? elements
+                                            //then the rest of this just reads properties from the LSApplicationProxy.
+                                            
+                                            let app = LSApplicationProxy(forIdentifier: bundleID)
                                             HStack {
-                                                if (fileManager.fileExists(atPath: pathPlus + "Assets.car")) {
-                                                    let image = manager.icon(forApplication: app!)
-                                                    Image(uiImage: image)
+                                                let image: UIImage? = appsManager.icon(forApplication: app)
+                                                if(image != nil) {
+                                                    Image(uiImage: image!)
                                                         .resizable()
                                                         .clipShape(RoundedRectangle(cornerRadius: 8))
                                                         .frame(width: 280 * scaleFactor, height: 168 * scaleFactor)
-                                                } else { //if Assets.car doesn't exist the app has no icon (and Assets.car is required on tvOS 13.0+, so we can make this assumption) and so no image is retrieved, because if there isn't Assets.car UIApplication crashes
+                                                } else {
                                                     Image("DefaultIcon")
                                                         .resizable()
                                                         .clipShape(RoundedRectangle(cornerRadius: 8))
                                                         .frame(width: 280 * scaleFactor, height: 168 * scaleFactor)
                                                 }
                                                 VStack(alignment: .leading) {
-                                                    Text(app!.localizedName())
+                                                    Text(app.localizedName())
                                                         .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                             view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                         }
-                                                    Text(removeLastChar(masterFiles[index].name))
+                                                        .foregroundColor(.blue)
+                                                    if (directory == "/private/var/mobile/Containers/Shared/AppGroup/") {
+                                                        Text(groupBundleID)
+                                                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                            }
+                                                    } else {
+                                                        Text(bundleID)
+                                                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                            }
+                                                    }
+                                                    Text(removeLastChar(masterFiles[index].name)) //Spartan appends a "/" to every directory element to make other actions easier, but it doesn't look too great when displayed. So removeLastChar just removes the last character in a string (in this case, a slash).
                                                         .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                             view.scaledFont(name: "BotW Sheikah Regular", size: 40).foregroundColor(.gray)
                                                         }
                                                         .foregroundColor(.gray)
                                                 }
                                             }
-                                        } else if (directory == "/private/var/mobile/Containers/Data/Application/") {
-                                            Text("E")
                                         } else {
                                             let fileType = yandereDevFileType(file: (masterFiles[index].fullPath))
                                             switch fileType {
@@ -1440,7 +1450,7 @@ struct ContentView: View {
             //Text("/")
             Text(NSLocalizedString("FREE_SPACE", comment: "E") + String(format: "%.2f", doubleValue) + " " + stringValue)
                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                    view.scaledFont(name: "BotW Sheikah Regular", size: 35)
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 32)
                 }
         //}
         .alignmentGuide(.trailing) {
@@ -1465,9 +1475,6 @@ struct ContentView: View {
     
     @ViewBuilder
     var AVFileOpener: some View {
-        let buttonWidth = 500 * (UIScreen.main.nativeBounds.height/1080)
-        let buttonHeight = 30 * (UIScreen.main.nativeBounds.height/1080)
-        
         Button(action: {
             newViewFilePath = masterFiles[newViewFileIndex].fullPath
             newViewFileName = masterFiles[newViewFileIndex].name

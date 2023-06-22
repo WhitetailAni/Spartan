@@ -12,7 +12,10 @@ struct SpawnView: View {
     @Binding var fileName: String
     @State var programArguments: String = ""
     @State var envVars: String = ""
-    @State var spawnLog: String = ""
+    @State var spawnAsRoot = false
+    @State var stdLog: String = ""
+    
+    @State var isTapped = false
     
     var body: some View {
         VStack {
@@ -22,35 +25,56 @@ struct SpawnView: View {
                 }
                 .font(.system(size: 40))
                 .multilineTextAlignment(.center)
-            TextField(NSLocalizedString("SPAWN_ARGS", comment: "MY ESTEEM CUSTOMER I SEE YOU ARE ATTEMPTING TO DEPLETE MY HP!"), text: $programArguments)
-                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                }
-            TextField(NSLocalizedString("SPAWN_ENV", comment: "KRIS! ISN'T THIS [Body] JUST [Heaven]LY!?"), text: $envVars)
-                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                }
+                .disabled(isTapped)
                 
-            UIKitTextView(text: $spawnLog, fontSize: UserDefaults.settings.integer(forKey: "logWindowFontSize"))
-            
-            Button(action: {
-                SwiftTryCatch.try({
-                        spawnLog = Spartan.taskSnoop {
-                            Spartan.task(launchPath: filePath + fileName, arguments: programArguments, envVars: envVars)
-                        }
-                    }, catch: { (error) in
-                        spawnLog = error.description
-                    }
-                )
-            }) {
-                Text(NSLocalizedString("SPAWN_CONFIRM", comment: "ENJOY THE FIR3WORKS, KID!!!!"))
+            HStack {
+                TextField(NSLocalizedString("SPAWN_ARGS", comment: "MY ESTEEM CUSTOMER I SEE YOU ARE ATTEMPTING TO DEPLETE MY HP!"), text: $programArguments)
                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                     }
+                    .disabled(isTapped)
+                TextField(NSLocalizedString("SPAWN_ENV", comment: "KRIS! ISN'T THIS [Body] JUST [Heaven]LY!?"), text: $envVars)
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
+                    .disabled(isTapped)
             }
-            .onAppear {
-                print(filePath)
-                print(fileName)
+            
+            UIKitTextView(text: $stdLog, fontSize: CGFloat(UserDefaults.settings.integer(forKey: "logWindowFontSize")), isTapped: $isTapped)
+                .onExitCommand {
+                    isTapped = false
+                }
+            
+            HStack {
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        let args = programArguments.split(separator: " ").map(String.init)
+                        let env = envVars.split(separator: " ").map(String.init)
+                        stdLog = spawn(command: filePath + fileName, args: args, env: env, root: false)
+                    }) {
+                        Text(NSLocalizedString("SPAWN_CONFIRM", comment: "ENJOY THE FIR3WORKS, KID!!!!"))
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
+                    }
+                    .disabled(isTapped)
+                }
+                
+                HStack {
+                    Button(action: {
+                        let args = programArguments.split(separator: " ").map(String.init)
+                        let env = envVars.split(separator: " ").map(String.init)
+                        stdLog = spawn(command: filePath + fileName, args: args, env: env, root: true)
+                    }) {
+                        Text(NSLocalizedString("SPAWN_ROOTCONFIRM", comment: "ENJOY THE FIR3WORKS, KID!!!!"))
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
+                    }
+                    .disabled(isTapped)
+                    Spacer()
+                }
             }
         }
     }

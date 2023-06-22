@@ -192,7 +192,10 @@
 //spawn
 "SPAWN_ARGS" = "Enter program arguments";
 "SPAWN_ENV" = "Enter environment variables";
+"SPAWN_ROOTCONFIRM" = "Spawn as Root";
 "SPAWN_CONFIRM" = "Spawn";
+"STDOUT" = "stdout";
+"STDERR" = "stderr";
 
 //dpkg
 "DPKGDEB_OUTDIR" = "Specify the destination directory";

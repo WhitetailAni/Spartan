@@ -22,7 +22,10 @@ struct DpkgView: View {
     @State var extractToCurrentDir = true
     @State var extractDest: String = ""
     
+    @State var isTapped = false
+    
     let fileManager = FileManager.default
+    let env = [""]
 
     var body: some View {
         //if(0 == 1) {
@@ -34,7 +37,8 @@ struct DpkgView: View {
                 VStack {
                     Text(debName)
                         .font(.system(size: 60))
-                    UIKitTextView(text: $dpkgLog, fontSize: UserDefaults.settings.integer(forKey: "logWindowFontSize"))
+                    
+                    UIKitTextView(text: $dpkgLog, fontSize: CGFloat(UserDefaults.settings.integer(forKey: "logWindowFontSize")), isTapped: $isTapped)
                         .onAppear {
                             if(isRootless) {
                                 dpkgPath = "/private/var/jb/usr/bin/dpkg"
@@ -42,19 +46,19 @@ struct DpkgView: View {
                                 dpkgPath = "/usr/bin/dpkg"
                             }
                         }
+                        .onExitCommand {
+                            isTapped = false
+                        }
                     HStack {
                         Button(action: {
                             let arguments: String = "-i " + debPath + debName
-                            SwiftTryCatch.try({
-                                dpkgLog = Spartan.taskSnoop {
-                                    Spartan.task(launchPath: dpkgPath, arguments: arguments, envVars: "")
-                                }
-                            }, catch: { (error) in
-                                dpkgLog = error.description
-                            })
+                            let args = arguments.split(separator: " ").map(String.init)
+                            spawn(command: dpkgPath, args: args, env: env, root: true)
                         }) {
                             Text(NSLocalizedString("INSTALL", comment: "THERE WILL BE NO MORE [Miracles] NO MORE [Magic]."))
                         }
+                        .disabled(isTapped)
+                        
                         Button(action: {
                             withAnimation {
                                 isExtracting = true
@@ -62,11 +66,14 @@ struct DpkgView: View {
                         }) {
                             Text(NSLocalizedString("EXTRACT", comment: "YOU MAKE ME [Sick]!"))
                         }
+                        .disabled(isTapped)
+                        
                         Button(action: {
                             isPresented = false
                         }) {
                             Text(NSLocalizedString("DISMISS", comment: "I REMEMBER WHEN YOU WERE JUST A LOST [Little Sponge]"))
                         }
+                        .disabled(isTapped)
                     }
                 }
                 .transition(.opacity)
@@ -83,7 +90,9 @@ struct DpkgView: View {
                         if(extractToCurrentDir) {
                             extractDest = debPath
                         }
-                        _ = Spartan.task(launchPath: dpkgPath + "-deb", arguments: "-x " + (debPath + debName) + " " + extractDest, envVars: "")
+                        let arguments = "-x " + (debPath + debName) + " " + extractDest
+                        let args = arguments.split(separator: " ").map(String.init)
+                        let logs = spawn(command: dpkgPath + "-deb", args: args, env: env, root: true)
                     }) {
                         Text(NSLocalizedString("EXTRACT", comment: "I GAVE YOU MY [Commemorative Ring] FOR THE PRICE OF [My Favorite Year]!"))
                     }
@@ -110,7 +119,10 @@ struct DpkgBuilderView: View {
     @State private var dpkgDebLog: String = ""
     @State private var dpkgPath: String = ""
     
+    @State var isTapped = false
+    
     let fileManager = FileManager.default
+    let env = [""]
     
     var body: some View {
         //if(0 == 1) {
@@ -133,6 +145,7 @@ struct DpkgBuilderView: View {
             .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                 view.scaledFont(name: "BotW Sheikah Regular", size: 40)
             }
+            .disabled(isTapped)
         
             TextField(NSLocalizedString("DPKGDEB_OUTNAME", comment: "I WAS TOO [Trusting] TOO [Honest]") + NSLocalizedString("OPTIONAL", comment: ""), text: $debOutputName, onCommit: {
                 print(debOutputName)
@@ -141,6 +154,7 @@ struct DpkgBuilderView: View {
             .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                 view.scaledFont(name: "BotW Sheikah Regular", size: 40)
             }
+            .disabled(isTapped)
         
             Text(NSLocalizedString("DPKGDEB_COMPTYPE", comment: "I SHOULD HAVE KNOWN YOU WOULD HAVE USED MY [Ring] FOR [Evil]..."))
             Picker("E", selection: $selectedCompressionType) {
@@ -155,29 +169,22 @@ struct DpkgBuilderView: View {
             .onReceive([selectedCompressionType].publisher, perform: { value in
                 updateLog()
             })
+            .disabled(isTapped)
             
-            UIKitTextView(text: $dpkgDebLog, fontSize: UserDefaults.settings.integer(forKey: "logWindowFontSize"))
+            UIKitTextView(text: $dpkgDebLog, fontSize: CGFloat(UserDefaults.settings.integer(forKey: "logWindowFontSize")), isTapped: $isTapped)
                 .onAppear {
                     updateLog()
+                }
+                .onExitCommand {
+                    isTapped = false
                 }
             
             Button(action: {
                 updateLog()
                 dpkgDebLog += "\n"
-                SwiftTryCatch.try({
-                        let arguments: String = " -Z " + selectedCompressionType + " -b " + debInputDir + debOutputVars
-                        SwiftTryCatch.try({
-                                dpkgDebLog = Spartan.taskSnoop {
-                                    Spartan.task(launchPath: dpkgPath, arguments: arguments, envVars: "")
-                                }
-                            }, catch: { (error) in
-                                dpkgDebLog = error.description
-                            }
-                        )
-                     }, catch: { (error) in
-                         dpkgDebLog += "An error occurred: " + error.description
-                     }
-                )
+                let arguments: String = " -Z " + selectedCompressionType + " -b " + debInputDir + debOutputVars
+                let args = arguments.split(separator: " ").map(String.init)
+                spawn(command: dpkgPath, args: args, env: env, root: true)
             }) {
                 Text(NSLocalizedString("BUILD", comment: "YOU THINK MAKING [Frozen Chicken] WITH YOUR [Side Chick]"))
             }
@@ -188,6 +195,7 @@ struct DpkgBuilderView: View {
                     dpkgPath = "/usr/bin/dpkg-deb"
                 }
             }
+            .disabled(isTapped)
         }
     }
     

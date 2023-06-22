@@ -36,7 +36,6 @@ struct FontView: View {
     }
     
     func demoPrep(font: CGFont) -> String {
-        var chars = ""
         let glyphCount = font.numberOfGlyphs
         var supportedCharacters: [Character] = []
 
