@@ -8,7 +8,7 @@
 import Foundation
 import Darwin.POSIX
 
-@discardableResult func spawn(command: String, args: [String], env: [String], root: Bool) -> String {
+@discardableResult func spawn(command: String, args: [String], env: [String], label: String, root: Bool) -> String {
 
     var pipestdout: [Int32] = [0, 0]
     var pipestderr: [Int32] = [0, 0]
@@ -54,7 +54,7 @@ import Darwin.POSIX
     var pid: pid_t = 0
     let spawnStatus = posix_spawnp(&pid, command, &fileActions, &attr, argv + [nil], proenv + [nil])
     if spawnStatus != 0 {
-        return "Spawn Status = \(spawnStatus)"
+        return "Error Code \(spawnStatus)"
     }
 
     close(pipestdout[1])
@@ -65,7 +65,7 @@ import Darwin.POSIX
 
     let mutex = DispatchSemaphore(value: 0)
 
-    let readQueue = DispatchQueue(label: "com.whitetailani.spartan.command",
+    let readQueue = DispatchQueue(label: label,
                                   qos: .userInitiated,
                                   attributes: .concurrent,
                                   autoreleaseFrequency: .inherit,
@@ -129,8 +129,5 @@ import Darwin.POSIX
     
     mutex.wait()
     mutex.wait()
-    var status: Int32 = 0
-    waitpid(pid, &status, 0)
-    print("status: \(status) \(stdoutStr) \(stderrStr)")
     return stdoutStr + "\n" + stderrStr
 }

@@ -28,12 +28,14 @@ What it currently lets you do:
 - Search a directory and its subdirectories for a file or directory
 - View all mounted devices
 - Hex editor
+- Font viewer
+- Asset catalog name
+- Display app icons/names/bundle IDs in container directories and /Applications
 There's probably more, I lost track.
 
 TODO:
 - Plist editor //everything done but dictionary
-- Root helper
-- Read app list to show what app container is which if in (/private)/var/containers/Bundle/Application or (/private)/var/mobile/Containers/Data/Application
+- Root helper //currently working on
 - webserver like filza webdav
 
 I keep doing things OTHER than the todo list. Fun!
@@ -43,11 +45,8 @@ It will open /var/mobile/ by default, unless you are sandboxed, in which case it
 Work is ongoing to 
 
 How to use:
-1. Clone the repository and open it in Xcode (14.0+ required).
-2. Unless you are using Xcode 15 (Apple enabled posix_spawn in Xcode 15 
-by default and so this step is no longer required), enter the Xcode.app 
-folder and find the AppleTVOS SDK. Locate 
-/usr/include/spawn.h, give it write permissions, and remove the listings that mark it as unavailable on tvOS.
+1. Clone the repository and open it in Xcode (15.0+ required).
+2. Get the patched tvOS 17.0 sdk from 
 3. Build and run to your Apple TV.
 
 Good luck have fun. Hopefully this isn't the only tvOS file browser ever.

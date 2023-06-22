@@ -105,7 +105,7 @@
 //symtouch view
 "SYMTOUCH_TITLE" = "Create New Symlink";
 "SYMTOUCH_NAME" = "Enter symbolic link name";
-"SYMTOUCH_DEST" = "Enter symbolic link destination directory";
+"SYMTOUCH_DEST" = "Enter symbolic link destination path";
 
 //rename view
 "RENAME_TITLE" = "Rename File To";

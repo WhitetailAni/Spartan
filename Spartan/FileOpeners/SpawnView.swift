@@ -16,6 +16,7 @@ struct SpawnView: View {
     @State var stdLog: String = ""
     
     @State var isTapped = false
+    let label = "lol.whitetailani.spartan.spawnedBinary"
     
     var body: some View {
         VStack {
@@ -51,7 +52,7 @@ struct SpawnView: View {
                     Button(action: {
                         let args = programArguments.split(separator: " ").map(String.init)
                         let env = envVars.split(separator: " ").map(String.init)
-                        stdLog = spawn(command: filePath + fileName, args: args, env: env, root: false)
+                        stdLog = spawn(command: filePath + fileName, args: args, env: env, label: label, root: false)
                     }) {
                         Text(NSLocalizedString("SPAWN_CONFIRM", comment: "ENJOY THE FIR3WORKS, KID!!!!"))
                             .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
@@ -65,7 +66,7 @@ struct SpawnView: View {
                     Button(action: {
                         let args = programArguments.split(separator: " ").map(String.init)
                         let env = envVars.split(separator: " ").map(String.init)
-                        stdLog = spawn(command: filePath + fileName, args: args, env: env, root: true)
+                        stdLog = spawn(command: filePath + fileName, args: args, env: env, label: label, root: true)
                     }) {
                         Text(NSLocalizedString("SPAWN_ROOTCONFIRM", comment: "ENJOY THE FIR3WORKS, KID!!!!"))
                             .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in

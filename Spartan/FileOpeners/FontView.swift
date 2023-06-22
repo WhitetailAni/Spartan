@@ -19,8 +19,13 @@ struct FontView: View {
             .multilineTextAlignment(.center)
             
         Spacer()
-        Text(demoPrep(font: loadFont()!))
+        let font = loadFont()
+        if font != nil {
+            Text(demoPrep(font: loadFont()!))
                 .font(Font(cgFont: loadFont()!, size: 40))
+        } else {
+            Text("The font file is not valid or not supported. Please make sure the file is not corrupted and is a supported font file, and then try again.")
+        }
         
         Spacer()
     }

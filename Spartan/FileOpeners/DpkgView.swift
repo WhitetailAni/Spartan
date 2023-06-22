@@ -26,6 +26,7 @@ struct DpkgView: View {
     
     let fileManager = FileManager.default
     let env = [""]
+    let label = "lol.whitetailani.spartan.dpkg"
 
     var body: some View {
         //if(0 == 1) {
@@ -53,7 +54,7 @@ struct DpkgView: View {
                         Button(action: {
                             let arguments: String = "-i " + debPath + debName
                             let args = arguments.split(separator: " ").map(String.init)
-                            spawn(command: dpkgPath, args: args, env: env, root: true)
+                            spawn(command: dpkgPath, args: args, env: env, label: label, root: true)
                         }) {
                             Text(NSLocalizedString("INSTALL", comment: "THERE WILL BE NO MORE [Miracles] NO MORE [Magic]."))
                         }
@@ -92,7 +93,7 @@ struct DpkgView: View {
                         }
                         let arguments = "-x " + (debPath + debName) + " " + extractDest
                         let args = arguments.split(separator: " ").map(String.init)
-                        let logs = spawn(command: dpkgPath + "-deb", args: args, env: env, root: true)
+                        dpkgLog = spawn(command: dpkgPath + "-deb", args: args, env: env, label: label, root: true)
                     }) {
                         Text(NSLocalizedString("EXTRACT", comment: "I GAVE YOU MY [Commemorative Ring] FOR THE PRICE OF [My Favorite Year]!"))
                     }
@@ -123,6 +124,7 @@ struct DpkgBuilderView: View {
     
     let fileManager = FileManager.default
     let env = [""]
+    let label = "lol.whitetailani.spartan.dpkg"
     
     var body: some View {
         //if(0 == 1) {
@@ -184,7 +186,7 @@ struct DpkgBuilderView: View {
                 dpkgDebLog += "\n"
                 let arguments: String = " -Z " + selectedCompressionType + " -b " + debInputDir + debOutputVars
                 let args = arguments.split(separator: " ").map(String.init)
-                spawn(command: dpkgPath, args: args, env: env, root: true)
+                spawn(command: dpkgPath, args: args, env: env, label: label, root: true)
             }) {
                 Text(NSLocalizedString("BUILD", comment: "YOU THINK MAKING [Frozen Chicken] WITH YOUR [Side Chick]"))
             }

@@ -31,7 +31,7 @@ struct CarView: View {
             Button(action: {
                 print("lol")
             }) {
-                switch RenditionType(namedLookup: rendition.namedLookup) {
+                /*switch RenditionType(namedLookup: rendition.namedLookup) {
                 case .image:
                     Text("image")
                 case .icon:
@@ -50,7 +50,8 @@ struct CarView: View {
                     Text("data")
                 case .unknown:
                     Text("The asset type could not be determined.")
-                }
+                }*/
+                Text(rendition.name)
             }
         }
         .onAppear {

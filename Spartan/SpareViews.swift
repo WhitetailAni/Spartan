@@ -203,7 +203,7 @@ struct UIKitTextView: UIViewRepresentable {
         if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) {
             textView.font = UIFont(name: "BotW Sheikah Regular", size: fontSize)
         } else {
-            textView.font = UIFont.monospacedSystemFont(ofSize: fontSize, weight: .regular)
+            textView.font = UIFont(name: "SF Mono Regular", size: fontSize)
         }
         
         let tapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.textViewTapped))

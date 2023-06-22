@@ -8,10 +8,12 @@
 import SwiftUI
 import Foundation
 import AVKit
+import AVFoundation
 import MobileCoreServices
 import Swifter
 import ApplicationsWrapper
 import AssetCatalogWrapper
+
 
 struct ContentView: View {
     @State var directory: String
@@ -102,6 +104,9 @@ struct ContentView: View {
             VStack {
                 HStack { //input directory + refresh
                     TextField(NSLocalizedString("INPUT_DIRECTORY", comment: "According to all known laws of aviation"), text: $directory, onCommit: {
+                        if directory == "" {
+                            directory = "/"
+                        }
                         directPathTypeCheckNewViewFileVariableSetter()
                         defaultAction(index: 0, isDirectPath: true)
                     })
@@ -118,9 +123,7 @@ struct ContentView: View {
                             buttonCalc = true
                         }
 
-                        if (directory.count >= 5 && substring(str: directory, startIndex: directory.index(directory.startIndex, offsetBy: 0), endIndex: directory.index(directory.startIndex, offsetBy: 5)) == "/var/") {
-                            directory = "/private/var/" + substring(str: directory, startIndex: directory.index(directory.startIndex, offsetBy: 5), endIndex: directory.index(directory.endIndex, offsetBy: 0))
-                        } //i dont have a way to check if every part of a filepath is a symlink but that doesn't matter. all that matters is that /var/ always becomes /private/var/
+                        directory = varFixup(directory)
                     }
                     
                     Button(action: {
@@ -185,55 +188,114 @@ struct ContentView: View {
                                             
                                             switch fileType {
                                             case 0:
-                                                if (directory == "/private/var/containers/Bundle/Application/" || directory == "/private/var/mobile/Containers/Data/Application/" || directory == "/private/var/mobile/Containers/Shared/AppGroup/") {
-                                                    let plistDict = NSDictionary(contentsOfFile: masterFiles[index].fullPath + ".com.apple.mobile_container_manager.metadata.plist")
-                                                    let bundleID = defineBundleID(plistDict!)
-                                                    let groupBundleID = plistDict!["MCMMetadataIdentifier"] as! String
-                                                    //in every container folder (whether it's the bundle container, data container, or group container) is a file that contains the app's bundle ID. santander macros do support determining an LSApplicationProxy? from bundle/container/data container folder on **iOS** but not tvOS since sandboxing system is different. Reading from bundle ID ensures that the app definitely exists and someone didn't just create a folder in here, so no issues with nil LSApplicationProxy? elements
-                                                    //then the rest of this just reads properties from the LSApplicationProxy.
-                                                    
-                                                    let app = LSApplicationProxy(forIdentifier: bundleID)
-                                                    HStack {
-                                                        let image: UIImage? = appsManager.icon(forApplication: app)
-                                                        if(image != nil) {
-                                                            Image(uiImage: image!)
-                                                                .resizable()
-                                                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                                                                .frame(width: 280 * scaleFactor, height: 168 * scaleFactor)
-                                                        } else {
-                                                            Image("DefaultIcon")
-                                                                .resizable()
-                                                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                                                                .frame(width: 280 * scaleFactor, height: 168 * scaleFactor)
-                                                        }
-                                                        VStack(alignment: .leading) {
-                                                            Text(app.localizedName())
-                                                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                                                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                                                                }
-                                                                .foregroundColor(.blue)
-                                                            if (directory == "/private/var/mobile/Containers/Shared/AppGroup/") {
-                                                                Text(groupBundleID)
+                                                if (directory == "/Applications/") {
+                                                    let app = appsManager.application(forBundleURL: URL(fileURLWithPath: masterFiles[index].fullPath))
+                                                    if app != nil {
+                                                        let plistDict = NSDictionary(contentsOfFile: masterFiles[index].fullPath + "Info.plist")
+                                                        let bundleID = plistDict?["CFBundleIdentifier"] as? String ?? "com.apple.TVAppStore"
+                                                        HStack {
+                                                            let image: UIImage? = appsManager.icon(forApplication: app!)
+                                                            if(image != nil) {
+                                                                Image(uiImage: image!)
+                                                                    .resizable()
+                                                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                                                    .frame(width: 280 * scaleFactor, height: 168 * scaleFactor)
+                                                            } else {
+                                                                Image("DefaultIcon")
+                                                                    .resizable()
+                                                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                                                    .frame(width: 280 * scaleFactor, height: 168 * scaleFactor)
+                                                            }
+                                                            VStack(alignment: .leading) {
+                                                                Text(app!.localizedName())
                                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                                     }
-                                                            } else {
+                                                                    .foregroundColor(.blue)
                                                                 Text(bundleID)
                                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                                     }
+                                                                Text(removeLastChar(masterFiles[index].name)) //Spartan appends a "/" to every directory element to make other actions easier, but it doesn't look too great when displayed. So removeLastChar just removes the last character in a string (in this case, a slash).
+                                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40).foregroundColor(.gray)
+                                                                    }
+                                                                    .foregroundColor(.gray)
                                                             }
-                                                            Text(removeLastChar(masterFiles[index].name)) //Spartan appends a "/" to every directory element to make other actions easier, but it doesn't look too great when displayed. So removeLastChar just removes the last character in a string (in this case, a slash).
-                                                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                                                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40).foregroundColor(.gray)
-                                                                }
-                                                                .foregroundColor(.gray)
                                                         }
+                                                    } else {
+                                                        if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 1) {
+                                                            Image(systemName: "folder")
+                                                        } else if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 0) {
+                                                            Image(systemName: "folder.fill")
+                                                        } else {
+                                                            Image(systemName: "folder.badge.questionmark")
+                                                        }
+                                                        Text(removeLastChar(masterFiles[index].name))
+                                                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                            }
                                                     }
-                                                    Text("")
-                                                        .onAppear {
-                                                            print(masterFiles[index].fullPath + ".com.apple.mobile_container_manager.metadata.plist")
-                                                        } //without this, if you go to UserApplications in Favorites the app crashes. why?? i have absolutely no idea but this fixes it
+                                                } else if (directory == "/private/var/containers/Bundle/Application/" || directory == "/private/var/mobile/Containers/Data/Application/" || directory == "/private/var/mobile/Containers/Shared/AppGroup/") {
+                                                    let plistPath: String = masterFiles[index].fullPath + ".com.apple.mobile_container_manager.metadata.plist"
+                                                    if fileManager.fileExists(atPath: plistPath) {
+                                                        let plistDict = NSDictionary(contentsOfFile: plistPath)
+                                                        let bundleID = defineBundleID(plistDict ?? NSDictionary(dictionaryLiteral: ("MCMMetadatIdentifier", "lol.whitetailani.Spartan"))) //these optionals are literally never used but otherwise it crashes when you try and open from favorites so L
+                                                        let groupBundleID = plistDict?["MCMMetadataIdentifier"] as? String ?? "lol.whitetailani.Spartan"
+                                                        //in every container folder (whether it's the bundle container, data container, or group container) is a file that contains the app's bundle ID. santander macros do support determining an LSApplicationProxy? from bundle/container/data container folder on **iOS** but not tvOS since sandboxing system is different. Reading from bundle ID ensures that the app definitely exists and someone didn't just create a folder in here, so no issues with nil LSApplicationProxy? elements
+                                                        //then the rest of this just reads properties from the LSApplicationProxy.
+                                                        
+                                                        let app = LSApplicationProxy(forIdentifier: bundleID)
+                                                        HStack {
+                                                            let image: UIImage? = appsManager.icon(forApplication: app)
+                                                            if(image != nil) {
+                                                                Image(uiImage: image!)
+                                                                    .resizable()
+                                                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                                                    .frame(width: 280 * scaleFactor, height: 168 * scaleFactor)
+                                                            } else {
+                                                                Image("DefaultIcon")
+                                                                    .resizable()
+                                                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                                                    .frame(width: 280 * scaleFactor, height: 168 * scaleFactor)
+                                                            }
+                                                            VStack(alignment: .leading) {
+                                                                Text(app.localizedName())
+                                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                                    }
+                                                                    .foregroundColor(.blue)
+                                                                if (directory == "/private/var/mobile/Containers/Shared/AppGroup/") {
+                                                                    Text(groupBundleID)
+                                                                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                                        }
+                                                                } else {
+                                                                    Text(bundleID)
+                                                                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                                        }
+                                                                }
+                                                                Text(removeLastChar(masterFiles[index].name)) //Spartan appends a "/" to every directory element to make other actions easier, but it doesn't look too great when displayed. So removeLastChar just removes the last character in a string (in this case, a slash).
+                                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40).foregroundColor(.gray)
+                                                                    }
+                                                                    .foregroundColor(.gray)
+                                                            }
+                                                        }
+                                                    } else {
+                                                        if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 1) {
+                                                            Image(systemName: "folder")
+                                                        } else if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 0) {
+                                                            Image(systemName: "folder.fill")
+                                                        } else {
+                                                            Image(systemName: "folder.badge.questionmark")
+                                                        }
+                                                        Text(removeLastChar(masterFiles[index].name))
+                                                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                            }
+                                                    }
                                                 } else {
                                                     if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 1) {
                                                         Image(systemName: "folder")
@@ -297,10 +359,17 @@ struct ContentView: View {
                                                     }
                                             case 8:
                                                 Image(systemName: "link")
-                                                Text(removeLastChar(masterFiles[index].name))
-                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                                                    }
+                                                if(isDirectory(filePath: masterFiles[index].fullPath)) {
+                                                    Text(removeLastChar(masterFiles[index].name))
+                                                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                        }
+                                                } else {
+                                                    Text(masterFiles[index].name)
+                                                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                        }
+                                                }
                                             case 9:
                                                 Image(systemName: "archivebox")
                                                 Text(masterFiles[index].name)
@@ -464,10 +533,13 @@ struct ContentView: View {
                                         if (multiSelect) {
                                             Image(systemName: masterFiles[index].isSelected ? "checkmark.circle" : "circle")
                                         }
-                                        if (directory == "/private/var/containers/Bundle/Application/" || directory == "/private/var/mobile/Containers/Data/Application/" || directory == "/private/var/mobile/Containers/Shared/AppGroup/") {
+                                        if (directory == "/Applications/") {
+                                            let app = appsManager.application(forBundleURL: URL(fileURLWithPath: masterFiles[index].fullPath))
+                                            Text(app!.localizedName())
+                                        } else if (directory == "/private/var/containers/Bundle/Application/" || directory == "/private/var/mobile/Containers/Data/Application/" || directory == "/private/var/mobile/Containers/Shared/AppGroup/") {
                                             let plistDict = NSDictionary(contentsOfFile: masterFiles[index].fullPath + ".com.apple.mobile_container_manager.metadata.plist")
-                                            let bundleID = defineBundleID(plistDict!)
-                                            let groupBundleID = plistDict!["MCMMetadataIdentifier"] as! String
+                                            let bundleID = defineBundleID(plistDict ?? NSDictionary(dictionaryLiteral: ("MCMMetadatIdentifier", "lol.whitetailani.Spartan"))) //these default values are literally never used but otherwise it crashes when you try and open from favorites for some stupid reason
+                                            let groupBundleID = plistDict?["MCMMetadataIdentifier"] as? String ?? "lol.whitetailani.Spartan"
                                             //in every container folder (whether it's the bundle container, data container, or group container) is a file that contains the app's bundle ID. santander macros do support determining an LSApplicationProxy? from bundle/container/data container folder on **iOS** but not tvOS since sandboxing system is different. Reading from bundle ID ensures that the app definitely exists and someone didn't just create a folder in here, so no issues with nil LSApplicationProxy? elements
                                             //then the rest of this just reads properties from the LSApplicationProxy.
                                             
@@ -574,10 +646,17 @@ struct ContentView: View {
                                                     }
                                             case 8:
                                                 Image(systemName: "link")
-                                                Text(removeLastChar(masterFiles[index].name))
-                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                                                    }
+                                                if(isDirectory(filePath: masterFiles[index].fullPath)) {
+                                                    Text(removeLastChar(masterFiles[index].name))
+                                                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                        }
+                                                } else {
+                                                    Text(masterFiles[index].name)
+                                                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                        }
+                                                }
                                             case 9:
                                                 Image(systemName: "archivebox")
                                                 Text(masterFiles[index].name)
@@ -1583,10 +1662,9 @@ struct ContentView: View {
             }
         } else {
             multiSelect = false
-            let fileType = Int(yandereDevFileType(file: (directory + fileToCheck[index])))
             newViewFilePath = directory
             newViewFileName = fileToCheck[index]
-            switch fileType {
+            switch Int(yandereDevFileType(file: (directory + fileToCheck[index]))) {
             case 0:
                 do {
                     try fileManager.contentsOfDirectory(atPath: directory + fileToCheck[index])
@@ -1621,7 +1699,13 @@ struct ContentView: View {
             case 7:
                 showSubView[15] = true
             case 8:
-                directory = readSymlinkDestination(path: directory + fileToCheck[index]) + "/"
+                let dest = readSymlinkDestination(path: directory + fileToCheck[index])
+                if(isDirectory(filePath: dest)) {
+                    directory = dest
+                } else {
+                    masterFiles.append(SpartanFile(name: URL(fileURLWithPath: dest).lastPathComponent, fullPath: dest, isSelected: false))
+                    defaultAction(index: masterFiles.count-1, isDirectPath: false)
+                }
                 updateFiles()
             case 9:
                 showSubView[23] = true
@@ -1775,9 +1859,6 @@ struct ContentView: View {
     func yandereDevFileType(file: String) -> Double { //I tried using unified file types but they all returned nil so I have to use this awful yandere dev shit
         //im sorry
         
-        let audioTypes: [String] = ["aifc", "m4r", "wav", "flac", "m2a", "aac", "mpa", "xhe", "aiff", "amr", "caf", "m4a", "m4r", "m4b", "mp1", "m1a", "aax", "mp2", "w64", "m4r", "aa", "mp3", "au", "eac3", "ac3", "m4p", "loas"]
-        let videoTypes: [String] = ["3gp", "3g2", "avi", "mov", "m4v", "mp4"]
-        let imageTypes: [String] = ["png", "tiff", "tif", "jpeg", "jpg", "gif", "bmp", "BMPf", "ico", "cur", "xbm"]
         let archiveTypes: [String] = ["zip", "cbz"]
         let fontTypes: [String] = ["ttf", "otf", "ttc", "pfb", "pfa"]
         
@@ -1785,11 +1866,11 @@ struct ContentView: View {
             return 8 //symlink
         } else if (isDirectory(filePath: file)) {
             return 0 //directory
-        } else if (audioTypes.contains(where: file.hasSuffix)) {
-            return 1 //audio file
-        } else if (videoTypes.contains(where: file.hasSuffix)) {
+        } else if (isVideo(filePath: file)) { //video has to come first as otherwise they detect as audio
             return 2 //video file
-        } else if (imageTypes.contains(where: file.hasSuffix)) {
+        } else if (isAudio(filePath: file)) {
+            return 1 //audio file
+        } else if (isImage(filePath: file)) {
             return 3 //image
         } else if (isPlist(filePath: file) != 0) {
             return isPlist(filePath: file)
@@ -1815,6 +1896,32 @@ struct ContentView: View {
         var isDirectory: ObjCBool = false
         FileManager.default.fileExists(atPath: filePath, isDirectory: &isDirectory)
         return isDirectory.boolValue
+    }
+    func isAudio(filePath: String) -> Bool {
+        let fileURL = URL(fileURLWithPath: filePath)
+        let asset = AVAsset(url: fileURL)
+        let playableKey = "playable"
+
+        let playablePredicate = NSPredicate(format: "%K == %@", playableKey, NSNumber(value: true))
+        let playableItems = asset.tracks(withMediaCharacteristic: .audible).filter { playablePredicate.evaluate(with: $0) }
+
+        return playableItems.count > 0
+    }
+    func isVideo(filePath: String) -> Bool {
+        let fileURL = URL(fileURLWithPath: filePath)
+        let asset = AVAsset(url: fileURL)
+        let playableKey = "playable"
+
+        let playablePredicate = NSPredicate(format: "%K == %@", playableKey, NSNumber(value: true))
+        let playableItems = asset.tracks(withMediaCharacteristic: .visual).filter { playablePredicate.evaluate(with: $0) }
+
+        return playableItems.count > 0
+    }
+    func isImage(filePath: String) -> Bool {
+        if let image = UIImage(contentsOfFile: filePath) {
+            return image.size.width > 0 && image.size.height > 0
+        }
+        return false
     }
     func isText(filePath: String) -> Bool {
         guard let data = fileManager.contents(atPath: filePath) else {
@@ -1873,17 +1980,15 @@ struct ContentView: View {
     }
     
     func readSymlinkDestination(path: String) -> String {
-        print(try! fileManager.destinationOfSymbolicLink(atPath: path))
-        var dest = "/"
-        do {
-            dest += try fileManager.destinationOfSymbolicLink(atPath: path)
-        } catch {
-            print(error.localizedDescription)
+        let url = URL(fileURLWithPath: path)
+        var dest = url.resolvingSymlinksInPath().path
+        
+        if(isDirectory(filePath: dest)) {
+            dest += "/"
         }
-        if(!fileManager.fileExists(atPath: dest)) {
-            nonexistentFile = dest
-            showSubView[26] = true
-        }
+        
+        dest = varFixup(dest)
+        
         if(dest == "//") {
             dest = "/" + path
         }
@@ -1933,9 +2038,9 @@ struct ContentView: View {
     
     func defineBundleID(_ plistDict: NSDictionary) -> String {
         if (directory == "/private/var/mobile/Containers/Shared/AppGroup/") {
-            return trimGroupBundleID(plistDict["MCMMetadataIdentifier"] as! String)!
+            return trimGroupBundleID(plistDict["MCMMetadataIdentifier"] as? String ?? "group.com.apple.mail") ?? "lol.whitetailani.Spartan"
         } else {
-            return plistDict["MCMMetadataIdentifier"] as! String
+            return plistDict["MCMMetadataIdentifier"] as? String ?? "lol.whitetailani.Spartan"
         }
     }
     
@@ -1945,6 +2050,13 @@ struct ContentView: View {
             return nil
         }
         return components.suffix(3).joined(separator: ".")
+    }
+    
+    func varFixup(_ path: String) -> String {
+        if (path.count >= 5 && substring(str: path, startIndex: path.index(path.startIndex, offsetBy: 0), endIndex: path.index(path.startIndex, offsetBy: 5)) == "/var/") {
+            return "/private/var/" + substring(str: path, startIndex: path.index(path.startIndex, offsetBy: 5), endIndex: path.index(path.endIndex, offsetBy: 0))
+        } //i dont have a way to check if every part of a filepath is a symlink but that doesn't matter. all that matters is that /var/ always becomes /private/var/
+        return path
     }
 }
 

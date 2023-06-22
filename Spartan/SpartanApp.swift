@@ -33,8 +33,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         if(fileManager.isReadableFile(atPath: "/private/var/mobile/")){ //shows app data directory if sandbox exists
-            displayView(pathToLoad: "/bin/")
+            displayView(pathToLoad: "/Applications/")
             //displayView(pathToLoad: "/private/var/mobile/")
+            //displayView(pathToLoad: "/private/var/containers/Bundle/Application/2A65A51A-4061-4143-B622-FA0E57C0C3EE/trillstore.app/")
         } else {
             displayView(pathToLoad: getDataDirectory())
             //displayView(pathToLoad: "/Users/realkgb/Documents/") //used in case of simulator

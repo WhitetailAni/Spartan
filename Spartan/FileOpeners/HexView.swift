@@ -44,30 +44,34 @@ struct HexView: View {
         }
         
         List(hexArray.indices, id: \.self) { index in
-            let hexValue = 0x0 + index * 4
-            var hexString = String(hexValue, radix: 16)
-            HStack {
-                Text("0x\(hexString)")
-                    .onAppear {
-                        while(hexString.count < 8) {
-                            hexString = hexString + " "
+            if hexArray == ["The file is invalid or not supported. Please make sure the file is not corrupted and then try again."] {
+                Text(hexArray[0])
+            } else {
+                let hexValue = 0x0 + index * 4
+                var hexString = String(hexValue, radix: 16)
+                HStack {
+                    Text("0x\(hexString)")
+                        .onAppear {
+                            while(hexString.count < 8) {
+                                hexString = hexString + " "
+                            }
                         }
-                    }
-                    .padding()
-                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                    }
-                TextField(NSLocalizedString("HEX_DATA", comment: ""), text: $hexArray[index])
-                    .frame(width: UIScreen.main.nativeBounds.width - 500)
-                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                    }
-                let cleanedHexString = hexArray[index].replacingOccurrences(of: " ", with: "")
-                let hexData = Data(fromHexEncodedString: cleanedHexString)
-                Text(String(data: hexData!, encoding: .utf8) ?? "Unable to read file")
-                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                    }
+                        .padding()
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                        }
+                    TextField(NSLocalizedString("HEX_DATA", comment: ""), text: $hexArray[index])
+                        .frame(width: UIScreen.main.nativeBounds.width - 500)
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                        }
+                    let cleanedHexString = hexArray[index].replacingOccurrences(of: " ", with: "")
+                    let hexData = Data(fromHexEncodedString: cleanedHexString)
+                    Text(String(data: hexData!, encoding: .utf8) ?? "Unable to read data")
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                        }
+                }
             }
         }
         .onAppear {
@@ -87,7 +91,7 @@ struct HexView: View {
                     //hacky but no out of bounds
                 }
             } catch {
-                print("L")
+                hexArray = ["The file is invalid or not supported. Please make sure the file is not corrupted and then try again."]
             }
         }
     }
