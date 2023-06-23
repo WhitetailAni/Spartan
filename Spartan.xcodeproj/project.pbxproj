@@ -32,7 +32,6 @@
 		F88CC4A32A44B020001FACFC /* ApplicationsWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F88CC4A22A44B020001FACFC /* ApplicationsWrapper */; };
 		F88CC4A52A44B020001FACFC /* AssetCatalogWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F88CC4A42A44B020001FACFC /* AssetCatalogWrapper */; };
 		F88CC4A72A44B020001FACFC /* DiskImagesWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F88CC4A62A44B020001FACFC /* DiskImagesWrapper */; };
-		F88CC4A92A44B020001FACFC /* FSOperations in Frameworks */ = {isa = PBXBuildFile; productRef = F88CC4A82A44B020001FACFC /* FSOperations */; };
 		F88CC4AB2A44B020001FACFC /* SVGWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F88CC4AA2A44B020001FACFC /* SVGWrapper */; };
 		F88FBB0A2A2FE44500E31EDA /* Swifter in Frameworks */ = {isa = PBXBuildFile; productRef = F88FBB092A2FE44500E31EDA /* Swifter */; };
 		F88FBB0D2A2FEFA700E31EDA /* UIApplicationSuspend.m in Sources */ = {isa = PBXBuildFile; fileRef = F88FBB0C2A2FEFA700E31EDA /* UIApplicationSuspend.m */; };
@@ -102,7 +101,6 @@
 				F88CC49D2A44ADC7001FACFC /* Zip in Frameworks */,
 				F88CC4A72A44B020001FACFC /* DiskImagesWrapper in Frameworks */,
 				F88CC4A32A44B020001FACFC /* ApplicationsWrapper in Frameworks */,
-				F88CC4A92A44B020001FACFC /* FSOperations in Frameworks */,
 				F88FBB0A2A2FE44500E31EDA /* Swifter in Frameworks */,
 				F88CC4AB2A44B020001FACFC /* SVGWrapper in Frameworks */,
 				F88CC4A52A44B020001FACFC /* AssetCatalogWrapper in Frameworks */,
@@ -221,7 +219,6 @@
 				F88CC4A22A44B020001FACFC /* ApplicationsWrapper */,
 				F88CC4A42A44B020001FACFC /* AssetCatalogWrapper */,
 				F88CC4A62A44B020001FACFC /* DiskImagesWrapper */,
-				F88CC4A82A44B020001FACFC /* FSOperations */,
 				F88CC4AA2A44B020001FACFC /* SVGWrapper */,
 			);
 			productName = Spartan;
@@ -646,11 +643,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F88CC4A12A44B020001FACFC /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
 			productName = DiskImagesWrapper;
-		};
-		F88CC4A82A44B020001FACFC /* FSOperations */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F88CC4A12A44B020001FACFC /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;
-			productName = FSOperations;
 		};
 		F88CC4AA2A44B020001FACFC /* SVGWrapper */ = {
 			isa = XCSwiftPackageProductDependency;

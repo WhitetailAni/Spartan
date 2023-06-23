@@ -33,11 +33,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         if(fileManager.isReadableFile(atPath: "/private/var/mobile/")){ //shows app data directory if sandbox exists
-            displayView(pathToLoad: "/Applications/")
+            displayView(pathToLoad: Bundle.main.bundlePath)
             //displayView(pathToLoad: "/private/var/mobile/")
             //displayView(pathToLoad: "/private/var/containers/Bundle/Application/2A65A51A-4061-4143-B622-FA0E57C0C3EE/trillstore.app/")
         } else {
-            displayView(pathToLoad: getDataDirectory())
+            displayView(pathToLoad: NSHomeDirectory())
             //displayView(pathToLoad: "/Users/realkgb/Documents/") //used in case of simulator
         }
         
@@ -81,16 +81,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         try fileManager.createDirectory(atPath: directoryPath, withIntermediateDirectories: true, attributes: nil)
     }
     
-    func getDataDirectory() -> String {
-        let urls = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
-        guard let appDataDirectory = urls.first else {
-            return "Data directory not found"
-        }
-
-        var path = appDataDirectory.path.split(separator: "/")
-        path.removeLast()
-        return "/" + path.joined(separator: "/") + "/"
-    }
 }
 
 extension UserDefaults {

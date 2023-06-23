@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import RootHelper
 
 struct CreateFileView: View {
     @State var fileName: String = ""
@@ -24,7 +25,7 @@ struct CreateFileView: View {
                 }
                 
             Button(action: {
-                FileManager.default.createFile(atPath: filePath + fileName, contents: nil, attributes: nil)
+                FileManager.default.createFile(atPath: filePath + fileName, contents: nil)
                 print("File created successfully")
                 fileName = ""
                 isPresented = false

@@ -1765,9 +1765,9 @@ struct ContentView: View {
         return str[range]
     }
     
-    func deleteFile(atPath path: String) {
+    func deleteFile(atPath: String) {
         do {
-            try fileManager.removeItem(atPath: path)
+            try fileManager.removeItem(atPath: atPath)
         } catch {
             print("Failed to delete file: \(error.localizedDescription)")
         }
