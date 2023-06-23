@@ -80,7 +80,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let directoryPath = (path as NSString).appendingPathComponent(directoryName)
         try fileManager.createDirectory(atPath: directoryPath, withIntermediateDirectories: true, attributes: nil)
     }
-    
 }
 
 extension UserDefaults {

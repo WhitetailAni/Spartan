@@ -89,8 +89,6 @@ struct ContentView: View {
     @State var blankString: [String] = [""]
     @State private var nonexistentFile = ""
     
-    @State var globalHttpServer: HttpServer = HttpServer()
-    
     let paddingInt: CGFloat = -7
     let opacityInt: CGFloat = 1.0
     
@@ -1278,7 +1276,7 @@ struct ContentView: View {
                     DpkgBuilderView(debInputDir: $newViewFilePath, debInputName: $newViewFileName, isPresented: $showSubView[24], isRootless: $isRootless)
                 })
                 .sheet(isPresented: $showSubView[25], content: {
-                    WebServerView(inputServer: $globalHttpServer)
+                    WebServerView()
                 })
                 .sheet(isPresented: $showSubView[28], content: {
                     CarView(filePath: $newViewFilePath, fileName: $newViewFileName)
@@ -1511,7 +1509,7 @@ struct ContentView: View {
         .opacity(opacityInt)
         
         Button(action: {
-            WebServerView(inputServer: $globalHttpServer).serverStart(server: globalHttpServer)
+            //start webserver headless
         }) {
             Text(NSLocalizedString("SERVERHEADLESS", comment: ""))
                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in

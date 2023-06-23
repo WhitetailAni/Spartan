@@ -2,19 +2,19 @@
 //  CommandRunner.swift
 //  Pogo
 //
-//  Created by Amy While on 13/09/2022.
+//  This code belongs to Amy While, originally created on 13/09/2022 (dd/mm/yyyy).
+//  It was updated by WhitetailAni to report uid and stdout/stderr on 06/23/2023 (mm/dd/yyyy).
 //
 
 import Foundation
 import Darwin.POSIX
 
-@discardableResult func spawn(command: String, args: [String], env: [String], label: String, root: Bool) -> String {
-
+@discardableResult func spawn(command: String, args: [String], env: [String], root: Bool = true) -> String {
     var pipestdout: [Int32] = [0, 0]
     var pipestderr: [Int32] = [0, 0]
 
     let bufsiz = Int(BUFSIZ)
-
+    
     pipe(&pipestdout)
     pipe(&pipestderr)
 
@@ -24,7 +24,6 @@ import Darwin.POSIX
     guard fcntl(pipestderr[0], F_SETFL, O_NONBLOCK) != -1 else {
         return "Could not open stderr"
     }
-    
 
     let args: [String] = [String(command.split(separator: "/").last!)] + args
     let argv: [UnsafeMutablePointer<CChar>?] = args.map { $0.withCString(strdup) }
@@ -45,27 +44,30 @@ import Darwin.POSIX
         posix_spawnattr_set_persona_np(&attr, 99, UInt32(POSIX_SPAWN_PERSONA_FLAGS_OVERRIDE));
         posix_spawnattr_set_persona_uid_np(&attr, 0);
         posix_spawnattr_set_persona_gid_np(&attr, 0);
-    } //this sets user ID to 0 (root). originally it always did this for some reason and the stdout/stderr mapping was under root???
-    //I changed it and it works now
+    }
     
     let proenv: [UnsafeMutablePointer<CChar>?] = env.map { $0.withCString(strdup) }
     defer { for case let pro? in proenv { free(pro) } }
     
     var pid: pid_t = 0
-    let spawnStatus = posix_spawnp(&pid, command, &fileActions, &attr, argv + [nil], proenv + [nil])
+    let spawnStatus = posix_spawn(&pid, command, &fileActions, &attr, argv + [nil], proenv + [nil])
     if spawnStatus != 0 {
-        return "Error Code \(spawnStatus)"
+        let noLog = ["-p","-P","-k","-b","-t","-f"]
+        if (args.count > 1) {
+            if (!noLog.contains(args[1]) && args[0] != "mv") {
+                return "Spawn:\n\tStatus: \(spawnStatus)\n\tCommand: \(command.description)\n\tArgs: \(args)\n"
+            }
+        }
     }
 
     close(pipestdout[1])
     close(pipestderr[1])
-    
+
     var stdoutStr = ""
     var stderrStr = ""
 
     let mutex = DispatchSemaphore(value: 0)
-
-    let readQueue = DispatchQueue(label: label,
+    let readQueue = DispatchQueue(label: "lol.whitetailani.Spartan.command",
                                   qos: .userInitiated,
                                   attributes: .concurrent,
                                   autoreleaseFrequency: .inherit,
@@ -127,7 +129,19 @@ import Darwin.POSIX
     stdoutSource.resume()
     stderrSource.resume()
     
+    var info = kinfo_proc()
+    var mib: [Int32] = [CTL_KERN, KERN_PROC, KERN_PROC_PID, pid]
+    var size = MemoryLayout<kinfo_proc>.stride
+    _ = sysctl(&mib, u_int(mib.count), &info, &size, nil, 0)
+    let uid = info.kp_eproc.e_ucred.cr_uid
+
     mutex.wait()
     mutex.wait()
+    var status: Int32 = 0
+    waitpid(pid, &status, 0)
+    
+    print("pid: \(pid), uid: \(uid)")
+    
     return stdoutStr + "\n" + stderrStr
 }
+
