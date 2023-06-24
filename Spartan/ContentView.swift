@@ -398,9 +398,9 @@ struct ContentView: View {
                                 }
                                 .contextMenu {
                                     Button(action: {
-                                        showSubView[3] = true
                                         newViewFileIndex = index
                                         newViewFileName = masterFiles[index].name
+                                        showSubView[3] = true
                                     }) {
                                         Text(NSLocalizedString("INFO", comment: "there is no way a bee should be able to fly."))
                                             .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
@@ -712,8 +712,8 @@ struct ContentView: View {
                         fileInfo = getFileInfo(forFileAtPath: masterFiles[newViewFileIndex].fullPath)
                         showSubView[1] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            showSubView[3] = true
                             newViewFileName = masterFiles[newViewFileIndex].name
+                            showSubView[3] = true
                         }
                     }) {
                         Text(NSLocalizedString("INFO", comment: "there is no way a bee should be able to fly."))
@@ -1086,7 +1086,9 @@ struct ContentView: View {
                     callback = false
                     showSubView[10] = true
                 }
-                .sheet(isPresented: $showSubView[3]) { //file info
+                .sheet(isPresented: $showSubView[3], onDismiss: {
+                    print("what")
+                }) { //file info
                     VStack {
                         Text(NSLocalizedString("SHOW_INFO", comment: "A perfect report card, all B's."))
                             .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in

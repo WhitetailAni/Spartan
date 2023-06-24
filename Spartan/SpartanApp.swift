@@ -37,8 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             //displayView(pathToLoad: "/private/var/mobile/")
             //displayView(pathToLoad: "/private/var/containers/Bundle/Application/2A65A51A-4061-4143-B622-FA0E57C0C3EE/trillstore.app/")
         } else {
-            displayView(pathToLoad: NSHomeDirectory())
-            //displayView(pathToLoad: "/Users/realkgb/Documents/") //used in case of simulator
+            displayView(pathToLoad: "/Developer/")
         }
         
         createTrash()

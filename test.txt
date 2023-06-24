@@ -1,0 +1,1 @@
+project dir is /Users/realkgb/Documents/Spartan, /Users/realkgb/Library/Developer/Xcode/DerivedData/Spartan-cniixqqycjwwaocfpdlmyrrtaujc/Build/Products/Debug-appletvos/Spartan.app

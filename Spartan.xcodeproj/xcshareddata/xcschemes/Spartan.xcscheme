@@ -14,8 +14,8 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F88CC4D92A44FBD4001FACFC"
-               BuildableName = "RootHelper"
+               BlueprintIdentifier = "F8F855C22A47770700DC9CE4"
+               BuildableName = "RootHelper.dylib"
                BlueprintName = "RootHelper"
                ReferencedContainer = "container:Spartan.xcodeproj">
             </BuildableReference>
