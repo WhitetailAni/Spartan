@@ -77,10 +77,6 @@ struct MoveFileView: View {
     }
     
     func moveFile(path: String, newPath: String) {
-        do {
-            try FileManager.default.moveItem(atPath: path, toPath: newPath)
-        } catch {
-            print("Failed to move file: \(error.localizedDescription)")
-        }
+        spawn(command: helperPath, args: ["mv", path, newPath], env: [], root: true)
     }
 }

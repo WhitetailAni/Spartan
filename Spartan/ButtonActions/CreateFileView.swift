@@ -25,8 +25,7 @@ struct CreateFileView: View {
                 }
                 
             Button(action: {
-                FileManager.default.createFile(atPath: filePath + fileName, contents: nil)
-                print("File created successfully")
+                spawn(command: helperPath, args: ["tf", filePath + fileName], env: [], root: true)
                 fileName = ""
                 isPresented = false
             }) {

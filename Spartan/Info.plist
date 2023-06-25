@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>BuildMachineOSBuild</key>
-	<string>22E261</string>
+	<string>22F66</string>
 	<key>CFBundleIcons</key>
 	<dict>
 		<key>CFBundlePrimaryIcon</key>
@@ -16,19 +16,19 @@
 	<key>DTCompiler</key>
 	<string>com.apple.compilers.llvm.clang.1_0</string>
 	<key>DTPlatformBuild</key>
-	<string>20L489</string>
+	<string>21J5293g</string>
 	<key>DTPlatformName</key>
 	<string>appletvos</string>
 	<key>DTPlatformVersion</key>
-	<string>16.4</string>
+	<string>17.0</string>
 	<key>DTSDKBuild</key>
-	<string>20L489</string>
+	<string>21J5293g</string>
 	<key>DTSDKName</key>
-	<string>appletvos16.4</string>
+	<string>appletvos17.0</string>
 	<key>DTXcode</key>
-	<string>1430</string>
+	<string>1500</string>
 	<key>DTXcodeBuild</key>
-	<string>14E222b</string>
+	<string>15A5161b</string>
 	<key>MinimumOSVersion</key>
 	<string>13.0</string>
 	<key>NSAccentColorName</key>

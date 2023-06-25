@@ -31,22 +31,19 @@ What it currently lets you do:
 - Font viewer
 - Asset catalog name
 - Display app icons/names/bundle IDs in container directories and /Applications
+- Perform FS actions outside of /var/mobile (yes we have root helper!!!!)
 There's probably more, I lost track.
 
 TODO:
-- Plist editor //everything done but dictionary
-- Root helper //currently working on
-- webserver like filza webdav
+- Plist editor //everything done but dictionary which is behaving weirdly
+- fix asset catalog viewer
+- SFTP server
 
-I keep doing things OTHER than the todo list. Fun!
-
-By default it's sandboxed, so you will need a tvOS jailbreak to use it unless you're fine with just modifying what's in the app's data directory. Since it currently lacks a root helper, any actions that write to the filesystem must be within /var/mobile/.
-It will open /var/mobile/ by default, unless you are sandboxed, in which case it will open the app's data directory.
-Work is ongoing to 
+It requires an Apple TV that is either jailbroken or has a kpf applied and is compatible with MDC to build and run, currently.
 
 How to use:
 1. Clone the repository and open it in Xcode (15.0+ required).
-2. Get the patched tvOS 17.0 sdk from 
+2. Get the patched tvOS 17.0 sdk from sdks-tvos on my github profile.
 3. Build and run to your Apple TV.
 
 Good luck have fun. Hopefully this isn't the only tvOS file browser ever.

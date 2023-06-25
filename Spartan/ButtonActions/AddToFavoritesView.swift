@@ -9,8 +9,8 @@ import SwiftUI
 
 struct AddToFavoritesView: View {
     
-    @Binding var filePath: String
-    @Binding var displayName: String
+    @State var filePath: String
+    @State var displayName: String
     @State var favoritesDisplayName: [String] = (UserDefaults.favorites.stringArray(forKey: "favoritesDisplayName") ?? ["Documents", "Applications", "UserApplications", "Trash"])
     @State var favoritesFilePath: [String] = (UserDefaults.favorites.stringArray(forKey: "favoritesFilePath") ?? ["/private/var/mobile/Documents/", "/Applications/", "/private/var/containers/Bundle/Application/", "/private/var/mobile/Media/.Trash/"])
     @Binding var showView: Bool

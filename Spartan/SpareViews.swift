@@ -119,9 +119,33 @@ struct UIViewControllerWrapper<UIViewControllerType: UIViewController>: UIViewCo
     }
 }
 
+struct ScaledFont: ViewModifier {
+    @Environment(\.sizeCategory) var sizeCategory
+    var name: String
+    var size: Double
+
+    func body(content: Content) -> some View {
+       let scaledSize = UIFontMetrics.default.scaledValue(for: size)
+        return content.font(.custom(name, size: scaledSize))
+    }
+}
+
 extension View {
     public func blending(color: Color) -> some View {
         modifier(ColorBlended(color: color))
+    }
+    
+    func scaledFont(name: String, size: Double) -> some View {
+        return self.modifier(ScaledFont(name: name, size: size))
+    }
+    
+    @ViewBuilder
+    func `if`<Content: View>(_ condition: Bool, content: (Self) -> Content) -> some View {
+        if condition {
+            content(self)
+        } else {
+            self
+        }
     }
 }
 
@@ -251,33 +275,6 @@ struct UIKitTextView: UIViewRepresentable {
     }
 }
 
-struct ScaledFont: ViewModifier {
-    @Environment(\.sizeCategory) var sizeCategory
-    var name: String
-    var size: Double
-
-    func body(content: Content) -> some View {
-       let scaledSize = UIFontMetrics.default.scaledValue(for: size)
-        return content.font(.custom(name, size: scaledSize))
-    }
-}
-extension View {
-    func scaledFont(name: String, size: Double) -> some View {
-        return self.modifier(ScaledFont(name: name, size: size))
-    }
-}
-
-extension View {
-    @ViewBuilder
-    func `if`<Content: View>(_ condition: Bool, content: (Self) -> Content) -> some View {
-        if condition {
-            content(self)
-        } else {
-            self
-        }
-    }
-}
-
 extension Font {
     init(cgFont: CGFont, size: CGFloat) {
         let fontName = cgFont.postScriptName as String?
@@ -291,85 +288,11 @@ extension Image {
     }
 }
 
-class RootHelper {
-    let fileManager = FileManager.default
-    
-    @discardableResult func rm(_ filePath: String) -> Bool {
-        do {
-            try fileManager.removeItem(atPath: filePath)
-        } catch {
-            print("Failed to delete file: \(error.localizedDescription)")
-            return false
-        }
-        return true
-    }
-    
-    @discardableResult func mv(_ ogPath: String, _ newPath: String) -> Bool {
-        do {
-            try fileManager.moveItem(atPath: ogPath, toPath: newPath)
-        } catch {
-            print("Failed to move file: \(error.localizedDescription)")
-            return false
-        }
-        return true
-    }
-    
-    @discardableResult func cp(_ ogPath: String, _ newPath: String) -> Bool {
-        do {
-            try fileManager.copyItem(atPath: ogPath, toPath: newPath)
-        } catch {
-            print("Failed to copy file: \(error.localizedDescription)")
-            return false
-        }
-        return true
-    }
-    
-    @discardableResult func touchFile(_ path: String) -> Bool {
-        if fileManager.fileExists(atPath: path) {
-            print("File already exists at path \(path), exiting!")
-            return false
-        } else {
-            fileManager.createFile(atPath: path, contents: nil, attributes: nil)
-            if fileManager.fileExists(atPath: path) {
-                return true
-            }
-        }
-        print("Failed to create file at path \(path)")
-        return false
-    }
-    
-    @discardableResult func touchDir(_ path: String) -> Bool {
-        do {
-            try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
-        } catch {
-            print("Failed to create directory at path \(path): \(error.localizedDescription)")
-            return false
-        }
-        return true
-    }
-    
-    @discardableResult func touchSym(_ sourcePath: String, _ destPath: String) -> Bool {
-        do {
-            try FileManager.default.createSymbolicLink(atPath: sourcePath, withDestinationPath: destPath)
-        } catch {
-            print("Failed to create symlink from \(sourcePath) to \(destPath): \(error.localizedDescription)")
-            return false
-        }
-        return true
-    }
-    
-    @discardableResult func chmod(_ filePath: String, _ perms: Int) -> Bool {
-        guard fileManager.fileExists(atPath: filePath) else {
-            print("File does not exist at path: \(filePath)")
-            return false
-        }
-        
-        do {
-            try fileManager.setAttributes([FileAttributeKey.posixPermissions: NSNumber(value: perms)], ofItemAtPath: filePath)
-        } catch {
-            print("Error changing file permissions: \(error.localizedDescription)")
-            return false
-        }
-        return true
-    }
+func removeLastChar(_ string: String) -> String {
+    return String(substring(str: string, startIndex: string.index(string.startIndex, offsetBy: 0), endIndex: string.index(string.endIndex, offsetBy: -1)))
 }
+
+func substring(str: String, startIndex: String.Index, endIndex: String.Index) -> Substring {
+        let range: Range = startIndex..<endIndex
+        return str[range]
+    }

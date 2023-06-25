@@ -61,7 +61,7 @@ struct FavoritesView: View {
                 }
         }
         .sheet(isPresented: $addToFavoritesShow){
-            AddToFavoritesView(filePath: $blank, displayName: $blank, showView: $addToFavoritesShow)
+            AddToFavoritesView(filePath: directory, displayName: URL(fileURLWithPath: directory).lastPathComponent, showView: $addToFavoritesShow)
         }
     }
 }

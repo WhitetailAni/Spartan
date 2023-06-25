@@ -32,6 +32,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UserDefaults.settings.synchronize()
         }
         
+        #if DEBUG
+        #else
+            helperPath = Bundle.main.bundlePath + "/RootHelper"
+        #endif
+        
         if(fileManager.isReadableFile(atPath: "/private/var/mobile/")){ //shows app data directory if sandbox exists
             displayView(pathToLoad: Bundle.main.bundlePath)
             //displayView(pathToLoad: "/private/var/mobile/")
@@ -79,6 +84,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let directoryPath = (path as NSString).appendingPathComponent(directoryName)
         try fileManager.createDirectory(atPath: directoryPath, withIntermediateDirectories: true, attributes: nil)
     }
+    
+    func markExecutable(_ filePath: String) {
+        do {
+            var attributes = try fileManager.attributesOfItem(atPath: filePath)
+            
+            let currentPermissions = attributes[.posixPermissions] as? UInt16 ?? 0
+            let newPermissions = currentPermissions | UInt16(0o111)
+            attributes[.posixPermissions] = NSNumber(value: newPermissions)
+            try fileManager.setAttributes(attributes, ofItemAtPath: filePath)
+            
+        } catch {
+            print("Error: \(error)")
+        }
+    }
 }
 
 extension UserDefaults {
@@ -92,3 +111,5 @@ extension UserDefaults {
         return UserDefaults(suiteName: "com.whitetailani.Spartan.texteditor") ?? UserDefaults.standard
     }
 }
+
+var helperPath: String = "/private/var/containers/Bundle/Application/RootHelper"

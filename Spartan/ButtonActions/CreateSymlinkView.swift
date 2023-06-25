@@ -12,9 +12,6 @@ struct CreateSymlinkView: View {
     @State private var symlinkName: String = ""
     @State private var symlinkDest: String = ""
     @Binding var isPresented: Bool
-    
-    @State private var errorMessage: String = ""
-    @State private var wasError = false
 
     var body: some View {
         VStack {
@@ -39,32 +36,15 @@ struct CreateSymlinkView: View {
             }
             
             Button(action: {
-                do {
-                    try FileManager.default.createSymbolicLink(atPath: symlinkPath + symlinkName, withDestinationPath: symlinkDest)
-                    print("Symlink created successfully")
-                    isPresented = false
-                    symlinkName = ""
-                } catch {
-                    errorMessage = error.localizedDescription
-                    print(errorMessage)
-                }
-                
-                if(!(errorMessage == "")){
-                    wasError = true
-                }
+                spawn(command: helperPath, args: ["ts", symlinkPath + symlinkName, symlinkDest], env: [], root: true)
+                isPresented = false
+                symlinkName = ""
             }) {
                 Text(NSLocalizedString("CONFIRM", comment: "They know what it's like outside the hive."))
                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                     }
             }
-        }
-        .alert(isPresented: $wasError) {
-            Alert (
-                title: Text(NSLocalizedString("ERROR", comment: "Yeah, but some don't come back.")),
-                message: Text(errorMessage),
-                dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "- Hey, Jocks!")))
-            )
         }
         .accentColor(.accentColor)
     }

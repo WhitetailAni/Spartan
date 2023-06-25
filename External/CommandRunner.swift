@@ -50,14 +50,10 @@ import Darwin.POSIX
     defer { for case let pro? in proenv { free(pro) } }
     
     var pid: pid_t = 0
+    print("Spawning \(command) with arguments \(args) and environment variables \(env)")
     let spawnStatus = posix_spawn(&pid, command, &fileActions, &attr, argv + [nil], proenv + [nil])
     if spawnStatus != 0 {
-        let noLog = ["-p","-P","-k","-b","-t","-f"]
-        if (args.count > 1) {
-            if (!noLog.contains(args[1]) && args[0] != "mv") {
-                return "Spawn:\n\tStatus: \(spawnStatus)\n\tCommand: \(command.description)\n\tArgs: \(args)\n"
-            }
-        }
+        return "Spawn Status: \(spawnStatus)\n\tCommand: \(command.description)\n\tArgs: \(args)\n\tEnvironment Variables: \(env)"
     }
 
     close(pipestdout[1])

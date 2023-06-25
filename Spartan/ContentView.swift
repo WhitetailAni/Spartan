@@ -10,12 +10,13 @@ import Foundation
 import AVKit
 import AVFoundation
 import MobileCoreServices
-import Swifter
 import ApplicationsWrapper
 import AssetCatalogWrapper
 
 
 struct ContentView: View {
+    @State var test = false
+    @State var testTwo = false
     @State var directory: String
     @State private var fileInfo: [String] = []
     @State var permissionDenied = false
@@ -238,7 +239,7 @@ struct ContentView: View {
                                                     let plistPath: String = masterFiles[index].fullPath + ".com.apple.mobile_container_manager.metadata.plist"
                                                     if fileManager.fileExists(atPath: plistPath) {
                                                         let plistDict = NSDictionary(contentsOfFile: plistPath)
-                                                        let bundleID = defineBundleID(plistDict ?? NSDictionary(dictionaryLiteral: ("MCMMetadatIdentifier", "lol.whitetailani.Spartan"))) //these optionals are literally never used but otherwise it crashes when you try and open from favorites so L
+                                                        let bundleID = defineBundleID(plistDict ?? NSDictionary(dictionaryLiteral: ("MCMMetadataIdentifier", "lol.whitetailani.Spartan"))) //these optionals are literally never used but otherwise it crashes when you try and open from favorites so L
                                                         let groupBundleID = plistDict?["MCMMetadataIdentifier"] as? String ?? "lol.whitetailani.Spartan"
                                                         //in every container folder (whether it's the bundle container, data container, or group container) is a file that contains the app's bundle ID. santander macros do support determining an LSApplicationProxy? from bundle/container/data container folder on **iOS** but not tvOS since sandboxing system is different. Reading from bundle ID ensures that the app definitely exists and someone didn't just create a folder in here, so no issues with nil LSApplicationProxy? elements
                                                         //then the rest of this just reads properties from the LSApplicationProxy.
@@ -1086,9 +1087,7 @@ struct ContentView: View {
                     callback = false
                     showSubView[10] = true
                 }
-                .sheet(isPresented: $showSubView[3], onDismiss: {
-                    print("what")
-                }) { //file info
+                .sheet(isPresented: $showSubView[3]) { //file info
                     VStack {
                         Text(NSLocalizedString("SHOW_INFO", comment: "A perfect report card, all B's."))
                             .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
@@ -1130,6 +1129,7 @@ struct ContentView: View {
                 }, content: {
                     TextField(NSLocalizedString("PERMSEDIT", comment: "This should have been added a long time ago"), value: $filePerms, formatter: NumberFormatter(), onCommit: {
                         changeFilePerms(filePath: masterFiles[newViewFileIndex].fullPath, permValue: filePerms)
+                        showSubView[27] = false
                     })
                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
@@ -1219,7 +1219,7 @@ struct ContentView: View {
                     FavoritesView(directory: $directory, showView: $showSubView[16])
                 })
                 .sheet(isPresented: $showSubView[17], content: {
-                    AddToFavoritesView(filePath: $newViewFilePath, displayName: $newViewFileName, showView: $showSubView[17])
+                    AddToFavoritesView(filePath: newViewFilePath, displayName: newViewFileName, showView: $showSubView[17])
                 })
                 .sheet(isPresented: $showSubView[18], content: {
                     SettingsView(buttonWidth: $buttonWidth)
@@ -1751,26 +1751,21 @@ struct ContentView: View {
         }
         var components = directory.split(separator: "/")
         
-        components.removeLast()
-        directory = "/" + components.joined(separator: "/") + "/"
-        if (directory == "//"){
+        if components.count > 1 {
+            components.removeLast()
+            directory = "/" + components.joined(separator: "/") + "/"
+            if (directory == "//"){
+                directory = "/"
+            }
+        } else {
             directory = "/"
         }
         multiSelect = false
         updateFiles()
     }
     
-    func substring(str: String, startIndex: String.Index, endIndex: String.Index) -> Substring {
-        let range: Range = startIndex..<endIndex
-        return str[range]
-    }
-    
     func deleteFile(atPath: String) {
-        do {
-            try fileManager.removeItem(atPath: atPath)
-        } catch {
-            print("Failed to delete file: \(error.localizedDescription)")
-        }
+        spawn(command: helperPath, args: ["rm", atPath], env: [], root: true)
     }
     
     func getFileInfo(forFileAtPath: String) -> [String] {
@@ -1822,11 +1817,7 @@ struct ContentView: View {
     }
     
     func moveFile(path: String, newPath: String) {
-        do {
-            try fileManager.moveItem(atPath: path, toPath: newPath)
-        } catch {
-            print("Failed to move file: \(error.localizedDescription)")
-        }
+        spawn(command: helperPath, args: ["mv", path, newPath], env: [], root: true)
     }
     
     func freeSpace(path: String) -> (Double, String) {
@@ -1955,13 +1946,17 @@ struct ContentView: View {
     func isSymlink(filePath: String) -> Bool {
         let fileURL = URL(fileURLWithPath: filePath)
         
-        do {
-            let resourceValues = try fileURL.resourceValues(forKeys: [.isSymbolicLinkKey])
-            if let isSymbolicLink = resourceValues.isSymbolicLink {
-                return isSymbolicLink
+        if directory == "/sbin/" {
+            return readSymlinkDestination(path: filePath) == filePath ? true : false
+        } else {
+            do {
+                let resourceValues = try fileURL.resourceValues(forKeys: [.isSymbolicLinkKey])
+                if let isSymbolicLink = resourceValues.isSymbolicLink {
+                    return isSymbolicLink
+                }
+            } catch {
+                print("Error: \(error)")
             }
-        } catch {
-            print("Error: \(error)")
         }
         return false
     }
@@ -2025,15 +2020,7 @@ struct ContentView: View {
             return
         }
         
-        do {
-            try fileManager.setAttributes([FileAttributeKey.posixPermissions: NSNumber(value: permValue)], ofItemAtPath: filePath)
-        } catch {
-            print("Error changing file permissions: \(error.localizedDescription)")
-        }
-    }
-
-    func removeLastChar(_ string: String) -> String {
-        return String(substring(str: string, startIndex: string.index(string.startIndex, offsetBy: 0), endIndex: string.index(string.endIndex, offsetBy: -1)))
+        spawn(command: helperPath, args: ["ch", filePath, String(permValue)], env: [], root: true)
     }
     
     func defineBundleID(_ plistDict: NSDictionary) -> String {
@@ -2057,6 +2044,10 @@ struct ContentView: View {
             return "/private/var/" + substring(str: path, startIndex: path.index(path.startIndex, offsetBy: 5), endIndex: path.index(path.endIndex, offsetBy: 0))
         } //i dont have a way to check if every part of a filepath is a symlink but that doesn't matter. all that matters is that /var/ always becomes /private/var/
         return path
+    }
+
+    private func handleRegularPress() {
+        print("regular")
     }
 }
 
