@@ -45,8 +45,8 @@ struct MoveFileView: View {
                 if(multiSelect){
                     if(fileNames.count > 1){
                         for fileName in fileNames {
+                            print("from \(filePath + fileName) to \(newFilePath + fileName)")
                             moveFile(path: filePath + fileName, newPath: newFilePath + fileName)
-                            print(fileName)
                         }
                     } else {
                         moveFile(path: filePath + fileNames[0], newPath: newFilePath + newFileName)
@@ -57,8 +57,6 @@ struct MoveFileView: View {
                     moveFile(path: filePath + fileNames[0], newPath: newFilePath + newFileName)
                 }
             
-                print("File moved successfully")
-                fileNames[0] = ""
                 multiSelect = false
                 isPresented = false
             }) {

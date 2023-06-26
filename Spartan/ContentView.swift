@@ -108,6 +108,11 @@ struct ContentView: View {
                         }
                         directPathTypeCheckNewViewFileVariableSetter()
                         defaultAction(index: 0, isDirectPath: true)
+                        
+                        let regex = try! NSRegularExpression(pattern: "^[a-zA-Z0-9_\\-\\./]+$")
+                        if regex.firstMatch(in: directory, options: [], range: NSRange(location: 0, length: directory.utf16.count)) == nil {
+                            directory = "/"
+                        }
                     })
                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
@@ -1652,13 +1657,18 @@ struct ContentView: View {
         }
     
         if (multiSelect) {
+            print("multi selecting")
             if(masterFiles[index].isSelected){
-                let searchedIndex = multiSelectFiles.firstIndex(of: masterFiles[newViewFileIndex].name)
+                print("is selected")
+                let searchedIndex = multiSelectFiles.firstIndex(of: masterFiles[index].name)
                 multiSelectFiles.remove(at: searchedIndex!)
                 masterFiles[index].isSelected = false
             } else {
+                print("adding")
                 masterFiles[index].isSelected = true
-                multiSelectFiles.append(masterFiles[newViewFileIndex].name)
+                multiSelectFiles.append(masterFiles[index].name)
+                print(masterFiles[index])
+                print(multiSelectFiles)
             }
         } else {
             multiSelect = false
