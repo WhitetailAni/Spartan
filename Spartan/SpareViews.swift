@@ -293,6 +293,8 @@ func removeLastChar(_ string: String) -> String {
 }
 
 func substring(str: String, startIndex: String.Index, endIndex: String.Index) -> Substring {
-        let range: Range = startIndex..<endIndex
-        return str[range]
-    }
+    let range: Range = startIndex..<endIndex
+    return str[range]
+}
+
+var helperPath: String = Bundle.main.bundlePath + "/RootHelper"

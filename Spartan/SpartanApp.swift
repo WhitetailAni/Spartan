@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let fileManager = FileManager.default
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-    
+        
         UserDefaults.settings.set(false, forKey: "haveLaunchedBefore")
     
         if(!UserDefaults.settings.bool(forKey: "haveLaunchedBefore")) {
@@ -33,13 +33,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         #if DEBUG
-        #else
-            helperPath = Bundle.main.bundlePath + "/RootHelper"
+            spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["ch", helperPath, String(755)], env: [], root: true)
         #endif
         
         if(fileManager.isReadableFile(atPath: "/private/var/mobile/")){ //shows app data directory if sandbox exists
-            displayView(pathToLoad: Bundle.main.bundlePath)
-            //displayView(pathToLoad: "/private/var/mobile/")
+            displayView(pathToLoad: "/private/var/mobile/")
             //displayView(pathToLoad: "/private/var/containers/Bundle/Application/2A65A51A-4061-4143-B622-FA0E57C0C3EE/trillstore.app/")
         } else {
             displayView(pathToLoad: "/Developer/")
@@ -111,5 +109,3 @@ extension UserDefaults {
         return UserDefaults(suiteName: "com.whitetailani.Spartan.texteditor") ?? UserDefaults.standard
     }
 }
-
-var helperPath: String = "/private/var/containers/Bundle/Application/RootHelper"

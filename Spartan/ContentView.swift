@@ -1909,6 +1909,10 @@ struct ContentView: View {
         return playableItems.count > 0
     }
     func isImage(filePath: String) -> Bool {
+        guard fileManager.fileExists(atPath: filePath) else {
+            return false
+        }
+    
         if let image = UIImage(contentsOfFile: filePath) {
             return image.size.width > 0 && image.size.height > 0
         }
@@ -1931,17 +1935,17 @@ struct ContentView: View {
             return 0
         }
         
-        let header = String(data: data.subdata(in: 0..<5), encoding: .utf8)
         let xmlHeader = "<?xml"
         let bplistHeader = "bplis"
         
-        if header == xmlHeader {
-            return 5.1
-        } else if header == bplistHeader {
-            return 5.2
-        } else {
-            return 0
+        if let header = String(data: data.subdata(in: 0..<5), encoding: .utf8) {
+            if header == xmlHeader {
+                return 5.1
+            } else if header == bplistHeader {
+                return 5.2
+            }
         }
+        return 0
     }
     func isSymlink(filePath: String) -> Bool {
         let fileURL = URL(fileURLWithPath: filePath)
@@ -1965,11 +1969,11 @@ struct ContentView: View {
             return false
         }
         
-        let header = String(data: data.subdata(in: 0..<8), encoding: .utf8)
         let carHeader = "BOMStore"
-        
-        if header == carHeader {
-            return true
+        if let header = String(data: data.subdata(in: 0..<8), encoding: .utf8) {
+            if header == carHeader {
+                return true
+            }
         }
         return false
     }
