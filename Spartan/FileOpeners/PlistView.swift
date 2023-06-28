@@ -9,184 +9,91 @@ import SwiftUI
 
 struct PlistView: View {
     
-    @Binding var filePath: String
-    @Binding var fileName: String
-    @State private var editorShow = false
-    @State private var error = false
+    @State var filePath: String
+    @State var fileName: String
+    @Binding var firstTime: Bool
+    @State var isRootDict: Bool
+    @State var isInDict: Bool
     
-    @State var plistKey: String = ""
-    @State var plistData: String = ""
-    @State var plistKeyType: String = ""
-    @State var plistDict: NSMutableDictionary = NSMutableDictionary()
-    @State var i = 0
-    @State var editOccurred = false
-    @State var plistDictDisplay: [String] = []
+    @State var success = false
+    @State var fail = false
     
-    @State var valueToSet: Any? = nil
-    @State var keyToSet: String = ""
+    @State var plistDict: [String: Any] = [:]
     
     var body: some View {
-        VStack {
-            HStack {
-                Spacer()
-                VStack(alignment: .center) {
-                    Text(UserDefaults.settings.bool(forKey: "verboseTimestamps") ? filePath + fileName : fileName)
-                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                        }
-                        .font(.system(size: 40))
-                        .multilineTextAlignment(.center)
+        if isRootDict {
+            Text(UserDefaults.settings.bool(forKey: "descriptiveTitles") ? filePath + fileName : fileName)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                 }
-                Spacer()
-                Button(action: {
-                    if(plistType() == 0) {
-                        if (plistDict.write(toFile: filePath + fileName, atomically: true)) { } else {
-                            error = true
-                        }
-                    } else if(plistType() == 1) {
-                        let binaryPlistData: Data
-                        do {
-                            binaryPlistData = try PropertyListSerialization.data(fromPropertyList: plistDict, format: .binary, options: 0)
-                            try binaryPlistData.write(to: URL(fileURLWithPath: filePath + fileName), options: .atomic)
-                        } catch {
-                            print("Error writing to plist: \(error.localizedDescription)")
-                            return
-                        }
-                    }
-                }) {
-                    Image(systemName: "square.and.arrow.down")
-                }
-                .alert(isPresented: $error) {
-                    Alert(
-                        title: Text(NSLocalizedString("ERROR", comment: "")),
-                        message: nil,
-                        dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "")))
-                    )
-                }
-            }
-            List(plistDictDisplay, id: \.self) { content in
-                Button(action: {
-                    if let range = content.range(of: ": ") {
-                        let plistKeySubstring = content.prefix(upTo: range.lowerBound)
-                        plistKey = String(plistKeySubstring)
-                    } else {
-                        plistKey = "Please select a valid plist file"
-                    }
-                    if let startRange = content.range(of: ": "),
-                        let endRange = content.range(of: " (", range: startRange.upperBound..<content.endIndex) {
-                        let plistDataSubstring = content[startRange.upperBound..<endRange.lowerBound]
-                        plistData = String(plistDataSubstring)
-                    }
-                    if let startRange = content.range(of: " ("),
-                        let endRange = content.range(of: ")", range: startRange.upperBound..<content.endIndex) {
-                        let plistKeyTypeSubstring = content[startRange.upperBound..<endRange.lowerBound]
-                        plistKeyType = String(plistKeyTypeSubstring)
-                    }
-                    print(plistKey)
-                    print(plistKeyType)
-                    editorShow = true
-                }) {
-                    Text(content)
-                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                        }
-                }
+                .font(.system(size: 40))
+                .multilineTextAlignment(.center)
+                .padding(-10)
+        } else {
+            if isInDict {
+                TextField(NSLocalizedString("PLIST_KEY", comment: ""), text: $filePath)
             }
         }
-        .onAppear {
-            if(i == 0) {
-                plistDict = (NSDictionary(contentsOfFile: filePath + fileName)?.mutableCopy() as? NSMutableDictionary) ?? NSMutableDictionary(objects: ["File is not a valid bplist or XML plist"], forKeys: ["Error" as NSCopying])
-                plistDictDisplay = getContents()
-                i += 1
+            
+        List(Array(plistDict.keys.sorted()), id: \.self) { key in
+            let value = plistDict[key] as Any
+            Button(action: {
+                success = true
+            }) {
+                switch value {
+                case is Bool:
+                    Text("\(key): \(String(describing: value as! Bool)) (Boolean)")
+                case is Int:
+                    Text("\(key): \(String(describing: value as! Int)) (Integer)")
+                case is String:
+                    Text("\(key): \(value as! String) (String)")
+                case is [Any]:
+                    Text("\(key): \(String(describing: value as! [Any])) (Array)")
+                case is [String: Any]:
+                    Text("\(key): \(String(describing: value as! [String: Any])) (Dictionary)")
+                case is Data:
+                    Text("\(key): \(String(describing: value as! Data)) (Data)")
+                default:
+                    Text("An unknown data type was detected.")
+                }
             }
+            .sheet(isPresented: $success, content: {
+                /*switch value {
+                case is Bool:
+                    PlistBoolView(key: key, bool: value as! Bool, isInDict: true)
+                case is Int:
+                    PlistIntView(key: key, int: value as! Int, isInDict: true)
+                case is String:
+                    PlistStringView(key: key, string: value as! String, isInDict: true)
+                case is [Any]:
+                    PlistArrayView(key: key, array: value as! [Any], isInDict: true)
+                case is [String: Any]:
+                    PlistView(filePath: key, fileName: "", firstTime: $fail, isRootDict: false, isInDict: true, plistDict: value as! [String: Any])
+                case is Data:
+                    PlistDataView(key: key, data: value as! Data, isInDict: true)
+                default:
+                    fail = true
+                }*/
+                Text("gm")
+            })
         }
-        .sheet(isPresented: $editorShow, onDismiss: {
-            plistDict.setValue(valueToSet, forKey: plistKey)
-        }, content: {
-            switch plistKeyType {
-            case "Boolean":
-                PlistBoolView(key: $plistKey, bool: Binding (
-                    get: { plistDict.value(forKey: plistKey) as! Bool },
-                    set: { valueToSet = $0 }), isInDict: true)
-            case "Integer":
-                PlistIntView(key: $plistKey, int: Binding (
-                    get: { plistDict.value(forKey: plistKey) as! Int },
-                    set: { valueToSet = $0 }), isInDict: true)
-            case "String":
-                PlistStringView(key: $plistKey, string: Binding (
-                    get: { plistDict.value(forKey: plistKey) as! String },
-                    set: { valueToSet = $0 }), isInDict: true)
-            case "Array":
-                PlistArrayView(key: $plistKey, array: Binding (
-                    get: { plistDict.value(forKey: plistKey) as! [Any] },
-                    set: { valueToSet = $0 }), isInDict: true)
-            case "NSMutableDictionary":
-                PlistDictView(key: $plistKey, dict: Binding (
-                    get: { plistDict.value(forKey: plistKey) as! NSMutableDictionary },
-                    set: { valueToSet = $0 }), isInDict: true)
-            default:
-                Text("Unknown data type")
-            }
+        .sheet(isPresented: $fail, content: {
+            Text("An epic error occurred trying to edit the data")
         })
-    }
-    
-    private func getContents() -> [String] {
-        var contents = [String]()
-        for (key, value) in plistDict {
-            let valueString = processValue(value)
-            contents.append("\(key): \(valueString) (\(dataTypeString(value)))")
-        }
-        return contents
-    }
-    
-    private func dataTypeString(_ value: Any) -> String {
-        switch value {
-        case is String:
-            return "String"
-        case is Int:
-            return "Integer"
-        case is Double:
-            return "Double"
-        case is Bool:
-            return "Boolean"
-        case is Data:
-            return "Data"
-        case is Date:
-            return "Date"
-        case is [Any]:
-            return "Array"
-        case is [String: Any]:
-            return "Dictionary"
-        default:
-            return "Unknown"
-        }
-    } //these are data types and so will not be localized
-    
-    private func processValue(_ value: Any) -> String {
-        switch value {
-        case let str as String:
-            return "\"\(str)\""
-        case let int as Int:
-            return "\(int)"
-        case let double as Double:
-            return "\(double)"
-        case let bool as Bool:
-            return "\(bool)"
-        case let data as Data:
-            return "\(data)"
-        case let date as Date:
-            return "\(date)"
-        case let array as [Any]:
-            let contents = array.map { processValue($0) }.joined(separator: ", ")
-            return "[\(contents)]"
-        case let dict as [String: Any]:
-            let contents = dict.map { "\($0.key): \(processValue($0.value))" }.joined(separator: ", ")
-            return "{\(contents)}"
-        default:
-            return "\(value)"
+        .onAppear {
+            if !firstTime {
+                let data = FileManager.default.contents(atPath: filePath + fileName)
+                let backup = ["Error": "The file is corrupted or not a plist file. Ensure the file is the proper format and then try again."]
+                do {
+                    plistDict = try PropertyListSerialization.propertyList(from: data!, options: [], format: nil) as? [String: Any] ?? backup
+                } catch {
+                    plistDict = backup
+                }
+                firstTime = true
+            }
+            print(plistDict)
         }
     }
-
     
     func plistType() -> Int {
         guard let data = FileManager.default.contents(atPath: filePath) else {
@@ -205,20 +112,6 @@ struct PlistView: View {
         } else {
             return 2
         }
-    }
-}
-
-struct PlistDictView: View {
-    @Binding var key: String
-    @Binding var dict: NSMutableDictionary
-    @State var isInDict: Bool
-    @State private var mutableDict: NSMutableDictionary = NSMutableDictionary()
-
-    var body: some View {
-        Text("gm")
-            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-            }
     }
 }
 
@@ -287,7 +180,9 @@ struct PlistArrayView: View {
     @State private var topBarIndex = 0
     @State private var showSheet = false
     @State private var addViewShow = false
-    @State private var fakeDict = NSMutableDictionary()
+    @State private var fakeDict: [String: Any] = [:]
+    
+    @State var garbage = false
     
     var body: some View {
         HStack {
@@ -343,21 +238,15 @@ struct PlistArrayView: View {
         .sheet(isPresented: $showSheet, content: {
             switch mutableArray[selectedIndex] {
             case is Bool:
-            //if(array[index] is Bool) {
                 PlistBoolView(key: $fakeKey, bool: $mutableArray[selectedIndex] as! Binding<Bool>, isInDict: false)
-            //} else if(array[index] is Int) {
             case is Int:
                 PlistIntView(key: $fakeKey, int: $mutableArray[selectedIndex] as! Binding<Int>, isInDict: false)
-            //} else if(array[index] is String) {
             case is String:
                 PlistStringView(key: $fakeKey, string: $mutableArray[selectedIndex] as! Binding<String>, isInDict: false)
-            //} else if(array[index] is [Any]) {
             case is [Any]:
                 PlistArrayView(key: $fakeKey, array: $mutableArray[selectedIndex] as! Binding<[Any]>, isInDict: false)
-            //} else if(array[index] is NSMutableDictionary) {
-            case is NSMutableDictionary:
-                PlistDictView(key: $fakeKey, dict: $mutableArray[selectedIndex] as! Binding<NSMutableDictionary>, isInDict: false)
-            //}
+            case is [String: Any]:
+                PlistView(filePath: fakeKey, fileName: fakeKey, firstTime: $garbage, isRootDict: false, isInDict: false, plistDict: $mutableArray[selectedIndex] as! [String: Any])
             default:
                 Text(NSLocalizedString("PLIST_UNKNOWNTYPE", comment: ""))
                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
@@ -371,13 +260,15 @@ struct PlistArrayView: View {
     }
 }
 
+
+
 struct PlistAddView: View {
 
     @Binding var array: [Any]
-    @Binding var dict: NSMutableDictionary
+    @Binding var dict: [String: Any]
     @State var index: Int
     @State var isAddingToDict: Bool
-    @State private var dataTypes = ["Boolean", "Integer", "String", "Array", "Dictionary"]
+    @State private var dataTypes = ["Boolean", "Integer", "String", "Array", "Dictionary", "Data"]
     @State private var selectedDataType = ""
     @State private var fakeKey = ""
     
@@ -386,7 +277,10 @@ struct PlistAddView: View {
     @State var newInt = 0
     @State var newString = ""
     @State var newArray: [Any] = []
-    @State var newDict: NSMutableDictionary = NSMutableDictionary()
+    @State var newDict: [String: Any] = [:]
+    @State var newData: Data = Data()
+    
+    @State var garbage = false
 
     var body: some View {
         
@@ -414,7 +308,9 @@ struct PlistAddView: View {
         case "Array":
             PlistArrayView(key: $fakeKey, array: $newArray, isInDict: false)
         case "Dictionary":
-            PlistDictView(key: $fakeKey, dict: $newDict, isInDict: false)
+            PlistView(filePath: fakeKey, fileName: fakeKey, firstTime: $garbage, isRootDict: garbage, isInDict: false)
+        case "Data":
+            PlistDataView(key: $fakeKey, data: $newData, isInDict: false)
         default:
             Text("")
         }
@@ -445,6 +341,8 @@ struct PlistAddView: View {
             array[index] = newArray
         case "Dictionary":
             array[index] = newDict
+        case "Data":
+            array[index] = newData
         default:
             array[index] = "what did you DO to cause this to appear."
         }
@@ -453,18 +351,41 @@ struct PlistAddView: View {
     func setToDict() {
         switch selectedDataType {
         case "Boolean":
-            dict.setObject(newBool, forKey: newKey as NSCopying)
+            dict[newKey] = newBool
         case "Integer":
-            dict.setObject(newInt, forKey: newKey as NSCopying)
+            dict[newKey] = newInt
         case "String":
-            dict.setObject(newString, forKey: newKey as NSCopying)
+            dict[newKey] = newString
         case "Array":
-            dict.setObject(newArray, forKey: newKey as NSCopying)
+            dict[newKey] = newArray
         case "Dictionary":
-            dict.setObject(newDict, forKey: newKey as NSCopying)
+            dict[newKey] = newDict
+        case "Data":
+            dict[newKey] = newData
         default:
-            dict.setObject("DID THIS HAPPEN", forKey: "HOW" as NSCopying)
+            dict["HOW"] = "DID THIS HAPPEN"
         }
+    }
+}
+
+struct PlistDataView: View {
+    
+    @Binding var key: String
+    @Binding var data: Data
+    @State var isInDict: Bool
+    
+    var body: some View {
+        PlistKeyView(show: isInDict, key: $key)
+        TextField(NSLocalizedString("PLIST_DATA", comment: ""), text: Binding(
+            get: {
+                String(data: data, encoding: .utf8) ?? ""
+            },
+            set: { newValue in
+                if let newData = newValue.data(using: .utf8) {
+                    data = newData
+                }
+            }
+        ))
     }
 }
 

@@ -90,6 +90,8 @@ struct ContentView: View {
     @State var blankString: [String] = [""]
     @State private var nonexistentFile = ""
     
+    @State var plistStorage = false
+    
     let paddingInt: CGFloat = -7
     let opacityInt: CGFloat = 1.0
     
@@ -1252,7 +1254,7 @@ struct ContentView: View {
                     ImageView(imagePath: $newViewFilePath, imageName: $newViewFileName)
                 })
                 .sheet(isPresented: $showSubView[13], content: {
-                    PlistView(filePath: $newViewFilePath, fileName: $newViewFileName)
+                    PlistView(filePath: newViewFilePath, fileName: newViewFileName, firstTime: $plistStorage, isRootDict: true, isInDict: false)
                 })
                 .sheet(isPresented: $showSubView[14], content: {
                     if(uncompressZip){
