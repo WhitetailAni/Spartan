@@ -23,7 +23,7 @@ struct AudioPlayerView: View {
     @State private var loop = false
     @State private var audioData: [String] = Array(repeating: "", count: 8)
     @State private var audioArtwork: UIImage?
-    @State var buttonIsFocused = false
+    @State var isFocused = false
     @State var metadataTitles: [String] = [NSLocalizedString("ALBUM", comment: "- Wonder what it'll be like?"), NSLocalizedString("ARTIST", comment: "- A little scary."), NSLocalizedString("ALBUMARTIST", comment: "Welcome to Honex, a division of Honesco"), NSLocalizedString("GENRE", comment: "and a part of the Hexagon Group."), NSLocalizedString("YEAR", comment: "This is it!"), NSLocalizedString("TRACKNUMBER", comment: "Wow."), NSLocalizedString("DISCNUMBER", comment: "Wow."), NSLocalizedString("BPM", comment: "We know that you, as a bee, have worked your whole life")]
     
     @Binding var isPresented: Bool
@@ -126,6 +126,7 @@ struct AudioPlayerView: View {
                 
                 Button(action: {
                     loop.toggle()
+                    print("help")
                 }) {
                     if (loop) {
                         Image(systemName: "repeat.1")
@@ -135,16 +136,13 @@ struct AudioPlayerView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width:45, height:45)
-                            .blending(color: buttonIsFocused ? Color(.black) : Color(.white))
+                            .blending(color: isFocused ? Color(.black) : Color(.white))
                     }
                 }
                 .frame(width: buttonWidth, height: buttonHeight)
-                
-                /*Button(action: {
-                    player.seek(to: CMTime(seconds: duration*0.995, preferredTimescale: 1), toleranceBefore: .zero, toleranceAfter: .zero)
-                }) {
-                    Image(systemName: "forward.fill")
-                }*/
+                /*.modifier(FocusableModifier(onFocusChange: { focused in
+                    buttonIsFocused = focused
+                }))*/
             }
         }
         .onPlayPauseCommand {
@@ -224,6 +222,13 @@ struct AudioPlayerView: View {
             player.play()
             /*playerNode.play()
             startWaveformVisualization()*/
+        }
+    }
+    
+    private func updateFocusState() {
+        DispatchQueue.main.async {
+            let isCurrentlyFocused = UIApplication.shared.windows.first?.isKeyWindow ?? false
+            isFocused = isCurrentlyFocused
         }
     }
 }

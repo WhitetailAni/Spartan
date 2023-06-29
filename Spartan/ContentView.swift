@@ -48,6 +48,8 @@ struct ContentView: View {
     
     @State var filePerms = 420
     
+    @State var lol: [String: Any] = [:]
+    
     @State private var showSubView: [Bool] = [Bool](repeating: false, count: 31)
     //createFileSelectShow = 0
     //contextMenuShow = 1
@@ -1254,7 +1256,7 @@ struct ContentView: View {
                     ImageView(imagePath: $newViewFilePath, imageName: $newViewFileName)
                 })
                 .sheet(isPresented: $showSubView[13], content: {
-                    PlistView(filePath: newViewFilePath, fileName: newViewFileName, firstTime: $plistStorage, isRootDict: true, isInDict: false)
+                    PlistView(filePath: $newViewFilePath, fileName: newViewFileName, firstTime: $plistStorage, isRootDict: true, isInDict: false, plistDict: $lol)
                 })
                 .sheet(isPresented: $showSubView[14], content: {
                     if(uncompressZip){

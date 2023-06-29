@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PlistView: View {
     
-    @State var filePath: String
+    @Binding var filePath: String
     @State var fileName: String
     @Binding var firstTime: Bool
     @State var isRootDict: Bool
@@ -18,7 +18,7 @@ struct PlistView: View {
     @State var success = false
     @State var fail = false
     
-    @State var plistDict: [String: Any] = [:]
+    @Binding var plistDict: [String: Any]
     
     var body: some View {
         if isRootDict {
@@ -37,8 +37,8 @@ struct PlistView: View {
             
         List(Array(plistDict.keys.sorted()), id: \.self) { key in
             let value = plistDict[key] as Any
+            
             Button(action: {
-                success = true
             }) {
                 switch value {
                 case is Bool:
@@ -57,29 +57,7 @@ struct PlistView: View {
                     Text("An unknown data type was detected.")
                 }
             }
-            .sheet(isPresented: $success, content: {
-                /*switch value {
-                case is Bool:
-                    PlistBoolView(key: key, bool: value as! Bool, isInDict: true)
-                case is Int:
-                    PlistIntView(key: key, int: value as! Int, isInDict: true)
-                case is String:
-                    PlistStringView(key: key, string: value as! String, isInDict: true)
-                case is [Any]:
-                    PlistArrayView(key: key, array: value as! [Any], isInDict: true)
-                case is [String: Any]:
-                    PlistView(filePath: key, fileName: "", firstTime: $fail, isRootDict: false, isInDict: true, plistDict: value as! [String: Any])
-                case is Data:
-                    PlistDataView(key: key, data: value as! Data, isInDict: true)
-                default:
-                    fail = true
-                }*/
-                Text("gm")
-            })
         }
-        .sheet(isPresented: $fail, content: {
-            Text("An epic error occurred trying to edit the data")
-        })
         .onAppear {
             if !firstTime {
                 let data = FileManager.default.contents(atPath: filePath + fileName)
@@ -246,7 +224,7 @@ struct PlistArrayView: View {
             case is [Any]:
                 PlistArrayView(key: $fakeKey, array: $mutableArray[selectedIndex] as! Binding<[Any]>, isInDict: false)
             case is [String: Any]:
-                PlistView(filePath: fakeKey, fileName: fakeKey, firstTime: $garbage, isRootDict: false, isInDict: false, plistDict: $mutableArray[selectedIndex] as! [String: Any])
+                PlistView(filePath: $fakeKey, fileName: fakeKey, firstTime: $garbage, isRootDict: false, isInDict: false, plistDict: $mutableArray[selectedIndex] as! Binding<[String: Any]>)
             default:
                 Text(NSLocalizedString("PLIST_UNKNOWNTYPE", comment: ""))
                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
@@ -308,7 +286,7 @@ struct PlistAddView: View {
         case "Array":
             PlistArrayView(key: $fakeKey, array: $newArray, isInDict: false)
         case "Dictionary":
-            PlistView(filePath: fakeKey, fileName: fakeKey, firstTime: $garbage, isRootDict: garbage, isInDict: false)
+            PlistView(filePath: $fakeKey, fileName: fakeKey, firstTime: $garbage, isRootDict: garbage, isInDict: false, plistDict: $newDict)
         case "Data":
             PlistDataView(key: $fakeKey, data: $newData, isInDict: false)
         default:

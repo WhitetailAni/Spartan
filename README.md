@@ -39,11 +39,16 @@ TODO:
 - fix asset catalog viewer
 - SFTP server
 
-It requires an Apple TV that is either jailbroken or has a kpf applied and is compatible with MDC to build and run, currently.
+It requires an Apple TV that is either jailbroken or has a kpf applied and 
+is compatible with MDC to build and run, *currently*. Work is being done 
+to add support for different schemes - jailbroken, tipa, jailed, etc.
 
 How to use:
 1. Clone the repository and open it in Xcode (15.0+ required).
-2. Get the patched tvOS 17.0 sdk from sdks-tvos on my github profile.
+2. Get the patched tvOS 17.0 sdk from 
+[https://github.com/RealKGB/sdks-tvos](sdks-tvos).
 3. Build and run to your Apple TV.
 
 Good luck have fun. Hopefully this isn't the only tvOS file browser ever.
+
+[https://www.buymeacoffee.com/whitetailani](Donations if you want.)
