@@ -16,8 +16,7 @@
 @implementation UIApplicationSuspend
 
 + (void)suspendNow {
-    UIApplication *app = [UIApplication sharedApplication];
-    [app performSelector:@selector(suspend)];
+    [[UIApplication sharedApplication] performSelector:@selector(suspend)];
 }
 
 @end

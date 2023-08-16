@@ -3,7 +3,7 @@
 //  Pogo
 //
 //  This code belongs to Amy While, originally created on 13/09/2022 (dd/mm/yyyy).
-//  It was updated by WhitetailAni to report uid and stdout/stderr on 06/23/2023 (mm/dd/yyyy).
+//  It was updated by WhitetailAni to report uid and return stdout/stderr on 06/23/2023 (mm/dd/yyyy).
 //
 
 import Foundation

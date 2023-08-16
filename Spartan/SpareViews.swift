@@ -103,22 +103,6 @@ struct StepperTV: View {
     }
 }
 
-
-struct UIViewControllerWrapper<UIViewControllerType: UIViewController>: UIViewControllerRepresentable {
-    let viewControllerFactory: () -> UIViewControllerType
-    
-    init(_ viewControllerFactory: @escaping () -> UIViewControllerType) {
-        self.viewControllerFactory = viewControllerFactory
-    }
-    
-    func makeUIViewController(context: UIViewControllerRepresentableContext<UIViewControllerWrapper>) -> UIViewControllerType {
-        viewControllerFactory()
-    }
-    
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: UIViewControllerRepresentableContext<UIViewControllerWrapper>) {
-    }
-}
-
 struct ScaledFont: ViewModifier {
     @Environment(\.sizeCategory) var sizeCategory
     var name: String

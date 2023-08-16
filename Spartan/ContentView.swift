@@ -46,6 +46,8 @@ struct ContentView: View {
     @State var renameFileCurrentName: String = ""
     @State var renameFileNewName: String = ""
     
+    @State var plistTypeStorage = 0
+    
     @State var filePerms = 420
     
     @State var lol: [String: Any] = [:]
@@ -92,18 +94,14 @@ struct ContentView: View {
     @State var blankString: [String] = [""]
     @State private var nonexistentFile = ""
     
-    @State var plistStorage = false
-    
     let paddingInt: CGFloat = -7
     let opacityInt: CGFloat = 1.0
     
     let fileManager = FileManager.default
     let appsManager = ApplicationsManager(allApps: LSApplicationWorkspace.default().allApplications())
     
-    @Environment(\.sizeCategory) var sizeCategory
-    
     var body: some View {
-        NavigationView {
+        VStack {
             VStack {
                 HStack { //input directory + refresh
                     TextField(NSLocalizedString("INPUT_DIRECTORY", comment: "According to all known laws of aviation"), text: $directory, onCommit: {
@@ -185,16 +183,14 @@ struct ContentView: View {
                                     defaultAction(index: index, isDirectPath: false)
                                 }) {
                                     HStack {
-                                        if(isLoadingView && newViewFileName == masterFiles[index].name) {
+                                        if(masterFiles[index].isLoadingFile) {
                                             ProgressView()
                                         } else {
                                             if (multiSelect) {
                                                 Image(systemName: masterFiles[index].isSelected ? "checkmark.circle" : "circle")
                                                     .transition(.opacity)
                                             }
-                                            let fileType = yandereDevFileType(file: (masterFiles[index].fullPath))
-                                            
-                                            switch fileType {
+                                            switch masterFiles[index].fileType {
                                             case 0:
                                                 if (directory == "/Applications/") {
                                                     let app = appsManager.application(forBundleURL: URL(fileURLWithPath: masterFiles[index].fullPath))
@@ -347,7 +343,7 @@ struct ContentView: View {
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
-                                            case 5.2:
+                                            case 5.9:
                                                 Image(systemName: "list.number")
                                                 Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
@@ -590,8 +586,7 @@ struct ContentView: View {
                                                 }
                                             }
                                         } else {
-                                            let fileType = yandereDevFileType(file: (masterFiles[index].fullPath))
-                                            switch fileType {
+                                            switch masterFiles[index].fileType {
                                             case 0:
                                                 if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 1) {
                                                     Image(systemName: "folder")
@@ -634,7 +629,7 @@ struct ContentView: View {
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
-                                            case 5.2:
+                                            case 5.9:
                                                 Image(systemName: "list.number")
                                                 Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
@@ -985,6 +980,7 @@ struct ContentView: View {
                             newViewFilePath = masterFiles[newViewFileIndex].fullPath
                             newViewFileName = masterFiles[newViewFileIndex].name
                             showSubView[2] = false
+                            plistTypeStorage = Int(masterFiles[newViewFileIndex].fileType - 5)
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 showSubView[13] = true
                             }
@@ -1256,7 +1252,7 @@ struct ContentView: View {
                     ImageView(imagePath: $newViewFilePath, imageName: $newViewFileName)
                 })
                 .sheet(isPresented: $showSubView[13], content: {
-                    PlistView(filePath: $newViewFilePath, fileName: newViewFileName, firstTime: $plistStorage, isRootDict: true, isInDict: false, plistDict: $lol)
+                    PlistView(filePath: $newViewFilePath, fileName: $newViewFileName, plistType: plistTypeStorage)
                 })
                 .sheet(isPresented: $showSubView[14], content: {
                     if(uncompressZip){
@@ -1678,7 +1674,8 @@ struct ContentView: View {
             multiSelect = false
             newViewFilePath = directory
             newViewFileName = fileToCheck[index]
-            switch Int(yandereDevFileType(file: (directory + fileToCheck[index]))) {
+            let fileType = Int(yandereDevFileType(file: (directory + fileToCheck[index])))
+            switch fileType {
             case 0:
                 do {
                     try fileManager.contentsOfDirectory(atPath: directory + fileToCheck[index])
@@ -1706,6 +1703,7 @@ struct ContentView: View {
             case 4:
                 showSubView[4] = true
             case 5:
+				plistTypeStorage = Int(masterFiles[index].fileType - 5)
                 showSubView[13] = true
             case 6:
                 showSubView[14] = true
@@ -1717,7 +1715,7 @@ struct ContentView: View {
                 if(isDirectory(filePath: dest)) {
                     directory = dest
                 } else {
-                    masterFiles.append(SpartanFile(name: URL(fileURLWithPath: dest).lastPathComponent, fullPath: dest, isSelected: false))
+                    masterFiles.append(SpartanFile(name: URL(fileURLWithPath: dest).lastPathComponent, fullPath: dest, isSelected: false, fileType: fileType, isLoadingFile: false))
                     defaultAction(index: masterFiles.count-1, isDirectPath: false)
                 }
                 updateFiles()
@@ -1728,7 +1726,7 @@ struct ContentView: View {
             case 11:
                 showSubView[30] = true
             default:
-                isLoadingView = true
+                masterFiles[index].isLoadingFile = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     showSubView[22] = true
                 }
@@ -1751,7 +1749,7 @@ struct ContentView: View {
             }
             masterFiles = []
             for i in 0..<contents.count {
-                masterFiles.append(SpartanFile(name: files[i], fullPath: directory + files[i], isSelected: false))
+                masterFiles.append(SpartanFile(name: files[i], fullPath: directory + files[i], isSelected: false, fileType: yandereDevFileType(file: directory + files[i]), isLoadingFile: false))
             }
             resetMultiSelectArrays()
         } catch {
@@ -1880,7 +1878,7 @@ struct ContentView: View {
         } else if (isPlist(filePath: file) != 0) {
             return isPlist(filePath: file)
             //5.1 = xml plist
-            //5.2 = bplist
+            //5.9 = bplist
         } else if (fontTypes.contains(where: file.hasSuffix)) {
             return 11
         } else if(isCar(filePath: file)) {
@@ -1956,7 +1954,7 @@ struct ContentView: View {
             if header == xmlHeader {
                 return 5.1
             } else if header == bplistHeader {
-                return 5.2
+                return 5.9
             }
         }
         return 0
@@ -2073,4 +2071,6 @@ struct SpartanFile {
     var name: String
     var fullPath: String
     var isSelected: Bool
+    var fileType: Double
+    var isLoadingFile: Bool
 }

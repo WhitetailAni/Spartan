@@ -7,7 +7,81 @@
 
 import SwiftUI
 
+struct PlistKey {
+	var key: String
+	var value: Any
+	var type: String
+}
+
+enum PlistKeyType {
+	case bool
+	case int
+	case string
+	case array
+	case dict
+	case data
+}
+
 struct PlistView: View {
+	@Binding var filePath: String
+	@State var fileName: String
+	@State var plistData: Data = Data()
+	
+	@State var rawPlistDict: [String: Any] = [:]
+	@State var plistDict: [PlistKey] = []
+	@State var plistType: Int
+	
+	let fileManager = FileManager.default
+	
+	init() {
+		let rawData = fileManager.contents(atPath: filePath + fileName)
+		do {
+			if(plistType == 0) {
+				rawPlistDict = try PropertyListSerialization.propertyList(from: rawData, options: .mutableContainersAndLeaves, format: PropertyListSerialization.PropertyListFormat.xml) as! [String: Any]
+			} else {
+				rawPlistDict = try PropertyListSerialization.propertyList(from: rawData, options: .mutableContainersAndLeaves, format: PropertyListSerialization.PropertyListFormat.binary) as! [String: Any]
+			} //for some reason, swift doesn't keep items in a dictionary in a specific order, meaning for i in _ loops break. i know they aren't really in order anyway but it would have been nice
+			//so before it has a chance to reorder them, they're getting put in an array. I love init methods.
+		} catch {
+			plistData = ["The file specified is not a valid plist file, or it is corrupted.":"Ensure you selected the proper file and try again."]
+		}
+		for i in rawPlistDict.count {
+			let keypair = rawPlistDict.keyPairAtIndex(i)
+			let data = keypair.value
+			let type: PlistKeyType = {
+				switch data {
+				case is Bool:
+					return .bool
+				case is Int:
+					return .int
+				case is String:
+					return .string
+				case is [Any]:
+					return .array
+				case is [String: Any]
+					return .dict
+				case is Data:
+					return .data
+				}
+			}
+			plistDict[i] = PlistKey(key: keypair.key, value: data, type: type)
+		}
+	}//next to do is a display view, now that data is stored as the view loads, and isn't gotten on the fly
+	
+	var body: some View {
+		Text("gm")
+	}
+	
+	func readFromPlistToDict() {
+		//let plistData =
+	}
+	
+	func writeDictToPlist() {
+		
+	}
+}
+
+/*struct PlistView: View {
     
     @Binding var filePath: String
     @State var fileName: String
@@ -365,7 +439,7 @@ struct PlistDataView: View {
             }
         ))
     }
-}
+}*/
 
 /*struct PlistEditorView: View {
 
@@ -505,3 +579,9 @@ struct PlistDataView: View {
     }
 }
 */
+
+extension Dictionary {
+	keyPairAtIndex(i: Int) -> (key: Key, value: Value) {
+		return self[index(startIndex, offsetBy: i)]
+	}
+}

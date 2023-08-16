@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F81F06862A759F9200460D51 /* going for a walk to take my mind off things for a bit.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F81F06852A759F9200460D51 /* going for a walk to take my mind off things for a bit.mp3 */; };
 		F82095202A2622D100DC6D79 /* CarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F820951F2A2622D100DC6D79 /* CarView.swift */; };
 		F83CB3C02A41170F005BF95A /* FontView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F83CB3BF2A41170F005BF95A /* FontView.swift */; };
 		F83F052E2A297E2000EB0720 /* Sheikah.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F83F052D2A297CDE00EB0720 /* Sheikah.ttf */; };
@@ -51,20 +52,8 @@
 		F8F855C62A47770700DC9CE4 /* RootHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F855C52A47770700DC9CE4 /* RootHelper.swift */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		F858CD2E2A47F53900C94A8F /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
+		F81F06852A759F9200460D51 /* going for a walk to take my mind off things for a bit.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "going for a walk to take my mind off things for a bit.mp3"; sourceTree = "<group>"; };
 		F820951F2A2622D100DC6D79 /* CarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarView.swift; sourceTree = "<group>"; };
 		F83CB3BF2A41170F005BF95A /* FontView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontView.swift; sourceTree = "<group>"; };
 		F83F052D2A297CDE00EB0720 /* Sheikah.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Sheikah.ttf; sourceTree = "<group>"; };
@@ -146,6 +135,7 @@
 		F853AB2229DBCB1A006EA2D5 = {
 			isa = PBXGroup;
 			children = (
+				F81F06852A759F9200460D51 /* going for a walk to take my mind off things for a bit.mp3 */,
 				F8F855C42A47770700DC9CE4 /* RootHelper */,
 				F853AB2C29DBCB1A006EA2D5 /* Products */,
 				F83F47D02A43781000A4C47F /* External */,
@@ -239,7 +229,6 @@
 				F853AB2829DBCB1A006EA2D5 /* Frameworks */,
 				F853AB2929DBCB1A006EA2D5 /* Resources */,
 				F88CC4AE2A44B542001FACFC /* ShellScript */,
-				F858CD2E2A47F53900C94A8F /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -324,6 +313,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F858CD1E2A477B3C00C94A8F /* RootHelper in Resources */,
+				F81F06862A759F9200460D51 /* going for a walk to take my mind off things for a bit.mp3 in Resources */,
 				F88CC4A02A44AE40001FACFC /* SF Mono.otf in Resources */,
 				F83F052E2A297E2000EB0720 /* Sheikah.ttf in Resources */,
 				F845C82829F4D77C0025AC0A /* Localizable.strings in Resources */,
@@ -550,6 +540,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGNING_ALLOWED = NO;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1901;
@@ -580,7 +571,7 @@
 					/usr/local/Cellar/libssh2/1.11.0/lib,
 				);
 				MARKETING_VERSION = 0.6;
-				PRODUCT_BUNDLE_IDENTIFIER = lol.whitetailani.Spartan;
+				PRODUCT_BUNDLE_IDENTIFIER = com.whitetailani.Spartan;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "appletvos appletvsimulator";
@@ -603,6 +594,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGNING_ALLOWED = NO;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1901;
