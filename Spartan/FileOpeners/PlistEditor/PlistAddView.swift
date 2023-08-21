@@ -36,9 +36,9 @@ struct PlistAddView: View {
 						}
 				}
 			}
-			switch selectedKeyType {
+			/*switch selectedKeyType {
 			case "Boolean":
-				PlistBoolView(newBool: newBool, isPresented: false)
+				PlistBoolView(newBool: $newBool, isPresented: false)
 			case "Integer":
 				PlistIntView(newInt: newInt, isPresented: false)
 			case "String":
@@ -51,7 +51,7 @@ struct PlistAddView: View {
 				
 			default:
 				Text("I pray for your soul if this ever appears")
-			}
+			}*/
 			
 			Button(action: {
 			

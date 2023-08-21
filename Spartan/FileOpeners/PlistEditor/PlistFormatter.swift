@@ -20,6 +20,7 @@ enum PlistKeyType {
 	case array
 	case dict
 	case data
+	case unknown
 }
 
 class PlistFormatter {
@@ -77,23 +78,27 @@ class PlistFormatter {
 			return "\(plistKey.key): \(formatValue(plistKey)) (Dictionary)"
 		case .data:
 			return "\(plistKey.key): \(formatValue(plistKey)) (Data)"
+		case .unknown:
+			return "The data for key \(plistKey.key) is of an unknown type (Error ID 686)."
 		}
 	}
 	
 	class func formatValue(_ plistKey: PlistKey) -> String {
 		switch plistKey.type {
 		case .bool:
-			return "\(PlistFormatter.formatBool(plistKey.value as! Bool))"
+			return "\(formatBool(plistKey.value as! Bool))"
 		case .int:
-			return PlistFormatter.formatInt(plistKey.value as! Int)
+			return formatInt(plistKey.value as! Int)
 		case .string:
-			return PlistFormatter.formatString(plistKey.value as! String)
+			return formatString(plistKey.value as! String)
 		case .array:
-			return PlistFormatter.formatArray(plistKey.value as! [Any])
+			return formatArray(plistKey.value as! [Any])
 		case .dict:
-			return PlistFormatter.formatDict(plistKey.value as! [String: Any])
+			return formatDict(plistKey.value as! [String: Any])
 		case .data:
-			return PlistFormatter.formatData(plistKey.value as! Data)
+			return formatData(plistKey.value as! Data)
+		case .unknown:
+			return "The data is of an unknown type (Error ID 686)."
 		}
 	}
 	
@@ -147,6 +152,25 @@ class PlistFormatter {
 			return formatData(value as! Data)
 		default:
 			return "The value could not be read (Error ID 488)"
+		}
+	}
+	
+	class func getPlistKeyTypeFromAnyVar(_ value: Any) -> PlistKeyType {
+		switch value {
+		case is Bool:
+			return .bool
+		case is Int:
+			return .int
+		case is String:
+			return .string
+		case is [Any]:
+			return .array
+		case is [String: Any]:
+			return .dict
+		case is Data:
+			return .data
+		default:
+			return .unknown
 		}
 	}
 }

@@ -9,15 +9,22 @@ import SwiftUI
 import Foundation
 
 struct PlistArrayView: View {
-	@Binding var newArray: [Any]
+	@Binding var newArray: Any
 	@State var nameOfKey: String = ""
-	@State var isNewView: Bool
 	@Binding var isPresented: Bool
+	@State var isFromDict: Bool
 	
+	@State var values: [Any] = []
 	@State var showAddView = false
 
 	var body: some View {
 		VStack {
+			if isFromDict {
+				Text(nameOfKey)
+					.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+						view.scaledFont(name: "BotW Sheikah Regular", size: 35)
+					}
+			}
 			HStack {
 				Button(action: {
 					showAddView = true
@@ -36,21 +43,23 @@ struct PlistArrayView: View {
 					.focusable(true)
 					
 				Spacer()
-				if isNewView {
-					Button(action: {
-						isPresented = false
-					}) {
-						Image(systemName: "square.and.arrow.down")
-					}
+				Button(action: {
+					newArray = values
+					isPresented = false
+				}) {
+					Image(systemName: "square.and.arrow.down")
 				}
 			}
-			ForEach(newArray.indices, id: \.self) { index in
+			ForEach(values.indices, id: \.self) { index in
 				Button(action: {
 					
 				}) {
-					
+					PlistFormatter.formatAnyVarForDisplay(values[index])
 				}
 			}
+		}
+		.onAppear {
+			values = newArray as! [Any]
 		}
 	}
 }

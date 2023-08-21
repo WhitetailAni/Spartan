@@ -17,6 +17,12 @@ struct PlistView: View {
 	
 	@State var failedToWrite = false
 	
+	@State var editingSubView = false
+	@State var subViewToShow: PlistKeyType = .bool
+	@State var indexToEdit = 0
+	
+	@State var addKeyToPlist = false
+	
 	let fileManager = FileManager.default
 	
 	init(filePath: String, fileName: String, plistType: Int) {
@@ -32,54 +38,65 @@ struct PlistView: View {
         }
 			
 		plistDict = PlistFormatter.swiftDictToPlistKeyArray(rawPlistDict)
-	}//next to do is a display view, now that data is stored as the view loads, and isn't gotten on the fly
+	}
 	
 	var body: some View {
-		HStack {
-			Button(action: {
-				
-			}) {
-				Image(systemName: "plus")
-			}
-			Spacer()
-			Text(UserDefaults.settings.bool(forKey: "verboseTimestamps") ? filePath + fileName : fileName)
-                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                }
-                .font(.system(size: 40))
-                .multilineTextAlignment(.center)
-                .padding(-10)
-                .focusable(true)
-			Spacer()
-			Button(action: {
-				writeDictToPlist(PlistFormatter.plistKeyArrayToSwiftDict(plistDict))
-			}) {
-				Image(systemName: "square.and.arrow.down")
-			}
-			.alert(isPresented: $failedToWrite, content: {
-				Alert(title: Text(NSLocalizedString("PLIST_FAILEDTOSAVE", comment: "9999999")), message: Text(NSLocalizedString("PLIST_FAILEDTOSAVEINFO", comment: "I Saw A Deer Today")), dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "Your Not A Good Person"))))
-			})
-		}
-		ForEach(plistDict.indices, id: \.self) { index in
-			Button(action: {
-				if(plistDict[index].type == .bool) {
-					let bool = plistDict[index].value as! Bool
-					if bool {
-						plistDict[index].value = false
-					} else {
-						plistDict[index].value = true
+		VStack {
+			HStack {
+				Button(action: {
+					addKeyToPlist = true
+				}) {
+					Image(systemName: "plus")
+				}
+				Spacer()
+				Text(UserDefaults.settings.bool(forKey: "verboseTimestamps") ? filePath + fileName : fileName)
+					.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+						view.scaledFont(name: "BotW Sheikah Regular", size: 40)
 					}
-				} else {
-					
+					.font(.system(size: 40))
+					.multilineTextAlignment(.center)
+					.padding(-10)
+					.focusable(true)
+				Spacer()
+				Button(action: {
+					writeDictToPlist(PlistFormatter.plistKeyArrayToSwiftDict(plistDict))
+				}) {
+					Image(systemName: "square.and.arrow.down")
 				}
-				print(plistDict[index])
-			}) {
-				if (plistDict[index].type == .bool) {
-					Image(systemName: plistDict[index].value as! Bool ? "checkmark.square" : "square")
+				.alert(isPresented: $failedToWrite, content: {
+					Alert(title: Text(NSLocalizedString("PLIST_FAILEDTOSAVE", comment: "9999999")), message: Text(NSLocalizedString("PLIST_FAILEDTOSAVEINFO", comment: "I Saw A Deer Today")), dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "Your Not A Good Person"))))
+				})
+			}
+			ForEach(plistDict.indices, id: \.self) { index in
+				Button(action: {
+					if(plistDict[index].type == .bool) {
+						let bool = plistDict[index].value as! Bool
+						if bool {
+							plistDict[index].value = false
+						} else {
+							plistDict[index].value = true
+						}
+					} else {
+						indexToEdit = index
+					}
+					print(plistDict[index])
+				}) {
+					if (plistDict[index].type == .bool) {
+						Image(systemName: plistDict[index].value as! Bool ? "checkmark.square" : "square")
+					}
+					Text(PlistFormatter.formatPlistKey(plistDict[index]))
 				}
-				Text(PlistFormatter.formatPlistKey(plistDict[index]))
 			}
 		}
+		.sheet(isPresented: $addKeyToPlist, content: {
+			PlistAddView(plistDict: $plistDict)
+		})
+		.sheet(isPresented: $editingSubView, content: {
+			/*switch subViewToShow {
+			case .bool:
+				
+			}*/
+		})
 	}
 	
 	func writeDictToPlist(_ dict: [String: Any]) {

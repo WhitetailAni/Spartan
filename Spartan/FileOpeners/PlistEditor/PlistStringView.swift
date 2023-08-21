@@ -8,24 +8,31 @@
 import SwiftUI
 
 struct PlistStringView: View {
-	@Binding var newString: String
+	@Binding var newString: Any
 	@State var nameOfKey: String = ""
-	@State var isNewView: Bool
+	@State var isFromDict: Bool
 	@Binding var isPresented: Bool
 	
+	@State var value: String = ""
+	
 	var body: some View {
-		if isNewView {
+		if isFromDict {
 			Text(nameOfKey)
+				.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+					view.scaledFont(name: "BotW Sheikah Regular", size: 35)
+				}
 		}
 	
-		TextField(LocalizedString("PLIST_STRINGDATA"), text: $newString)
+		TextField(LocalizedString("PLIST_STRINGDATA"), text: $value)
 		
-		if isNewView {
-			Button(action: {
-				isPresented = false
-			}) {
-				Text(LocalizedString("CONFIRM"))
-			}
+		Button(action: {
+			newString = value
+			isPresented = false
+		}) {
+			Text(LocalizedString("CONFIRM"))
+		}
+		.onAppear {
+			value = newString as! String
 		}
 	}
 }

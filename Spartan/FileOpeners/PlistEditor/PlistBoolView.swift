@@ -8,28 +8,35 @@
 import SwiftUI
 
 struct PlistBoolView: View {
-	@Binding var newBool: Bool
-	@State var isNewView: Bool = false
+	@Binding var newBool: Any
+	@State var isFromDict: Bool = false
 	@State var nameOfKey: String = ""
 	@Binding var isPresented: Bool
+	
+	@State var value: Bool = false
 
 	var body: some View {
-		if isNewView {
+		if isFromDict {
 			Text(nameOfKey)
+				.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+					view.scaledFont(name: "BotW Sheikah Regular", size: 35)
+				}
 		}
 	
 		Button(action: {
-			newBool.toggle()
+			value.toggle()
 		}) {
-			Image(systemName: newBool ? "checkmark.square" : "square")
+			Image(systemName: newBool as! Bool ? "checkmark.square" : "square")
 		}
 		
-		if isNewView {
-			Button(action: {
-				isPresented = false
-			}) {
-				Text(LocalizedString("CONFIRM"))
-			}
+		Button(action: {
+			newBool = value
+			isPresented = false
+		}) {
+			Text(LocalizedString("CONFIRM"))
+		}
+		.onAppear {
+			value = newBool as! Bool
 		}
 	}
 }
