@@ -210,6 +210,10 @@
 "PLIST_KEY" = "Enter key name";
 "PLIST_DATA" = "Enter key value";
 "PLIST_UNKNOWNTYPE" = "Unknown data type";
+"PLIST_FAILEDTOSAVE" = "The file could not be saved";
+"PLIST_FAILEDTOSAVEINFO" = "Make sure you have permission to save the file.";
+
+"PLIST_STRINGDATA" = "Input new String value";
 
 //plistarray
 "PLISTARR_ADD" = "Add item after item ";

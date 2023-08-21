@@ -282,3 +282,7 @@ func substring(str: String, startIndex: String.Index, endIndex: String.Index) ->
 }
 
 var helperPath: String = Bundle.main.bundlePath + "/RootHelper"
+
+func LocalizedString(_ key: String) -> String {
+	return NSLocalizedString(key, comment: "")
+} //this was not added until much later in the project, which is why it's not used much

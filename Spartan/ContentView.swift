@@ -1201,7 +1201,7 @@ struct ContentView: View {
                             directory = newViewFilePath
                         } else {
                             directory = URL(fileURLWithPath: newViewFilePath).deletingLastPathComponent().path + "/"
-                            masterFiles.append(SpartanFile(name: URL(fileURLWithPath: newViewFilePath).lastPathComponent, fullPath: newViewFilePath, isSelected: false))
+							masterFiles.append(SpartanFile(name: URL(fileURLWithPath: newViewFilePath).lastPathComponent, fullPath: newViewFilePath, isSelected: false, fileType: yandereDevFileType(file: newViewFilePath), isLoadingFile: false))
                             defaultAction(index: masterFiles.count-1, isDirectPath: false)
                         }
                         didSearch = false
@@ -1252,7 +1252,7 @@ struct ContentView: View {
                     ImageView(imagePath: $newViewFilePath, imageName: $newViewFileName)
                 })
                 .sheet(isPresented: $showSubView[13], content: {
-                    PlistView(filePath: $newViewFilePath, fileName: $newViewFileName, plistType: plistTypeStorage)
+                    PlistView(filePath: newViewFilePath, fileName: newViewFileName, plistType: plistTypeStorage)
                 })
                 .sheet(isPresented: $showSubView[14], content: {
                     if(uncompressZip){
@@ -1715,7 +1715,7 @@ struct ContentView: View {
                 if(isDirectory(filePath: dest)) {
                     directory = dest
                 } else {
-                    masterFiles.append(SpartanFile(name: URL(fileURLWithPath: dest).lastPathComponent, fullPath: dest, isSelected: false, fileType: fileType, isLoadingFile: false))
+					masterFiles.append(SpartanFile(name: URL(fileURLWithPath: dest).lastPathComponent, fullPath: dest, isSelected: false, fileType: Double(fileType), isLoadingFile: false))
                     defaultAction(index: masterFiles.count-1, isDirectPath: false)
                 }
                 updateFiles()
