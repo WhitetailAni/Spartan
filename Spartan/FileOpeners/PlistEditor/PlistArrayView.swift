@@ -9,12 +9,15 @@ import SwiftUI
 import Foundation
 
 struct PlistArrayView: View {
-	@Binding var newArray: Any
+	@Binding var newArray: Any //this is not an [Any] intentionally. DO NOT EDIT IT, DO NOT USE IT, USE `values`
 	@State var nameOfKey: String = ""
-	@Binding var isPresented: Bool
 	@State var isFromDict: Bool
+	@Binding var isPresented: Bool
 	
 	@State var values: [Any] = []
+	
+	@State var indexToEdit = 0
+	@State var showEditView = false
 	@State var showAddView = false
 
 	var body: some View {
@@ -31,8 +34,11 @@ struct PlistArrayView: View {
 				}) {
 					Image(systemName: "plus")
 				}
-				Spacer()
+				.sheet(isPresented: $showAddView, content: {
+					PlistAddArrayView(plistArray: $values, isPresented: $showAddView)
+				})
 				
+				Spacer()
 				Text(nameOfKey)
 					.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
 						view.scaledFont(name: "BotW Sheikah Regular", size: 40)
@@ -47,17 +53,43 @@ struct PlistArrayView: View {
 					newArray = values
 					isPresented = false
 				}) {
-					Image(systemName: "square.and.arrow.down")
+					Image(systemName: "checkmark")
 				}
 			}
-			ForEach(values.indices, id: \.self) { index in
+			List(values.indices, id: \.self) { index in
 				Button(action: {
-					
+					if values[index] is Bool {
+						values[index] = !(values[index] as! Bool)
+					} else {
+						indexToEdit = index
+						showEditView = true
+					}
 				}) {
-					PlistFormatter.formatAnyVarForDisplay(values[index])
+					if values[index] is Bool {
+						Image(systemName: values[index] as! Bool ? "checkmark.square" : "square")
+					}
+					Text(PlistFormatter.formatAnyVarForDisplay(values[index]))
 				}
 			}
 		}
+		.sheet(isPresented: $showEditView, content: {
+			switch PlistFormatter.getPlistKeyTypeFromAnyVar(values[indexToEdit]) {
+			case .bool:
+				Text("All I need is a little neurotoxin.")
+			case .int:
+				PlistIntView(newInt: $values[indexToEdit], isFromDict: false, isPresented: $showEditView)
+			case .string:
+				PlistStringView(newString: $values[indexToEdit], isFromDict: false, isPresented: $showEditView)
+			case .array:
+				PlistArrayView(newArray: $values[indexToEdit], isFromDict: false, isPresented: $showEditView)
+			case .dict:
+				PlistDictView(newDict: $values[indexToEdit], isFromDict: false, isPresented: $showEditView)
+			case .data:
+				PlistDataView(newData: $values[indexToEdit], isFromDict: false, isPresented: $showEditView)
+			case .unknown:
+				PlistLView(isPresented: $showEditView)
+			}
+		})
 		.onAppear {
 			values = newArray as! [Any]
 		}

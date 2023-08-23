@@ -10,13 +10,13 @@ import SwiftUI
 struct PlistIntView: View {
 	@Binding var newInt: Any
 	@State var nameOfKey: String = ""
-	@State var isNewView: Bool = false
+	@State var isFromDict: Bool
 	@Binding var isPresented: Bool
 	
 	@State var value: Int = 0
 
 	var body: some View {
-		if isNewView {
+		if isFromDict {
 			Text(nameOfKey)
 				.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
 					view.scaledFont(name: "BotW Sheikah Regular", size: 35)
@@ -24,17 +24,15 @@ struct PlistIntView: View {
 		}
 	
 		StepperTV(value: $value, isHorizontal: true, onCommit: { })
-		
-		if isNewView {
-			Button(action: {
-				newInt = value
-				isPresented = false
-			}) {
-				Text(LocalizedString("CONFIRM"))
+			.onAppear {
+				value = newInt as! Int
 			}
-		}
-		.onAppear {
-			value = newInt as! Int
+		
+		Button(action: {
+			newInt = value
+			isPresented = false
+		}) {
+			Text(LocalizedString("CONFIRM"))
 		}
 	}
 }

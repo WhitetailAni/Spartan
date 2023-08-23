@@ -13,7 +13,6 @@ import MobileCoreServices
 import ApplicationsWrapper
 import AssetCatalogWrapper
 
-
 struct ContentView: View {
     @State var test = false
     @State var testTwo = false
@@ -52,7 +51,7 @@ struct ContentView: View {
     
     @State var lol: [String: Any] = [:]
     
-    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 31)
+    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 32)
     //createFileSelectShow = 0
     //contextMenuShow = 1
     //openInMenu = 2
@@ -84,6 +83,7 @@ struct ContentView: View {
     //carView = 28
     //tvOS13serverShow = 29
     //fontViewShow = 30
+    //tbdViewShow = 31
     
     @State var globalAVPlayer: AVPlayer = AVPlayer()
     @State var isGlobalAVPlayerPlaying = false
@@ -392,6 +392,12 @@ struct ContentView: View {
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
+											case 12:
+												Image(systemName: "books.vertical")
+												Text(masterFiles[index].name)
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
                                             default:
                                                 Image(systemName: "doc")
                                                 Text(masterFiles[index].name)
@@ -675,6 +681,12 @@ struct ContentView: View {
                                             case 11:
                                                 Image(systemName: "textformat")
                                                 Text(masterFiles[index].name)
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
+											case 12:
+												Image(systemName: "books.vertical")
+												Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
@@ -1291,6 +1303,9 @@ struct ContentView: View {
                 .sheet(isPresented: $showSubView[30], content: {
                     FontView(filePath: $newViewFilePath, fileName: $newViewFileName)
                 })
+                .sheet(isPresented: $showSubView[31], content: {
+					TBDEditor()
+				})
                 .alert(isPresented: $showSubView[26]) {
                     Alert(
                         title: Text(NSLocalizedString("SHOW_NOTFOUND", comment: "")),
@@ -1725,6 +1740,8 @@ struct ContentView: View {
                 showSubView[28] = true
             case 11:
                 showSubView[30] = true
+			case 12:
+				showSubView[31] = true
             default:
                 masterFiles[index].isLoadingFile = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -1879,8 +1896,10 @@ struct ContentView: View {
             return isPlist(filePath: file)
             //5.1 = xml plist
             //5.9 = bplist
+		} else if (isTBD(filePath: file)) {
+			return 12 //tbd
         } else if (fontTypes.contains(where: file.hasSuffix)) {
-            return 11
+            return 11 //a font (badly)
         } else if(isCar(filePath: file)) {
             return 10 //asset catalog
         } else if (isText(filePath: file)) { //these must be flipped because otherwise xml plist detects as text
@@ -1947,13 +1966,10 @@ struct ContentView: View {
             return 0
         }
         
-        let xmlHeader = "<?xml"
-        let bplistHeader = "bplis"
-        
         if let header = String(data: data.subdata(in: 0..<5), encoding: .utf8) {
-            if header == xmlHeader {
+            if header == "<?xml" {
                 return 5.1
-            } else if header == bplistHeader {
+            } else if header == "bplis" {
                 return 5.9
             }
         }
@@ -1980,15 +1996,22 @@ struct ContentView: View {
         guard let data = fileManager.contents(atPath: filePath) else {
             return false
         }
-        
-        let carHeader = "BOMStore"
-        if let header = String(data: data.subdata(in: 0..<8), encoding: .utf8) {
-            if header == carHeader {
-                return true
-            }
-        }
+
+		if String(data: data.subdata(in: 0..<8), encoding: .utf8) == "BOMStore" {
+			return true
+		}
         return false
     }
+    func isTBD(filePath: String) -> Bool {
+		guard let data = fileManager.contents(atPath: filePath) else {
+            return false
+        }
+        
+		if String(data: data.subdata(in: 0..<16), encoding: .utf8) == "--- !tapi-tbd-v3" {
+			return true
+		}
+        return false
+	}
     
     func readSymlinkDestination(path: String) -> String {
         let url = URL(fileURLWithPath: path)

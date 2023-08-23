@@ -95,20 +95,3 @@ struct HexView: View {
         }
     }
 }
-
-extension Data {
-    init?(fromHexEncodedString hexString: String) {
-        var hexString = hexString
-        let length = hexString.count / 2
-        var data = Data(capacity: length)
-        
-        for _ in 0..<length {
-            guard let byte = UInt8(hexString.prefix(2), radix: 16) else {
-                return nil
-            }
-            data.append(byte)
-            hexString = String(hexString.dropFirst(2))
-        }
-        self = data
-    }
-}

@@ -31,10 +31,10 @@
 		F858CD1E2A477B3C00C94A8F /* RootHelper in Resources */ = {isa = PBXBuildFile; fileRef = F8F855C32A47770700DC9CE4 /* RootHelper */; };
 		F88CC49D2A44ADC7001FACFC /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = F88CC49C2A44ADC7001FACFC /* Zip */; };
 		F88CC4A02A44AE40001FACFC /* SF Mono.otf in Resources */ = {isa = PBXBuildFile; fileRef = F88CC49E2A44ADEB001FACFC /* SF Mono.otf */; };
-		F88CC4A32A44B020001FACFC /* ApplicationsWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F88CC4A22A44B020001FACFC /* ApplicationsWrapper */; };
-		F88CC4A52A44B020001FACFC /* AssetCatalogWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F88CC4A42A44B020001FACFC /* AssetCatalogWrapper */; };
-		F88CC4A72A44B020001FACFC /* DiskImagesWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F88CC4A62A44B020001FACFC /* DiskImagesWrapper */; };
-		F88CC4AB2A44B020001FACFC /* SVGWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F88CC4AA2A44B020001FACFC /* SVGWrapper */; };
+		F88CC4A32A44B020001FACFC /* ApplicationsWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F88CC4A22A44B020001FACFC /* ApplicationsWrapper */; settings = {ATTRIBUTES = (Required, ); }; };
+		F88CC4A52A44B020001FACFC /* AssetCatalogWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F88CC4A42A44B020001FACFC /* AssetCatalogWrapper */; settings = {ATTRIBUTES = (Required, ); }; };
+		F88CC4A72A44B020001FACFC /* DiskImagesWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F88CC4A62A44B020001FACFC /* DiskImagesWrapper */; settings = {ATTRIBUTES = (Required, ); }; };
+		F88CC4AB2A44B020001FACFC /* SVGWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F88CC4AA2A44B020001FACFC /* SVGWrapper */; settings = {ATTRIBUTES = (Required, ); }; };
 		F88FBB0D2A2FEFA700E31EDA /* UIApplicationSuspend.m in Sources */ = {isa = PBXBuildFile; fileRef = F88FBB0C2A2FEFA700E31EDA /* UIApplicationSuspend.m */; };
 		F898F66B2A1AFEC300F1B4E4 /* WebServerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F898F66A2A1AFEC300F1B4E4 /* WebServerView.swift */; };
 		F8C1A5D429FB55F100DF4C23 /* MountPointsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C1A5D329FB55F100DF4C23 /* MountPointsView.swift */; };
@@ -59,7 +59,11 @@
 		F8FEB8882A93A1F40093B631 /* PlistFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB8872A93A1F40093B631 /* PlistFormatter.swift */; };
 		F8FEB88A2A93A2030093B631 /* PlistViewOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB8892A93A2030093B631 /* PlistViewOld.swift */; };
 		F8FEB88C2A93A20C0093B631 /* PlistViewOlder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB88B2A93A20C0093B631 /* PlistViewOlder.swift */; };
-		F8FEB88E2A93A2680093B631 /* PlistAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB88D2A93A2680093B631 /* PlistAddView.swift */; };
+		F8FEB88E2A93A2680093B631 /* PlistAddDictView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB88D2A93A2680093B631 /* PlistAddDictView.swift */; };
+		F8FEB8902A94F2610093B631 /* PlistAddArrayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB88F2A94F2610093B631 /* PlistAddArrayView.swift */; };
+		F8FEB8922A94F7B30093B631 /* PlistViewL.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB8912A94F7B30093B631 /* PlistViewL.swift */; };
+		F8FEB8952A964A1E0093B631 /* PlistBootstrapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB8942A964A1E0093B631 /* PlistBootstrapView.swift */; };
+		F8FEB8972A964CF60093B631 /* TBDEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB8962A964CF60093B631 /* TBDEditor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -115,7 +119,11 @@
 		F8FEB8872A93A1F40093B631 /* PlistFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistFormatter.swift; sourceTree = "<group>"; };
 		F8FEB8892A93A2030093B631 /* PlistViewOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistViewOld.swift; sourceTree = "<group>"; };
 		F8FEB88B2A93A20C0093B631 /* PlistViewOlder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistViewOlder.swift; sourceTree = "<group>"; };
-		F8FEB88D2A93A2680093B631 /* PlistAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistAddView.swift; sourceTree = "<group>"; };
+		F8FEB88D2A93A2680093B631 /* PlistAddDictView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistAddDictView.swift; sourceTree = "<group>"; };
+		F8FEB88F2A94F2610093B631 /* PlistAddArrayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistAddArrayView.swift; sourceTree = "<group>"; };
+		F8FEB8912A94F7B30093B631 /* PlistViewL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistViewL.swift; sourceTree = "<group>"; };
+		F8FEB8942A964A1E0093B631 /* PlistBootstrapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistBootstrapView.swift; sourceTree = "<group>"; };
+		F8FEB8962A964CF60093B631 /* TBDEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBDEditor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -206,6 +214,7 @@
 				F8CC214529EF5838008C7B88 /* SpawnView.swift */,
 				F820951F2A2622D100DC6D79 /* CarView.swift */,
 				F83CB3BF2A41170F005BF95A /* FontView.swift */,
+				F8FEB8962A964CF60093B631 /* TBDEditor.swift */,
 			);
 			path = FileOpeners;
 			sourceTree = "<group>";
@@ -241,19 +250,30 @@
 		F8FEB87A2A93A1930093B631 /* PlistEditor */ = {
 			isa = PBXGroup;
 			children = (
+				F8FEB8932A964A130093B631 /* future */,
 				F8CC212229E4FFC5008C7B88 /* PlistView.swift */,
-				F8FEB88D2A93A2680093B631 /* PlistAddView.swift */,
+				F8FEB88F2A94F2610093B631 /* PlistAddArrayView.swift */,
+				F8FEB88D2A93A2680093B631 /* PlistAddDictView.swift */,
 				F8FEB87B2A93A1AF0093B631 /* PlistBoolView.swift */,
 				F8FEB87D2A93A1B90093B631 /* PlistIntView.swift */,
 				F8FEB87F2A93A1C90093B631 /* PlistStringView.swift */,
 				F8FEB8812A93A1D50093B631 /* PlistArrayView.swift */,
 				F8FEB8832A93A1DD0093B631 /* PlistDictView.swift */,
 				F8FEB8852A93A1E60093B631 /* PlistDataView.swift */,
+				F8FEB8912A94F7B30093B631 /* PlistViewL.swift */,
 				F8FEB8872A93A1F40093B631 /* PlistFormatter.swift */,
 				F8FEB8892A93A2030093B631 /* PlistViewOld.swift */,
 				F8FEB88B2A93A20C0093B631 /* PlistViewOlder.swift */,
 			);
 			path = PlistEditor;
+			sourceTree = "<group>";
+		};
+		F8FEB8932A964A130093B631 /* future */ = {
+			isa = PBXGroup;
+			children = (
+				F8FEB8942A964A1E0093B631 /* PlistBootstrapView.swift */,
+			);
+			path = future;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -378,7 +398,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /Library/Frameworks/Python.framework/Versions/2.7/bin/python2;
-			shellScript = "# This adds entitlements necessary for jailbroken functions. If you don't have patched installd (whether by jailbreak or WDBRemoveThreeAppLimit) this will cause the install to fail, so comment it out.\n\nimport os\nfilename = '/'.join(map(os.environ.get, ('TARGET_TEMP_DIR', 'FULL_PRODUCT_NAME'))) + '.xcent'\n\nent = '''\n    <key>com.apple.private.persona-mgmt</key>\n    <true/>\n    <key>com.apple.private.security.no-container</key>\n\t<true/>\n\t<key>com.apple.private.security.no-sandbox</key>\n\t<true/>\n    <key>platform-application</key>\n    <true/>\n    <key>com.apple.private.security.system-application</key>\n\t<true/>\n    <key>com.apple.security.files.user-selected.read-write</key>\n    <true/>\n    <key>com.apple.private.skip-library-validation</key>\n\t<true/>\n\t<key>com.apple.security.iokit-user-client-class</key>\n\t<array>\n\t\t<string>IOSurfaceRootUserClient</string>\n\t\t<string>AGXDeviceUserClient</string>\n\t</array>\n\t<key>com.apple.security.exception.files.absolute-path.read-write</key>\n\t<array>\n\t\t<string>/</string>\n\t</array>\n\t<key>com.apple.AutoWake-write-access</key>\n\t<true/>\n    <key>com.apple.coremedia.allow-protected-content-playback</key>\n    <true/>\n    <key>com.apple.private.network.socket-delegate</key>\n    <true/>\n    <key>com.apple.private.security.container-manager</key>\n    <true/>\n    <key>com.apple.private.security.storage.AppDataContainers</key>\n    <true/>\n    <key>com.apple.private.security.storage.AppBundles</key>\n    <true/>\n    <key>com.apple.security.application-groups</key>\n    <true/>\n    <key>com.apple.security.network.server</key>\n    <true/>\n    <key>com.apple.security.network.client</key>\n    <true/>\n '''\nwith open(filename, 'r') as fp:\n    buf = fp.read()\ncursor = buf.rfind('</dict>')\noutput = buf[0:cursor] + ent + buf[cursor:]\nwith open(filename, 'w') as fp:\n    fp.write(output)\n";
+			shellScript = "# This adds entitlements necessary for jailbroken functions. If you don't have patched installd (whether by jailbreak or WDBRemoveThreeAppLimit) this will cause the install to fail, so comment it out.\n\nimport os\nfilename = '/'.join(map(os.environ.get, ('TARGET_TEMP_DIR', 'FULL_PRODUCT_NAME'))) + '.xcent'\n\nent = '''\n    <key>com.apple.private.persona-mgmt</key>\n    <true/>\n    <key>com.apple.private.security.no-container</key>\n\t<true/>\n\t<key>com.apple.private.security.no-sandbox</key>\n\t<true/>\n    <key>platform-application</key>\n    <true/>\n    <key>com.apple.private.security.system-application</key>\n\t<true/>\n    <key>com.apple.security.files.user-selected.read-write</key>\n    <true/>\n    <key>com.apple.private.skip-library-validation</key>\n\t<true/>\n\t<key>com.apple.security.iokit-user-client-class</key>\n\t<array>\n\t\t<string>IOSurfaceRootUserClient</string>\n\t\t<string>AGXDeviceUserClient</string>\n\t</array>\n\t<key>com.apple.security.exception.files.absolute-path.read-write</key>\n\t<array>\n\t\t<string>/</string>\n\t</array>\n\t<key>com.apple.AutoWake-write-access</key>\n\t<true/>\n    <key>com.apple.coremedia.allow-protected-content-playback</key>\n    <true/>\n    <key>com.apple.private.network.socket-delegate</key>\n    <true/>\n    <key>com.apple.private.security.container-manager</key>\n    <true/>\n    <key>com.apple.private.security.storage.AppDataContainers</key>\n    <true/>\n    <key>com.apple.private.security.storage.AppBundles</key>\n    <true/>\n    <key>com.apple.security.application-groups</key>\n    <true/>\n    <key>com.apple.security.network.server</key>\n    <true/>\n    <key>com.apple.security.network.client</key>\n    <true/>\n '''\nwith open(filename, 'r') as fp:\n    buf = fp.read()\ncursor = buf.rfind('</dict>')\noutput = buf[0:cursor] + ent + buf[cursor:]\n#with open(filename, 'w') as fp:\n #   fp.write(output)\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -390,6 +410,7 @@
 				F853AB5529DE8B3B006EA2D5 /* FavoritesView.swift in Sources */,
 				F8FEB87C2A93A1AF0093B631 /* PlistBoolView.swift in Sources */,
 				F853AB3129DBCB1A006EA2D5 /* ContentView.swift in Sources */,
+				F8FEB8972A964CF60093B631 /* TBDEditor.swift in Sources */,
 				F8C1A5D429FB55F100DF4C23 /* MountPointsView.swift in Sources */,
 				F8D579952A15D17F00FDA526 /* SwiftTryCatch.m in Sources */,
 				F8CC214829EFA165008C7B88 /* TextView.swift in Sources */,
@@ -408,10 +429,13 @@
 				F83F47D22A43782E00A4C47F /* CommandRunner.swift in Sources */,
 				F8FEB8802A93A1C90093B631 /* PlistStringView.swift in Sources */,
 				F8EA28D429F8C2710063206D /* CreateSymlinkView.swift in Sources */,
+				F8FEB8902A94F2610093B631 /* PlistAddArrayView.swift in Sources */,
 				F898F66B2A1AFEC300F1B4E4 /* WebServerView.swift in Sources */,
 				F853AB4F29DE57D8006EA2D5 /* AudioPlayerView.swift in Sources */,
+				F8FEB8952A964A1E0093B631 /* PlistBootstrapView.swift in Sources */,
 				F8CC214629EF5838008C7B88 /* SpawnView.swift in Sources */,
 				F8FEB87E2A93A1B90093B631 /* PlistIntView.swift in Sources */,
+				F8FEB8922A94F7B30093B631 /* PlistViewL.swift in Sources */,
 				F8FEB8842A93A1DD0093B631 /* PlistDictView.swift in Sources */,
 				F88FBB0D2A2FEFA700E31EDA /* UIApplicationSuspend.m in Sources */,
 				F8FEB8882A93A1F40093B631 /* PlistFormatter.swift in Sources */,
@@ -426,7 +450,7 @@
 				F8D5795E2A0F2D2D00FDA526 /* DpkgView.swift in Sources */,
 				F853AB2F29DBCB1A006EA2D5 /* SpartanApp.swift in Sources */,
 				F8FEB8862A93A1E60093B631 /* PlistDataView.swift in Sources */,
-				F8FEB88E2A93A2680093B631 /* PlistAddView.swift in Sources */,
+				F8FEB88E2A93A2680093B631 /* PlistAddDictView.swift in Sources */,
 				F83CB3C02A41170F005BF95A /* FontView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -613,10 +637,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/usr/local/Cellar/libssh2/1.11.0/lib,
-				);
 				MARKETING_VERSION = 0.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.whitetailani.Spartan;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -665,10 +685,6 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/usr/local/Cellar/libssh2/1.11.0/lib,
 				);
 				MARKETING_VERSION = 0.6;
 				PRODUCT_BUNDLE_IDENTIFIER = lol.whitetailani.Spartan;

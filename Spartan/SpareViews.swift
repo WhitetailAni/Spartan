@@ -286,3 +286,26 @@ var helperPath: String = Bundle.main.bundlePath + "/RootHelper"
 func LocalizedString(_ key: String) -> String {
 	return NSLocalizedString(key, comment: "")
 } //this was not added until much later in the project, which is why it's not used much
+
+func nop() { }
+
+struct null: View {
+	var body: some View { EmptyView() }
+}
+
+extension Data {
+    init?(fromHexEncodedString hexString: String) {
+        var hexString = hexString
+        let length = hexString.count / 2
+        var data = Data(capacity: length)
+        
+        for _ in 0..<length {
+            guard let byte = UInt8(hexString.prefix(2), radix: 16) else {
+                return nil
+            }
+            data.append(byte)
+            hexString = String(hexString.dropFirst(2))
+        }
+        self = data
+    }
+}

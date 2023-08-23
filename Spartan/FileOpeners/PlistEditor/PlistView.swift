@@ -32,7 +32,11 @@ struct PlistView: View {
 		let rawData = fileManager.contents(atPath: filePath + fileName)
 		do {
             let plistData = try PropertyListSerialization.propertyList(from: rawData!, options: [], format: nil)
-            rawPlistDict = plistData as? [String: Any] ?? ["The file specified is cannot be read.": "It may be corrupted, or it may not be a plist file.", "Make sure you select the proper file and then try again.":"Error ID 1394"]
+            if plistData is [String: Any] {
+				rawPlistDict = plistData as? [String: Any] ?? ["The file specified is cannot be read.": "It may be corrupted, or be the wrong file.", "Select the proper file and then try again.":"Error ID 1394"]
+			} else {
+				rawPlistDict = ["The plist file specified does not have a dictionary as its root.":"While these are valid plist files, they are not yet supported by Spartan.", "Check for an update to Spartan. If you're already up-to-date, wait for an update and then try again later.":"Error ID 127"]
+			}
         } catch {
             print("Error parsing plist: \(error)")
         }
@@ -67,7 +71,7 @@ struct PlistView: View {
 					Alert(title: Text(NSLocalizedString("PLIST_FAILEDTOSAVE", comment: "9999999")), message: Text(NSLocalizedString("PLIST_FAILEDTOSAVEINFO", comment: "I Saw A Deer Today")), dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "Your Not A Good Person"))))
 				})
 			}
-			ForEach(plistDict.indices, id: \.self) { index in
+			List(plistDict.indices, id: \.self) { index in
 				Button(action: {
 					if(plistDict[index].type == .bool) {
 						let bool = plistDict[index].value as! Bool
@@ -84,12 +88,12 @@ struct PlistView: View {
 					if (plistDict[index].type == .bool) {
 						Image(systemName: plistDict[index].value as! Bool ? "checkmark.square" : "square")
 					}
-					Text(PlistFormatter.formatPlistKey(plistDict[index]))
+					Text(PlistFormatter.formatPlistKeyForDisplay(plistDict[index]))
 				}
 			}
 		}
 		.sheet(isPresented: $addKeyToPlist, content: {
-			PlistAddView(plistDict: $plistDict)
+			PlistAddDictView(plistDict: $plistDict, isPresented: $addKeyToPlist)
 		})
 		.sheet(isPresented: $editingSubView, content: {
 			/*switch subViewToShow {

@@ -64,7 +64,7 @@ class PlistFormatter {
 		return dict
 	}
 
-	class func formatPlistKey(_ plistKey: PlistKey) -> String {
+	class func formatPlistKeyForDisplay(_ plistKey: PlistKey) -> String {
 		switch plistKey.type {
 		case .bool:
 			return "\(plistKey.key): \(formatValue(plistKey)) (Boolean)"
@@ -112,7 +112,7 @@ class PlistFormatter {
 	
 	class func formatString(_ string: String) -> String {
 		return string
-	}//i know int and string formatters are redundant, but it makes
+	}//i know int and string formatters are redundant, but it makes my life easier
 	
 	class func formatArray(_ array: [Any]) -> String {
 		var string: String = "["
