@@ -45,8 +45,6 @@ struct ContentView: View {
     @State var renameFileCurrentName: String = ""
     @State var renameFileNewName: String = ""
     
-    @State var plistTypeStorage = 0
-    
     @State var filePerms = 420
     
     @State var lol: [String: Any] = [:]
@@ -992,7 +990,6 @@ struct ContentView: View {
                             newViewFilePath = masterFiles[newViewFileIndex].fullPath
                             newViewFileName = masterFiles[newViewFileIndex].name
                             showSubView[2] = false
-                            plistTypeStorage = Int(masterFiles[newViewFileIndex].fileType - 5)
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 showSubView[13] = true
                             }
@@ -1264,7 +1261,7 @@ struct ContentView: View {
                     ImageView(imagePath: $newViewFilePath, imageName: $newViewFileName)
                 })
                 .sheet(isPresented: $showSubView[13], content: {
-                    PlistView(filePath: newViewFilePath, fileName: newViewFileName, plistType: plistTypeStorage)
+                    PlistView(filePath: newViewFilePath, fileName: newViewFileName)
                 })
                 .sheet(isPresented: $showSubView[14], content: {
                     if(uncompressZip){
@@ -1718,7 +1715,6 @@ struct ContentView: View {
             case 4:
                 showSubView[4] = true
             case 5:
-				plistTypeStorage = Int(masterFiles[index].fileType - 5)
                 showSubView[13] = true
             case 6:
                 showSubView[14] = true
@@ -1996,20 +1992,23 @@ struct ContentView: View {
         guard let data = fileManager.contents(atPath: filePath) else {
             return false
         }
-
-		if String(data: data.subdata(in: 0..<8), encoding: .utf8) == "BOMStore" {
-			return true
+		if let header = String(data: data.subdata(in: 0..<8), encoding: .utf8) {
+			if header == "BOMStore" {
+				return true
+			}
 		}
-        return false
+		return false
     }
     func isTBD(filePath: String) -> Bool {
 		guard let data = fileManager.contents(atPath: filePath) else {
             return false
         }
         
-		if String(data: data.subdata(in: 0..<16), encoding: .utf8) == "--- !tapi-tbd-v3" {
-			return true
-		}
+		/*if let header = String(data: data.subdata(in: 0..<16), encoding: .utf8) {
+			if header == "--- !tapi-tbd-v3" {
+				return true
+			}
+		}*/
         return false
 	}
     

@@ -12,7 +12,6 @@ struct PlistView: View {
 	@State var fileName: String
 	@State var plistData: Data = Data()
 	
-	@State var rawPlistDict: [String: Any] = [:]
 	@State var plistDict: [PlistKey] = []
 	
 	@State var failedToWrite = false
@@ -25,23 +24,33 @@ struct PlistView: View {
 	
 	let fileManager = FileManager.default
 	
-	init(filePath: String, fileName: String, plistType: Int) {
+	init(filePath: String, fileName: String) {
         _filePath = State(initialValue: filePath)
         _fileName = State(initialValue: fileName)
         
-		let rawData = fileManager.contents(atPath: filePath + fileName)
-		do {
-            let plistData = try PropertyListSerialization.propertyList(from: rawData!, options: [], format: nil)
-            if plistData is [String: Any] {
-				rawPlistDict = plistData as? [String: Any] ?? ["The file specified is cannot be read.": "It may be corrupted, or be the wrong file.", "Select the proper file and then try again.":"Error ID 1394"]
-			} else {
-				rawPlistDict = ["The plist file specified does not have a dictionary as its root.":"While these are valid plist files, they are not yet supported by Spartan.", "Check for an update to Spartan. If you're already up-to-date, wait for an update and then try again later.":"Error ID 127"]
+        print("hi")
+        
+        var tempDict: [String: Any] = [:]
+        
+        if let rawData = fileManager.contents(atPath: filePath + fileName) {
+			do {
+				if let dictionary = try PropertyListSerialization.propertyList(from: rawData, options: [], format: nil) as? [String: Any] {
+					tempDict = dictionary
+				} else {
+					print("error 1288")
+					tempDict = ["The plist file specified does not have a dictionary as its root.":"While these are valid plist files, they are not yet supported by Spartan.", "Check for an update to Spartan. If you're already up-to-date, wait for an update and then try again later.":"Error ID 127"]
+				}
+			} catch {
+				print("1394")
+				tempDict = ["The file specified is cannot be read.": "It may be corrupted, or be the wrong file.", "Select the proper file and then try again.":"Error ID 1394"]
 			}
-        } catch {
-            print("Error parsing plist: \(error)")
-        }
+		} else {
+			print("1394")
+				tempDict = ["The file specified is cannot be read.": "It may be corrupted, or be the wrong file.", "Select the proper file and then try again.":"Error ID 1394"]
+		}
 			
-		plistDict = PlistFormatter.swiftDictToPlistKeyArray(rawPlistDict)
+		plistDict = PlistFormatter.swiftDictToPlistKeyArray(tempDict)
+		print(plistDict)
 	}
 	
 	var body: some View {

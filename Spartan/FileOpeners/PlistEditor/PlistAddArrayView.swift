@@ -43,7 +43,7 @@ struct PlistAddArrayView: View {
 					plistArray.append(dict)
 				case "Data":
 					plistArray.append(Data())
-				case "Date"
+				case "Date":
 					plistArray.append(NSDate())
 				default:
 					nop()
