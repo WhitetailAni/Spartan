@@ -1304,7 +1304,7 @@ struct ContentView: View {
                     FontView(filePath: $newViewFilePath, fileName: $newViewFileName)
                 })
                 .sheet(isPresented: $showSubView[31], content: {
-					TBDEditor()
+					TBD3View(filePath: newViewFilePath, fileName: newViewFileName)
 				})
                 .alert(isPresented: $showSubView[26]) {
                     Alert(

@@ -20,6 +20,7 @@ enum PlistKeyType {
 	case array
 	case dict
 	case data
+	case date
 	case unknown
 }
 
@@ -42,6 +43,8 @@ class PlistFormatter {
 					return .dict
 				case is Data:
 					return .data
+				case is NSDate:
+					return .date
 				default:
 					return .data
 				}
@@ -78,6 +81,8 @@ class PlistFormatter {
 			return "\(plistKey.key): \(formatValue(plistKey)) (Dictionary)"
 		case .data:
 			return "\(plistKey.key): \(formatValue(plistKey)) (Data)"
+		case .date:
+			return "\(plistKey.key): \(formatValue(plistKey)) (Date)"
 		case .unknown:
 			return "The data for key \(plistKey.key) is of an unknown type (Error ID 686)."
 		}
@@ -97,6 +102,8 @@ class PlistFormatter {
 			return formatDict(plistKey.value as! [String: Any])
 		case .data:
 			return formatData(plistKey.value as! Data)
+		case .date:
+			return formatDate(plistKey.value as! NSDate)
 		case .unknown:
 			return "The data is of an unknown type (Error ID 686)."
 		}
@@ -124,9 +131,8 @@ class PlistFormatter {
 	
 	class func formatDict(_ dict: [String: Any]) -> String {
 		var string: String = "{"
-		for i in 0..<dict.count {
-			let keypair = dict.keyPairAtIndex(i)
-			string += "\(keypair.key): \(keypair.value), "
+		for item in dict {
+			string += "\(item.key): \(item.value), "
 		}
 		return String(string[..<string.index(string.endIndex, offsetBy: -2)]) + "}"
 	}
@@ -134,6 +140,17 @@ class PlistFormatter {
 	class func formatData(_ data: Data) -> String {
 		return String(data: data, encoding: .utf8) ?? "The data could not be read (Error ID 1284)"
 	} //the error numbers are just IEEE standards.
+	
+	class func formatDate(_ date: NSDate) -> String {
+		let formatter = DateFormatter()
+		let format = UserDefaults.settings.string(forKey: "dateFormat")
+		if format == nil {
+			formatter.dateFormat = "yyyy-MM-dd’T’HH:mm:ssZ"
+		} else {
+			formatter.dateFormat = format
+		}
+		return formatter.string(from: date as Date)
+	}
 
 
 	class func formatAnyVarForDisplay(_ value: Any) -> String {
@@ -150,6 +167,8 @@ class PlistFormatter {
 			return formatDict(value as! [String: Any])
 		case is Data:
 			return formatData(value as! Data)
+		case is NSDate:
+			return formatDate(value as! NSDate)
 		default:
 			return "The value could not be read (Error ID 488)"
 		}
@@ -169,6 +188,8 @@ class PlistFormatter {
 			return .dict
 		case is Data:
 			return .data
+		case is NSDate:
+			return .date
 		default:
 			return .unknown
 		}

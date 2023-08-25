@@ -17,6 +17,7 @@ struct SettingsView: View {
     @State private var autoCompletePre = UserDefaults.settings.bool(forKey: "autoComplete")
     @State private var logWindowFontSizePre = UserDefaults.settings.integer(forKey: "logWindowFontSize")
     @State private var sheikahFontApplyPre = UserDefaults.settings.bool(forKey: "sheikahFontApply")
+    @State private var dateFormatPre: String = UserDefaults.settings.string(forKey: "dateFormat") ?? ""
 
     var body: some View {
         Text(NSLocalizedString("SETTINGS", comment: "But choose carefully because you'll stay in the job you pick for the rest of your life."))
@@ -39,6 +40,13 @@ struct SettingsView: View {
         descriptiveThings
         autoCompleteFileExtensions
         sheikahFont
+        
+        TextField("SETTINGS_DATEFORMAT", text: $dateFormatPre)
+        Text(NSLocalizedString("SETTINGS_DATEFORMATDESC", comment: "Halls Of Science 4"))
+            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                view.scaledFont(name: "BotW Sheikah Regular", size: 25)
+            }
+            .font(.system(size: 25))
         
         /*Button(action: {
             showView[1] = true

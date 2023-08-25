@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct PlistBootstrapView: View {
+	@State var lmao: Double = 69
+	
     var body: some View {
-        Text("gm")
-        /*
-        In the future, the plist editor will support determining the root key type, instead of only accepting Dictionaries. We'll need some bootstrap functions so it knows which view to load, hence what this is for. It will just display a loading circle/bar until it's done
-		 */
+        UIKitProgressView(value: $lmao, total: 100)
+			.onAppear {
+				
+			}
     }
 }

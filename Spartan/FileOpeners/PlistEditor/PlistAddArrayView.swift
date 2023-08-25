@@ -13,7 +13,7 @@ struct PlistAddArrayView: View {
 	@Binding var isPresented: Bool
 	
 	@State var selectedKeyType = "Boolean"
-	let keyTypes = ["Boolean", "Integer", "String", "Array", "Dictionary", "Data"]
+	let keyTypes = ["Boolean", "Integer", "String", "Array", "Dictionary", "Data", "Date"]
 	let null = false
 	
 	var body: some View {
@@ -43,6 +43,8 @@ struct PlistAddArrayView: View {
 					plistArray.append(dict)
 				case "Data":
 					plistArray.append(Data())
+				case "Date"
+					plistArray.append(NSDate())
 				default:
 					nop()
 				}

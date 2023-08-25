@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F81F06862A759F9200460D51 /* going for a walk to take my mind off things for a bit.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F81F06852A759F9200460D51 /* going for a walk to take my mind off things for a bit.mp3 */; };
 		F82095202A2622D100DC6D79 /* CarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F820951F2A2622D100DC6D79 /* CarView.swift */; };
 		F83CB3C02A41170F005BF95A /* FontView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F83CB3BF2A41170F005BF95A /* FontView.swift */; };
 		F83F052E2A297E2000EB0720 /* Sheikah.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F83F052D2A297CDE00EB0720 /* Sheikah.ttf */; };
@@ -57,17 +56,15 @@
 		F8FEB8842A93A1DD0093B631 /* PlistDictView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB8832A93A1DD0093B631 /* PlistDictView.swift */; };
 		F8FEB8862A93A1E60093B631 /* PlistDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB8852A93A1E60093B631 /* PlistDataView.swift */; };
 		F8FEB8882A93A1F40093B631 /* PlistFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB8872A93A1F40093B631 /* PlistFormatter.swift */; };
-		F8FEB88A2A93A2030093B631 /* PlistViewOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB8892A93A2030093B631 /* PlistViewOld.swift */; };
-		F8FEB88C2A93A20C0093B631 /* PlistViewOlder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB88B2A93A20C0093B631 /* PlistViewOlder.swift */; };
 		F8FEB88E2A93A2680093B631 /* PlistAddDictView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB88D2A93A2680093B631 /* PlistAddDictView.swift */; };
 		F8FEB8902A94F2610093B631 /* PlistAddArrayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB88F2A94F2610093B631 /* PlistAddArrayView.swift */; };
 		F8FEB8922A94F7B30093B631 /* PlistViewL.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB8912A94F7B30093B631 /* PlistViewL.swift */; };
 		F8FEB8952A964A1E0093B631 /* PlistBootstrapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB8942A964A1E0093B631 /* PlistBootstrapView.swift */; };
-		F8FEB8972A964CF60093B631 /* TBDEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB8962A964CF60093B631 /* TBDEditor.swift */; };
+		F8FEB8972A964CF60093B631 /* TBDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB8962A964CF60093B631 /* TBDView.swift */; };
+		F8FEB8B42A979D980093B631 /* PlistDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB8B32A979D980093B631 /* PlistDateView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		F81F06852A759F9200460D51 /* going for a walk to take my mind off things for a bit.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "going for a walk to take my mind off things for a bit.mp3"; sourceTree = "<group>"; };
 		F820951F2A2622D100DC6D79 /* CarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarView.swift; sourceTree = "<group>"; };
 		F83CB3BF2A41170F005BF95A /* FontView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontView.swift; sourceTree = "<group>"; };
 		F83F052D2A297CDE00EB0720 /* Sheikah.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Sheikah.ttf; sourceTree = "<group>"; };
@@ -117,13 +114,12 @@
 		F8FEB8832A93A1DD0093B631 /* PlistDictView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistDictView.swift; sourceTree = "<group>"; };
 		F8FEB8852A93A1E60093B631 /* PlistDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistDataView.swift; sourceTree = "<group>"; };
 		F8FEB8872A93A1F40093B631 /* PlistFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistFormatter.swift; sourceTree = "<group>"; };
-		F8FEB8892A93A2030093B631 /* PlistViewOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistViewOld.swift; sourceTree = "<group>"; };
-		F8FEB88B2A93A20C0093B631 /* PlistViewOlder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistViewOlder.swift; sourceTree = "<group>"; };
 		F8FEB88D2A93A2680093B631 /* PlistAddDictView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistAddDictView.swift; sourceTree = "<group>"; };
 		F8FEB88F2A94F2610093B631 /* PlistAddArrayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistAddArrayView.swift; sourceTree = "<group>"; };
 		F8FEB8912A94F7B30093B631 /* PlistViewL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistViewL.swift; sourceTree = "<group>"; };
 		F8FEB8942A964A1E0093B631 /* PlistBootstrapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistBootstrapView.swift; sourceTree = "<group>"; };
-		F8FEB8962A964CF60093B631 /* TBDEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBDEditor.swift; sourceTree = "<group>"; };
+		F8FEB8962A964CF60093B631 /* TBDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBDView.swift; sourceTree = "<group>"; };
+		F8FEB8B32A979D980093B631 /* PlistDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistDateView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,7 +159,6 @@
 		F853AB2229DBCB1A006EA2D5 = {
 			isa = PBXGroup;
 			children = (
-				F81F06852A759F9200460D51 /* going for a walk to take my mind off things for a bit.mp3 */,
 				F8F855C42A47770700DC9CE4 /* RootHelper */,
 				F853AB2C29DBCB1A006EA2D5 /* Products */,
 				F83F47D02A43781000A4C47F /* External */,
@@ -214,7 +209,7 @@
 				F8CC214529EF5838008C7B88 /* SpawnView.swift */,
 				F820951F2A2622D100DC6D79 /* CarView.swift */,
 				F83CB3BF2A41170F005BF95A /* FontView.swift */,
-				F8FEB8962A964CF60093B631 /* TBDEditor.swift */,
+				F8FEB8962A964CF60093B631 /* TBDView.swift */,
 			);
 			path = FileOpeners;
 			sourceTree = "<group>";
@@ -260,10 +255,9 @@
 				F8FEB8812A93A1D50093B631 /* PlistArrayView.swift */,
 				F8FEB8832A93A1DD0093B631 /* PlistDictView.swift */,
 				F8FEB8852A93A1E60093B631 /* PlistDataView.swift */,
+				F8FEB8B32A979D980093B631 /* PlistDateView.swift */,
 				F8FEB8912A94F7B30093B631 /* PlistViewL.swift */,
 				F8FEB8872A93A1F40093B631 /* PlistFormatter.swift */,
-				F8FEB8892A93A2030093B631 /* PlistViewOld.swift */,
-				F8FEB88B2A93A20C0093B631 /* PlistViewOlder.swift */,
 			);
 			path = PlistEditor;
 			sourceTree = "<group>";
@@ -371,7 +365,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F858CD1E2A477B3C00C94A8F /* RootHelper in Resources */,
-				F81F06862A759F9200460D51 /* going for a walk to take my mind off things for a bit.mp3 in Resources */,
 				F88CC4A02A44AE40001FACFC /* SF Mono.otf in Resources */,
 				F83F052E2A297E2000EB0720 /* Sheikah.ttf in Resources */,
 				F845C82829F4D77C0025AC0A /* Localizable.strings in Resources */,
@@ -410,10 +403,11 @@
 				F853AB5529DE8B3B006EA2D5 /* FavoritesView.swift in Sources */,
 				F8FEB87C2A93A1AF0093B631 /* PlistBoolView.swift in Sources */,
 				F853AB3129DBCB1A006EA2D5 /* ContentView.swift in Sources */,
-				F8FEB8972A964CF60093B631 /* TBDEditor.swift in Sources */,
+				F8FEB8972A964CF60093B631 /* TBDView.swift in Sources */,
 				F8C1A5D429FB55F100DF4C23 /* MountPointsView.swift in Sources */,
 				F8D579952A15D17F00FDA526 /* SwiftTryCatch.m in Sources */,
 				F8CC214829EFA165008C7B88 /* TextView.swift in Sources */,
+				F8FEB8B42A979D980093B631 /* PlistDateView.swift in Sources */,
 				F853AB4B29DE21A8006EA2D5 /* CopyFileView.swift in Sources */,
 				F8CC212329E4FFC5008C7B88 /* PlistView.swift in Sources */,
 				F8FEB8822A93A1D50093B631 /* PlistArrayView.swift in Sources */,
@@ -439,13 +433,11 @@
 				F8FEB8842A93A1DD0093B631 /* PlistDictView.swift in Sources */,
 				F88FBB0D2A2FEFA700E31EDA /* UIApplicationSuspend.m in Sources */,
 				F8FEB8882A93A1F40093B631 /* PlistFormatter.swift in Sources */,
-				F8FEB88C2A93A20C0093B631 /* PlistViewOlder.swift in Sources */,
 				F8CC212F29E74DF4008C7B88 /* VideoPlayerView.swift in Sources */,
 				F853AB5929DE8C0E006EA2D5 /* SearchView.swift in Sources */,
 				F82095202A2622D100DC6D79 /* CarView.swift in Sources */,
 				F845C82F29F6247A0025AC0A /* EThree.swift in Sources */,
 				F853AB4529DE1CB3006EA2D5 /* RenameFileView.swift in Sources */,
-				F8FEB88A2A93A2030093B631 /* PlistViewOld.swift in Sources */,
 				F853AB5729DE8B46006EA2D5 /* CreditsView.swift in Sources */,
 				F8D5795E2A0F2D2D00FDA526 /* DpkgView.swift in Sources */,
 				F853AB2F29DBCB1A006EA2D5 /* SpartanApp.swift in Sources */,

@@ -168,6 +168,8 @@
 "SETTINGS_AUTOCOMPLETE_WARNING" = "WARNING: Make sure you type your filepaths **exactly** if you disable this!";
 "SETTINGS_LOGFONTSIZE" = "Sets the font size for log windows when installing a package or running a binary.";
 "SETTINGS_SHEIKAH" = "Sheikah font in app";
+"SETTINGS_DATEFORMAT" = "Input the date format";
+"SETTINGS_DATEFORMATDESC" = "Sets the DateFormatter format to use when displaying dates. Visit https://www.advancedswift.com/date-formatter-cheatsheet-formulas-swift/ for a guide.";
 "CREDITS" = "Credits";
 
 

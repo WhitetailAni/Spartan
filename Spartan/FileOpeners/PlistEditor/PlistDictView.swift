@@ -76,6 +76,8 @@ struct PlistDictView: View {
 						PlistDictView(newDict: $values[index].value, isFromDict: true, isPresented: $isEditing)
 					case .data:
 						PlistDataView(newData: $values[index].value, isFromDict: true, isPresented: $isEditing)
+					case .date:
+						PlistDateView()
 					case .unknown:
 						PlistLView(isPresented: $isEditing)
 					}
