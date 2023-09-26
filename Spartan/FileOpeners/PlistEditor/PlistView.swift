@@ -34,7 +34,7 @@ struct PlistView: View {
         
         if let rawData = fileManager.contents(atPath: filePath + fileName) {
 			do {
-				if let dictionary = try PropertyListSerialization.propertyList(from: rawData, options: [], format: nil) as? [String: Any] {
+				if let dictionary = try PropertyListSerialization.propertyList(from: rawData, format: nil) as? [String: Any] {
 					tempDict = dictionary
 				} else {
 					print("error 1288")
@@ -49,8 +49,10 @@ struct PlistView: View {
 				tempDict = ["The file specified is cannot be read.": "It may be corrupted, or be the wrong file.", "Select the proper file and then try again.":"Error ID 1394"]
 		}
 			
-		plistDict = PlistFormatter.swiftDictToPlistKeyArray(tempDict)
-		print(plistDict)
+		_plistDict = State(initialValue: PlistFormatter.swiftDictToPlistKeyArray(tempDict)) //THIS STUPID LINE OF CODE TOOK TWO MONTHS TO FIGURE OUT
+		//I FORGOT TO INITIALIZE IT AND **I DIDNT NOTICE**, THATS WHY IT WASNT WORKING
+		//I WAS SENDING THE DATA TO NOWHERE
+		//KILL ME
 	}
 	
 	var body: some View {
@@ -72,6 +74,7 @@ struct PlistView: View {
 					.focusable(true)
 				Spacer()
 				Button(action: {
+					
 					writeDictToPlist(PlistFormatter.plistKeyArrayToSwiftDict(plistDict))
 				}) {
 					Image(systemName: "square.and.arrow.down")
@@ -113,6 +116,7 @@ struct PlistView: View {
 	}
 	
 	func writeDictToPlist(_ dict: [String: Any]) {
+		
 		let nsdict = dict as NSDictionary
 		do {
 			try nsdict.write(to: URL(fileURLWithPath: filePath + fileName))

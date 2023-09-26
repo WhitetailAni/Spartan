@@ -309,3 +309,13 @@ extension Data {
         self = data
     }
 }
+
+class RootHelperActs {
+	class func mv(_ filePath: String, _ fileDest: String) {
+	
+	}
+	
+	class func chmod(_ filePath: String, _ perms: Int) {
+		spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["ch", filePath, String(perms)], env: [], root: true)
+	}
+}

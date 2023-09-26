@@ -10,10 +10,6 @@ import Foundation
 import Darwin.POSIX
 
 @discardableResult func spawn(command: String, args: [String], env: [String], root: Bool = true) -> String {
-	return "lmao"
-}
-
-/*@discardableResult func spawn(command: String, args: [String], env: [String], root: Bool = true) -> String {
     var pipestdout: [Int32] = [0, 0]
     var pipestderr: [Int32] = [0, 0]
 
@@ -143,4 +139,4 @@ import Darwin.POSIX
     print("pid: \(pid), uid: \(uid)")
     
     return stdoutStr + "\n" + stderrStr
-}*/
+}

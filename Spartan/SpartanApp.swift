@@ -35,6 +35,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         #if DEBUG
             spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["ch", helperPath, String(755)], env: [], root: true)
         #endif
+        RootHelperActs.chmod(String(Bundle.main.bundlePath + "/clutch"), 755)
+        spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["ch", helperPath, String(755)], env: [], root: true)
+        
         
         if(fileManager.isReadableFile(atPath: "/private/var/mobile/")){ //shows app data directory if sandbox exists
             displayView(pathToLoad: "/private/var/mobile/Documents/")

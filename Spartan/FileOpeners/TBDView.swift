@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Yams
 
 enum tbdVersion { //this will only support tbdv3 at first since that's all I have on hand
 	case one
@@ -53,11 +54,10 @@ struct TBD3View: View {
 		}
 		let tbdArrayRaw: [Substring] = tbdRaw.split(separator: "\n")
 		print(tbdArrayRaw)
-		
-		//let arch = tbdArrayRaw[0].dropFirst(2).dropLast(2).split(separator: ", ")
 	}
 	
     var body: some View {
         Text("gm")
     }
 }
+

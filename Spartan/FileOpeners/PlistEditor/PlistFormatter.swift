@@ -50,9 +50,23 @@ class PlistFormatter {
 				}
 			}()
 			if type == .dict {
-				array.append(PlistKey(key: key, value: swiftDictToPlistKeyArray(value as! [String: Any]), type: type))
+				let key = PlistKey(key: key, value: swiftDictToPlistKeyArray(value as! [String: Any]), type: type)
+				array.append(key)
 			} else {
-				array.append(PlistKey(key: key, value: value, type: type))
+				if type == .array {
+					let oldValue: [Any] = value as! [Any]
+					var newValue: [Any] = []
+					for i in 0..<oldValue.count {
+						if oldValue[i] is [String: Any] {
+							newValue.append(swiftDictToPlistKeyArray(oldValue[i] as! [String : Any]))
+						} else {
+							newValue.append(oldValue[i])
+						}
+					}
+					let key = PlistKey(key: key, value: newValue, type: type)
+				} else {
+					let key = PlistKey(key: key, value: value, type: type)
+				}
 			}
 		}
 		
