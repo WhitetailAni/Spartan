@@ -28,8 +28,6 @@ struct PlistView: View {
         _filePath = State(initialValue: filePath)
         _fileName = State(initialValue: fileName)
         
-        print("hi")
-        
         var tempDict: [String: Any] = [:]
         
         if let rawData = fileManager.contents(atPath: filePath + fileName) {
@@ -48,11 +46,15 @@ struct PlistView: View {
 			print("1394")
 				tempDict = ["The file specified is cannot be read.": "It may be corrupted, or be the wrong file.", "Select the proper file and then try again.":"Error ID 1394"]
 		}
-			
-		_plistDict = State(initialValue: PlistFormatter.swiftDictToPlistKeyArray(tempDict)) //THIS STUPID LINE OF CODE TOOK TWO MONTHS TO FIGURE OUT
+		
+		let temp = PlistFormatter.swiftDictToPlistKeyArray(tempDict)
+		_plistDict = State(initialValue: temp) //THIS STUPID LINE OF CODE TOOK TWO MONTHS TO FIGURE OUT
 		//I FORGOT TO INITIALIZE IT AND **I DIDNT NOTICE**, THATS WHY IT WASNT WORKING
 		//I WAS SENDING THE DATA TO NOWHERE
 		//KILL ME
+		print("\(temp) this is the temp")
+		print(plistDict)
+		print(plistDict.count)
 	}
 	
 	var body: some View {
@@ -74,7 +76,6 @@ struct PlistView: View {
 					.focusable(true)
 				Spacer()
 				Button(action: {
-					
 					writeDictToPlist(PlistFormatter.plistKeyArrayToSwiftDict(plistDict))
 				}) {
 					Image(systemName: "square.and.arrow.down")

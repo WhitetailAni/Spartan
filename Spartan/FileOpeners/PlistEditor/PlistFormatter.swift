@@ -64,8 +64,10 @@ class PlistFormatter {
 						}
 					}
 					let key = PlistKey(key: key, value: newValue, type: type)
+					array.append(key)
 				} else {
 					let key = PlistKey(key: key, value: value, type: type)
+					array.append(key)
 				}
 			}
 		}
@@ -74,6 +76,7 @@ class PlistFormatter {
 	}
 	
 	class func plistKeyArrayToSwiftDict(_ array: [PlistKey]) -> [String: Any] {
+		print("converting plistkey array to a swift dict for saving to plist: \(array)")
 		var dict: [String: Any] = [:]
 		for i in 0..<array.count {
 			dict.updateValue(array[i].value, forKey: array[i].key)
@@ -82,6 +85,7 @@ class PlistFormatter {
 	}
 
 	class func formatPlistKeyForDisplay(_ plistKey: PlistKey) -> String {
+		//print("formatting for display, plistkey is \(plistKey)")
 		switch plistKey.type {
 		case .bool:
 			return "\(plistKey.key): \(formatValue(plistKey)) (Boolean)"
@@ -103,6 +107,7 @@ class PlistFormatter {
 	}
 	
 	class func formatValue(_ plistKey: PlistKey) -> String {
+		//print("formatting value, plistkey is \(plistKey)")
 		switch plistKey.type {
 		case .bool:
 			return "\(formatBool(plistKey.value as! Bool))"
@@ -113,7 +118,7 @@ class PlistFormatter {
 		case .array:
 			return formatArray(plistKey.value as! [Any])
 		case .dict:
-			return formatDict(plistKey.value as! [String: Any])
+			return formatDict(plistKey.value as! [PlistKey])
 		case .data:
 			return formatData(plistKey.value as! Data)
 		case .date:
@@ -143,12 +148,12 @@ class PlistFormatter {
 		return String(string[..<string.index(string.endIndex, offsetBy: -2)]) + "]"
 	}
 	
-	class func formatDict(_ dict: [String: Any]) -> String {
+	class func formatDict(_ dict: [PlistKey]) -> String {
 		var string: String = "{"
 		for item in dict {
-			string += "\(item.key): \(item.value), "
+			string += formatValue(item)
 		}
-		return String(string[..<string.index(string.endIndex, offsetBy: -2)]) + "}"
+		return String(string/*[..<string.index(string.endIndex, offsetBy: -2)]*/) + "} "
 	}
 	
 	class func formatData(_ data: Data) -> String {
@@ -168,6 +173,7 @@ class PlistFormatter {
 
 
 	class func formatAnyVarForDisplay(_ value: Any) -> String {
+		print("formatting an unknown variable type for display (dangerous): \(value)")
 		switch value {
 		case is Bool:
 			return formatBool(value as! Bool)
@@ -178,7 +184,7 @@ class PlistFormatter {
 		case is [Any]:
 			return formatArray(value as! [Any])
 		case is [String: Any]:
-			return formatDict(value as! [String: Any])
+			return formatDict(value as! [PlistKey])
 		case is Data:
 			return formatData(value as! Data)
 		case is NSDate:
@@ -189,6 +195,7 @@ class PlistFormatter {
 	}
 	
 	class func getPlistKeyTypeFromAnyVar(_ value: Any) -> PlistKeyType {
+		print("figuring out what an unknown variable is: \(value)")
 		switch value {
 		case is Bool:
 			return .bool

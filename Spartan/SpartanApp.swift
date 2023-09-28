@@ -40,9 +40,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         
         if(fileManager.isReadableFile(atPath: "/private/var/mobile/")){ //shows app data directory if sandbox exists
-            displayView(pathToLoad: "/private/var/mobile/Documents/")
+            //displayView(pathToLoad: "/private/var/mobile/Documents/")
             //displayView(pathToLoad: Bundle.main.bundlePath)
             //displayView(pathToLoad: "/private/var/containers/Bundle/Application/2A65A51A-4061-4143-B622-FA0E57C0C3EE/trillstore.app/")
+            displayView(pathToLoad: "/var/mobile/")
         } else {
             displayView(pathToLoad: "/Developer/")
         }
