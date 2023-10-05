@@ -981,6 +981,23 @@ struct ContentView: View {
                             .opacity(opacityInt)
                             
                             Button(action: {
+								newViewFilePath = directory
+								newViewFileName = masterFiles[newViewFileIndex].name
+								showSubView[2] = false
+								DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+									showSubView[31] = true
+								}
+							}) {
+								Text(NSLocalizedString("OPEN_DMG", comment: ""))
+									.frame(width: buttonWidth, height: buttonHeight)
+									.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+										view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+									}
+							}
+							.padding(paddingInt)
+							.opacity(opacityInt)
+                            
+                            Button(action: {
                                 newViewFilePath = directory
                                 newViewFileName = masterFiles[newViewFileIndex].name
                                 showSubView[2] = false
@@ -1034,6 +1051,23 @@ struct ContentView: View {
                         .opacity(opacityInt)
                         
                         DpkgFileOpener
+                        
+                        Button(action: {
+							newViewFilePath = directory
+							newViewFileName = masterFiles[newViewFileIndex].name
+							showSubView[2] = false
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                showSubView[32] = true
+                            }
+						}) {
+                            Text(NSLocalizedString("OPEN_DMG", comment: ""))
+                                .frame(width: buttonWidth, height: buttonHeight)
+                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                }
+                        }
+                        .padding(paddingInt)
+                        .opacity(opacityInt)
                         
                         Button(action: {
                             newViewFilePath = directory
@@ -1316,6 +1350,9 @@ struct ContentView: View {
                 .sheet(isPresented: $showSubView[31], content: {
 					TBD3View(filePath: newViewFilePath, fileName: newViewFileName)
 				})
+				.sheet(isPresented: $showSubView[32], content: {
+					DMGMountView(filePath: newViewFilePath, fileName: newViewFileName, directory: $directory, isPresented: $showSubView[32])
+				})
                 .alert(isPresented: $showSubView[26]) {
                     Alert(
                         title: Text(NSLocalizedString("SHOW_NOTFOUND", comment: "")),
@@ -1389,7 +1426,14 @@ struct ContentView: View {
                     }
                 }
                 
-                if #available(tvOS 14.0, *) {
+                Button(action: {
+					showSubView[21] = true
+				}) {
+					Image(systemName: "externaldrive")
+						.frame(width:50, height:50)
+				}
+                
+                /*if #available(tvOS 14.0, *) {
                     Button(action: {
                         showSubView[25] = true
                     }) {
@@ -1409,7 +1453,8 @@ struct ContentView: View {
                     .sheet(isPresented: $showSubView[29], content: {
                         serverButton
                     })
-                }
+                }*/
+                //this is the webserver button
                 
                 Button(action: { //favorites
                     showSubView[16] = true
@@ -1437,7 +1482,7 @@ struct ContentView: View {
                         Image(systemName: "arrow.right")
                             .resizable()
                             .frame(width:15, height:13)
-                            .offset(x:-4, y:11.75)
+                            .offset(x:-4, y:11.75) //i do not know how i came up with these values. i am not going to touch them. hopefully it doesn't break on non-1080p
                     }
                 }
         

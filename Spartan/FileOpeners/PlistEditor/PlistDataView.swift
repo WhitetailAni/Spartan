@@ -57,7 +57,11 @@ struct PlistDataView: View {
 			}
 			
 			List(displayData.indices, id: \.self) { index in
-				TextField("", text: $displayData[index])
+				TextField("", text: $displayData[index], onCommit: {
+					while displayData[index].count < 7 {
+						displayData[index] += "0"
+					}
+				})
 			}
 		}
 	}

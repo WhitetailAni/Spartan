@@ -39,16 +39,22 @@ struct UIKitProgressView: UIViewRepresentable {
     }
 }
 
-struct Checkbox: ToggleStyle {
-    func makeBody(configuration: Self.Configuration) -> some View {
-        HStack {
-            Image(systemName: configuration.isOn ? "checkmark.square.fill" : "square")
-                .resizable()
-                .frame(width: 50, height: 50)
-                .foregroundColor(configuration.isOn ? .green : .gray)
-            configuration.label
-        }
-    }
+struct Checkbox: View {
+	@Binding var value: Bool
+	@State var label: String = ""
+	let onCommit: () -> Void
+
+	var body: some View {
+		Button(action: {
+			value.toggle()
+			onCommit()
+		}) {
+			HStack {
+				Image(systemName: value ? "checkmark.square.fill" : "square")
+				Text(label)
+			}
+		}
+	}
 }
 
 struct StepperTV: View {
@@ -338,3 +344,5 @@ func getDaysInMonth(month: Int, year: Int) -> Int {
 	
 	return arrDates.count
 }
+
+extension String: Error { }

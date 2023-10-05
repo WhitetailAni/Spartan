@@ -9,7 +9,6 @@ import SwiftUI
 import CoreGraphics
 
 struct FontView: View {
-
     @Binding var filePath: String
     @Binding var fileName: String
 

@@ -26,6 +26,9 @@
 "APPICON" = "Change App Icon";
 "LOADING" = "Loading...";
 
+"YES" = "Yes";
+"NO" = "No";
+
 //main view
 "FREE_SPACE" = "Free space: ";
 "INPUT_DIRECTORY" = "Input directory";
@@ -57,6 +60,8 @@
 "OPEN_SPAWN" = "Spawn As Binary";
 "OPEN_CAR" = "Asset Catalog Viewer";
 "OPEN_FONT" = "Font Viewer";
+"OPEN_TBD" = "TBD Editor";
+"OPEN_DMG" = "Mount As DMG";
 
 "SHOW_DENIED" = "Permission Denied";
 "SHOW_INFO" = "File Info";
@@ -227,3 +232,14 @@
 //plistarray
 "PLISTARR_ADD" = "Add item after item ";
 "PLISTARR_REMOVE" = "Remove item ";
+
+//dmg
+"DMG_MOUNTPATH" = "Input a path for the DMG's contents to be mounted";
+"DMG_FSTYPE" = "Select the DMG's filesystem";
+"HFS" = "HFS";
+"APFS" = "APFS";
+"DMG_READONLY" = "Mount As Read-Only";
+"DMG_NOFSTYPE" = "No filetype was specified";
+"DMG_FAILTOATTACH" = "The DMG was not found at its reported attach point";
+"DMG_SUCCESS" = "The DMG was mounted at";
+"DMG_GOTOFILES" = "Would you like to go to the mounted location?";

@@ -7,39 +7,57 @@
 
 import SwiftUI
 import Foundation
+import DiskImagesWrapper
 
 struct MountPointsView: View {
     @Binding var directory: String
     @Binding var isPresented: Bool
     
-    @State private var mountDevices: [String] = []
-    @State private var mountPoints: [String] = []
-    
+    @State private var mountDevices: [Mount] = []
     let null32: Int32 = 0
+    
+    @State var error = false
     
     var body: some View {
         Text(NSLocalizedString("MOUNT_TITLE", comment: "- I don't know."))
             .bold()
-            .onAppear {
-                for mount in getMountedFileSystems() {
-                    mountDevices.append(mount.device)
-                    mountPoints.append(mount.mountPoint)
-                }
-            }
             .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                 view.scaledFont(name: "BotW Sheikah Regular", size: 40)
             }
             .font(.system(size: 40))
             
         List(mountDevices.indices, id: \.self) { index in
-            Button(action: {
-                directory = mountPoints[index] + "/"
-                isPresented = false
-            }) {
-                Text("\(mountDevices[index]) \(NSLocalizedString("MOUNT_DESC", comment: "Their day's not planned.")) \(mountPoints[index])")
-                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                    }
+			HStack {
+				if mountDevices[index].device != "" {
+					Button(action: {
+						unmount(mountDevices[index].mountPoint, 0)
+						do {
+							try DiskImages.shared.detachDevice(at: URL(fileURLWithPath: mountDevices[index].device))
+						} catch {
+							
+						}
+					}) {
+						Image(systemName: "eject")
+					}
+					.buttonStyle(.plain)
+					.alert(isPresented: $error) {
+						Alert(
+							title: Text(LocalizedString("ERROR")),
+							message: Text(LocalizedString("DMG_FAILTOEJECT")),
+							dismissButton: .default(Text(LocalizedString("DISMISS")))
+						)
+					}
+				}
+				Button(action: {
+					directory = mountDevices[index].mountPoint + "/"
+					isPresented = false
+				}) {
+					Text("\(mountDevices[index].device) \(NSLocalizedString("MOUNT_DESC", comment: "Their day's not planned.")) \(mountDevices[index].mountPoint)")
+						.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+							view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+						}
+				}
+				.buttonStyle(.plain)
             }
         }
     }
@@ -62,7 +80,8 @@ struct MountPointsView: View {
                         String(cString: $0)
                     }
                 }
-                let mount = Mount(device: device, mountPoint: mountPoint)
+                let help = #"\"#
+                let mount = Mount(device: String("\(device)\(help)"), mountPoint: mountPoint)
                 mounts.append(mount)
             }
         }
