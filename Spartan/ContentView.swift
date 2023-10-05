@@ -82,6 +82,7 @@ struct ContentView: View {
     //tvOS13serverShow = 29
     //fontViewShow = 30
     //tbdViewShow = 31
+    //dmgMountViewShow = 32
     
     @State var globalAVPlayer: AVPlayer = AVPlayer()
     @State var isGlobalAVPlayerPlaying = false
@@ -396,6 +397,12 @@ struct ContentView: View {
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
+											case 13:
+												Image(systemName: "externaldrive")
+												Text(masterFiles[index].name)
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
                                             default:
                                                 Image(systemName: "doc")
                                                 Text(masterFiles[index].name)
@@ -684,6 +691,12 @@ struct ContentView: View {
                                                     }
 											case 12:
 												Image(systemName: "books.vertical")
+												Text(masterFiles[index].name)
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
+											case 13:
+												Image(systemName: "externaldrive")
 												Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
@@ -1542,13 +1555,11 @@ struct ContentView: View {
     
     var freeSpace: some View { //this is hardcoded for now, returning mount points wasnt working
         let (doubleValue, stringValue) = freeSpace(path: "/")
-        return //VStack {
-            //Text("/")
+        return
             Text(NSLocalizedString("FREE_SPACE", comment: "E") + String(format: "%.2f", doubleValue) + " " + stringValue)
                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                     view.scaledFont(name: "BotW Sheikah Regular", size: 32)
                 }
-        //}
         .alignmentGuide(.trailing) {
             $0[HorizontalAlignment.trailing]
         }
@@ -1738,6 +1749,8 @@ struct ContentView: View {
                 showSubView[30] = true
 			case 12:
 				showSubView[31] = true
+			case 13:
+				showSubView[32] = true
             default:
                 masterFiles[index].isLoadingFile = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -1892,6 +1905,8 @@ struct ContentView: View {
             return isPlist(filePath: file)
             //5.1 = xml plist
             //5.9 = bplist
+		} else if (isDMG(filePath: file)) {
+			return 13 //dmg
 		} else if (isTBD(filePath: file)) {
 			return 12 //tbd
         } else if (fontTypes.contains(where: file.hasSuffix)) {
@@ -2010,6 +2025,19 @@ struct ContentView: View {
 			}
 		}*/
         return false
+	}
+	func isDMG(filePath: String) -> Bool {
+		guard let data = fileManager.contents(atPath: filePath) else {
+			return false
+		}
+		if let header = String(data: data.subdata(in: 0..<12), encoding: .utf8) {
+			print("header: \(header), comparing against: \(String(describing: String(data: Data.init(fromHexEncodedString: "78017375 F3540870 0C0A6160 60648861 6060")!, encoding: .utf8)))")
+			if header == String(data: Data.init(fromHexEncodedString: "78017375 F3540870 0C0A6160 60648861 6060")!, encoding: .utf8) {
+				return true
+			}
+		}
+		
+		return false
 	}
     
     func readSymlinkDestination(path: String) -> String {

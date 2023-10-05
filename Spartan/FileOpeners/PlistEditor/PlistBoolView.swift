@@ -9,8 +9,8 @@ import SwiftUI
 
 struct PlistBoolView: View {
 	@Binding var newBool: Any
-	@State var isFromDict: Bool = false
 	@State var nameOfKey: String = ""
+	@State var isFromDict: Bool = false
 	@Binding var isPresented: Bool
 	
 	@State var value: Bool = false

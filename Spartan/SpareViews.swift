@@ -319,3 +319,22 @@ class RootHelperActs {
 		spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["ch", filePath, String(perms)], env: [], root: true)
 	}
 }
+
+func getDaysInMonth(month: Int, year: Int) -> Int {
+	let calendar = Calendar.current
+	let dateComponents = DateComponents(year: year, month: month)
+	let date = calendar.date(from: dateComponents)!
+	
+	let formatter = DateFormatter()
+	formatter.dateFormat = "yyyy MM dd"
+	formatter.timeZone = TimeZone(abbreviation: "GMT+0:00")
+	var arrDates = [Date]()
+	for day in 1...calendar.range(of: .day, in: .month, for: date)!.count {
+		let dateString = "\(year) \(month) \(day)"
+		if let date = formatter.date(from: dateString) {
+			arrDates.append(date)
+		}
+	}
+	
+	return arrDates.count
+}

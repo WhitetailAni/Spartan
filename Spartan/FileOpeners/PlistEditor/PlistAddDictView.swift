@@ -15,7 +15,6 @@ struct PlistAddDictView: View {
 	let keyTypes = ["Boolean", "Integer", "String", "Array", "Dictionary", "Data", "Date"]
 	@State var newKeyName = ""
 	@State var selectedKeyType = "Boolean"
-	
 	let null = false
 	
 	var body: some View {
@@ -48,7 +47,7 @@ struct PlistAddDictView: View {
 				case "Data":
 					plistDict.append(PlistKey(key: newKeyName, value: Data(), type: .data))
 				case "Date":
-					plistDict.append(PlistKey(key: newKeyName, value: NSDate(), type: .date))
+					plistDict.append(PlistKey(key: newKeyName, value: Date(), type: .date))
 				default:
 					nop()
 				}

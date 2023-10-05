@@ -14,7 +14,7 @@ struct PlistLView: View {
 		Text("Why are you using funky ass plist key types that no one in their right mind should use, *especially* on an Apple TV??")
 		Text("Stop doing that")
 			.onAppear {
-				print("The app will close in 5 seconds")
+				print("The app will close in 5 seconds. Think about your actions next time")
 				sleep(5)
 				exit(76)
 			}

@@ -24,7 +24,7 @@ struct EThree: View {
         HStack {
             ForEach(0..<4, id: \.self) { index in
                 StepperTV(value: $EList[index], isHorizontal: false) {
-                    if(calculateSHA384Hash(value: ListToInt(list: EList))! == "94ea5c568c4e00208905be6397431f85a6f147795a0cc2f13aed676f8dbabb761169a258c050e3d08dcaebc3b06d3cee"){
+                    if(calculateSHA384Hash(value: ListToInt(list: EList))! == "1fa9b6aefebdca925f7fb0d4774b42b4e2a68e82c327df5d8d6da14511e174384efe8489d3e890127720974d01ede8ea"){
                         show = true
                     }
                 }
@@ -157,7 +157,7 @@ struct EThreePro: View {
                 } else if(Int((yandereDevFileTypeDebugTransfer?(file))!) == 8) {
                     print("symlink")
                     print("how did we get here?")
-                }
+                } //as you can see I don't use this often. it's a relic of the past
             }
         }) {
             Text("Print 'files'")

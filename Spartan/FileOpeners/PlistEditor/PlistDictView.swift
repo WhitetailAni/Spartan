@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PlistDictView: View {
-	@Binding var newDict: Any //this is not an [Any] intentionally. DO NOT EDIT IT, DO NOT USE IT, USE values
+	@Binding var newDict: Any //this is not an [Any] intentionally. DO NOT EDIT IT, DO NOT USE IT, USE `values`
 	@State var nameOfKey: String = ""
 	@State var isFromDict: Bool
 	@Binding var isPresented: Bool
@@ -77,7 +77,7 @@ struct PlistDictView: View {
 					case .data:
 						PlistDataView(newData: $values[index].value, isFromDict: true, isPresented: $isEditing)
 					case .date:
-						PlistDateView()
+						PlistDateView(newDate: $values[index].value, isFromDict: true, isPresented: $isEditing)
 					case .unknown:
 						PlistLView(isPresented: $isEditing)
 					}

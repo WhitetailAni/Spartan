@@ -57,7 +57,7 @@ struct TBD3View: View {
 	}
 	
     var body: some View {
-        Text("gm")
+        Text("Never expected someone to actually use this. Maybe someday I'll finish it.")
     }
 }
 

@@ -19,6 +19,7 @@ struct PlistView: View {
 	@State var editingSubView = false
 	@State var subViewToShow: PlistKeyType = .bool
 	@State var indexToEdit = 0
+	@State var valueToEdit: Any
 	
 	@State var addKeyToPlist = false
 	
@@ -27,6 +28,7 @@ struct PlistView: View {
 	init(filePath: String, fileName: String) {
         _filePath = State(initialValue: filePath)
         _fileName = State(initialValue: fileName)
+        _valueToEdit = State(initialValue: "ipraythatnooneeverseesthisstring")
         
         var tempDict: [String: Any] = [:]
         
@@ -36,15 +38,15 @@ struct PlistView: View {
 					tempDict = dictionary
 				} else {
 					print("error 1288")
-					tempDict = ["The plist file specified does not have a dictionary as its root.":"While these are valid plist files, they are not yet supported by Spartan.", "Check for an update to Spartan. If you're already up-to-date, wait for an update and then try again later.":"Error ID 127"]
+					tempDict = ["The plist file specified does not have a dictionary as its root.":"While these are valid plist files, they are not yet supported by Spartan.", "Check for an update to Spartan. If you're already up-to-date, wait for an update and then try again later.":"Error ID 1288"]
 				}
 			} catch {
 				print("1394")
 				tempDict = ["The file specified is cannot be read.": "It may be corrupted, or be the wrong file.", "Select the proper file and then try again.":"Error ID 1394"]
 			}
 		} else {
-			print("1394")
-				tempDict = ["The file specified is cannot be read.": "It may be corrupted, or be the wrong file.", "Select the proper file and then try again.":"Error ID 1394"]
+			print("1395")
+				tempDict = ["The file specified is cannot be read.": "It may be corrupted, or be the wrong file.", "Select the proper file and then try again.":"Error ID 1395"]
 		}
 		
 		let temp = PlistFormatter.swiftDictToPlistKeyArray(tempDict)
@@ -86,6 +88,7 @@ struct PlistView: View {
 			}
 			List(plistDict.indices, id: \.self) { index in
 				Button(action: {
+					print("before: \(plistDict[index])")
 					if(plistDict[index].type == .bool) {
 						let bool = plistDict[index].value as! Bool
 						if bool {
@@ -95,8 +98,9 @@ struct PlistView: View {
 						}
 					} else {
 						indexToEdit = index
+						valueToEdit = plistDict[index].value
+						editingSubView = true
 					}
-					print(plistDict[index])
 				}) {
 					if (plistDict[index].type == .bool) {
 						Image(systemName: plistDict[index].value as! Bool ? "checkmark.square" : "square")
@@ -108,16 +112,34 @@ struct PlistView: View {
 		.sheet(isPresented: $addKeyToPlist, content: {
 			PlistAddDictView(plistDict: $plistDict, isPresented: $addKeyToPlist)
 		})
-		.sheet(isPresented: $editingSubView, content: {
-			/*switch subViewToShow {
-			case .bool:
-				
-			}*/
+		.sheet(isPresented: $editingSubView, onDismiss: {
+			print("changed value: \(valueToEdit)")
+			plistDict[indexToEdit].value = valueToEdit
+			print("after: \(plistDict[indexToEdit])")
+		}, content: {
+			let key = plistDict[indexToEdit]
+			switch key.type {
+				case .bool:
+					PlistBoolView(newBool: $valueToEdit, nameOfKey: key.key, isFromDict: true, isPresented: $editingSubView)
+				case .int:
+					PlistIntView(newInt: $valueToEdit, nameOfKey: key.key, isFromDict: true, isPresented: $editingSubView)
+				case .string:
+					PlistStringView(newString: $valueToEdit, nameOfKey: key.key, isFromDict: true, isPresented: $editingSubView) 
+				case .array:
+					PlistArrayView(newArray: $valueToEdit, nameOfKey: key.key, isFromDict: true, isPresented: $editingSubView)
+				case .dict:
+					PlistDictView(newDict: $valueToEdit, nameOfKey: key.key, isFromDict: true, isPresented: $editingSubView)
+				case .data:
+					PlistDataView(newData: $valueToEdit, nameOfKey: key.key, isFromDict: true, isPresented: $editingSubView)
+				case .date:
+					PlistDateView(newDate: $valueToEdit, nameOfKey: key.key, isFromDict: true, isPresented: $editingSubView)
+				default:
+					PlistLView(isPresented: $editingSubView)
+			}
 		})
 	}
 	
 	func writeDictToPlist(_ dict: [String: Any]) {
-		
 		let nsdict = dict as NSDictionary
 		do {
 			try nsdict.write(to: URL(fileURLWithPath: filePath + fileName))

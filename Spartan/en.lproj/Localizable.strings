@@ -217,6 +217,13 @@
 
 "PLIST_STRINGDATA" = "Input new String value";
 
+"PLIST_YEAR" = "Year";
+"PLIST_MONTH" = "Month";
+"PLIST_DAY" = "Day";
+"PLIST_HOUR" = "Hour";
+"PLIST_MINUTE" = "Minute";
+"PLIST_SECOND" = "Second";
+
 //plistarray
 "PLISTARR_ADD" = "Add item after item ";
 "PLISTARR_REMOVE" = "Remove item ";

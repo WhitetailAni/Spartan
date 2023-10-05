@@ -87,7 +87,7 @@ struct PlistArrayView: View {
 			case .data:
 				PlistDataView(newData: $values[indexToEdit], isFromDict: false, isPresented: $showEditView)
 			case .date:
-				PlistDateView()
+				PlistDateView(newDate: $values[indexToEdit], isFromDict: false, isPresented: $showEditView)
 			case .unknown:
 				PlistLView(isPresented: $showEditView)
 			}

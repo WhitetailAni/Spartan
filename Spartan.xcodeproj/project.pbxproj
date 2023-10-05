@@ -14,7 +14,6 @@
 		F845C82829F4D77C0025AC0A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F845C82A29F4D77C0025AC0A /* Localizable.strings */; };
 		F845C82F29F6247A0025AC0A /* EThree.swift in Sources */ = {isa = PBXBuildFile; fileRef = F845C82E29F6247A0025AC0A /* EThree.swift */; };
 		F849251C2A985CE8001BE72E /* Yams in Frameworks */ = {isa = PBXBuildFile; productRef = F849251B2A985CE8001BE72E /* Yams */; };
-		F84B9F3E2AAAB64000A24B9D /* clutch in Resources */ = {isa = PBXBuildFile; fileRef = F84B9F3D2AAAB64000A24B9D /* clutch */; };
 		F853AB2F29DBCB1A006EA2D5 /* SpartanApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB2E29DBCB1A006EA2D5 /* SpartanApp.swift */; };
 		F853AB3129DBCB1A006EA2D5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F853AB3029DBCB1A006EA2D5 /* ContentView.swift */; };
 		F853AB3329DBCB1E006EA2D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F853AB3229DBCB1E006EA2D5 /* Assets.xcassets */; };
@@ -37,6 +36,7 @@
 		F88CC4A72A44B020001FACFC /* DiskImagesWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F88CC4A62A44B020001FACFC /* DiskImagesWrapper */; settings = {ATTRIBUTES = (Required, ); }; };
 		F88CC4AB2A44B020001FACFC /* SVGWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F88CC4AA2A44B020001FACFC /* SVGWrapper */; settings = {ATTRIBUTES = (Required, ); }; };
 		F88FBB0D2A2FEFA700E31EDA /* UIApplicationSuspend.m in Sources */ = {isa = PBXBuildFile; fileRef = F88FBB0C2A2FEFA700E31EDA /* UIApplicationSuspend.m */; };
+		F892B5112ACDA4E500C666CA /* DMGMountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F892B5102ACDA4E500C666CA /* DMGMountView.swift */; };
 		F898F66B2A1AFEC300F1B4E4 /* WebServerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F898F66A2A1AFEC300F1B4E4 /* WebServerView.swift */; };
 		F8C1A5D429FB55F100DF4C23 /* MountPointsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C1A5D329FB55F100DF4C23 /* MountPointsView.swift */; };
 		F8CC211F29E2762F008C7B88 /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC211E29E2762F008C7B88 /* ImageView.swift */; };
@@ -74,7 +74,6 @@
 		F84430612A43EF290042BAB5 /* Pogo-BridgingHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Pogo-BridgingHeader.h"; sourceTree = "<group>"; };
 		F845C82929F4D77C0025AC0A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F845C82E29F6247A0025AC0A /* EThree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EThree.swift; sourceTree = "<group>"; };
-		F84B9F3D2AAAB64000A24B9D /* clutch */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = clutch; sourceTree = "<group>"; };
 		F853AB2B29DBCB1A006EA2D5 /* Spartan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spartan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F853AB2E29DBCB1A006EA2D5 /* SpartanApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpartanApp.swift; sourceTree = "<group>"; };
 		F853AB3029DBCB1A006EA2D5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -93,6 +92,7 @@
 		F88CC49E2A44ADEB001FACFC /* SF Mono.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF Mono.otf"; sourceTree = "<group>"; };
 		F88FBB0B2A2FEF9000E31EDA /* UIApplicationSuspend.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UIApplicationSuspend.h; sourceTree = "<group>"; };
 		F88FBB0C2A2FEFA700E31EDA /* UIApplicationSuspend.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UIApplicationSuspend.m; sourceTree = "<group>"; };
+		F892B5102ACDA4E500C666CA /* DMGMountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DMGMountView.swift; sourceTree = "<group>"; };
 		F898F66A2A1AFEC300F1B4E4 /* WebServerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebServerView.swift; sourceTree = "<group>"; };
 		F8C1A5D329FB55F100DF4C23 /* MountPointsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MountPointsView.swift; sourceTree = "<group>"; };
 		F8CC211E29E2762F008C7B88 /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
@@ -163,7 +163,6 @@
 		F853AB2229DBCB1A006EA2D5 = {
 			isa = PBXGroup;
 			children = (
-				F84B9F3D2AAAB64000A24B9D /* clutch */,
 				F8F855C42A47770700DC9CE4 /* RootHelper */,
 				F853AB2C29DBCB1A006EA2D5 /* Products */,
 				F83F47D02A43781000A4C47F /* External */,
@@ -215,6 +214,7 @@
 				F820951F2A2622D100DC6D79 /* CarView.swift */,
 				F83CB3BF2A41170F005BF95A /* FontView.swift */,
 				F8FEB8962A964CF60093B631 /* TBDView.swift */,
+				F892B5102ACDA4E500C666CA /* DMGMountView.swift */,
 			);
 			path = FileOpeners;
 			sourceTree = "<group>";
@@ -376,7 +376,6 @@
 				F83F052E2A297E2000EB0720 /* Sheikah.ttf in Resources */,
 				F845C82829F4D77C0025AC0A /* Localizable.strings in Resources */,
 				F853AB3329DBCB1E006EA2D5 /* Assets.xcassets in Resources */,
-				F84B9F3E2AAAB64000A24B9D /* clutch in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -411,6 +410,7 @@
 				F853AB5529DE8B3B006EA2D5 /* FavoritesView.swift in Sources */,
 				F8FEB87C2A93A1AF0093B631 /* PlistBoolView.swift in Sources */,
 				F853AB3129DBCB1A006EA2D5 /* ContentView.swift in Sources */,
+				F892B5112ACDA4E500C666CA /* DMGMountView.swift in Sources */,
 				F8FEB8972A964CF60093B631 /* TBDView.swift in Sources */,
 				F8C1A5D429FB55F100DF4C23 /* MountPointsView.swift in Sources */,
 				F8D579952A15D17F00FDA526 /* SwiftTryCatch.m in Sources */,
@@ -614,7 +614,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1904;
+				CURRENT_PROJECT_VERSION = 1918;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = NO;
 				DEVELOPMENT_ASSET_PATHS = "";
@@ -637,7 +637,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.6;
+				MARKETING_VERSION = 0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.whitetailani.Spartan;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -663,7 +663,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1904;
+				CURRENT_PROJECT_VERSION = 1918;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = NO;
 				DEVELOPMENT_ASSET_PATHS = "";
@@ -686,7 +686,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.6;
+				MARKETING_VERSION = 0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.whitetailani.Spartan;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
