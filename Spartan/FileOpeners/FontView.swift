@@ -55,3 +55,4 @@ struct FontView: View {
         return String(supportedCharacters)
     }
 }
+//simple and effective and TORTOROUS BECAUSE FONTS ARE ANNOYING AS HELL

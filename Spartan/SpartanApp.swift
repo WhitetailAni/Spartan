@@ -9,7 +9,21 @@ import SwiftUI
 @_exported import LaunchServicesBridge
 
 @main
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate { /*ordinarily this would be an incredibly simple function. but that would require having a tvOS 14.0+ application, where you can just
+
+@main
+struct SpartanApp: App {
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+    }
+}
+ 
+ tvOS 13 doesn't do that. you have to use the old UIKit method with some swiftUI hacked in it.
+ it works for me though, since I have to do some setup stuff here.
+ 
+ */
     var window: UIWindow?
     @State var directoryToLoad: String = ""
     
@@ -29,6 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UserDefaults.settings.set(25, forKey: "logWindowFontSize")
             UserDefaults.settings.set(true, forKey: "autoComplete")
             UserDefaults.settings.set(true, forKey: "haveLaunchedBefore")
+            UserDefaults.settings.set("MM-dd-yyyy HH:mm", forKey: "dateFormat")
             UserDefaults.settings.synchronize()
         }
         
@@ -55,7 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func displayView(pathToLoad: String) {
         let isRootless = {
-            if(fileManager.fileExists(atPath: "/private/var/jb/")) {
+            if(fileManager.fileExists(atPath: "/private/var/jb/")) { //rootless tvos :woeis:
                 return true
             }
             return false
@@ -96,7 +111,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let newPermissions = currentPermissions | UInt16(0o111)
             attributes[.posixPermissions] = NSNumber(value: newPermissions)
             try fileManager.setAttributes(attributes, ofItemAtPath: filePath)
-            
         } catch {
             print("Error: \(error)")
         }
@@ -112,5 +126,5 @@ extension UserDefaults {
     }
     static var textedit: UserDefaults {
         return UserDefaults(suiteName: "com.whitetailani.Spartan.texteditor") ?? UserDefaults.standard
-    }
+    } //text editor has its own UserDefaults for reasons I'll explain later
 }

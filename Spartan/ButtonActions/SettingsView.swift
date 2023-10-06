@@ -20,64 +20,80 @@ struct SettingsView: View {
     @State private var dateFormatPre: String = UserDefaults.settings.string(forKey: "dateFormat") ?? ""
 
     var body: some View {
-        Text(NSLocalizedString("SETTINGS", comment: "But choose carefully because you'll stay in the job you pick for the rest of your life."))
-            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                view.scaledFont(name: "BotW Sheikah Regular", size: 60)
-            }
-            .font(.system(size: 60))
-        
-        StepperTV(value: $logWindowFontSizePre, isHorizontal: true) {
-            UserDefaults.settings.set(logWindowFontSizePre, forKey: "logWindowFontSize")
-            UserDefaults.settings.synchronize()
-        }
-        .padding(5)
-        Text(NSLocalizedString("SETTINGS_LOGFONTSIZE", comment: "The same job the rest of your life?"))
-            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                view.scaledFont(name: "BotW Sheikah Regular", size: 25)
-            }
-            .font(.system(size: 25))
-            
-        descriptiveThings
-        autoCompleteFileExtensions
-        sheikahFont
-        
-        TextField("SETTINGS_DATEFORMAT", text: $dateFormatPre)
-        Text(NSLocalizedString("SETTINGS_DATEFORMATDESC", comment: "Halls Of Science 4"))
-            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                view.scaledFont(name: "BotW Sheikah Regular", size: 25)
-            }
-            .font(.system(size: 25))
-        
-        /*Button(action: {
-            showView[1] = true
-        }) {
-            Image(systemName: "applepencil")
-            Text(NSLocalizedString("APPICON", comment: """
-            LET'S GO BABY LOVE THE [[METS]] HIT A HOME RUN BABY
-            1987 *CAN* HAPPEN AGAIN
-            """))
-        }*/
-        
-        Button(action: { //info
-            showView[0] = true
-        }) {
-            HStack {
-                Image(systemName: "info.circle")
-                    .frame(width: 50, height: 50)
-                Text(NSLocalizedString("CREDITS", comment: """
-                "What's the difference?"
-                """))
-                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                }
-            }
+		ScrollView {
+			Text(NSLocalizedString("SETTINGS", comment: "But choose carefully because you'll stay in the job you pick for the rest of your life."))
+				.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+					view.scaledFont(name: "BotW Sheikah Regular", size: 60)
+				}
+				.font(.system(size: 60))
+			
+			StepperTV(value: $logWindowFontSizePre, isHorizontal: true) {
+				UserDefaults.settings.set(logWindowFontSizePre, forKey: "logWindowFontSize")
+				UserDefaults.settings.synchronize()
+			}
+			.padding(5)
+			Text(NSLocalizedString("SETTINGS_LOGFONTSIZE", comment: "The same job the rest of your life?"))
+				.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+					view.scaledFont(name: "BotW Sheikah Regular", size: 25)
+				}
+				.font(.system(size: 25))
+				
+			Text(" ")
+				
+			descriptiveThings
+			Text(" ")
+			autoCompleteFileExtensions
+			Text(" ")
+			sheikahFont
+			Text(" ")
+			
+			GeometryReader { geometry in
+				HStack {
+					Spacer()
+					TextField("SETTINGS_DATEFORMAT", text: $dateFormatPre)
+						.frame(maxWidth: geometry.size.width * 0.8)
+					Spacer()
+				}
+				Text("")
+				Text(NSLocalizedString("SETTINGS_DATEFORMATDESC", comment: "Halls Of Science 4"))
+					.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+						view.scaledFont(name: "BotW Sheikah Regular", size: 25)
+					}
+					.font(.system(size: 25))
+			}
+			Text(" ")
+			
+			/*Button(action: {
+				showView[1] = true
+			}) {
+				Image(systemName: "applepencil")
+				Text(NSLocalizedString("APPICON", comment: """
+				LET'S GO BABY LOVE THE [[METS]] HIT A HOME RUN BABY
+				1987 *CAN* HAPPEN AGAIN
+				"""))
+			}*/
+			
+			Button(action: { //info
+				showView[0] = true
+			}) {
+				HStack {
+					Image(systemName: "info.circle")
+						.frame(width: 50, height: 50)
+					Text(NSLocalizedString("CREDITS", comment: """
+					"What's the difference?"
+					"""))
+					.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+						view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+					}
+				}
+			}
         }
         .sheet(isPresented: $showView[0], content: {
-            CreditsView()
-        })
-        .sheet(isPresented: $showView[1], content: {
-            IconView()
-        })
+			CreditsView()
+		})
+		.sheet(isPresented: $showView[1], content: {
+			IconView()
+		})
     }
     
     @ViewBuilder
@@ -98,7 +114,8 @@ struct SettingsView: View {
                 view.scaledFont(name: "BotW Sheikah Regular", size: 25)
             }
             .font(.system(size: 25))
-            
+		
+		Text(" ")
         Button(action: {
             descriptiveTimestampsPre.toggle()
             UserDefaults.settings.set(descriptiveTimestampsPre, forKey: "verboseTimestamps")

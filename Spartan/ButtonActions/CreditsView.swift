@@ -10,13 +10,7 @@ import SwiftUI
 struct CreditsView: View {
 	var body: some View {
         VStack {
-			Text({
-				if UserDefaults.settings.bool(forKey: "secret") {
-					return "Spartan, © 2023 by WhitetailAni 🏳️‍⚧️"
-				} else {
-					return "Spartan, © 2023 by WhitetailAni"
-				}
-			}())
+			Text("Spartan, © 2023 by WhitetailAni 🏳️‍⚧️")
 				.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
 					view.scaledFont(name: "BotW Sheikah Regular", size: 40)
 				}
@@ -43,12 +37,5 @@ struct CreditsView: View {
 				view.scaledFont(name: "BotW Sheikah Regular", size: 25)
 			}
         }
-        .onPlayPauseCommand {
-			if UserDefaults.settings.bool(forKey: "secret") {
-				UserDefaults.settings.set(false, forKey: "secret")
-			} else {
-				UserDefaults.settings.set(true, forKey: "secret")
-			}
-		}
     }
 }

@@ -45,7 +45,7 @@ struct PlistDictView: View {
 					Image(systemName: "checkmark")
 				}
 				.onAppear {
-					values = PlistFormatter.swiftDictToPlistKeyArray(newDict as! [String: Any])
+					values = newDict as! [PlistKey]
 				}
 			}
 			

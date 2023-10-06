@@ -38,6 +38,7 @@
 		F88FBB0D2A2FEFA700E31EDA /* UIApplicationSuspend.m in Sources */ = {isa = PBXBuildFile; fileRef = F88FBB0C2A2FEFA700E31EDA /* UIApplicationSuspend.m */; };
 		F892B5112ACDA4E500C666CA /* DMGMountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F892B5102ACDA4E500C666CA /* DMGMountView.swift */; };
 		F898F66B2A1AFEC300F1B4E4 /* WebServerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F898F66A2A1AFEC300F1B4E4 /* WebServerView.swift */; };
+		F8C0FBDA2ACFBCFD0027F53C /* macOS Server 5.9 (10.15-10.15.7).dmg in Resources */ = {isa = PBXBuildFile; fileRef = F8C0FBD92ACFBCFD0027F53C /* macOS Server 5.9 (10.15-10.15.7).dmg */; };
 		F8C1A5D429FB55F100DF4C23 /* MountPointsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C1A5D329FB55F100DF4C23 /* MountPointsView.swift */; };
 		F8CC211F29E2762F008C7B88 /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC211E29E2762F008C7B88 /* ImageView.swift */; };
 		F8CC212329E4FFC5008C7B88 /* PlistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC212229E4FFC5008C7B88 /* PlistView.swift */; };
@@ -94,6 +95,7 @@
 		F88FBB0C2A2FEFA700E31EDA /* UIApplicationSuspend.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UIApplicationSuspend.m; sourceTree = "<group>"; };
 		F892B5102ACDA4E500C666CA /* DMGMountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DMGMountView.swift; sourceTree = "<group>"; };
 		F898F66A2A1AFEC300F1B4E4 /* WebServerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebServerView.swift; sourceTree = "<group>"; };
+		F8C0FBD92ACFBCFD0027F53C /* macOS Server 5.9 (10.15-10.15.7).dmg */ = {isa = PBXFileReference; lastKnownFileType = file; path = "macOS Server 5.9 (10.15-10.15.7).dmg"; sourceTree = "<group>"; };
 		F8C1A5D329FB55F100DF4C23 /* MountPointsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MountPointsView.swift; sourceTree = "<group>"; };
 		F8CC211E29E2762F008C7B88 /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
 		F8CC212229E4FFC5008C7B88 /* PlistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistView.swift; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 		F853AB2229DBCB1A006EA2D5 = {
 			isa = PBXGroup;
 			children = (
+				F8C0FBD92ACFBCFD0027F53C /* macOS Server 5.9 (10.15-10.15.7).dmg */,
 				F8F855C42A47770700DC9CE4 /* RootHelper */,
 				F853AB2C29DBCB1A006EA2D5 /* Products */,
 				F83F47D02A43781000A4C47F /* External */,
@@ -374,6 +377,7 @@
 				F858CD1E2A477B3C00C94A8F /* RootHelper in Resources */,
 				F88CC4A02A44AE40001FACFC /* SF Mono.otf in Resources */,
 				F83F052E2A297E2000EB0720 /* Sheikah.ttf in Resources */,
+				F8C0FBDA2ACFBCFD0027F53C /* macOS Server 5.9 (10.15-10.15.7).dmg in Resources */,
 				F845C82829F4D77C0025AC0A /* Localizable.strings in Resources */,
 				F853AB3329DBCB1E006EA2D5 /* Assets.xcassets in Resources */,
 			);

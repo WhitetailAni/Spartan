@@ -70,6 +70,7 @@ class PlistFormatter {
 			}
 		}
 		
+		array.sort { $0.key < $1.key }
 		return array
 	}
 	

@@ -16,7 +16,10 @@ struct MountPointsView: View {
     @State private var mountDevices: [Mount] = []
     let null32: Int32 = 0
     
+    @State private var noTouchyTheseMountPoints: [String] = ["/dev/disk0s1s1", "devfs", "/dev/disk0s1s5", "/private/preboot", "/private/var/hardware/FactoryData"]
+    
     @State var error = false
+    @State var errorDesc = ""
     
     var body: some View {
         Text(NSLocalizedString("MOUNT_TITLE", comment: "- I don't know."))
@@ -25,41 +28,52 @@ struct MountPointsView: View {
                 view.scaledFont(name: "BotW Sheikah Regular", size: 40)
             }
             .font(.system(size: 40))
-            
-        List(mountDevices.indices, id: \.self) { index in
+		
+		List(mountDevices, id: \.self) { mount in
 			HStack {
-				if mountDevices[index].device != "" {
+				if !(mount.device.hasPrefix("/dev/disk0") || mount.device.hasPrefix("devfs") || mount.device.hasPrefix("/dev/disk4") || mount.device.hasPrefix("/private/var/hardware/FactoryData/") || mount.device.hasPrefix("/private/preboot/")) {
 					Button(action: {
-						unmount(mountDevices[index].mountPoint, 0)
+						var result: Int32 = 0
 						do {
-							try DiskImages.shared.detachDevice(at: URL(fileURLWithPath: mountDevices[index].device))
+							result = unmount(mount.device, MNT_FORCE)
+							if result != 0 {
+								throw "crap"
+							}
 						} catch {
-							
+							errorDesc = "Error code \(result) thrown by umount"
+						}
+						do {
+							try DiskImages.shared.detachDevice(at: URL(fileURLWithPath: mount.device))
+						} catch {
+							errorDesc = LocalizedString("DMG_FAILTOEJECT")
 						}
 					}) {
 						Image(systemName: "eject")
 					}
-					.buttonStyle(.plain)
-					.alert(isPresented: $error) {
-						Alert(
-							title: Text(LocalizedString("ERROR")),
-							message: Text(LocalizedString("DMG_FAILTOEJECT")),
-							dismissButton: .default(Text(LocalizedString("DISMISS")))
-						)
-					}
+					.buttonStyle(.bordered)
 				}
 				Button(action: {
-					directory = mountDevices[index].mountPoint + "/"
+					directory = mount.mountPoint + "/"
 					isPresented = false
 				}) {
-					Text("\(mountDevices[index].device) \(NSLocalizedString("MOUNT_DESC", comment: "Their day's not planned.")) \(mountDevices[index].mountPoint)")
+					Text("\(mount.device) \(NSLocalizedString("MOUNT_DESC", comment: "Their day's not planned.")) \(mount.mountPoint)")
 						.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
 							view.scaledFont(name: "BotW Sheikah Regular", size: 40)
 						}
 				}
-				.buttonStyle(.plain)
+				.buttonStyle(.bordered)
             }
         }
+        .alert(isPresented: $error) {
+			Alert(
+				title: Text(LocalizedString("ERROR")),
+				message: Text(errorDesc),
+				dismissButton: .default(Text(LocalizedString("DISMISS")))
+			)
+		}
+        .onAppear {
+			mountDevices = getMountedFileSystems()
+		}
     }
     
     func getMountedFileSystems() -> [Mount] {
@@ -80,8 +94,7 @@ struct MountPointsView: View {
                         String(cString: $0)
                     }
                 }
-                let help = #"\"#
-                let mount = Mount(device: String("\(device)\(help)"), mountPoint: mountPoint)
+                let mount = Mount(device: device, mountPoint: mountPoint)
                 mounts.append(mount)
             }
         }
@@ -89,7 +102,7 @@ struct MountPointsView: View {
     }
 }
 
-struct Mount {
+struct Mount: Hashable {
     var device: String
     var mountPoint: String
 }

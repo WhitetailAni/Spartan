@@ -9,7 +9,7 @@ import SwiftUI
 import UIKit
 import Foundation
 
-//this is to put extra views that are used by other views - UIKit progress bar, checkbox, etc.
+//this is for various global stuff that doesn't belong to a specific view. frameworks, view modifiers, view elements, UIViewRepresentables, etc
 
 struct SpareView: View {
     var body: some View {
@@ -136,7 +136,7 @@ extension View {
         } else {
             self
         }
-    }
+    } //this is one of the best things I've ever written tbh
 }
 
 public struct ColorBlended: ViewModifier {
@@ -191,7 +191,7 @@ struct UIKitTapGesture: UIViewRepresentable {
             action()
         }
     }
-}
+} //this comes close
 
 struct UIKitTextView: UIViewRepresentable {
     @Binding var text: String

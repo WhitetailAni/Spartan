@@ -4,6 +4,9 @@
 //
 //  Created by RealKGB on 4/3/23.
 //
+//  This is the biggest file in Spartan. It's also the worst since it has the most stuff going on, and not all of it was coded well. Perks of learning as you go.
+//  Some of it is unused leftovers, I just don't know what all isn't used so it's left.
+//
 
 import SwiftUI
 import Foundation
@@ -49,7 +52,7 @@ struct ContentView: View {
     
     @State var lol: [String: Any] = [:]
     
-    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 32)
+    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 33)
     //createFileSelectShow = 0
     //contextMenuShow = 1
     //openInMenu = 2
@@ -79,18 +82,18 @@ struct ContentView: View {
     //fileNotFoundView = 26
     //filePermsEdit = 27
     //carView = 28
-    //tvOS13serverShow = 29
+    //tvOS13serverShow = 29  # some things are like this due to tvOS 13 (no context menu) limitations. I would drop 13 if I could but I'm not abandoning HD people.
     //fontViewShow = 30
     //tbdViewShow = 31
     //dmgMountViewShow = 32
     
-    @State var globalAVPlayer: AVPlayer = AVPlayer()
+    @State var globalAVPlayer: AVPlayer = AVPlayer() //this is because Spartan has the ability to play music without the AudioPlayerView being shown. It took about a week to get working properly and I'm proud of it
     @State var isGlobalAVPlayerPlaying = false
     @State var callback = true
     
     @State private var uncompressZip = false
     @State private var isLoadingView = false
-    @State var blankString: [String] = [""]
+    @State var blankString: [String] = [""] //dont question it
     @State private var nonexistentFile = ""
     
     let paddingInt: CGFloat = -7
@@ -128,7 +131,7 @@ struct ContentView: View {
                             buttonCalc = true
                         }
 
-                        directory = varFixup(directory)
+                        directory = varFixup(directory) //varFixup changes all /var paths to /private/var. this fixes an issue with symlinks that I couldn't find a better way to do. FileManager can't see symlinks properly (at least on 15.0) - they're simultaenously nonexistent files and transparent files, so I just have to work around them. Clicking on a symlink uses an old objc api to ask for its destination, and then sets the symlink to that - that way you can't get stuck in a symlink loop (which I did, and I can't get rid of the loop on my filesystem)
                     }
                     
                     Button(action: {
@@ -154,7 +157,7 @@ struct ContentView: View {
                             }) {
                                 HStack {
                                     Image(systemName: "arrowshape.turn.up.left")
-                                    Text("..")
+                                    Text("..") //Originally this was the only way to go back a directory. Using the menu button works now, but it's slower than just spamming this. So I leave it.
                                 }
                             }
                             .contextMenu {
@@ -164,7 +167,7 @@ struct ContentView: View {
                                     Text("Toggle Debug")
                                 }
                                 
-                                Button("Dismiss", action: { } )
+                                Button("Dismiss", action: { } ) //the only way to exit a tvOS context menu is to press a button. nothing else
                             }
                         } else {
                             Button(action: {
@@ -191,11 +194,11 @@ struct ContentView: View {
                                             }
                                             switch masterFiles[index].fileType {
                                             case 0:
-                                                if (directory == "/Applications/") {
+                                                if (directory == "/Applications/") { //shush.
                                                     let app = appsManager.application(forBundleURL: URL(fileURLWithPath: masterFiles[index].fullPath))
                                                     if app != nil {
                                                         let plistDict = NSDictionary(contentsOfFile: masterFiles[index].fullPath + "Info.plist")
-                                                        let bundleID = plistDict?["CFBundleIdentifier"] as? String ?? "com.apple.TVAppStore"
+                                                        let bundleID = plistDict?["CFBundleIdentifier"] as? String ?? "com.apple.TVAppStore" //I know this app will always exist, so I use it as a failover.
                                                         HStack {
                                                             let image: UIImage? = appsManager.icon(forApplication: app!)
                                                             if(image != nil) {
@@ -219,7 +222,7 @@ struct ContentView: View {
                                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                                     }
-                                                                Text(removeLastChar(masterFiles[index].name)) //Spartan appends a "/" to every directory element to make other actions easier, but it doesn't look too great when displayed. So removeLastChar just removes the last character in a string (in this case, a slash).
+                                                                Text(removeLastChar(masterFiles[index].name)) //Spartan appends a "/" to every directory element to make other actions easier, but it doesn't look too great when displayed. So removeLastChar just removes the last character in a string (in this case, a slash). no, this wasn't always a function - until beta 2 it was just manual substring stuff on every Text()
                                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40).foregroundColor(.gray)
                                                                     }
@@ -233,11 +236,11 @@ struct ContentView: View {
                                                             Image(systemName: "folder.fill")
                                                         } else {
                                                             Image(systemName: "folder.badge.questionmark")
-                                                        }
+                                                        } //this is a surprisingly useful feature that is one of the first things I implemented. It's subtle but incredibly handy if you realize it - just like the numbers by repos in Sileo that tells you how many packages you have installed. it's funny how many people don't know that that's what it does (i didn't for awhile)
                                                         Text(removeLastChar(masterFiles[index].name))
                                                             .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                                 view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                                                            }
+                                                            } //you'll be seeing this a lot. i might switch it to a separate view modifier that takes a font size as an Int but im lazy and can do that later
                                                     }
                                                 } else if (directory == "/private/var/containers/Bundle/Application/" || directory == "/private/var/mobile/Containers/Data/Application/" || directory == "/private/var/mobile/Containers/Shared/AppGroup/") {
                                                     let plistPath: String = masterFiles[index].fullPath + ".com.apple.mobile_container_manager.metadata.plist"
@@ -279,7 +282,7 @@ struct ContentView: View {
                                                                             view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                                         }
                                                                 }
-                                                                Text(removeLastChar(masterFiles[index].name)) //Spartan appends a "/" to every directory element to make other actions easier, but it doesn't look too great when displayed. So removeLastChar just removes the last character in a string (in this case, a slash).
+                                                                Text(removeLastChar(masterFiles[index].name))
                                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40).foregroundColor(.gray)
                                                                     }
@@ -293,7 +296,7 @@ struct ContentView: View {
                                                             Image(systemName: "folder.fill")
                                                         } else {
                                                             Image(systemName: "folder.badge.questionmark")
-                                                        }
+                                                        } //as you can see, more duplicated code. i love tvos 13
                                                         Text(removeLastChar(masterFiles[index].name))
                                                             .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                                 view.scaledFont(name: "BotW Sheikah Regular", size: 40)
@@ -307,11 +310,15 @@ struct ContentView: View {
                                                     } else {
                                                         Image(systemName: "folder.badge.questionmark")
                                                     } //It's a small thing but useful. Spartan will check if a directory has contents or not and display a filled or empty folder based on that. If it doesn't know, it will display a question mark (which usually means you don't have permission to access it)
+                                                    
+                                                    //future me wants you to know i forgot i wrote comments. im currently doing nothing in my CS class so I'm actually documenting/explaining stuff for once.
+                                                    //the person behind me is getting confused by string arrays help
                                                     Text(removeLastChar(masterFiles[index].name))
                                                         .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                             view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                         }
                                                 }
+											//the rest of this switch case is incredibly simple and basically the same thing, just the Image changes. I would just keep the text the same but I can't due to directories.
                                             case 1:
                                                 Image(systemName: "waveform")
                                                 Text(masterFiles[index].name)
@@ -373,6 +380,8 @@ struct ContentView: View {
                                                             view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                         }
                                                 }
+                                                /*this handling is done in case a symlink points to a file and not a directory.
+                                                early with symlink support, I assumed symlinks all pointed to directories and it broke BADLY*/
                                             case 9:
                                                 Image(systemName: "archivebox")
                                                 Text(masterFiles[index].name)
@@ -397,6 +406,8 @@ struct ContentView: View {
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
+												//i will most likely never finish my tbd editor. it can't even detect them lol
+												//but here it is just in case
 											case 13:
 												Image(systemName: "externaldrive")
 												Text(masterFiles[index].name)
@@ -429,7 +440,7 @@ struct ContentView: View {
                                         newViewFilePath = directory
                                         renameFileCurrentName = masterFiles[index].name
                                         renameFileNewName = masterFiles[index].name
-                                        showSubView[7] = true
+                                        showSubView[7] = true //In early development I just created new variables for stuff like this. i then switched to a unified newViewFilePath + newViewFileName set, but this is a bit before that and I legitimately do not know how I set up renaming files. i don't want to touch it, since it works.
                                     }) {
                                         Text(NSLocalizedString("RENAME", comment: "Its wings are too small to get its fat little body off the ground."))
                                             .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
@@ -459,7 +470,7 @@ struct ContentView: View {
                                                     view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                 }
                                         }
-                                    } else if(directory == "/private/var/mobile/Media/" && masterFiles[index].name == ".Trash/"){
+                                    } else if (directory == "/private/var/mobile/Media/" && masterFiles[index].name == ".Trash/") {
                                         Button(action: {
                                             do {
                                                 try fileManager.removeItem(atPath: "/private/var/mobile/Media/.Trash/")
@@ -537,7 +548,12 @@ struct ContentView: View {
                                     
                                     Button(NSLocalizedString("DISMISS", comment: "Hang on a second.")) { }
                                 }
-                            } else { //this is the tvOS 13 code. Tapping on an object opens up a select menu since there's no context menus in swiftUI on tvOS 13. You can do the default action, which is the Open button. Then the rest of the context menu is shown in a Sheet
+                            } else { //this is the tvOS 13 code. Tapping on an object opens up a select menu since there's no context menus on tvOS 13. You can do the default action, which is the Open button. Then the rest of the context menu is shown in a Sheet
+                            
+                            //future me wants you to know that i don't really test this. i need to buy another HD for 13 testing but i am more interested in putting 18tb in an xserve
+                            //if it's broken, please let me know and i'll try to fix it with the 13.4 sim i downloaded once
+                            
+                            //most of the code is actually just copy and pasted, so older comments are duplicated as well. i just changed how it's handled slightly
                                 Button(action: {
                                     showSubView[1] = true
                                     newViewFilePath = directory
@@ -1147,7 +1163,7 @@ struct ContentView: View {
                 .onPlayPauseCommand {
                     callback = false
                     showSubView[10] = true
-                }
+                } //this lets you access the music player from anywhere. it does create a new instance of the view, but it's accessing the same AV player always, so it never loses its place. it doesn't break when you open it without a music file loaded, too - that took far too long
                 .sheet(isPresented: $showSubView[3]) { //file info
                     VStack {
                         Text(NSLocalizedString("SHOW_INFO", comment: "A perfect report card, all B's."))
@@ -1181,7 +1197,7 @@ struct ContentView: View {
                                 }
                         }
                         .onAppear {
-                            fileInfo = getFileInfo(forFileAtPath: directory + newViewFileName)
+                            fileInfo = getFileInfo(forFileAtPath: directory + newViewFileName) //this is more early mystery code. how does it work? i dunno. is it bad? probably. am i going to mess with it? no, because it works.
                         }
                     }
                 }
@@ -1196,12 +1212,17 @@ struct ContentView: View {
                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                     }
                     .keyboardType(.numberPad)
-                    .textContentType(.oneTimeCode)
+                    .textContentType(.oneTimeCode) //it does some number filtering i think?
                     .onAppear {
-                        filePerms = try! fileManager.attributesOfItem(atPath: masterFiles[newViewFileIndex].fullPath)[.posixPermissions] as? Int ?? 000
+						do {
+							filePerms = try fileManager.attributesOfItem(atPath: masterFiles[newViewFileIndex].fullPath)[.posixPermissions] as? Int ?? 640 //this used to be a 000 for some reason??????? i changed it to 640 like other files on the tvOS filesystem. truly amazing.
+                        } catch {
+							filePerms = 000
+						}//it also used a try! for some reason, so that's changed as well.
                     }
-                    
                 })
+				//welcome to the SheetStack. how anything and everything is presented: a bool in showSubView, and a sheet.
+				//there's a lot. most of them are pretty easy to comprehend, if there's anything out of the ordinary I'll explain it
                 .sheet(isPresented: $showSubView[0], content: {
                     Button(action: {
                         showSubView[0] = false
@@ -1262,20 +1283,21 @@ struct ContentView: View {
                         }
                         didSearch = false
                     }
-                }, content: { //search files
+                }, content: {
                     SearchView(directory: $directory, isPresenting: $showSubView[19], selectedFile: $newViewFilePath, didSearch: $didSearch)
-                })
-                .sheet(isPresented: $showSubView[6], content: { //create dir
+                }) //my search function is very complex and i'm not sure how I wrote it. i don't fully understand it now and i didn't understand it then, either. I know it works and so im happy
+                //someday I'll figure it out. It's surprisingly good
+                .sheet(isPresented: $showSubView[6], content: {
                     CreateDirectoryView(directoryPath: $directory, isPresented: $showSubView[6])
                 })
-                .sheet(isPresented: $showSubView[5], content: { //create file
+                .sheet(isPresented: $showSubView[5], content: {
                     CreateFileView(filePath: $directory, isPresented: $showSubView[5])
                 })
                 .sheet(isPresented: $showSubView[20], content: {
                     CreateSymlinkView(symlinkPath: $directory, isPresented: $showSubView[20])
                 })
                 .sheet(isPresented: $showSubView[16], onDismiss: {
-                    updateFiles()
+                    updateFiles() //FavoritesView *can* change directory, but without an updateFiles the changes won't be reflected. it took me awhile to figure this bug out.
                 }, content: {
                     FavoritesView(directory: $directory, showView: $showSubView[16])
                 })
@@ -1330,22 +1352,23 @@ struct ContentView: View {
                     HexView(filePath: $newViewFilePath, fileName: $newViewFileName)
                         .onAppear {
                             isLoadingView = false
-                        }
+                        } //it can take a long time for my current hex editor implementation to load everything, so a loading circle is displayed. i typically avoid it for this reason.
+                        //i will later improve it, I just don't like working with Data
                 })
                 .sheet(isPresented: $showSubView[23], content: {
                     DpkgView(debPath: $newViewFilePath, debName: $newViewFileName, isPresented: $showSubView[23], isRootless: $isRootless)
                 })
                 .sheet(isPresented: $showSubView[24], content: {
                     DpkgBuilderView(debInputDir: $newViewFilePath, debInputName: $newViewFileName, isPresented: $showSubView[24], isRootless: $isRootless)
-                })
+                }) //i created these in case anything with nitoTV breaks. having filza deb installer has saved my butt more times than I can count
                 .sheet(isPresented: $showSubView[25], content: {
-                    WebServerView()
+                    WebServerView() //this will probably never work
                 })
                 .sheet(isPresented: $showSubView[28], content: {
                     CarView(filePath: $newViewFilePath, fileName: $newViewFileName)
                 })
                 .sheet(isPresented: $showSubView[30], content: {
-                    FontView(filePath: $newViewFilePath, fileName: $newViewFileName)
+                    FontView(filePath: $newViewFilePath, fileName: $newViewFileName) //i was bored i think
                 })
                 .sheet(isPresented: $showSubView[31], content: {
 					TBD3View(filePath: newViewFilePath, fileName: newViewFileName)
@@ -1365,12 +1388,13 @@ struct ContentView: View {
         }
         .onExitCommand {
             if(directory == "/"){
-                UIApplicationSuspend.suspendNow()
+                UIApplicationSuspend.suspendNow() //an objc function. the first bit of objc I wrote.
+                //i have written a lot more for Alcatraz, but it's so ugly and annoying
             } else {
                 goBack()
                 print(directory)
             }
-        }
+        } //this handles going back directories with the menu button.
     }
     
     var topBar: some View {
@@ -1391,7 +1415,8 @@ struct ContentView: View {
                     }
                 }
             }) {
-                if (multiSelect){
+                if (multiSelect) { //multiselect is a robust feature. the issue I had the most trouble with was with updateFiles, since the number of files would change but my multiselect array was too long. so I had to work out resizing the array.
+                //i gave up on that, and I just reset it to [] and then the length of masterFiles. it works.
                     if (allWereSelected) {
                         Image(systemName: "checkmark.circle")
                         .frame(width:50, height:50)
@@ -1482,7 +1507,7 @@ struct ContentView: View {
                         Image(systemName: "arrow.right")
                             .resizable()
                             .frame(width:15, height:13)
-                            .offset(x:-4, y:11.75) //i do not know how i came up with these values. i am not going to touch them. hopefully it doesn't break on non-1080p
+                            .offset(x:-4, y:11.75) //i do not know how i came up with these values. i am not going to touch them. hopefully it doesn't break on non-1080p (i don't have this)
                     }
                 }
         
@@ -1549,14 +1574,14 @@ struct ContentView: View {
             }
         }
         .alignmentGuide(HorizontalAlignment.center) {
-            $0[HorizontalAlignment.center]
+            $0[HorizontalAlignment.center] //i do not know what this is doing, i'm not messing with it. it most likely has a purpose
         }
         .frame(maxWidth: .infinity, alignment: .center)
     }
     
     @ViewBuilder
     var serverButton: some View {
-        if #unavailable(tvOS 16.0) {
+        if #unavailable(tvOS 16.0) { //i... don't know why this is here? the webserver stuff can't be loaded by the UI, so i'm ignoring it for now. i'm curious what this was done for
             Button(action: {
                 showSubView[29] = false
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -1599,6 +1624,7 @@ struct ContentView: View {
     }
     
     var freeSpace: some View { //this is hardcoded for now, returning mount points wasnt working
+		//future me wants you to know it works now but im not changing it.
         let (doubleValue, stringValue) = freeSpace(path: "/")
         return
             Text(NSLocalizedString("FREE_SPACE", comment: "E") + String(format: "%.2f", doubleValue) + " " + stringValue)
@@ -1613,16 +1639,16 @@ struct ContentView: View {
     
     var debugMenu: some View {
         return VStack {
-                if (E) {
-                    Button(action: {
-                        E2 = true
-                    }) {
-                        Image(systemName: "ant")
-                            .frame(width: 50, height: 50)
-                    }
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
+			if E { //i need e
+				Button(action: {
+					E2 = true
+				}) {
+					Image(systemName: "ant")
+						.frame(width: 50, height: 50)
+				}
+			}
+		}
+		.frame(maxWidth: .infinity, alignment: .leading)
     }
     
     @ViewBuilder
@@ -1718,7 +1744,7 @@ struct ContentView: View {
         .opacity(opacityInt)
     }
     
-    func defaultAction(index: Int, isDirectPath: Bool) {
+    func defaultAction(index: Int, isDirectPath: Bool) { //this function was created to allow tvOS 13 support. it is probably the most important function in this entire file manager. without it, nothing works
         var fileToCheck: [String] = masterFiles.map { $0.name }
         if(isDirectPath) {
             fileToCheck = [""]
@@ -1748,7 +1774,7 @@ struct ContentView: View {
                 do {
                     try fileManager.contentsOfDirectory(atPath: directory + fileToCheck[index])
                 } catch {
-                    if(substring(str: error.localizedDescription, startIndex: error.localizedDescription.index(error.localizedDescription.endIndex, offsetBy: -33), endIndex: error.localizedDescription.index(error.localizedDescription.endIndex, offsetBy: 0)) == "don’t have permission to view it."){
+                    if(substring(str: error.localizedDescription, startIndex: error.localizedDescription.index(error.localizedDescription.endIndex, offsetBy: -33), endIndex: error.localizedDescription.index(error.localizedDescription.endIndex, offsetBy: 0)) == "don’t have permission to view it.") { //substrings are horrible parts of swift
                         permissionDenied = true
                     }
                 }
@@ -1839,7 +1865,7 @@ struct ContentView: View {
             directory = "/" + components.joined(separator: "/") + "/"
             if (directory == "//"){
                 directory = "/"
-            }
+            } //there's definitely a better way to do this, but I don't know it and this solution works
         } else {
             directory = "/"
         }
@@ -1848,7 +1874,7 @@ struct ContentView: View {
     }
     
     func deleteFile(atPath: String) {
-        spawn(command: helperPath, args: ["rm", atPath], env: [], root: true)
+        spawn(command: helperPath, args: ["rm", atPath], env: [], root: true) // yee
     }
     
     func getFileInfo(forFileAtPath: String) -> [String] {
@@ -1918,7 +1944,7 @@ struct ContentView: View {
         }
     }
     func convertBytes(bytes: Double) -> (Double, String) {
-        let units = ["bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB", "BB"]
+        let units = ["bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB", "BB"] //i added support for brontobytes because i could. deal with it
         var remainingBytes = Double(bytes)
         var i = 0
         
@@ -1933,6 +1959,8 @@ struct ContentView: View {
     func yandereDevFileType(file: String) -> Double { //I tried using unified file types but they all returned nil so I have to use this awful yandere dev shit
         //im sorry
         
+        //FUTURE ME WANTS YOU TO KNOW I AM TALKING ABOUT THE IF ELSE STACK POST NOT THE PEDO STUFF
+        
         let archiveTypes: [String] = ["zip", "cbz"]
         let fontTypes: [String] = ["ttf", "otf", "ttc", "pfb", "pfa"]
         
@@ -1940,7 +1968,7 @@ struct ContentView: View {
             return 8 //symlink
         } else if (isDirectory(filePath: file)) {
             return 0 //directory
-        } else if (isVideo(filePath: file)) { //video has to come first as otherwise they detect as audio
+        } else if (isVideo(filePath: file)) { //video has to come first as otherwise video files detect as audio (since they are audio files as well)
             return 2 //video file
         } else if (isAudio(filePath: file)) {
             return 1 //audio file
@@ -2052,9 +2080,9 @@ struct ContentView: View {
         guard let data = fileManager.contents(atPath: filePath) else {
             return false
         }
-		if let header = String(data: data.subdata(in: 0..<8), encoding: .utf8) {
-			if header == "BOMStore" {
-				return true
+        if data.count > 8 {
+			if let header = String(data: data.subdata(in: 0..<8), encoding: .utf8) {
+				return header == "BOMStore"
 			}
 		}
 		return false
@@ -2075,13 +2103,16 @@ struct ContentView: View {
 		guard let data = fileManager.contents(atPath: filePath) else {
 			return false
 		}
-		if let header = String(data: data.subdata(in: 0..<12), encoding: .utf8) {
-			print("header: \(header), comparing against: \(String(describing: String(data: Data.init(fromHexEncodedString: "78017375 F3540870 0C0A6160 60648861 6060")!, encoding: .utf8)))")
-			if header == String(data: Data.init(fromHexEncodedString: "78017375 F3540870 0C0A6160 60648861 6060")!, encoding: .utf8) {
-				return true
-			}
+		print(String(describing: String(data: Data(fromHexEncodedString: "78017375F35408700C0A6160606488616060")!, encoding: .utf8)))
+		if data.count > 12 {
+			let header = data.subdata(in: 0..<12)
+			print("header: \(header), comparing against: \(String(describing: String(data: Data(fromHexEncodedString: "78017375F35408700C0A6160606488616060")!, encoding: .utf8)))")
+			return header == Data(fromHexEncodedString: "78017375F35408700C0A6160606488616060") /*it's a very strange header, but all the DMGs (at least that I checked) have this byte arrangement as a header: 78017375F35408700C0A6160606488616060
+				it decodes to gibberish in utf8, so not sure what it means.
+			*/
+		} else {
+			print("dmg help stupid \(filePath)")
 		}
-		
 		return false
 	}
     
@@ -2112,7 +2143,7 @@ struct ContentView: View {
         }
     }
     
-    func directPathTypeCheckNewViewFileVariableSetter() {
+    func directPathTypeCheckNewViewFileVariableSetter() { //this function name is very very silly and im leaving it. I think it's used once and it doesn't even work properly. but it uses a feature that literally no one should be using
         if(yandereDevFileType(file: directory) != 0){
             newViewFilePath = String(directory.prefix(through: directory.lastIndex(of: "/")!))
             let inProgressFileName = directory.split(separator: "/")
@@ -2136,7 +2167,7 @@ struct ContentView: View {
     
     func defineBundleID(_ plistDict: NSDictionary) -> String {
         if (directory == "/private/var/mobile/Containers/Shared/AppGroup/") {
-            return trimGroupBundleID(plistDict["MCMMetadataIdentifier"] as? String ?? "group.com.apple.mail") ?? "lol.whitetailani.Spartan"
+            return trimGroupBundleID(plistDict["MCMMetadataIdentifier"] as? String ?? "group.com.apple.mail") ?? "com.whitetailani.Spartan"
         } else {
             return plistDict["MCMMetadataIdentifier"] as? String ?? "lol.whitetailani.Spartan"
         }
@@ -2156,10 +2187,6 @@ struct ContentView: View {
         } //i dont have a way to check if every part of a filepath is a symlink but that doesn't matter. all that matters is that /var/ always becomes /private/var/
         return path
     }
-
-    private func handleRegularPress() {
-        print("regular")
-    }
 }
 
 struct SpartanFile {
@@ -2168,4 +2195,4 @@ struct SpartanFile {
     var isSelected: Bool
     var fileType: Double
     var isLoadingFile: Bool
-}
+} // i am so glad I switched to this instead of having like five different arrays
