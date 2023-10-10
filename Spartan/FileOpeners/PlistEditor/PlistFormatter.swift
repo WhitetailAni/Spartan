@@ -193,7 +193,7 @@ class PlistFormatter {
 	class func formatArray(_ array: [PlistArray]) -> String {
 		var string: String = "["
 		for item in array {
-			string += "\(formatArrayValue(item)) (\(item.type)), "
+			string += "\(formatArrayValue(item)), "
 		}
 		return String(string[..<string.index(string.endIndex, offsetBy: -2)]) + "]"
 	}

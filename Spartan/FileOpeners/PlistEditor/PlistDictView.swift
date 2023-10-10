@@ -57,27 +57,29 @@ struct PlistDictView: View {
 						isEditing = true
 					}
 				}) {
-					if values[index].type == .bool {
-						Image(systemName: values[index].value as! Bool ? "checkmark.square" : "square")
+					HStack {
+						if values[index].type == .bool {
+							Image(systemName: values[index].value as! Bool ? "checkmark.square" : "square")
+						}
+						Text(PlistFormatter.formatPlistKeyForDisplay(values[index]))
 					}
-					Text(PlistFormatter.formatPlistKeyForDisplay(values[index]))
 				}
 				.sheet(isPresented: $isEditing, content: {
 					switch values[index].type {
 					case .bool:
 						null()
 					case .int:
-						PlistIntView(newInt: $values[index].value, isFromDict: true, isPresented: $isEditing)
+						PlistIntView(newInt: $values[index].value, nameOfKey: values[index].key, isFromDict: true, isPresented: $isEditing)
 					case .string:
-						PlistStringView(newString: $values[index].value, isFromDict: true, isPresented: $isEditing)
+						PlistStringView(newString: $values[index].value, nameOfKey: values[index].key, isFromDict: true, isPresented: $isEditing)
 					case .array:
-						PlistArrayView(newArray: $values[index].value, isFromDict: true, isPresented: $isEditing)
+						PlistArrayView(newArray: $values[index].value, nameOfKey: values[index].key, isFromDict: true, isPresented: $isEditing)
 					case .dict:
-						PlistDictView(newDict: $values[index].value, isFromDict: true, isPresented: $isEditing)
+						PlistDictView(newDict: $values[index].value, nameOfKey: values[index].key, isFromDict: true, isPresented: $isEditing)
 					case .data:
-						PlistDataView(newData: $values[index].value, isFromDict: true, isPresented: $isEditing)
+						PlistDataView(newData: $values[index].value, nameOfKey: values[index].key, isFromDict: true, isPresented: $isEditing)
 					case .date:
-						PlistDateView(newDate: $values[index].value, isFromDict: true, isPresented: $isEditing)
+						PlistDateView(newDate: $values[index].value, nameOfKey: values[index].key, isFromDict: true, isPresented: $isEditing)
 					case .unknown:
 						PlistLView(isPresented: $isEditing)
 					}

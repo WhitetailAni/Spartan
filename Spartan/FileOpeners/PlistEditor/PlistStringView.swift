@@ -32,7 +32,12 @@ struct PlistStringView: View {
 			Text(LocalizedString("CONFIRM"))
 		}
 		.onAppear {
-			value = newString as! String
+			switch PlistFormatter.getPlistKeyTypeFromAnyVar(newString) {
+			case .string:
+				value = newString as! String
+			default:
+				print("it's not a string, not sure how this occurred. the value is \(value)")
+			}
 		}
 	}
 }

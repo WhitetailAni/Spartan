@@ -18,8 +18,6 @@ struct PlistView: View {
 	
 	@State var editingSubView = false
 	@State var subViewToShow: PlistKeyType = .bool
-	@State var keyToEdit: PlistKey = PlistKey(key: "a", value: "b", type: .string)
-	@State var valueToEdit: Any
 	
 	@State var addKeyToPlist = false
 	
@@ -28,7 +26,6 @@ struct PlistView: View {
 	init(filePath: String, fileName: String) {
         _filePath = State(initialValue: filePath)
         _fileName = State(initialValue: fileName)
-        _valueToEdit = State(initialValue: "ipraythatnooneeverseesthisstring")
         
         var tempDict: [String: Any] = [:]
         
@@ -94,45 +91,41 @@ struct PlistView: View {
 							plistDict[index].value = true
 						}
 					} else {
-						keyToEdit = plistDict[index]
-						valueToEdit = plistDict[index].value
-						editingSubView = trueeee
 						print("the value: \(plistDict[index])")
+						editingSubView = trueeee
 					}
 				}) {
-					if (plistDict[index].type == .bool) {
-						Image(systemName: plistDict[index].value as! Bool ? "checkmark.square" : "square")
+					HStack {
+						if (plistDict[index].type == .bool) {
+							Image(systemName: plistDict[index].value as! Bool ? "checkmark.square" : "square")
+						}
+						Text(PlistFormatter.formatPlistKeyForDisplay(plistDict[index]))
 					}
-					Text(PlistFormatter.formatPlistKeyForDisplay(plistDict[index]))
 				}
+				.sheet(isPresented: $editingSubView, content: {
+					switch plistDict[index].type {
+						case .bool:
+							PlistBoolView(newBool: $plistDict[index].value, nameOfKey: plistDict[index].key, isFromDict: true, isPresented: $editingSubView)
+						case .int:
+							PlistIntView(newInt: $plistDict[index].value, nameOfKey: plistDict[index].key, isFromDict: true, isPresented: $editingSubView)
+						case .string:
+							PlistStringView(newString: $plistDict[index].value, nameOfKey: plistDict[index].key, isFromDict: true, isPresented: $editingSubView)
+						case .array:
+							PlistArrayView(newArray: $plistDict[index].value, nameOfKey: plistDict[index].key, isFromDict: true, isPresented: $editingSubView)
+						case .dict:
+							PlistDictView(newDict: $plistDict[index].value, nameOfKey: plistDict[index].key, isFromDict: true, isPresented: $editingSubView)
+						case .data:
+							PlistDataView(newData: $plistDict[index].value, nameOfKey: plistDict[index].key, isFromDict: true, isPresented: $editingSubView)
+						case .date:
+							PlistDateView(newDate: $plistDict[index].value, nameOfKey: plistDict[index].key, isFromDict: true, isPresented: $editingSubView)
+						default:
+							PlistLView(isPresented: $editingSubView)
+					}
+				})
 			}
 		}
 		.sheet(isPresented: $addKeyToPlist, content: {
 			PlistAddDictView(plistDict: $plistDict, isPresented: $addKeyToPlist)
-		})
-		.sheet(isPresented: $editingSubView, onDismiss: {
-			print("changed value: \(valueToEdit)")
-			keyToEdit.value = valueToEdit
-			print("after: \(keyToEdit)")
-		}, content: {
-			switch keyToEdit.type {
-				case .bool:
-					PlistBoolView(newBool: $valueToEdit, nameOfKey: keyToEdit.key, isFromDict: true, isPresented: $editingSubView)
-				case .int:
-					PlistIntView(newInt: $valueToEdit, nameOfKey: keyToEdit.key, isFromDict: true, isPresented: $editingSubView)
-				case .string:
-					PlistStringView(newString: $valueToEdit, nameOfKey: keyToEdit.key, isFromDict: true, isPresented: $editingSubView)
-				case .array:
-					PlistArrayView(newArray: $valueToEdit, nameOfKey: keyToEdit.key, isFromDict: true, isPresented: $editingSubView)
-				case .dict:
-					PlistDictView(newDict: $valueToEdit, nameOfKey: keyToEdit.key, isFromDict: true, isPresented: $editingSubView)
-				case .data:
-					PlistDataView(newData: $valueToEdit, nameOfKey: keyToEdit.key, isFromDict: true, isPresented: $editingSubView)
-				case .date:
-					PlistDateView(newDate: $valueToEdit, nameOfKey: keyToEdit.key, isFromDict: true, isPresented: $editingSubView)
-				default:
-					PlistLView(isPresented: $editingSubView)
-			}
 		})
 	}
 	
