@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PlistDictView: View {
-	@Binding var newDict: Any //this is not an [Any] intentionally. DO NOT EDIT IT, DO NOT USE IT, USE `values`
+	@Binding var newDict: Any
 	@State var nameOfKey: String = ""
 	@State var isFromDict: Bool
 	@Binding var isPresented: Bool

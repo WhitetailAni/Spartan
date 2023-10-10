@@ -28,7 +28,7 @@ struct PlistAddDictView: View {
 				}
 			}
 			
-			TextField(NSLocalizedString("PLIST_DATA", comment: "Still Alive"), text: $newKeyName)
+			TextField(NSLocalizedString("PLIST_KEY", comment: "Still Alive"), text: $newKeyName)
 			
 			Button(action: {
 				switch selectedKeyType {
@@ -37,20 +37,21 @@ struct PlistAddDictView: View {
 				case "Integer":
 					plistDict.append(PlistKey(key: newKeyName, value: 0, type: .int))
 				case "String":
-					plistDict.append(PlistKey(key: newKeyName, value: "", type: .string))
+					plistDict.append(PlistKey(key: newKeyName, value: "A", type: .string))
 				case "Array":
-					let array: [Any] = []
+					let array: [PlistArray] = []
 					plistDict.append(PlistKey(key: newKeyName, value: array, type: .array))
 				case "Dictionary":
-					let dict: [String: Any] = [:]
+					let dict: [PlistKey] = []
 					plistDict.append(PlistKey(key: newKeyName, value: dict, type: .dict))
 				case "Data":
-					plistDict.append(PlistKey(key: newKeyName, value: Data(), type: .data))
+					plistDict.append(PlistKey(key: newKeyName, value: Data([UInt8(0), UInt8(0), UInt8(0), UInt8(0)]), type: .data))
 				case "Date":
 					plistDict.append(PlistKey(key: newKeyName, value: Date(), type: .date))
 				default:
 					nop()
 				}
+				plistDict.sort { $0.key < $1.key }
 				isPresented = false
 			}) {
 				Text(LocalizedString("CONFIRM"))

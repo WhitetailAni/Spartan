@@ -11,6 +11,8 @@ import Foundation
 
 //this is for various global stuff that doesn't belong to a specific view. frameworks, view modifiers, view elements, UIViewRepresentables, etc
 
+let trueeee = true
+
 struct SpareView: View {
     var body: some View {
         VStack {

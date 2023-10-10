@@ -18,7 +18,7 @@ struct PlistView: View {
 	
 	@State var editingSubView = false
 	@State var subViewToShow: PlistKeyType = .bool
-	@State var indexToEdit = 0
+	@State var keyToEdit: PlistKey = PlistKey(key: "a", value: "b", type: .string)
 	@State var valueToEdit: Any
 	
 	@State var addKeyToPlist = false
@@ -54,9 +54,6 @@ struct PlistView: View {
 		//I FORGOT TO INITIALIZE IT AND **I DIDNT NOTICE**, THATS WHY IT WASNT WORKING
 		//I WAS SENDING THE DATA TO NOWHERE
 		//KILL ME
-		print("\(temp) this is the temp")
-		print(plistDict)
-		print(plistDict.count)
 	}
 	
 	var body: some View {
@@ -97,9 +94,10 @@ struct PlistView: View {
 							plistDict[index].value = true
 						}
 					} else {
-						indexToEdit = index
+						keyToEdit = plistDict[index]
 						valueToEdit = plistDict[index].value
-						editingSubView = true
+						editingSubView = trueeee
+						print("the value: \(plistDict[index])")
 					}
 				}) {
 					if (plistDict[index].type == .bool) {
@@ -114,25 +112,24 @@ struct PlistView: View {
 		})
 		.sheet(isPresented: $editingSubView, onDismiss: {
 			print("changed value: \(valueToEdit)")
-			plistDict[indexToEdit].value = valueToEdit
-			print("after: \(plistDict[indexToEdit])")
+			keyToEdit.value = valueToEdit
+			print("after: \(keyToEdit)")
 		}, content: {
-			let key = plistDict[indexToEdit]
-			switch key.type {
+			switch keyToEdit.type {
 				case .bool:
-					PlistBoolView(newBool: $valueToEdit, nameOfKey: key.key, isFromDict: true, isPresented: $editingSubView)
+					PlistBoolView(newBool: $valueToEdit, nameOfKey: keyToEdit.key, isFromDict: true, isPresented: $editingSubView)
 				case .int:
-					PlistIntView(newInt: $valueToEdit, nameOfKey: key.key, isFromDict: true, isPresented: $editingSubView)
+					PlistIntView(newInt: $valueToEdit, nameOfKey: keyToEdit.key, isFromDict: true, isPresented: $editingSubView)
 				case .string:
-					PlistStringView(newString: $valueToEdit, nameOfKey: key.key, isFromDict: true, isPresented: $editingSubView) 
+					PlistStringView(newString: $valueToEdit, nameOfKey: keyToEdit.key, isFromDict: true, isPresented: $editingSubView)
 				case .array:
-					PlistArrayView(newArray: $valueToEdit, nameOfKey: key.key, isFromDict: true, isPresented: $editingSubView)
+					PlistArrayView(newArray: $valueToEdit, nameOfKey: keyToEdit.key, isFromDict: true, isPresented: $editingSubView)
 				case .dict:
-					PlistDictView(newDict: $valueToEdit, nameOfKey: key.key, isFromDict: true, isPresented: $editingSubView)
+					PlistDictView(newDict: $valueToEdit, nameOfKey: keyToEdit.key, isFromDict: true, isPresented: $editingSubView)
 				case .data:
-					PlistDataView(newData: $valueToEdit, nameOfKey: key.key, isFromDict: true, isPresented: $editingSubView)
+					PlistDataView(newData: $valueToEdit, nameOfKey: keyToEdit.key, isFromDict: true, isPresented: $editingSubView)
 				case .date:
-					PlistDateView(newDate: $valueToEdit, nameOfKey: key.key, isFromDict: true, isPresented: $editingSubView)
+					PlistDateView(newDate: $valueToEdit, nameOfKey: keyToEdit.key, isFromDict: true, isPresented: $editingSubView)
 				default:
 					PlistLView(isPresented: $editingSubView)
 			}

@@ -9,12 +9,12 @@ import SwiftUI
 import Foundation
 
 struct PlistArrayView: View {
-	@Binding var newArray: Any //this is not an [Any] intentionally. DO NOT EDIT IT, DO NOT USE IT, USE `values`
+	@Binding var newArray: Any
 	@State var nameOfKey: String = ""
 	@State var isFromDict: Bool
 	@Binding var isPresented: Bool
 	
-	@State var values: [Any] = []
+	@State var values: [PlistArray] = []
 	
 	@State var indexToEdit = 0
 	@State var showEditView = false
@@ -58,42 +58,42 @@ struct PlistArrayView: View {
 			}
 			List(values.indices, id: \.self) { index in
 				Button(action: {
-					if values[index] is Bool {
-						values[index] = !(values[index] as! Bool)
+					if values[index].type == .bool {
+						values[index].value = !(values[index].value as! Bool)
 					} else {
 						indexToEdit = index
 						showEditView = true
 					}
 				}) {
-					if values[index] is Bool {
-						Image(systemName: values[index] as! Bool ? "checkmark.square" : "square")
+					if values[index].value is Bool {
+						Image(systemName: values[index].value as! Bool ? "checkmark.square" : "square")
 					}
-					Text(PlistFormatter.formatAnyVarForDisplay(values[index]))
+					Text("\(PlistFormatter.formatAnyVarForDisplay(values[index].value)) (\(PlistFormatter.plistKeyTypeToString(values[index].type))")
 				}
 			}
 		}
 		.sheet(isPresented: $showEditView, content: {
-			switch PlistFormatter.getPlistKeyTypeFromAnyVar(values[indexToEdit]) {
+			switch values[indexToEdit].type {
 			case .bool:
 				Text("All I need is a little neurotoxin.")
 			case .int:
-				PlistIntView(newInt: $values[indexToEdit], isFromDict: false, isPresented: $showEditView)
+				PlistIntView(newInt: $values[indexToEdit].value, isFromDict: false, isPresented: $showEditView)
 			case .string:
-				PlistStringView(newString: $values[indexToEdit], isFromDict: false, isPresented: $showEditView)
+				PlistStringView(newString: $values[indexToEdit].value, isFromDict: false, isPresented: $showEditView)
 			case .array:
-				PlistArrayView(newArray: $values[indexToEdit], isFromDict: false, isPresented: $showEditView)
+				PlistArrayView(newArray: $values[indexToEdit].value, isFromDict: false, isPresented: $showEditView)
 			case .dict:
-				PlistDictView(newDict: $values[indexToEdit], isFromDict: false, isPresented: $showEditView)
+				PlistDictView(newDict: $values[indexToEdit].value, isFromDict: false, isPresented: $showEditView)
 			case .data:
-				PlistDataView(newData: $values[indexToEdit], isFromDict: false, isPresented: $showEditView)
+				PlistDataView(newData: $values[indexToEdit].value, isFromDict: false, isPresented: $showEditView)
 			case .date:
-				PlistDateView(newDate: $values[indexToEdit], isFromDict: false, isPresented: $showEditView)
+				PlistDateView(newDate: $values[indexToEdit].value, isFromDict: false, isPresented: $showEditView)
 			case .unknown:
 				PlistLView(isPresented: $showEditView)
 			}
 		})
 		.onAppear {
-			values = newArray as! [Any]
+			values = newArray as! [PlistArray]
 		}
 	}
 }

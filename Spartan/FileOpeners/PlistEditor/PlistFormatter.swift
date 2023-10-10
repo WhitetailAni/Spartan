@@ -13,6 +13,11 @@ struct PlistKey {
 	var type: PlistKeyType
 }
 
+struct PlistArray {
+	var value: Any
+	var type: PlistKeyType
+}
+
 enum PlistKeyType {
 	case bool
 	case int
@@ -49,63 +54,110 @@ class PlistFormatter {
 					return .data
 				}
 			}()
-			if type == .dict {
-				let key = PlistKey(key: key, value: swiftDictToPlistKeyArray(value as! [String: Any]), type: type)
-				array.append(key)
-			} else {
-				if type == .array {
-					let oldValue: [Any] = value as! [Any]
-					var newValue: [Any] = []
-					for i in 0..<oldValue.count {
-						if oldValue[i] is [String: Any] {
-							newValue.append(swiftDictToPlistKeyArray(oldValue[i] as! [String : Any]))
-						} else {
-							newValue.append(oldValue[i])
-						}
-					}
-					array.append(PlistKey(key: key, value: newValue, type: type))
-				} else {
-					array.append(PlistKey(key: key, value: value, type: type))
-				}
+			switch type {
+			case .array:
+				array.append(PlistKey(key: key, value: swiftArrayToPlistArrayArray(value as! [Any]), type: type))
+			case .dict:
+				array.append(PlistKey(key: key, value: swiftDictToPlistKeyArray(value as! [String: Any]), type: type))
+			default:
+				array.append(PlistKey(key: key, value: value, type: type))
 			}
 		}
 		
 		array.sort { $0.key < $1.key }
+		
 		return array
 	}
 	
 	class func plistKeyArrayToSwiftDict(_ array: [PlistKey]) -> [String: Any] {
-		print("converting plistkey array to a swift dict for saving to plist: \(array)")
 		var dict: [String: Any] = [:]
 		for i in 0..<array.count {
 			dict.updateValue(array[i].value, forKey: array[i].key)
 		}
 		return dict
 	}
+	
+	class func swiftArrayToPlistArrayArray(_ array: [Any]) -> [PlistArray] {
+		var newArray: [PlistArray] = []
+		
+		for value in array {
+			let type: PlistKeyType = {
+				switch value {
+				case is Bool:
+					return .bool
+				case is Int:
+					return .int
+				case is String:
+					return .string
+				case is [Any]:
+					return .array
+				case is [String: Any]:
+					return .dict
+				case is Data:
+					return .data
+				case is Date:
+					return .date
+				default:
+					return .data
+				}
+			}()
+			switch type {
+			case .dict:
+				let key = PlistArray(value: swiftDictToPlistKeyArray(value as! [String: Any]), type: type)
+				newArray.append(key)
+			case .array:
+				newArray.append(PlistArray(value: swiftArrayToPlistArrayArray(value as! [Any]), type: type))
+			default:
+				newArray.append(PlistArray(value: value, type: type))
+			}
+		}
+		
+		return newArray
+	}
 
 	class func formatPlistKeyForDisplay(_ plistKey: PlistKey) -> String {
-		//print("formatting for display, plistkey is \(plistKey)")
 		switch plistKey.type {
 		case .bool:
-			return "\(plistKey.key): \(formatValue(plistKey)) (Boolean)"
+			return "\(plistKey.key): \(formatKeyValue(plistKey)) (Boolean)"
 		case .int:
-			return "\(plistKey.key): \(formatValue(plistKey)) (Integer)"
+			return "\(plistKey.key): \(formatKeyValue(plistKey)) (Integer)"
 		case .string:
-			return "\(plistKey.key): \(formatValue(plistKey)) (String)"
+			return "\(plistKey.key): \(formatKeyValue(plistKey)) (String)"
 		case .array:
-			return "\(plistKey.key): \(formatValue(plistKey)) (Array)"
+			return "\(plistKey.key): \(formatKeyValue(plistKey)) (Array)"
 		case .dict:
-			return "\(plistKey.key): \(formatValue(plistKey)) (Dictionary)"
+			return "\(plistKey.key): \(formatKeyValue(plistKey)) (Dictionary)"
 		case .data:
-			return "\(plistKey.key): \(formatValue(plistKey)) (Data)"
+			return "\(plistKey.key): \(formatKeyValue(plistKey)) (Data)"
 		case .date:
-			return "\(plistKey.key): \(formatValue(plistKey)) (Date)"
+			return "\(plistKey.key): \(formatKeyValue(plistKey)) (Date)"
 		case .unknown:
 			return "The data for key \(plistKey.key) is of an unknown type (Error ID 686)."
 		}
 	}
 	
-	class func formatValue(_ plistKey: PlistKey) -> String {
+	class func formatArrayValue(_ plistArray: PlistArray) -> String {
+		switch plistArray.type {
+		case .bool:
+			return "\(formatBool(plistArray.value as! Bool))"
+		case .int:
+			return formatInt(plistArray.value as! Int)
+		case .string:
+			return formatString(plistArray.value as! String)
+		case .array:
+			return formatArray(plistArray.value as! [PlistArray])
+		case .dict:
+			return formatDict(plistArray.value as! [PlistKey])
+		case .data:
+			return formatData(plistArray.value as! Data)
+		case .date:
+			return formatDate(plistArray.value as! Date)
+		case .unknown:
+			return "The data is of an unknown type (Error ID 686)."
+		}
+	}
+	
+	class func formatKeyValue(_ plistKey: PlistKey) -> String {
 		switch plistKey.type {
 		case .bool:
 			return "\(formatBool(plistKey.value as! Bool))"
@@ -114,7 +166,7 @@ class PlistFormatter {
 		case .string:
 			return formatString(plistKey.value as! String)
 		case .array:
-			return formatArray(plistKey.value as! [Any])
+			return formatArray(plistKey.value as! [PlistArray])
 		case .dict:
 			return formatDict(plistKey.value as! [PlistKey])
 		case .data:
@@ -138,10 +190,10 @@ class PlistFormatter {
 		return string
 	}//i know int and string formatters are redundant, but it makes my life easier
 	
-	class func formatArray(_ array: [Any]) -> String {
+	class func formatArray(_ array: [PlistArray]) -> String {
 		var string: String = "["
 		for item in array {
-			string += "\(item), "
+			string += "\(formatArrayValue(item)) (\(item.type)), "
 		}
 		return String(string[..<string.index(string.endIndex, offsetBy: -2)]) + "]"
 	}
@@ -149,7 +201,7 @@ class PlistFormatter {
 	class func formatDict(_ dict: [PlistKey]) -> String {
 		var string: String = "{"
 		for item in dict {
-			string += formatValue(item)
+			string += formatKeyValue(item)
 		}
 		return String(string/*[..<string.index(string.endIndex, offsetBy: -2)]*/) + "} "
 	}
@@ -171,7 +223,6 @@ class PlistFormatter {
 
 
 	class func formatAnyVarForDisplay(_ value: Any) -> String {
-		print("formatting an unknown variable type for display (dangerous): \(value)")
 		switch value {
 		case is Bool:
 			return formatBool(value as! Bool)
@@ -180,9 +231,9 @@ class PlistFormatter {
 		case is String:
 			return formatString(value as! String)
 		case is [Any]:
-			return formatArray(value as! [Any])
+			return formatArray(swiftArrayToPlistArrayArray(value as! [Any]))
 		case is [String: Any]:
-			return formatDict(value as! [PlistKey])
+			return formatDict(swiftDictToPlistKeyArray(value as! [String: Any]))
 		case is Data:
 			return formatData(value as! Data)
 		case is Date:
@@ -193,7 +244,6 @@ class PlistFormatter {
 	}
 	
 	class func getPlistKeyTypeFromAnyVar(_ value: Any) -> PlistKeyType {
-		print("figuring out what an unknown variable is: \(value)")
 		switch value {
 		case is Bool:
 			return .bool
@@ -211,6 +261,27 @@ class PlistFormatter {
 			return .date
 		default:
 			return .unknown
+		}
+	}
+	
+	class func plistKeyTypeToString(_ type: PlistKeyType) -> String {
+		switch type {
+		case .bool:
+			return "Boolean"
+		case .int:
+			return "Integer"
+		case .string:
+			return "String"
+		case .array:
+			return "Array"
+		case .dict:
+			return "Dictionary"
+		case .data:
+			return "Data"
+		case .date:
+			return "Date"
+		case .unknown:
+			return "The data is of an unknown type (Error ID 686)."
 		}
 	}
 }

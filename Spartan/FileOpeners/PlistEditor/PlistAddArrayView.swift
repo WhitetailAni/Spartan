@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PlistAddArrayView: View {
 	
-	@Binding var plistArray: [Any]
+	@Binding var plistArray: [PlistArray]
 	@Binding var isPresented: Bool
 	
 	@State var selectedKeyType = "Boolean"
@@ -30,21 +30,21 @@ struct PlistAddArrayView: View {
 			Button(action: {
 				switch selectedKeyType {
 				case "Boolean":
-					plistArray.append(false)
+					plistArray.append(PlistArray(value: false, type: .bool))
 				case "Integer":
-					plistArray.append(0)
+					plistArray.append(PlistArray(value: 0, type: .int))
 				case "String":
-					plistArray.append("")
+					plistArray.append(PlistArray(value: "", type: .string))
 				case "Array":
-					let array: [Any] = []
-					plistArray.append(array)
+					let array: [PlistArray] = []
+					plistArray.append(PlistArray(value: array, type: .array))
 				case "Dictionary":
-					let dict: [String: Any] = [:]
-					plistArray.append(dict)
+					let dict: [PlistKey] = []
+					plistArray.append(PlistArray(value: dict, type: .dict))
 				case "Data":
-					plistArray.append(Data())
+					plistArray.append(PlistArray(value: Data(), type: .data))
 				case "Date":
-					plistArray.append(Date())
+					plistArray.append(PlistArray(value: Date(), type: .date))
 				default:
 					nop()
 				}
