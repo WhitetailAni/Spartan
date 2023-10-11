@@ -1,0 +1,18 @@
+{
+  "images" : [
+    {
+      "filename" : "megamind icon back layer.png",
+      "idiom" : "tv",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "megamind icon back layer 1.png",
+      "idiom" : "tv",
+      "scale" : "2x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

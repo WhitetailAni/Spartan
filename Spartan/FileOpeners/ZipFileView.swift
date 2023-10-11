@@ -8,6 +8,8 @@
 import SwiftUI
 import Zip
 
+//i know it's essentially two views in one view, but it made more sense at the time. it also works, so i am NOT messing with it.
+
 struct ZipFileView: View {
     @State var unzip: Bool
     @Binding var isPresented: Bool

@@ -23,7 +23,7 @@
 "EXTRACT" = "Extract";
 "BUILD" = "Build";
 "ERR_NOJAILBREAK" = "You need to be jailbroken for this function";
-"APPICON" = "Change App Icon";
+"APPICON" = "Change App Icon To ";
 "LOADING" = "Loading...";
 
 "YES" = "Yes";
@@ -174,7 +174,8 @@
 "SETTINGS_LOGFONTSIZE" = "Sets the font size for log windows when installing a package or running a binary.";
 "SETTINGS_SHEIKAH" = "Sheikah font in app";
 "SETTINGS_DATEFORMAT" = "Input the date format";
-"SETTINGS_DATEFORMATDESC" = "Sets the DateFormatter format to use when displaying dates. Visit https://www.advancedswift.com/date-formatter-cheatsheet-formulas-swift/ for a guide.";
+"SETTINGS_DATEFORMATDESC1" = "Sets the DateFormatter format to use when displaying dates.";
+"SETTINGS_DATEFORMATDESC2" = "Visit https://www.advancedswift.com/date-formatter-cheatsheet-formulas-swift/ for a guide.";
 "CREDITS" = "Credits";
 
 

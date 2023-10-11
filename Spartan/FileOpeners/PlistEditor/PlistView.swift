@@ -10,7 +10,6 @@ import SwiftUI
 struct PlistView: View {
 	@State var filePath: String
 	@State var fileName: String
-	@State var plistData: Data = Data()
 	
 	@State var plistDict: [PlistKey] = []
 	
@@ -34,7 +33,7 @@ struct PlistView: View {
 				if let dictionary = try PropertyListSerialization.propertyList(from: rawData, format: nil) as? [String: Any] {
 					tempDict = dictionary
 				} else {
-					print("error 1288")
+					print("1288")
 					tempDict = ["The plist file specified does not have a dictionary as its root.":"While these are valid plist files, they are not yet supported by Spartan.", "Check for an update to Spartan. If you're already up-to-date, wait for an update and then try again later.":"Error ID 1288"]
 				}
 			} catch {
@@ -51,6 +50,10 @@ struct PlistView: View {
 		//I FORGOT TO INITIALIZE IT AND **I DIDNT NOTICE**, THATS WHY IT WASNT WORKING
 		//I WAS SENDING THE DATA TO NOWHERE
 		//KILL ME
+		let testDict = PlistFormatter.plistKeyArrayToSwiftDict(PlistFormatter.swiftDictToPlistKeyArray(tempDict))
+		print(tempDict)
+		print(testDict)
+		print(tempDict as NSDictionary == testDict as NSDictionary)
 	}
 	
 	var body: some View {
@@ -92,7 +95,7 @@ struct PlistView: View {
 						}
 					} else {
 						print("the value: \(plistDict[index])")
-						editingSubView = trueeee
+						editingSubView = true
 					}
 				}) {
 					HStack {

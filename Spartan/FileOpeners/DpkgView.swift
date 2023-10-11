@@ -8,6 +8,9 @@
 import SwiftUI
 import Foundation
 
+//this one is two separate views!
+//i like to think they're pretty well done. don't have a way to test them... but they theoretically work
+
 struct DpkgView: View {
     
     @Binding var debPath: String

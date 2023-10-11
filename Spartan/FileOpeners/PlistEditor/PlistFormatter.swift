@@ -285,9 +285,3 @@ class PlistFormatter {
 		}
 	}
 }
-
-extension Dictionary {
-	func keyPairAtIndex(_ i: Int) -> (key: Key, value: Value) {
-		return self[index(startIndex, offsetBy: i)]
-	}
-}

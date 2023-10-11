@@ -37,7 +37,9 @@ struct SpartanApp: App {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        UserDefaults.settings.set(false, forKey: "haveLaunchedBefore")
+        //UserDefaults.settings.set(false, forKey: "haveLaunchedBefore")
+        
+        print(UIApplication.shared.supportsAlternateIcons)
     
         if(!UserDefaults.settings.bool(forKey: "haveLaunchedBefore")) {
             UserDefaults.settings.set(25, forKey: "logWindowFontSize")

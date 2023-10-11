@@ -62,7 +62,6 @@
 		F8FEB8902A94F2610093B631 /* PlistAddArrayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB88F2A94F2610093B631 /* PlistAddArrayView.swift */; };
 		F8FEB8922A94F7B30093B631 /* PlistViewL.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB8912A94F7B30093B631 /* PlistViewL.swift */; };
 		F8FEB8952A964A1E0093B631 /* PlistBootstrapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB8942A964A1E0093B631 /* PlistBootstrapView.swift */; };
-		F8FEB8972A964CF60093B631 /* TBDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB8962A964CF60093B631 /* TBDView.swift */; };
 		F8FEB8B42A979D980093B631 /* PlistDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB8B32A979D980093B631 /* PlistDateView.swift */; };
 /* End PBXBuildFile section */
 
@@ -121,7 +120,6 @@
 		F8FEB88F2A94F2610093B631 /* PlistAddArrayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistAddArrayView.swift; sourceTree = "<group>"; };
 		F8FEB8912A94F7B30093B631 /* PlistViewL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistViewL.swift; sourceTree = "<group>"; };
 		F8FEB8942A964A1E0093B631 /* PlistBootstrapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistBootstrapView.swift; sourceTree = "<group>"; };
-		F8FEB8962A964CF60093B631 /* TBDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBDView.swift; sourceTree = "<group>"; };
 		F8FEB8B32A979D980093B631 /* PlistDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistDateView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -213,7 +211,6 @@
 				F8CC214529EF5838008C7B88 /* SpawnView.swift */,
 				F820951F2A2622D100DC6D79 /* CarView.swift */,
 				F83CB3BF2A41170F005BF95A /* FontView.swift */,
-				F8FEB8962A964CF60093B631 /* TBDView.swift */,
 				F892B5102ACDA4E500C666CA /* DMGMountView.swift */,
 			);
 			path = FileOpeners;
@@ -411,7 +408,6 @@
 				F8FEB87C2A93A1AF0093B631 /* PlistBoolView.swift in Sources */,
 				F853AB3129DBCB1A006EA2D5 /* ContentView.swift in Sources */,
 				F892B5112ACDA4E500C666CA /* DMGMountView.swift in Sources */,
-				F8FEB8972A964CF60093B631 /* TBDView.swift in Sources */,
 				F8C1A5D429FB55F100DF4C23 /* MountPointsView.swift in Sources */,
 				F8D579952A15D17F00FDA526 /* SwiftTryCatch.m in Sources */,
 				F8CC214829EFA165008C7B88 /* TextView.swift in Sources */,
@@ -609,12 +605,14 @@
 		F853AB3A29DBCB1E006EA2D5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = Megamind;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1918;
+				CURRENT_PROJECT_VERSION = 2017;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = NO;
 				DEVELOPMENT_ASSET_PATHS = "";
@@ -637,7 +635,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.7;
+				MARKETING_VERSION = 0.7.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.whitetailani.Spartan;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -658,12 +656,14 @@
 		F853AB3B29DBCB1E006EA2D5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = Megamind;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1918;
+				CURRENT_PROJECT_VERSION = 2017;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = NO;
 				DEVELOPMENT_ASSET_PATHS = "";
@@ -686,7 +686,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.7;
+				MARKETING_VERSION = 0.7.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.whitetailani.Spartan;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

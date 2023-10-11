@@ -5,7 +5,7 @@
 //  Created by RealKGB on 4/3/23.
 //
 //  This is the biggest file in Spartan. It's also the worst since it has the most stuff going on, and not all of it was coded well. Perks of learning as you go.
-//  Some of it is unused leftovers, I just don't know what all isn't used so it's left.
+//  Some of it is unused leftovers, I just don't know what all isn't used so it's left as-is.
 //
 
 import SwiftUI
@@ -84,7 +84,7 @@ struct ContentView: View {
     //carView = 28
     //tvOS13serverShow = 29  # some things are like this due to tvOS 13 (no context menu) limitations. I would drop 13 if I could but I'm not abandoning HD people.
     //fontViewShow = 30
-    //tbdViewShow = 31
+    //unknown = 31
     //dmgMountViewShow = 32
     
     @State var globalAVPlayer: AVPlayer = AVPlayer() //this is because Spartan has the ability to play music without the AudioPlayerView being shown. It took about a week to get working properly and I'm proud of it
@@ -401,13 +401,11 @@ struct ContentView: View {
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
 											case 12:
-												Image(systemName: "books.vertical")
+												Image(systemName: "questionmark")
 												Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
-												//i will most likely never finish my tbd editor. it can't even detect them lol
-												//but here it is just in case
 											case 13:
 												Image(systemName: "externaldrive")
 												Text(masterFiles[index].name)
@@ -706,7 +704,7 @@ struct ContentView: View {
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
 											case 12:
-												Image(systemName: "books.vertical")
+												Image(systemName: "questionmark")
 												Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
@@ -1160,10 +1158,6 @@ struct ContentView: View {
                         directory = "/" + components.joined(separator: "/") + "/"
                     }
                 }
-                .onPlayPauseCommand {
-                    callback = false
-                    showSubView[10] = true
-                } //this lets you access the music player from anywhere. it does create a new instance of the view, but it's accessing the same AV player always, so it never loses its place. it doesn't break when you open it without a music file loaded, too - that took far too long
                 .sheet(isPresented: $showSubView[3]) { //file info
                     VStack {
                         Text(NSLocalizedString("SHOW_INFO", comment: "A perfect report card, all B's."))
@@ -1371,7 +1365,7 @@ struct ContentView: View {
                     FontView(filePath: $newViewFilePath, fileName: $newViewFileName) //i was bored i think
                 })
                 .sheet(isPresented: $showSubView[31], content: {
-					TBD3View(filePath: newViewFilePath, fileName: newViewFileName)
+					Text("lmao")
 				})
 				.sheet(isPresented: $showSubView[32], content: {
 					DMGMountView(filePath: newViewFilePath, fileName: newViewFileName, directory: $directory, isPresented: $showSubView[32])
@@ -1386,6 +1380,10 @@ struct ContentView: View {
                 .accentColor(.accentColor)
             }
         }
+        .onPlayPauseCommand {
+			callback = false
+			showSubView[10] = true
+		} //this lets you access the music player from anywhere. it does create a new instance of the view, but it's accessing the same AV player always, so it never loses its place. it doesn't break when you open it without a music file loaded, too - that took far too long
         .onExitCommand {
             if(directory == "/"){
                 UIApplicationSuspend.suspendNow() //an objc function. the first bit of objc I wrote.
@@ -1980,7 +1978,7 @@ struct ContentView: View {
             //5.9 = bplist
 		} else if (isDMG(filePath: file)) {
 			return 13 //dmg
-		} else if (isTBD(filePath: file)) {
+		} else if (isUnknown(filePath: file)) {
 			return 12 //tbd
         } else if (fontTypes.contains(where: file.hasSuffix)) {
             return 11 //a font (badly)
@@ -2087,31 +2085,25 @@ struct ContentView: View {
 		}
 		return false
     }
-    func isTBD(filePath: String) -> Bool {
-		guard let data = fileManager.contents(atPath: filePath) else {
+    func isUnknown(filePath: String) -> Bool {
+		/*guard let data = fileManager.contents(atPath: filePath) else {
             return false
-        }
-        
-		/*if let header = String(data: data.subdata(in: 0..<16), encoding: .utf8) {
-			if header == "--- !tapi-tbd-v3" {
-				return true
-			}
-		}*/
+		*/
         return false
 	}
 	func isDMG(filePath: String) -> Bool {
 		guard let data = fileManager.contents(atPath: filePath) else {
 			return false
 		}
-		print(String(describing: String(data: Data(fromHexEncodedString: "78017375F35408700C0A6160606488616060")!, encoding: .utf8)))
+		//print(String(describing: String(data: Data(fromHexEncodedString: "78017375F35408700C0A6160606488616060")!, encoding: .utf8)))
 		if data.count > 12 {
 			let header = data.subdata(in: 0..<12)
-			print("header: \(header), comparing against: \(String(describing: String(data: Data(fromHexEncodedString: "78017375F35408700C0A6160606488616060")!, encoding: .utf8)))")
+			//print("header: \(header), comparing against: \(String(describing: String(data: Data(fromHexEncodedString: "78017375F35408700C0A6160606488616060")!, encoding: .utf8)))")
 			return header == Data(fromHexEncodedString: "78017375F35408700C0A6160606488616060") /*it's a very strange header, but all the DMGs (at least that I checked) have this byte arrangement as a header: 78017375F35408700C0A6160606488616060
 				it decodes to gibberish in utf8, so not sure what it means.
 			*/
 		} else {
-			print("dmg help stupid \(filePath)")
+			//print("dmg help stupid \(filePath)")
 		}
 		return false
 	}

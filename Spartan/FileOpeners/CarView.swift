@@ -31,7 +31,7 @@ struct CarView: View {
             Button(action: {
                 print("lol")
             }) {
-                /*switch RenditionType(namedLookup: rendition.namedLookup) {
+                /*switch RenditionType(namedLookup: rendition.namedLookup) { //this makes it break. not sure why. it's extremely inconsistent. i'll figure it out eventually
                 case .image:
                     Text("image")
                 case .icon:

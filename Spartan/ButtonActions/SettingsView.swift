@@ -18,6 +18,7 @@ struct SettingsView: View {
     @State private var logWindowFontSizePre = UserDefaults.settings.integer(forKey: "logWindowFontSize")
     @State private var sheikahFontApplyPre = UserDefaults.settings.bool(forKey: "sheikahFontApply")
     @State private var dateFormatPre: String = UserDefaults.settings.string(forKey: "dateFormat") ?? ""
+    @State private var appIconPre = UserDefaults.settings.bool(forKey: "appIcon")
 
     var body: some View {
 		ScrollView {
@@ -54,24 +55,64 @@ struct SettingsView: View {
 						.frame(maxWidth: geometry.size.width * 0.8)
 					Spacer()
 				}
-				Text("")
-				Text(NSLocalizedString("SETTINGS_DATEFORMATDESC", comment: "Halls Of Science 4"))
+			}
+			Text(" ")
+				.font(.system(size: 15))
+			Text(" ")
+			Text(NSLocalizedString("SETTINGS_DATEFORMATDESC1", comment: "Halls Of Science 4"))
+				.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+					view.scaledFont(name: "BotW Sheikah Regular", size: 25)
+				}
+				.font(.system(size: 25))
+			Text(NSLocalizedString("SETTINGS_DATEFORMATDESC2", comment: "Halls Of Science... 5?"))
+				.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+					view.scaledFont(name: "BotW Sheikah Regular", size: 25)
+				}
+				.font(.system(size: 25))
+			Text(" ")
+			
+			Button(action: {
+				if appIconPre {
+					UIApplication.shared.setAlternateIconName("Alpha") { error in
+						if let error = error {
+							print(error.localizedDescription)
+						}
+					}
+				} else {
+					UIApplication.shared.setAlternateIconName("Megamind") { error in
+						if let error = error {
+							print(error.localizedDescription)
+						}
+					}
+				}
+				DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+					withAnimation {
+						appIconPre.toggle()
+					}
+				}
+				UserDefaults.settings.set(appIconPre, forKey: "appIcon")
+			}) {
+				HStack {
+					Text(NSLocalizedString("APPICON", comment: """
+					LET'S GO BABY LOVE THE [[METS]] HIT A HOME RUN BABY
+					1987 *CAN* HAPPEN AGAIN
+					"""))
 					.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
 						view.scaledFont(name: "BotW Sheikah Regular", size: 25)
 					}
-					.font(.system(size: 25))
+					if appIconPre {
+						Image(uiImage: UIImage(named: "Alpha")!)
+							.resizable()
+							.cornerRadius(10)
+							.frame(width: 300, height: 180)
+					} else {
+						Image(uiImage: UIImage(named: "Megamind")!)
+							.resizable()
+							.cornerRadius(10)
+							.frame(width: 300, height: 180)
+					}
+				}
 			}
-			Text(" ")
-			
-			/*Button(action: {
-				showView[1] = true
-			}) {
-				Image(systemName: "applepencil")
-				Text(NSLocalizedString("APPICON", comment: """
-				LET'S GO BABY LOVE THE [[METS]] HIT A HOME RUN BABY
-				1987 *CAN* HAPPEN AGAIN
-				"""))
-			}*/
 			
 			Button(action: { //info
 				showView[0] = true

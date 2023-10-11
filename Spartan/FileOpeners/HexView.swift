@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+//welcome to my amazing hex editor.
+//it increments by 4 bytes each row. to edit, use the provided TextFields and type your hex manually like a REAL programmer
+//seriously though, why are you expecting anything better? i'm severely limited with what I can create because you have to navigate with a circle pad on a remote
+
 struct HexView: View {
     @Binding var filePath: String
     @Binding var fileName: String
