@@ -57,7 +57,7 @@ struct PlistDictView: View {
 					}
 				}
 				.sheet(isPresented: $isEditing, content: {
-					PlistDictEditor(keyToEdit: $values[index], isPresented: $isEditing)
+					PlistDictEditor(keyToEdit: $values[index], isPresented: $isEditing, selectedKeyType: values[index].type.stringRepresentation())
 				})
 			}
 		}

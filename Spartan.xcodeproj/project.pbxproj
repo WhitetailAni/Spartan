@@ -67,6 +67,19 @@
 		F8FEB8B42A979D980093B631 /* PlistDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB8B32A979D980093B631 /* PlistDateView.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		F8B3B22B2AD850110091414A /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		F820951F2A2622D100DC6D79 /* CarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarView.swift; sourceTree = "<group>"; };
 		F83CB3BF2A41170F005BF95A /* FontView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontView.swift; sourceTree = "<group>"; };
@@ -98,6 +111,7 @@
 		F8B3B2162AD820F10091414A /* PlistDictEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistDictEditor.swift; sourceTree = "<group>"; };
 		F8B3B2182AD820FD0091414A /* PlistArrayEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistArrayEditor.swift; sourceTree = "<group>"; };
 		F8B3B21A2AD8233B0091414A /* PlistBoolView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlistBoolView.swift; path = Spartan/FileOpeners/PlistEditor/PlistBoolView.swift; sourceTree = SOURCE_ROOT; };
+		F8B3B2212AD84FEA0091414A /* GCDWebServers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GCDWebServers.framework; sourceTree = "<group>"; };
 		F8C1A5D329FB55F100DF4C23 /* MountPointsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MountPointsView.swift; sourceTree = "<group>"; };
 		F8CC211E29E2762F008C7B88 /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
 		F8CC212229E4FFC5008C7B88 /* PlistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistView.swift; sourceTree = "<group>"; };
@@ -169,6 +183,7 @@
 				F853AB2C29DBCB1A006EA2D5 /* Products */,
 				F83F47D02A43781000A4C47F /* External */,
 				F853AB2D29DBCB1A006EA2D5 /* Spartan */,
+				F8B3B2202AD84FEA0091414A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -199,6 +214,14 @@
 				F88CC49E2A44ADEB001FACFC /* SF Mono.otf */,
 			);
 			path = Spartan;
+			sourceTree = "<group>";
+		};
+		F8B3B2202AD84FEA0091414A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F8B3B2212AD84FEA0091414A /* GCDWebServers.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		F8EA28D129F8ACAB0063206D /* FileOpeners */ = {
@@ -289,6 +312,7 @@
 				F853AB2829DBCB1A006EA2D5 /* Frameworks */,
 				F853AB2929DBCB1A006EA2D5 /* Resources */,
 				F88CC4AE2A44B542001FACFC /* ShellScript */,
+				F8B3B22B2AD850110091414A /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -631,6 +655,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Spartan",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/External",
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Spartan/Info.plist;
@@ -682,6 +707,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Spartan",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/External",
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Spartan/Info.plist;

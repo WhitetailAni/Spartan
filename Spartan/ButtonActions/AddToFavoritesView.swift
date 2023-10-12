@@ -3,6 +3,7 @@
 //  Spartan
 //
 //  Created by RealKGB on 4/7/23.
+//  The majority of this document is just strings. All it does is take the [String] containing your favorited files and add a value. Of course since I'm using a String for filepath I have to do cleanup on it... but I'm used to that.
 //
 
 import SwiftUI

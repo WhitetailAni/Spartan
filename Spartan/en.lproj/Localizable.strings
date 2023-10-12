@@ -97,6 +97,7 @@
 //text editor
 "LINEADD" = "Add Line After";
 "LINEREMOVE" = "Remove Line at";
+"LINESELECTED" = "Selected Line";
 "LINEADD_DESCRIPTION" = "Enter new text line";
 
 //touch view
@@ -177,6 +178,7 @@
 "SETTINGS_DATEFORMATDESC1" = "Sets the DateFormatter format to use when displaying dates.";
 "SETTINGS_DATEFORMATDESC2" = "Visit https://www.advancedswift.com/date-formatter-cheatsheet-formulas-swift/ for a guide.";
 "CREDITS" = "Credits";
+"SETTINGS_WEBSERVERSTART" = "Configure Web Server";
 
 
 //search

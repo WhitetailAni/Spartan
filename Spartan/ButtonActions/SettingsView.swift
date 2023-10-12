@@ -114,6 +114,12 @@ struct SettingsView: View {
 				}
 			}
 			
+			Button(action: {
+				showView[1] = true
+			}) {
+				Text(LocalizedString("SETTINGS_WEBSERVERSTART"))
+			}
+			
 			Button(action: { //info
 				showView[0] = true
 			}) {
@@ -133,7 +139,7 @@ struct SettingsView: View {
 			CreditsView()
 		})
 		.sheet(isPresented: $showView[1], content: {
-			IconView()
+			WebServerView()
 		})
     }
     
@@ -222,30 +228,5 @@ struct SettingsView: View {
                 }
             Image(systemName: sheikahFontApplyPre ? "checkmark.square" : "square")
         }
-    }
-}
-
-struct IconView: View {
-
-    @State private var attempt: String = ""
-    @State private var progress = false
-
-    var body: some View {
-        Text("gm")
-        Button(action: {
-            UIApplication.shared.setAlternateIconName("NotFound") { error in
-                if let error = error {
-                    attempt = error.localizedDescription
-                } else {
-                    attempt = "Success!"
-                }
-                progress = true
-            }
-        }) {
-            Text("icon")
-        }
-        .sheet(isPresented: $progress, content: {
-            Text(attempt)
-        })
     }
 }

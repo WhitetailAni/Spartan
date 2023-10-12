@@ -15,6 +15,8 @@ import AVFoundation
 import MobileCoreServices
 import ApplicationsWrapper
 import AssetCatalogWrapper
+import DiskImages2Bridge
+//import GCDWebServer
 
 struct ContentView: View {
     @State var test = false
@@ -82,19 +84,21 @@ struct ContentView: View {
     //fileNotFoundView = 26
     //filePermsEdit = 27
     //carView = 28
-    //tvOS13serverShow = 29  # some things are like this due to tvOS 13 (no context menu) limitations. I would drop 13 if I could but I'm not abandoning HD people.
+    //tvOS13serverShow = 29  # some things are like this due to tvOS 13 (no context menu) limitations. I would drop 13 if I could but I'm not abandoning 13.4.8 people.
     //fontViewShow = 30
     //unknown = 31
     //dmgMountViewShow = 32
     
-    @State var globalAVPlayer: AVPlayer = AVPlayer() //this is because Spartan has the ability to play music without the AudioPlayerView being shown. It took about a week to get working properly and I'm proud of it
+    @Binding var globalAVPlayer: AVPlayer //this is because Spartan has the ability to play music without the AudioPlayerView being shown. It took about a week to get working properly and I'm proud of it
     @State var isGlobalAVPlayerPlaying = false
     @State var callback = true
+    
+    //@Binding var webServer: GCDWebUploader
     
     @State private var uncompressZip = false
     @State private var isLoadingView = false
     @State var blankString: [String] = [""] //dont question it
-    @State private var nonexistentFile = ""
+    @State private var nonexistentFile = "" //REALLY dont question it
     
     let paddingInt: CGFloat = -7
     let opacityInt: CGFloat = 1.0
@@ -1386,8 +1390,8 @@ struct ContentView: View {
 		} //this lets you access the music player from anywhere. it does create a new instance of the view, but it's accessing the same AV player always, so it never loses its place. it doesn't break when you open it without a music file loaded, too - that took far too long
         .onExitCommand {
             if(directory == "/"){
-                UIApplicationSuspend.suspendNow() //an objc function. the first bit of objc I wrote.
-                //i have written a lot more for Alcatraz, but it's so ugly and annoying
+                ObjCFunctions.suspendNow() //an objc function. the first bit of objc I wrote.
+                //i have written a lot more for Alcatraz, but it's so ugly and annoying. i do not like using it
             } else {
                 goBack()
                 print(directory)
@@ -2092,20 +2096,8 @@ struct ContentView: View {
         return false
 	}
 	func isDMG(filePath: String) -> Bool {
-		guard let data = fileManager.contents(atPath: filePath) else {
-			return false
-		}
-		//print(String(describing: String(data: Data(fromHexEncodedString: "78017375F35408700C0A6160606488616060")!, encoding: .utf8)))
-		if data.count > 12 {
-			let header = data.subdata(in: 0..<12)
-			//print("header: \(header), comparing against: \(String(describing: String(data: Data(fromHexEncodedString: "78017375F35408700C0A6160606488616060")!, encoding: .utf8)))")
-			return header == Data(fromHexEncodedString: "78017375F35408700C0A6160606488616060") /*it's a very strange header, but all the DMGs (at least that I checked) have this byte arrangement as a header: 78017375F35408700C0A6160606488616060
-				it decodes to gibberish in utf8, so not sure what it means.
-			*/
-		} else {
-			//print("dmg help stupid \(filePath)")
-		}
-		return false
+		return String(substring(str: filePath, startIndex: filePath.index(filePath.endIndex, offsetBy: -4), endIndex: filePath.index(filePath.endIndex, offsetBy: 0))) == ".dmg"
+			
 	}
     
     func readSymlinkDestination(path: String) -> String {

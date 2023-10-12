@@ -31,26 +31,6 @@ struct CarView: View {
             Button(action: {
                 print("lol")
             }) {
-                /*switch RenditionType(namedLookup: rendition.namedLookup) { //this makes it break. not sure why. it's extremely inconsistent. i'll figure it out eventually
-                case .image:
-                    Text("image")
-                case .icon:
-                    Text("icon")
-                case .imageSet:
-                    Text("image set")
-                case .multiSizeImageSet:
-                    Text("multisize image set")
-                case .pdf:
-                    Text("pdf")
-                case .color:
-                    Text("color")
-                case .svg:
-                    Text("svg")
-                case .rawData:
-                    Text("data")
-                case .unknown:
-                    Text("The asset type could not be determined.")
-                }*/
                 Text(rendition.name)
             }
         }

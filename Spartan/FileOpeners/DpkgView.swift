@@ -9,7 +9,7 @@ import SwiftUI
 import Foundation
 
 //this one is two separate views!
-//i like to think they're pretty well done. don't have a way to test them... but they theoretically work
+//i like to think they're pretty well done. don't have a way to test them (my 4k won't enter dfu so I can't jailbreak it)... but they theoretically work
 
 struct DpkgView: View {
     

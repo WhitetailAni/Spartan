@@ -3,6 +3,7 @@
 //  Spartan
 //
 //  Created by RealKGB on 4/6/23.
+//  I legitimately have no idea how this works. I have a vague memory of creating it but it's a big blur because I believe I had COVID at the time? It works - I know that - but this is the first time I've looked at the code since like June or July
 //
 
 import SwiftUI

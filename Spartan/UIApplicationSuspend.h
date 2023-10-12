@@ -5,15 +5,15 @@
 //  Created by RealKGB on 6/6/23.
 //
 
-#ifndef UIApplicationSuspend_h
-#define UIApplicationSuspend_h
+#ifndef ObjCFunctions_h
+#define ObjCFunctions_h
 
 #import <UIKit/UIKit.h>
 
-@interface UIApplicationSuspend: NSObject
+@interface ObjCFunctions: NSObject
 
 + (void)suspendNow;
 
 @end
 
-#endif /* UIApplicationSuspend_h */
+#endif /* ObjCFunctions_h */

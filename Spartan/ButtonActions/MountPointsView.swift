@@ -54,6 +54,9 @@ struct MountPointsView: View {
 				}
 				Button(action: {
 					directory = mount.mountPoint + "/"
+					if directory == "//" {
+						directory = "/"
+					}
 					isPresented = false
 				}) {
 					Text("\(mount.device) \(NSLocalizedString("MOUNT_DESC", comment: "Their day's not planned.")) \(mount.mountPoint)")

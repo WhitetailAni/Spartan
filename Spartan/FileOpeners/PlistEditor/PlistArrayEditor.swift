@@ -13,10 +13,17 @@ struct PlistArrayEditor: View {
 	
 	let keyTypes = ["Boolean", "Integer", "String", "Array", "Dictionary", "Data", "Date"]
 	
-	@State var selectedKeyType = "Boolean"
+	@State var selectedKeyType: String
 
     var body: some View {
-        Picker(NSLocalizedString("PLIST_KEY", comment: "A Walk Down Strawberry Lane"), selection: $selectedKeyType) {
+        Picker(NSLocalizedString("PLIST_KEY", comment: "A Walk Down Strawberry Lane"), selection: Binding(
+                get: { self.selectedKeyType },
+                set: { value in
+                    self.selectedKeyType = value
+                    keyToEdit.type = PlistFormatter.stringRepresentationToPlistKeyType(value)
+                    PlistFormatter.resetPlistValueValue(&keyToEdit)
+                }
+            )) {
 			ForEach(keyTypes, id: \.self) { keyType in
 				Text(keyType)
 					.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
@@ -24,13 +31,10 @@ struct PlistArrayEditor: View {
 					}
 			}
 		}
-		.onAppear {
-			selectedKeyType = keyToEdit.type.stringRepresentation()
-		}
 		
 		switch selectedKeyType {
 		case "Boolean":
-			PlistBoolView(value: Binding<Bool>(get: { keyToEdit.value as! Bool }, set: { value in
+			PlistBoolView(value: Binding<Bool>(get: { keyToEdit.value as? Bool ?? false }, set: { value in
 				keyToEdit.value = value
 			}), isPresented: $isPresented)
 			.onAppear {
@@ -38,7 +42,7 @@ struct PlistArrayEditor: View {
 				keyToEdit.type = .bool
 			}
 		case "Integer":
-			PlistIntView(value: Binding<Int>(get: { keyToEdit.value as! Int }, set: { value in
+			PlistIntView(value: Binding<Int>(get: { keyToEdit.value as? Int ?? 0 }, set: { value in
 				keyToEdit.value = value
 			}), isPresented: $isPresented)
 			.onAppear {
@@ -46,7 +50,7 @@ struct PlistArrayEditor: View {
 				keyToEdit.type = .int
 			}
 		case "String":
-			PlistStringView(value: Binding<String>(get: { keyToEdit.value as! String }, set: { value in
+			PlistStringView(value: Binding<String>(get: { keyToEdit.value as? String ?? "" }, set: { value in
 				keyToEdit.value = value
 			}), isPresented: $isPresented)
 			.onAppear {
@@ -54,7 +58,7 @@ struct PlistArrayEditor: View {
 				keyToEdit.type = .string
 			}
 		case "Array":
-			PlistArrayView(values: Binding<[PlistValue]>(get: { keyToEdit.value as! [PlistValue] }, set: { value in
+			PlistArrayView(values: Binding<[PlistValue]>(get: { keyToEdit.value as? [PlistValue] ?? [] }, set: { value in
 				keyToEdit.value = value
 			}), isPresented: $isPresented)
 			.onAppear {
@@ -63,7 +67,7 @@ struct PlistArrayEditor: View {
 				keyToEdit.type = .array
 			}
 		case "Dictionary":
-			PlistDictView(values: Binding<[PlistKey]>(get: { keyToEdit.value as! [PlistKey] }, set: { value in
+			PlistDictView(values: Binding<[PlistKey]>(get: { keyToEdit.value as? [PlistKey] ?? [] }, set: { value in
 				keyToEdit.value = value
 			}), isPresented: $isPresented)
 			.onAppear {
@@ -80,7 +84,7 @@ struct PlistArrayEditor: View {
 				keyToEdit.type = .data
 			}
 		case "Date":
-			PlistDateView(value: Binding<Date>(get: { keyToEdit.value as! Date }, set: { value in
+			PlistDateView(value: Binding<Date>(get: { keyToEdit.value as? Date ?? Date() }, set: { value in
 				keyToEdit.value = value
 			}), isPresented: $isPresented)
 			.onAppear {

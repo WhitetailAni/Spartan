@@ -238,7 +238,10 @@ class PlistFormatter {
 		for item in array {
 			string += "\(formatArrayValue(item)), "
 		}
-		return String(string[..<string.index(string.endIndex, offsetBy: -2)]) + "]"
+		if string.count > 2 {
+			return String(string[..<string.index(string.endIndex, offsetBy: -2)]) + "]"
+		}
+		return "[]"
 	}
 	
 	class func formatDict(_ dict: [PlistKey]) -> String {
@@ -307,24 +310,66 @@ class PlistFormatter {
 		}
 	}
 	
-	class func plistKeyTypeToString(_ type: PlistKeyType) -> String {
-		switch type {
+	class func stringRepresentationToPlistKeyType(_ string: String) -> PlistKeyType {
+		switch string {
+		case "Boolean":
+			return .bool
+		case "Integer":
+			return .int
+		case "String":
+			return .string
+		case "Array":
+			return .array
+		case "Dictionary":
+			return .dict
+		case "Data":
+			return .data
+		case "Date":
+			return .date
+		default:
+			return .unknown
+		}
+	}
+	
+	class func resetPlistKeyValue(_ key: inout PlistKey) {
+		switch key.type {
 		case .bool:
-			return "Boolean"
+			key.value = false
 		case .int:
-			return "Integer"
+			key.value = 0
 		case .string:
-			return "String"
+			key.value = ""
 		case .array:
-			return "Array"
+			key.value = []
 		case .dict:
-			return "Dictionary"
+			key.value = []
 		case .data:
-			return "Data"
+			key.value = Data()
 		case .date:
-			return "Date"
-		case .unknown:
-			return "The data is of an unknown type (Error ID 686)."
+			key.value = Date()
+		default:
+			key.value = Data()
+		}
+	}
+	
+	class func resetPlistValueValue(_ value: inout PlistValue) {
+		switch value.type {
+		case .bool:
+			value.value = false
+		case .int:
+			value.value = 0
+		case .string:
+			value.value = ""
+		case .array:
+			value.value = []
+		case .dict:
+			value.value = []
+		case .data:
+			value.value = Data()
+		case .date:
+			value.value = Date()
+		default:
+			value.value = Data()
 		}
 	}
 }

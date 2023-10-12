@@ -48,7 +48,9 @@ struct DMGMountView: View {
 					guard devPath != nil else {
 						throw LocalizedString("DMG_FAILTOATTACH")
 					}
-					var spawnArgs: [String] = ["-t"]
+					var spawnArgs: [String] = ["-o"]
+					spawnArgs.append(mountAsReadOnly ? "ro" : "rw")
+					spawnArgs.append("-t")
 					switch filesystem {
 					case 0:
 						spawnArgs.append("hfs")
@@ -57,8 +59,6 @@ struct DMGMountView: View {
 					default:
 						throw LocalizedString("DMG_NOFSTYPE")
 					}
-					spawnArgs.append("-o")
-					spawnArgs.append(mountAsReadOnly ? "ro" : "rw")
 					spawnArgs.append(devPath!)
 					spawnArgs.append(dmgFilesAreAvailableAt)
 					print(Spartan.spawn(command: "/sbin/mount", args: spawnArgs, env: []))

@@ -55,11 +55,11 @@ struct PlistArrayView: View {
 						if values[index].value is Bool {
 							Image(systemName: values[index].value as! Bool ? "checkmark.square" : "square")
 						}
-						Text("\(PlistFormatter.formatAnyVarForDisplay(values[index].value)) (\(PlistFormatter.plistKeyTypeToString(values[index].type)))")
+						Text("\(PlistFormatter.formatAnyVarForDisplay(values[index].value)) (\(values[index].type.stringRepresentation()))")
 					}
 				}
 				.sheet(isPresented: $showEditView, content: {
-					PlistArrayEditor(keyToEdit: $values[index], isPresented: $showEditView)
+					PlistArrayEditor(keyToEdit: $values[index], isPresented: $showEditView, selectedKeyType: values[index].type.stringRepresentation())
 				})
 			}
 		}

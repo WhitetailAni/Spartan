@@ -7,13 +7,13 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UIApplicationSuspend: NSObject
+@interface ObjCFunctions: NSObject
 
 + (void)suspendNow;
 
 @end
 
-@implementation UIApplicationSuspend
+@implementation ObjCFunctions
 
 + (void)suspendNow {
     [[UIApplication sharedApplication] performSelector:@selector(suspend)];

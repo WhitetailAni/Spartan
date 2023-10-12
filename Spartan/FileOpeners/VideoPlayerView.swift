@@ -48,6 +48,17 @@ struct VideoPlayerView: View {
                 }
                 VideoPlayerRenderView(player: player)
                     .padding()
+                    .background(UIKitTapGesture(action: {
+						infoShow = true
+					}))
+					.focusable(true)
+                    .alert(isPresented: $infoShow) {
+						Alert(
+							title: Text(videoPath + videoName),
+							message: Text(getVideoInfo(filePath: (videoPath + "/" + videoName))),
+							dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "- I wonder where they were.")))
+						)
+					}
                 if (!fullScreen) {
                     timeLabel
                     UIKitProgressView(value: $currentTime, total: duration)
@@ -68,19 +79,6 @@ struct VideoPlayerView: View {
                             Image(systemName: "viewfinder")
                         }
                         .transition(.opacity)
-                        /*Button(action: {
-                            infoShow = true
-                        }) {
-                            Image(systemName: "info.circle")
-                                .accentColor(.accentColor)
-                        }
-                        .alert(isPresented: $infoShow) {
-                            Alert(
-                                title: Text(videoPath + videoName),
-                                message: Text(getVideoInfo(filePath: (videoPath + "/" + videoName))),
-                                dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "- I wonder where they were.")))
-                            )
-                        }*/
                     }
                 }
             }

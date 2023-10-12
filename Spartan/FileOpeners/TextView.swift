@@ -44,7 +44,15 @@ struct TextView: View {
                                 view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                             }
                     }
-                    StepperTV(value: $index, isHorizontal: true) { }
+                    VStack {
+						Text(LocalizedString("LINESELECTED"))
+							.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+								view.scaledFont(name: "BotW Sheikah Regular", size: 25)
+							}
+							.font(.system(size: 25))
+							.multilineTextAlignment(.center)
+						StepperTV(value: $index, isHorizontal: true) { }
+                    }
                     Spacer()
                     Button(action: {
                         do {

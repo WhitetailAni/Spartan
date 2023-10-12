@@ -106,7 +106,7 @@ struct PlistView: View {
 					}
 				}
 				.sheet(isPresented: $editingSubView, content: {
-					PlistDictEditor(keyToEdit: $plistDict[index], isPresented: $editingSubView)
+					PlistDictEditor(keyToEdit: $plistDict[index], isPresented: $editingSubView, selectedKeyType: plistDict[index].type.stringRepresentation())
 				})
 			}
 		}
@@ -121,6 +121,7 @@ struct PlistView: View {
 			try nsdict.write(to: URL(fileURLWithPath: filePath + fileName))
 		} catch {
 			failedToWrite = true
+			print(error)
 		}
 	}
 }

@@ -36,7 +36,7 @@ struct AudioPlayerView: View {
         VStack {
             HStack {
                 VStack {
-                    if(duration == 0 || audioPath == ""){
+                    if(duration == 0 || (audioPath == "" && player.isPlaying)){
                         Text(NSLocalizedString("AUDIO_ERROR", comment: "to get to the point where you can work for your whole life."))
                             .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                 view.scaledFont(name: "BotW Sheikah Regular", size: 40)
@@ -45,7 +45,7 @@ struct AudioPlayerView: View {
                             .multilineTextAlignment(.center)
                             .padding()
                     } else if(audioData[0] == ""){
-                        Text(descriptiveTimestamps ? cementedAudioPath + cementedAudioName : cementedAudioName)
+                        Text(UserDefaults.settings.bool(forKey: "descriptiveTitles") ? cementedAudioPath + cementedAudioName : cementedAudioName)
                             .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                 view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                             }
@@ -239,4 +239,10 @@ extension Double {
         let seconds = Int(self.truncatingRemainder(dividingBy: 60))
         return String(format: "%02d:%02d", minutes, seconds)
     }
+}
+
+extension AVPlayer {
+	var isPlaying: Bool {
+		return self.rate != 0 && error == nil
+	}
 }

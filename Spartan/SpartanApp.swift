@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import AVKit
+//import GCDWebServer
 @_exported import LaunchServicesBridge
 
 @main
@@ -21,7 +23,7 @@ struct SpartanApp: App {
 }
  
  tvOS 13 doesn't do that. you have to use the old UIKit method with some swiftUI hacked in it.
- it works for me though, since I have to do some setup stuff here.
+ it works for me though, since I have to do some setup stuff here anyway.
  
  */
     var window: UIWindow?
@@ -34,6 +36,8 @@ struct SpartanApp: App {
     @State private var buttonHeight: CGFloat = 0
     
     let fileManager = FileManager.default
+    @State var player = AVPlayer()
+	//let server = GCDWebUploader(uploadDirectory: [URL(fileURLWithPath: "/private/var/mobile/Documents/")])
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
@@ -54,7 +58,6 @@ struct SpartanApp: App {
         #endif
         RootHelperActs.chmod(String(Bundle.main.bundlePath + "/clutch"), 755)
         spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["ch", helperPath, String(755)], env: [], root: true)
-        
         
         if(fileManager.isReadableFile(atPath: "/private/var/mobile/")){ //shows app data directory if sandbox exists
             //displayView(pathToLoad: "/private/var/mobile/Documents/")
@@ -77,7 +80,7 @@ struct SpartanApp: App {
             }
             return false
         }()
-        let hostingController = UIHostingController(rootView: ContentView(directory: pathToLoad, isRootless: isRootless, scaleFactor: UIScreen.main.nativeBounds.height/1080))
+        let hostingController = UIHostingController(rootView: ContentView(directory: pathToLoad, isRootless: isRootless, scaleFactor: UIScreen.main.nativeBounds.height/1080, globalAVPlayer: $player /*, webServer: $server*/))
             window = UIWindow(frame: UIScreen.main.bounds)
             window?.rootViewController = hostingController
             window?.makeKeyAndVisible()
