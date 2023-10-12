@@ -1501,11 +1501,11 @@ struct ContentView: View {
                 }) {
                     ZStack {
                         Image(systemName: "doc.on.doc")
-                            .frame(width:50, height:50)
+                            .frame(width: 50, height: 50)
                         Image(systemName: "arrow.right")
                             .resizable()
-                            .frame(width:15, height:13)
-                            .offset(x:-4, y:11.75) //i do not know how i came up with these values. i am not going to touch them. hopefully it doesn't break on non-1080p (i don't have this)
+                            .frame(width: 15, height: 13)
+                            .offset(x: -4, y: 11.75) //i do not know how i came up with these values. i am not going to touch them. hopefully it doesn't break on non-1080p (i don't have this)
                     }
                 }
         

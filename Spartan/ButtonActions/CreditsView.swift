@@ -50,7 +50,9 @@ struct CreditsView: View {
         }
         .focusable(true)
         .onPlayPauseCommand {
-			secret.toggle()
+			withAnimation {
+				secret.toggle()
+			}
 		}
     }
 }

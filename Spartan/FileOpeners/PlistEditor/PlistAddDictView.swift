@@ -39,7 +39,7 @@ struct PlistAddDictView: View {
 				case "String":
 					plistDict.append(PlistKey(key: newKeyName, value: "A", type: .string))
 				case "Array":
-					let array: [PlistArray] = []
+					let array: [PlistValue] = []
 					plistDict.append(PlistKey(key: newKeyName, value: array, type: .array))
 				case "Dictionary":
 					let dict: [PlistKey] = []
@@ -56,6 +56,7 @@ struct PlistAddDictView: View {
 			}) {
 				Text(LocalizedString("CONFIRM"))
 			}
+			.disabled(newKeyName == "")
 		}
 	}
 }

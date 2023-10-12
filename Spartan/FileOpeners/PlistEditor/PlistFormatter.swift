@@ -11,11 +11,33 @@ struct PlistKey {
 	var key: String
 	var value: Any
 	var type: PlistKeyType
+	
+	init() {
+		key = ""
+		value = 0
+		type = .unknown
+	}
+	
+	init(key: String, value: Any, type: PlistKeyType) {
+		self.key = key
+		self.value = value
+		self.type = type
+	}
 }
 
-struct PlistArray {
+struct PlistValue {
 	var value: Any
 	var type: PlistKeyType
+	
+	init () {
+		value = 0
+		type = .unknown
+	}
+	
+	init(value: Any, type: PlistKeyType) {
+		self.value = value
+		self.type = type
+	}
 }
 
 enum PlistKeyType {
@@ -27,6 +49,27 @@ enum PlistKeyType {
 	case data
 	case date
 	case unknown
+	
+	func stringRepresentation() -> String {
+		switch self {
+		case .bool:
+			return "Boolean"
+		case .int:
+			return "Integer"
+		case .string:
+			return "String"
+		case .array:
+			return "Array"
+		case .dict:
+			return "Dictionary"
+		case .data:
+			return "Data"
+		case .date:
+			return "Date"
+		default:
+			return "Data"
+		}
+	}
 }
 
 class PlistFormatter {
@@ -56,7 +99,7 @@ class PlistFormatter {
 			}()
 			switch type {
 			case .array:
-				array.append(PlistKey(key: key, value: swiftArrayToPlistArrayArray(value as! [Any]), type: type))
+				array.append(PlistKey(key: key, value: swiftArrayToPlistValueArray(value as! [Any]), type: type))
 			case .dict:
 				array.append(PlistKey(key: key, value: swiftDictToPlistKeyArray(value as! [String: Any]), type: type))
 			default:
@@ -77,8 +120,8 @@ class PlistFormatter {
 		return dict
 	}
 	
-	class func swiftArrayToPlistArrayArray(_ array: [Any]) -> [PlistArray] {
-		var newArray: [PlistArray] = []
+	class func swiftArrayToPlistValueArray(_ array: [Any]) -> [PlistValue] {
+		var newArray: [PlistValue] = []
 		
 		for value in array {
 			let type: PlistKeyType = {
@@ -103,12 +146,12 @@ class PlistFormatter {
 			}()
 			switch type {
 			case .dict:
-				let key = PlistArray(value: swiftDictToPlistKeyArray(value as! [String: Any]), type: type)
+				let key = PlistValue(value: swiftDictToPlistKeyArray(value as! [String: Any]), type: type)
 				newArray.append(key)
 			case .array:
-				newArray.append(PlistArray(value: swiftArrayToPlistArrayArray(value as! [Any]), type: type))
+				newArray.append(PlistValue(value: swiftArrayToPlistValueArray(value as! [Any]), type: type))
 			default:
-				newArray.append(PlistArray(value: value, type: type))
+				newArray.append(PlistValue(value: value, type: type))
 			}
 		}
 		
@@ -136,7 +179,7 @@ class PlistFormatter {
 		}
 	}
 	
-	class func formatArrayValue(_ plistArray: PlistArray) -> String {
+	class func formatArrayValue(_ plistArray: PlistValue) -> String {
 		switch plistArray.type {
 		case .bool:
 			return "\(formatBool(plistArray.value as! Bool))"
@@ -145,7 +188,7 @@ class PlistFormatter {
 		case .string:
 			return formatString(plistArray.value as! String)
 		case .array:
-			return formatArray(plistArray.value as! [PlistArray])
+			return formatArray(plistArray.value as! [PlistValue])
 		case .dict:
 			return formatDict(plistArray.value as! [PlistKey])
 		case .data:
@@ -166,7 +209,7 @@ class PlistFormatter {
 		case .string:
 			return formatString(plistKey.value as! String)
 		case .array:
-			return formatArray(plistKey.value as! [PlistArray])
+			return formatArray(plistKey.value as! [PlistValue])
 		case .dict:
 			return formatDict(plistKey.value as! [PlistKey])
 		case .data:
@@ -190,7 +233,7 @@ class PlistFormatter {
 		return string
 	}//i know int and string formatters are redundant, but it makes my life easier
 	
-	class func formatArray(_ array: [PlistArray]) -> String {
+	class func formatArray(_ array: [PlistValue]) -> String {
 		var string: String = "["
 		for item in array {
 			string += "\(formatArrayValue(item)), "
@@ -231,7 +274,7 @@ class PlistFormatter {
 		case is String:
 			return formatString(value as! String)
 		case is [Any]:
-			return formatArray(swiftArrayToPlistArrayArray(value as! [Any]))
+			return formatArray(swiftArrayToPlistValueArray(value as! [Any]))
 		case is [String: Any]:
 			return formatDict(swiftDictToPlistKeyArray(value as! [String: Any]))
 		case is Data:

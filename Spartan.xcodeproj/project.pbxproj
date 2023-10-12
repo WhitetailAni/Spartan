@@ -38,6 +38,9 @@
 		F88FBB0D2A2FEFA700E31EDA /* UIApplicationSuspend.m in Sources */ = {isa = PBXBuildFile; fileRef = F88FBB0C2A2FEFA700E31EDA /* UIApplicationSuspend.m */; };
 		F892B5112ACDA4E500C666CA /* DMGMountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F892B5102ACDA4E500C666CA /* DMGMountView.swift */; };
 		F898F66B2A1AFEC300F1B4E4 /* WebServerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F898F66A2A1AFEC300F1B4E4 /* WebServerView.swift */; };
+		F8B3B2172AD820F10091414A /* PlistDictEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B3B2162AD820F10091414A /* PlistDictEditor.swift */; };
+		F8B3B2192AD820FD0091414A /* PlistArrayEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B3B2182AD820FD0091414A /* PlistArrayEditor.swift */; };
+		F8B3B21B2AD8233C0091414A /* PlistBoolView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B3B21A2AD8233B0091414A /* PlistBoolView.swift */; };
 		F8C1A5D429FB55F100DF4C23 /* MountPointsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C1A5D329FB55F100DF4C23 /* MountPointsView.swift */; };
 		F8CC211F29E2762F008C7B88 /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC211E29E2762F008C7B88 /* ImageView.swift */; };
 		F8CC212329E4FFC5008C7B88 /* PlistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC212229E4FFC5008C7B88 /* PlistView.swift */; };
@@ -51,7 +54,6 @@
 		F8E9A9792A00B4A400706179 /* HexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E9A9782A00B4A400706179 /* HexView.swift */; };
 		F8EA28D429F8C2710063206D /* CreateSymlinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8EA28D329F8C2710063206D /* CreateSymlinkView.swift */; };
 		F8F855C62A47770700DC9CE4 /* RootHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F855C52A47770700DC9CE4 /* RootHelper.swift */; };
-		F8FEB87C2A93A1AF0093B631 /* PlistBoolView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB87B2A93A1AF0093B631 /* PlistBoolView.swift */; };
 		F8FEB87E2A93A1B90093B631 /* PlistIntView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB87D2A93A1B90093B631 /* PlistIntView.swift */; };
 		F8FEB8802A93A1C90093B631 /* PlistStringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB87F2A93A1C90093B631 /* PlistStringView.swift */; };
 		F8FEB8822A93A1D50093B631 /* PlistArrayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8FEB8812A93A1D50093B631 /* PlistArrayView.swift */; };
@@ -93,6 +95,9 @@
 		F88FBB0C2A2FEFA700E31EDA /* UIApplicationSuspend.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UIApplicationSuspend.m; sourceTree = "<group>"; };
 		F892B5102ACDA4E500C666CA /* DMGMountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DMGMountView.swift; sourceTree = "<group>"; };
 		F898F66A2A1AFEC300F1B4E4 /* WebServerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebServerView.swift; sourceTree = "<group>"; };
+		F8B3B2162AD820F10091414A /* PlistDictEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistDictEditor.swift; sourceTree = "<group>"; };
+		F8B3B2182AD820FD0091414A /* PlistArrayEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistArrayEditor.swift; sourceTree = "<group>"; };
+		F8B3B21A2AD8233B0091414A /* PlistBoolView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlistBoolView.swift; path = Spartan/FileOpeners/PlistEditor/PlistBoolView.swift; sourceTree = SOURCE_ROOT; };
 		F8C1A5D329FB55F100DF4C23 /* MountPointsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MountPointsView.swift; sourceTree = "<group>"; };
 		F8CC211E29E2762F008C7B88 /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
 		F8CC212229E4FFC5008C7B88 /* PlistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistView.swift; sourceTree = "<group>"; };
@@ -109,7 +114,6 @@
 		F8EA28D329F8C2710063206D /* CreateSymlinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSymlinkView.swift; sourceTree = "<group>"; };
 		F8F855C32A47770700DC9CE4 /* RootHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = RootHelper; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8F855C52A47770700DC9CE4 /* RootHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootHelper.swift; sourceTree = "<group>"; };
-		F8FEB87B2A93A1AF0093B631 /* PlistBoolView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistBoolView.swift; sourceTree = "<group>"; };
 		F8FEB87D2A93A1B90093B631 /* PlistIntView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistIntView.swift; sourceTree = "<group>"; };
 		F8FEB87F2A93A1C90093B631 /* PlistStringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistStringView.swift; sourceTree = "<group>"; };
 		F8FEB8812A93A1D50093B631 /* PlistArrayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistArrayView.swift; sourceTree = "<group>"; };
@@ -251,7 +255,9 @@
 				F8CC212229E4FFC5008C7B88 /* PlistView.swift */,
 				F8FEB88F2A94F2610093B631 /* PlistAddArrayView.swift */,
 				F8FEB88D2A93A2680093B631 /* PlistAddDictView.swift */,
-				F8FEB87B2A93A1AF0093B631 /* PlistBoolView.swift */,
+				F8B3B2182AD820FD0091414A /* PlistArrayEditor.swift */,
+				F8B3B2162AD820F10091414A /* PlistDictEditor.swift */,
+				F8B3B21A2AD8233B0091414A /* PlistBoolView.swift */,
 				F8FEB87D2A93A1B90093B631 /* PlistIntView.swift */,
 				F8FEB87F2A93A1C90093B631 /* PlistStringView.swift */,
 				F8FEB8812A93A1D50093B631 /* PlistArrayView.swift */,
@@ -405,7 +411,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F853AB5529DE8B3B006EA2D5 /* FavoritesView.swift in Sources */,
-				F8FEB87C2A93A1AF0093B631 /* PlistBoolView.swift in Sources */,
 				F853AB3129DBCB1A006EA2D5 /* ContentView.swift in Sources */,
 				F892B5112ACDA4E500C666CA /* DMGMountView.swift in Sources */,
 				F8C1A5D429FB55F100DF4C23 /* MountPointsView.swift in Sources */,
@@ -424,7 +429,9 @@
 				F8CC211F29E2762F008C7B88 /* ImageView.swift in Sources */,
 				F8CC212729E5206B008C7B88 /* SpareViews.swift in Sources */,
 				F853AB5B29E09F8A006EA2D5 /* AddToFavoritesView.swift in Sources */,
+				F8B3B2172AD820F10091414A /* PlistDictEditor.swift in Sources */,
 				F83F47D22A43782E00A4C47F /* CommandRunner.swift in Sources */,
+				F8B3B21B2AD8233C0091414A /* PlistBoolView.swift in Sources */,
 				F8FEB8802A93A1C90093B631 /* PlistStringView.swift in Sources */,
 				F8EA28D429F8C2710063206D /* CreateSymlinkView.swift in Sources */,
 				F8FEB8902A94F2610093B631 /* PlistAddArrayView.swift in Sources */,
@@ -447,6 +454,7 @@
 				F853AB2F29DBCB1A006EA2D5 /* SpartanApp.swift in Sources */,
 				F8FEB8862A93A1E60093B631 /* PlistDataView.swift in Sources */,
 				F8FEB88E2A93A2680093B631 /* PlistAddDictView.swift in Sources */,
+				F8B3B2192AD820FD0091414A /* PlistArrayEditor.swift in Sources */,
 				F83CB3C02A41170F005BF95A /* FontView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -612,7 +620,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2017;
+				CURRENT_PROJECT_VERSION = 2126;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = NO;
 				DEVELOPMENT_ASSET_PATHS = "";
@@ -635,7 +643,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.7.1;
+				MARKETING_VERSION = 0.7.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.whitetailani.Spartan;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -663,7 +671,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2017;
+				CURRENT_PROJECT_VERSION = 2126;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = NO;
 				DEVELOPMENT_ASSET_PATHS = "";
@@ -686,7 +694,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.7.1;
+				MARKETING_VERSION = 0.7.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.whitetailani.Spartan;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

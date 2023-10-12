@@ -8,14 +8,11 @@
 import SwiftUI
 
 struct PlistDictView: View {
-	@Binding var newDict: Any
-	@State var nameOfKey: String = ""
-	@State var isFromDict: Bool
+	@Binding var values: [PlistKey]
 	@Binding var isPresented: Bool
 	
 	@State var addItemToDict = false
 	@State var isEditing = false
-	@State var values: [PlistKey] = []
 
 	var body: some View {
 		VStack {
@@ -30,22 +27,17 @@ struct PlistDictView: View {
 				})
 				
 				Spacer()
-				if isFromDict {
-					Text(nameOfKey)
-						.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-							view.scaledFont(name: "BotW Sheikah Regular", size: 35)
-						}
-				}
+				Text(" ")
+					.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+						view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+					}
+					.font(.system(size: 40))
 				Spacer()
 				
 				Button(action: {
-					newDict = values
 					isPresented = false
 				}) {
 					Image(systemName: "checkmark")
-				}
-				.onAppear {
-					values = newDict as! [PlistKey]
 				}
 			}
 			
@@ -65,24 +57,7 @@ struct PlistDictView: View {
 					}
 				}
 				.sheet(isPresented: $isEditing, content: {
-					switch values[index].type {
-					case .bool:
-						null()
-					case .int:
-						PlistIntView(newInt: $values[index].value, nameOfKey: values[index].key, isFromDict: true, isPresented: $isEditing)
-					case .string:
-						PlistStringView(newString: $values[index].value, nameOfKey: values[index].key, isFromDict: true, isPresented: $isEditing)
-					case .array:
-						PlistArrayView(newArray: $values[index].value, nameOfKey: values[index].key, isFromDict: true, isPresented: $isEditing)
-					case .dict:
-						PlistDictView(newDict: $values[index].value, nameOfKey: values[index].key, isFromDict: true, isPresented: $isEditing)
-					case .data:
-						PlistDataView(newData: $values[index].value, nameOfKey: values[index].key, isFromDict: true, isPresented: $isEditing)
-					case .date:
-						PlistDateView(newDate: $values[index].value, nameOfKey: values[index].key, isFromDict: true, isPresented: $isEditing)
-					case .unknown:
-						PlistLView(isPresented: $isEditing)
-					}
+					PlistDictEditor(keyToEdit: $values[index], isPresented: $isEditing)
 				})
 			}
 		}

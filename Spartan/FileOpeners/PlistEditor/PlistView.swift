@@ -106,24 +106,7 @@ struct PlistView: View {
 					}
 				}
 				.sheet(isPresented: $editingSubView, content: {
-					switch plistDict[index].type {
-						case .bool:
-							PlistBoolView(newBool: $plistDict[index].value, nameOfKey: plistDict[index].key, isFromDict: true, isPresented: $editingSubView)
-						case .int:
-							PlistIntView(newInt: $plistDict[index].value, nameOfKey: plistDict[index].key, isFromDict: true, isPresented: $editingSubView)
-						case .string:
-							PlistStringView(newString: $plistDict[index].value, nameOfKey: plistDict[index].key, isFromDict: true, isPresented: $editingSubView)
-						case .array:
-							PlistArrayView(newArray: $plistDict[index].value, nameOfKey: plistDict[index].key, isFromDict: true, isPresented: $editingSubView)
-						case .dict:
-							PlistDictView(newDict: $plistDict[index].value, nameOfKey: plistDict[index].key, isFromDict: true, isPresented: $editingSubView)
-						case .data:
-							PlistDataView(newData: $plistDict[index].value, nameOfKey: plistDict[index].key, isFromDict: true, isPresented: $editingSubView)
-						case .date:
-							PlistDateView(newDate: $plistDict[index].value, nameOfKey: plistDict[index].key, isFromDict: true, isPresented: $editingSubView)
-						default:
-							PlistLView(isPresented: $editingSubView)
-					}
+					PlistDictEditor(keyToEdit: $plistDict[index], isPresented: $editingSubView)
 				})
 			}
 		}

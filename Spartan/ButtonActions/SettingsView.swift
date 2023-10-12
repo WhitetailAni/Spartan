@@ -73,13 +73,13 @@ struct SettingsView: View {
 			
 			Button(action: {
 				if appIconPre {
-					UIApplication.shared.setAlternateIconName("Alpha") { error in
+					UIApplication.shared.setAlternateIconName("Megamind") { error in
 						if let error = error {
 							print(error.localizedDescription)
 						}
 					}
 				} else {
-					UIApplication.shared.setAlternateIconName("Megamind") { error in
+					UIApplication.shared.setAlternateIconName("Alpha") { error in
 						if let error = error {
 							print(error.localizedDescription)
 						}
@@ -101,12 +101,12 @@ struct SettingsView: View {
 						view.scaledFont(name: "BotW Sheikah Regular", size: 25)
 					}
 					if appIconPre {
-						Image(uiImage: UIImage(named: "Alpha")!)
+						Image(uiImage: UIImage(named: "Megamind")!)
 							.resizable()
 							.cornerRadius(10)
 							.frame(width: 300, height: 180)
 					} else {
-						Image(uiImage: UIImage(named: "Megamind")!)
+						Image(uiImage: UIImage(named: "Alpha")!)
 							.resizable()
 							.cornerRadius(10)
 							.frame(width: 300, height: 180)

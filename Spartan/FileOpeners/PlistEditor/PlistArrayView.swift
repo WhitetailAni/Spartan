@@ -9,12 +9,8 @@ import SwiftUI
 import Foundation
 
 struct PlistArrayView: View {
-	@Binding var newArray: Any
-	@State var nameOfKey: String = ""
-	@State var isFromDict: Bool
+	@Binding var values: [PlistValue]
 	@Binding var isPresented: Bool
-	
-	@State var values: [PlistArray] = []
 	
 	@State var showEditView = false
 	@State var showAddView = false
@@ -28,23 +24,20 @@ struct PlistArrayView: View {
 					Image(systemName: "plus")
 				}
 				.sheet(isPresented: $showAddView, content: {
-					PlistAddArrayView(plistArray: $values, isPresented: $showAddView)
+					PlistAddArrayView(plistValue: $values, isPresented: $showAddView)
 				})
 				
 				Spacer()
-				if isFromDict {
-					Text(nameOfKey)
-						.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-							view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-						}
-						.font(.system(size: 40))
-						.multilineTextAlignment(.center)
-						.padding(-10)
-						.focusable(true)
-				}
+				Text(" ")
+					.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+						view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+					}
+					.font(.system(size: 40))
+					.multilineTextAlignment(.center)
+					.padding(-10)
+					.focusable(true)
 				Spacer()
 				Button(action: {
-					newArray = values
 					isPresented = false
 				}) {
 					Image(systemName: "checkmark")
@@ -66,29 +59,9 @@ struct PlistArrayView: View {
 					}
 				}
 				.sheet(isPresented: $showEditView, content: {
-					switch values[index].type {
-					case .bool:
-						Text("All I need is a little neurotoxin.")
-					case .int:
-						PlistIntView(newInt: $values[index].value, isFromDict: false, isPresented: $showEditView)
-					case .string:
-						PlistStringView(newString: $values[index].value, isFromDict: false, isPresented: $showEditView)
-					case .array:
-						PlistArrayView(newArray: $values[index].value, isFromDict: false, isPresented: $showEditView)
-					case .dict:
-						PlistDictView(newDict: $values[index].value, isFromDict: false, isPresented: $showEditView)
-					case .data:
-						PlistDataView(newData: $values[index].value, isFromDict: false, isPresented: $showEditView)
-					case .date:
-						PlistDateView(newDate: $values[index].value, isFromDict: false, isPresented: $showEditView)
-					case .unknown:
-						PlistLView(isPresented: $showEditView)
-					}
+					PlistArrayEditor(keyToEdit: $values[index], isPresented: $showEditView)
 				})
 			}
-		}
-		.onAppear {
-			values = newArray as! [PlistArray]
 		}
 	}
 }
