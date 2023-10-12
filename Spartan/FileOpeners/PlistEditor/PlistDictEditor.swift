@@ -74,7 +74,7 @@ struct PlistDictEditor: View {
 				keyToEdit.type = .array
 			}
 		case "Data":
-			PlistDataView(value: Binding<Data>(get: { keyToEdit.value as! Data }, set: { value in
+			PlistDataView(value: Binding<Data>(get: { keyToEdit.value as? Data ?? withUnsafeBytes(of: &keyToEdit.value) { Data($0) } }, set: { value in
 				keyToEdit.value = value
 			}), isPresented: $isPresented)
 			.onAppear {

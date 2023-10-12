@@ -72,7 +72,7 @@ struct PlistArrayEditor: View {
 				keyToEdit.type = .array
 			}
 		case "Data":
-			PlistDataView(value: Binding<Data>(get: { keyToEdit.value as! Data }, set: { value in
+			PlistDataView(value: Binding<Data>(get: { keyToEdit.value as? Data ?? withUnsafeBytes(of: &keyToEdit.value) { Data($0) } /*this gets the raw byte representation of the value, in case Data is summoned as a fallback*/ }, set: { value in
 				keyToEdit.value = value
 			}), isPresented: $isPresented)
 			.onAppear {

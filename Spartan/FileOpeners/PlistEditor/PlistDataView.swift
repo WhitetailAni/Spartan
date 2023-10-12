@@ -26,7 +26,7 @@ struct PlistDataView: View {
 						}
 						return string
 					}
-					value = Data(fromHexEncodedString: dataAsString)
+					value = Data(fromHexEncodedString: dataAsString) ?? Data()
 					isPresented = false
 				}) {
 					Image(systemName: "checkmark")
