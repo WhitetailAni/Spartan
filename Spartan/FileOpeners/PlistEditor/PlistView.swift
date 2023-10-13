@@ -117,11 +117,24 @@ struct PlistView: View {
 	
 	func writeDictToPlist(_ dict: [String: Any]) {
 		let nsdict = dict as NSDictionary
-		do {
-			try nsdict.write(to: URL(fileURLWithPath: filePath + fileName))
-		} catch {
-			failedToWrite = true
-			print(error)
+		let fullPath = filePath + fileName
+		if filePathIsNotMobileWritable(fullPath) {
+			do {
+				try nsdict.write(to: URL(fileURLWithPath: tempPath))
+			} catch {
+				failedToWrite = true
+				print("epic fail")
+				print(error)
+			}
+			RootHelperActs.mv(tempPath, fullPath)
+		} else {
+			do {
+				try nsdict.write(to: URL(fileURLWithPath: fullPath))
+			} catch {
+				failedToWrite = true
+				print("epic fail")
+				print(error)
+			}
 		}
 	}
 }

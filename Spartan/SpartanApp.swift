@@ -41,7 +41,7 @@ struct SpartanApp: App {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        //UserDefaults.settings.set(false, forKey: "haveLaunchedBefore")
+        UserDefaults.settings.set(true, forKey: "haveLaunchedBefore")
         
         print(UIApplication.shared.supportsAlternateIcons)
     
@@ -54,16 +54,15 @@ struct SpartanApp: App {
         }
         
         #if DEBUG
-            spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["ch", helperPath, String(755)], env: [], root: true)
+            spawn(command: "/bin/RootHelper", args: ["ch", helperPath, String(755)], env: [], root: true)
         #endif
-        RootHelperActs.chmod(String(Bundle.main.bundlePath + "/clutch"), 755)
         spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["ch", helperPath, String(755)], env: [], root: true)
         
         if(fileManager.isReadableFile(atPath: "/private/var/mobile/")){ //shows app data directory if sandbox exists
             //displayView(pathToLoad: "/private/var/mobile/Documents/")
             //displayView(pathToLoad: Bundle.main.bundlePath)
             //displayView(pathToLoad: "/private/var/containers/Bundle/Application/2A65A51A-4061-4143-B622-FA0E57C0C3EE/trillstore.app/")
-            displayView(pathToLoad: "/var/mobile/")
+            displayView(pathToLoad: "/private/var/mobile/")
         } else {
             displayView(pathToLoad: "/Developer/")
         }

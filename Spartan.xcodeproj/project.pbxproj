@@ -35,7 +35,7 @@
 		F88CC4A52A44B020001FACFC /* AssetCatalogWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F88CC4A42A44B020001FACFC /* AssetCatalogWrapper */; settings = {ATTRIBUTES = (Required, ); }; };
 		F88CC4A72A44B020001FACFC /* DiskImagesWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F88CC4A62A44B020001FACFC /* DiskImagesWrapper */; settings = {ATTRIBUTES = (Required, ); }; };
 		F88CC4AB2A44B020001FACFC /* SVGWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = F88CC4AA2A44B020001FACFC /* SVGWrapper */; settings = {ATTRIBUTES = (Required, ); }; };
-		F88FBB0D2A2FEFA700E31EDA /* UIApplicationSuspend.m in Sources */ = {isa = PBXBuildFile; fileRef = F88FBB0C2A2FEFA700E31EDA /* UIApplicationSuspend.m */; };
+		F88FBB0D2A2FEFA700E31EDA /* ObjCFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = F88FBB0C2A2FEFA700E31EDA /* ObjCFunctions.m */; };
 		F892B5112ACDA4E500C666CA /* DMGMountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F892B5102ACDA4E500C666CA /* DMGMountView.swift */; };
 		F898F66B2A1AFEC300F1B4E4 /* WebServerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F898F66A2A1AFEC300F1B4E4 /* WebServerView.swift */; };
 		F8B3B2172AD820F10091414A /* PlistDictEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B3B2162AD820F10091414A /* PlistDictEditor.swift */; };
@@ -104,14 +104,13 @@
 		F853AB5829DE8C0E006EA2D5 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		F853AB5A29E09F8A006EA2D5 /* AddToFavoritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToFavoritesView.swift; sourceTree = "<group>"; };
 		F88CC49E2A44ADEB001FACFC /* SF Mono.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF Mono.otf"; sourceTree = "<group>"; };
-		F88FBB0B2A2FEF9000E31EDA /* UIApplicationSuspend.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UIApplicationSuspend.h; sourceTree = "<group>"; };
-		F88FBB0C2A2FEFA700E31EDA /* UIApplicationSuspend.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UIApplicationSuspend.m; sourceTree = "<group>"; };
+		F88FBB0B2A2FEF9000E31EDA /* ObjCFunctions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjCFunctions.h; sourceTree = "<group>"; };
+		F88FBB0C2A2FEFA700E31EDA /* ObjCFunctions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjCFunctions.m; sourceTree = "<group>"; };
 		F892B5102ACDA4E500C666CA /* DMGMountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DMGMountView.swift; sourceTree = "<group>"; };
 		F898F66A2A1AFEC300F1B4E4 /* WebServerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebServerView.swift; sourceTree = "<group>"; };
 		F8B3B2162AD820F10091414A /* PlistDictEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistDictEditor.swift; sourceTree = "<group>"; };
 		F8B3B2182AD820FD0091414A /* PlistArrayEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistArrayEditor.swift; sourceTree = "<group>"; };
 		F8B3B21A2AD8233B0091414A /* PlistBoolView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlistBoolView.swift; path = Spartan/FileOpeners/PlistEditor/PlistBoolView.swift; sourceTree = SOURCE_ROOT; };
-		F8B3B2212AD84FEA0091414A /* GCDWebServers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GCDWebServers.framework; sourceTree = "<group>"; };
 		F8C1A5D329FB55F100DF4C23 /* MountPointsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MountPointsView.swift; sourceTree = "<group>"; };
 		F8CC211E29E2762F008C7B88 /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
 		F8CC212229E4FFC5008C7B88 /* PlistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistView.swift; sourceTree = "<group>"; };
@@ -183,7 +182,6 @@
 				F853AB2C29DBCB1A006EA2D5 /* Products */,
 				F83F47D02A43781000A4C47F /* External */,
 				F853AB2D29DBCB1A006EA2D5 /* Spartan */,
-				F8B3B2202AD84FEA0091414A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -199,8 +197,8 @@
 		F853AB2D29DBCB1A006EA2D5 /* Spartan */ = {
 			isa = PBXGroup;
 			children = (
-				F88FBB0B2A2FEF9000E31EDA /* UIApplicationSuspend.h */,
-				F88FBB0C2A2FEFA700E31EDA /* UIApplicationSuspend.m */,
+				F88FBB0B2A2FEF9000E31EDA /* ObjCFunctions.h */,
+				F88FBB0C2A2FEFA700E31EDA /* ObjCFunctions.m */,
 				F8D579652A11D1D100FDA526 /* Spartan-Bridging-Header.h */,
 				F853AB2E29DBCB1A006EA2D5 /* SpartanApp.swift */,
 				F853AB3029DBCB1A006EA2D5 /* ContentView.swift */,
@@ -214,14 +212,6 @@
 				F88CC49E2A44ADEB001FACFC /* SF Mono.otf */,
 			);
 			path = Spartan;
-			sourceTree = "<group>";
-		};
-		F8B3B2202AD84FEA0091414A /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				F8B3B2212AD84FEA0091414A /* GCDWebServers.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		F8EA28D129F8ACAB0063206D /* FileOpeners */ = {
@@ -466,7 +456,7 @@
 				F8FEB87E2A93A1B90093B631 /* PlistIntView.swift in Sources */,
 				F8FEB8922A94F7B30093B631 /* PlistViewL.swift in Sources */,
 				F8FEB8842A93A1DD0093B631 /* PlistDictView.swift in Sources */,
-				F88FBB0D2A2FEFA700E31EDA /* UIApplicationSuspend.m in Sources */,
+				F88FBB0D2A2FEFA700E31EDA /* ObjCFunctions.m in Sources */,
 				F8FEB8882A93A1F40093B631 /* PlistFormatter.swift in Sources */,
 				F8CC212F29E74DF4008C7B88 /* VideoPlayerView.swift in Sources */,
 				F853AB5929DE8C0E006EA2D5 /* SearchView.swift in Sources */,

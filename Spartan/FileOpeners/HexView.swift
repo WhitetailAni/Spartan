@@ -38,7 +38,13 @@ struct HexView: View {
                 }
                 let newData = Data(fromHexEncodedString: cleanedHexString) // convert hex string to data object
                 do {
-                    try newData?.write(to: URL(fileURLWithPath: filePath + fileName)) // write data to file
+					let fullPath = filePath + fileName
+					if filePathIsNotMobileWritable(fullPath) {
+								try newData?.write(to: URL(fileURLWithPath: tempPath)) // write data to file
+								RootHelperActs.mv(tempPath, fullPath)
+					} else {
+						try newData?.write(to: URL(fileURLWithPath: fullPath)) // write data to file
+                    }
                 } catch {
                     print("Error writing data to file: \(error.localizedDescription)")
                 }

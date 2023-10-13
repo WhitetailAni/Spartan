@@ -12,6 +12,7 @@ import Foundation
 //this is for various global stuff that doesn't belong to a specific view. frameworks, view modifiers, view elements, UIViewRepresentables, etc
 
 let fileManager = FileManager.default
+let tempPath = "/var/mobile/Media/temp"
 
 struct SpareView: View {
     var body: some View {
@@ -319,8 +320,12 @@ extension Data {
 }
 
 class RootHelperActs {
-	class func mv(_ filePath: String, _ fileDest: String) {
+	class func rm(_ filePath: String) {
+		spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["rm", filePath], env: [], root: true)
+	}
 	
+	class func mv(_ filePath: String, _ fileDest: String) {
+		spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["mv", filePath, fileDest], env: [], root: true)
 	}
 	
 	class func chmod(_ filePath: String, _ perms: Int) {
@@ -329,3 +334,7 @@ class RootHelperActs {
 }
 
 extension String: Error { }
+
+func filePathIsNotMobileWritable(_ fullPath: String) -> Bool {
+	return ((fullPath.count < 19) || (String(substring(str: fullPath, startIndex: fullPath.index(fullPath.startIndex, offsetBy: 0), endIndex: fullPath.index(fullPath.startIndex, offsetBy: 19))) != "/private/var/mobile"))
+}

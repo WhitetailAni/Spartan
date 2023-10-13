@@ -112,12 +112,34 @@ class PlistFormatter {
 		return array
 	}
 	
-	class func plistKeyArrayToSwiftDict(_ array: [PlistKey]) -> [String: Any] {
-		var dict: [String: Any] = [:]
-		for i in 0..<array.count {
-			dict.updateValue(array[i].value, forKey: array[i].key)
+	class func plistKeyArrayToSwiftDict(_ dict: [PlistKey]) -> [String: Any] {
+		var newDict: [String: Any] = [:]
+		for key in dict {
+			switch key.type {
+			case .bool, .int, .string, .data, .date, .unknown:
+				newDict.updateValue(key.value, forKey: key.key)
+			case .array:
+				newDict.updateValue(plistValueArrayToSwiftArray(key.value as! [PlistValue]), forKey: key.key)
+			case .dict:
+				newDict.updateValue(plistKeyArrayToSwiftDict(key.value as! [PlistKey]), forKey: key.key)
+			}
 		}
-		return dict
+		return newDict
+	}
+	
+	class func plistValueArrayToSwiftArray(_ array: [PlistValue]) -> [Any] {
+		var newArray: [Any] = []
+		for value in array {
+			switch value.type {
+			case .bool, .int, .string, .data, .date, .unknown:
+				newArray.append(value.value)
+			case .array:
+				newArray.append(plistValueArrayToSwiftArray(value.value as! [PlistValue]))
+			case .dict:
+				newArray.append(plistKeyArrayToSwiftDict(value.value as! [PlistKey]))
+			}
+		}
+		return newArray
 	}
 	
 	class func swiftArrayToPlistValueArray(_ array: [Any]) -> [PlistValue] {

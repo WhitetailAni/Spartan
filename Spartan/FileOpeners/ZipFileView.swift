@@ -117,25 +117,51 @@ struct ZipFileView: View {
     }
     
     func uncompressFile(pathToZip: String, password: String, overwrite: Bool, destination: String) {
-        do {
-            try Zip.unzipFile(URL(fileURLWithPath: pathToZip), destination: URL(fileURLWithPath: destination), overwrite: overwrite, password: password, progress: { (progress) -> () in
-            print(progress)
-            actionProgress = progress
-    })
-        } catch {
-            print("Failed to extract file: \(error.localizedDescription)")
-        }
-    }
+        if filePathIsNotMobileWritable(destination) {
+			do {
+				try Zip.unzipFile(URL(fileURLWithPath: pathToZip), destination: URL(fileURLWithPath: tempPath), overwrite: overwrite, password: password, progress: { (progress) -> () in
+					print(progress)
+					actionProgress = progress * 0.96
+				})
+            } catch {
+				print("Failed to extract file: \(error.localizedDescription)")
+            }
+            RootHelperActs.mv(tempPath, destination)
+            actionProgress = 1
+		} else {
+			do {
+				try Zip.unzipFile(URL(fileURLWithPath: pathToZip), destination: URL(fileURLWithPath: destination), overwrite: overwrite, password: password, progress: { (progress) -> () in
+					print(progress)
+					actionProgress = progress
+				})
+            } catch {
+				print("Failed to extract file: \(error.localizedDescription)")
+            }
+		}
+	}
     
     func compressFiles(pathsToFiles: [String], password: String, destination: String) {
-        do {
-            try Zip.zipFiles(paths: stringPathToURLPath(filePaths: pathsToFiles), zipFilePath: URL(fileURLWithPath: destination), password: password, progress: { (progress) -> () in
-                print(progress)
-                actionProgress = progress
-            })
-        } catch {
-            print("Failed to compress files: \(error.localizedDescription)")
-        }
+		if filePathIsNotMobileWritable(destination) {
+			do {
+				try Zip.zipFiles(paths: stringPathToURLPath(filePaths: pathsToFiles), zipFilePath: URL(fileURLWithPath: tempPath), password: password, progress: { (progress) -> () in
+					print(progress)
+					actionProgress = progress * 0.96
+				})
+            } catch {
+				print("Failed to extract file: \(error.localizedDescription)")
+            }
+            RootHelperActs.mv(tempPath, destination)
+            actionProgress = 1
+		} else {
+			do {
+				try Zip.zipFiles(paths: stringPathToURLPath(filePaths: pathsToFiles), zipFilePath: URL(fileURLWithPath: destination), password: password, progress: { (progress) -> () in
+					print(progress)
+					actionProgress = progress
+				})
+			} catch {
+				print("Failed to compress files: \(error.localizedDescription)")
+			}
+		}
     }
     
     func stringPathToURLPath(filePaths: [String]) -> [URL] {

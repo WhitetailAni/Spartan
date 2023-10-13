@@ -56,7 +56,13 @@ struct TextView: View {
                     Spacer()
                     Button(action: {
                         do {
-                            try stringArrayToString(inputArray: fileContents).write(to: URL(fileURLWithPath: filePath + fileName), atomically: true, encoding: encoding)
+							let fullPath = filePath + fileName
+							if filePathIsNotMobileWritable(fullPath) {
+								try stringArrayToString(inputArray: fileContents).write(to: URL(fileURLWithPath: tempPath), atomically: true, encoding: encoding)
+								RootHelperActs.mv(tempPath, fullPath)
+							} else {
+								try stringArrayToString(inputArray: fileContents).write(to: URL(fileURLWithPath: fullPath), atomically: true, encoding: encoding)
+                            }
                         } catch {
                             print("Failed to save file: \(error.localizedDescription)")
                         }
