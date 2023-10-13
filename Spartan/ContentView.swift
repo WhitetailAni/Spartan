@@ -100,12 +100,6 @@ struct ContentView: View {
     @State var blankString: [String] = [""] //dont question it
     @State private var nonexistentFile = "" //REALLY dont question it
     
-    let paddingInt: CGFloat = -7
-    let opacityInt: CGFloat = 1.0
-    
-    let fileManager = FileManager.default
-    let appsManager = ApplicationsManager(allApps: LSApplicationWorkspace.default().allApplications())
-    
     var body: some View {
         VStack {
             VStack {
@@ -951,7 +945,6 @@ struct ContentView: View {
                             Button(action: {
                                 directory = directory + masterFiles[newViewFileIndex].name
                                 updateFiles()
-                                print(directory)
                                 showSubView[2] = false
                             }) {
                                 Text(NSLocalizedString("OPEN_DIRECTORY", comment: "Hello?"))
@@ -1394,7 +1387,6 @@ struct ContentView: View {
                 //i have written a lot more for Alcatraz, but it's so ugly and annoying. i do not like using it
             } else {
                 goBack()
-                print(directory)
             }
         } //this handles going back directories with the menu button.
     }
@@ -1753,18 +1745,13 @@ struct ContentView: View {
         }
     
         if (multiSelect) {
-            print("multi selecting")
             if(masterFiles[index].isSelected){
-                print("is selected")
                 let searchedIndex = multiSelectFiles.firstIndex(of: masterFiles[index].name)
                 multiSelectFiles.remove(at: searchedIndex!)
                 masterFiles[index].isSelected = false
             } else {
-                print("adding")
                 masterFiles[index].isSelected = true
                 multiSelectFiles.append(masterFiles[index].name)
-                print(masterFiles[index])
-                print(multiSelectFiles)
             }
         } else {
             multiSelect = false
@@ -1788,7 +1775,6 @@ struct ContentView: View {
                         updateFiles()
                     }
                 }
-                print(directory)
             case 1:
                 showSubView[10] = true
                 callback = true
@@ -1880,8 +1866,6 @@ struct ContentView: View {
     }
     
     func getFileInfo(forFileAtPath: String) -> [String] {
-        let fileManager = fileManager
-    
         do {
             let attributes = try fileManager.attributesOfItem(atPath: forFileAtPath)
     
@@ -1941,7 +1925,7 @@ struct ContentView: View {
                 return (0, "?")
             }
         } catch {
-            print("Error: \(error.localizedDescription)")
+            print("Error: \(error)")
             return (0, "?")
         }
     }

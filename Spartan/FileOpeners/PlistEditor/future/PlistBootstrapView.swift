@@ -17,8 +17,6 @@ struct PlistBootstrapView: View {
 	@State var viewToLoad = 0
 	@State var progress = 0.0
 	
-	let fileManager = FileManager.default
-	
 	init(filePath: String, fileName: String) {
         _filePath = State(initialValue: filePath)
         _fileName = State(initialValue: fileName)

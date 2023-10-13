@@ -48,21 +48,17 @@ struct DMGMountView: View {
 					guard devPath != nil else {
 						throw LocalizedString("DMG_FAILTOATTACH")
 					}
-					var spawnArgs: [String] = ["-o"]
-					spawnArgs.append(mountAsReadOnly ? "ro" : "rw")
-					spawnArgs.append("-t")
+					var fileSystemType = ""
 					switch filesystem {
 					case 0:
-						spawnArgs.append("hfs")
+						fileSystemType = "hfs"
 					case 1:
-						spawnArgs.append("apfs")
+						fileSystemType = "apfs"
 					default:
 						throw LocalizedString("DMG_NOFSTYPE")
 					}
-					spawnArgs.append(devPath!)
-					spawnArgs.append(dmgFilesAreAvailableAt)
-					print(Spartan.spawn(command: "/sbin/mount", args: spawnArgs, env: []))
-					mountedSuccessfully = true //assume it succeeds for now, will implement either C mount function or output parsing (not sure which is harder)
+					print(mount(devPath!, dmgFilesAreAvailableAt, fileSystemType, nil))
+					
 				} catch {
 					errorOccurred = true
 					errorDesc = error.localizedDescription

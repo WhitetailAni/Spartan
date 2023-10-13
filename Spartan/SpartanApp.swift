@@ -11,7 +11,7 @@ import AVKit
 @_exported import LaunchServicesBridge
 
 @main
-class AppDelegate: UIResponder, UIApplicationDelegate { /*ordinarily this would be an incredibly simple function. but that would require having a tvOS 14.0+ application, where you can just
+class AppDelegate: UIResponder, UIApplicationDelegate { /*ordinarily this would be an incredibly simple function:
 
 @main
 struct SpartanApp: App {
@@ -22,7 +22,7 @@ struct SpartanApp: App {
     }
 }
  
- tvOS 13 doesn't do that. you have to use the old UIKit method with some swiftUI hacked in it.
+ but that would require having a tvOS 14.0+ application. tvOS 13 doesn't do that. you have to use the old UIKit method with some swiftUI hacked in it.
  it works for me though, since I have to do some setup stuff here anyway.
  
  */
@@ -35,15 +35,12 @@ struct SpartanApp: App {
     @State private var buttonWidth: CGFloat = 0
     @State private var buttonHeight: CGFloat = 0
     
-    let fileManager = FileManager.default
     @State var player = AVPlayer()
 	//let server = GCDWebUploader(uploadDirectory: [URL(fileURLWithPath: "/private/var/mobile/Documents/")])
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         UserDefaults.settings.set(true, forKey: "haveLaunchedBefore")
-        
-        print(UIApplication.shared.supportsAlternateIcons)
     
         if(!UserDefaults.settings.bool(forKey: "haveLaunchedBefore")) {
             UserDefaults.settings.set(25, forKey: "logWindowFontSize")
@@ -58,7 +55,7 @@ struct SpartanApp: App {
         #endif
         spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["ch", helperPath, String(755)], env: [], root: true)
         
-        if(fileManager.isReadableFile(atPath: "/private/var/mobile/")){ //shows app data directory if sandbox exists
+		if(Spartan.fileManager.isReadableFile(atPath: "/private/var/mobile/")){ //shows app data directory if sandbox exists
             //displayView(pathToLoad: "/private/var/mobile/Documents/")
             //displayView(pathToLoad: Bundle.main.bundlePath)
             //displayView(pathToLoad: "/private/var/containers/Bundle/Application/2A65A51A-4061-4143-B622-FA0E57C0C3EE/trillstore.app/")
@@ -74,7 +71,7 @@ struct SpartanApp: App {
     
     func displayView(pathToLoad: String) {
         let isRootless = {
-            if(fileManager.fileExists(atPath: "/private/var/jb/")) { //rootless tvos :woeis:
+			if(Spartan.fileManager.fileExists(atPath: "/private/var/jb/")) { //rootless tvos :woeis:
                 return true
             }
             return false
@@ -86,7 +83,7 @@ struct SpartanApp: App {
     }
     
     func createTrash() {
-        if(!(fileManager.fileExists(atPath: "/private/var/mobile/Media/.Trash"))){
+		if(!(Spartan.fileManager.fileExists(atPath: "/private/var/mobile/Media/.Trash"))){
             do {
                 try createDirectoryAtPath(path: "/private/var/mobile/Media", directoryName: ".Trash")
                 print("Created trash directory")
@@ -99,22 +96,22 @@ struct SpartanApp: App {
     }
     
     func createDirectoryAtPath(path: String, directoryName: String) throws {
-        guard fileManager.fileExists(atPath: "/private/var/mobile/Media/.Trash/") else {
+		guard Spartan.fileManager.fileExists(atPath: "/private/var/mobile/Media/.Trash/") else {
             print("Trash already exists")
             return
         }
         let directoryPath = (path as NSString).appendingPathComponent(directoryName)
-        try fileManager.createDirectory(atPath: directoryPath, withIntermediateDirectories: true, attributes: nil)
+		try Spartan.fileManager.createDirectory(atPath: directoryPath, withIntermediateDirectories: true, attributes: nil)
     }
     
     func markExecutable(_ filePath: String) {
         do {
-            var attributes = try fileManager.attributesOfItem(atPath: filePath)
+			var attributes = try Spartan.fileManager.attributesOfItem(atPath: filePath)
             
             let currentPermissions = attributes[.posixPermissions] as? UInt16 ?? 0
             let newPermissions = currentPermissions | UInt16(0o111)
             attributes[.posixPermissions] = NSNumber(value: newPermissions)
-            try fileManager.setAttributes(attributes, ofItemAtPath: filePath)
+			try Spartan.fileManager.setAttributes(attributes, ofItemAtPath: filePath)
         } catch {
             print("Error: \(error)")
         }
@@ -127,8 +124,5 @@ extension UserDefaults {
     }
     static var settings: UserDefaults {
         return UserDefaults(suiteName: "com.whitetailani.Spartan.settings") ?? UserDefaults.standard
-    }
-    static var textedit: UserDefaults {
-        return UserDefaults(suiteName: "com.whitetailani.Spartan.texteditor") ?? UserDefaults.standard
-    } //text editor has its own UserDefaults for reasons I'll explain later
+    } // so it turns out it did NOT need its own userdefaults. i never used it. no idea why i created it.
 }

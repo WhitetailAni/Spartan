@@ -278,12 +278,6 @@ struct VideoPlayerView: View {
         let height = videoTrack.naturalSize.height
         let width2 = String(format: "%.1f", width)
         let height2 = String(format: "%.1f", height)
-    
-        for item in metadata {
-            if let key = item.commonKey?.rawValue, let value = item.value {
-                print("\(key): \(value)")
-            }
-        }
         
         let info = """
         \(NSLocalizedString("VIDEO_FILE", comment: "I heard it's just orientation.") + fileURL.lastPathComponent)

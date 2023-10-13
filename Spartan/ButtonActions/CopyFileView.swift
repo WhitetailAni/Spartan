@@ -43,13 +43,10 @@ struct CopyFileView: View {
                 }
             
                 Button(action: {
-                    print(multiSelect)
-                    print(fileNames)
                     if(multiSelect){
                         if(fileNames.count > 1){
                             for fileName in fileNames {
                                 copyFile(path: filePath + fileName, newPath: newFilePath + fileName)
-                                print(fileName)
                             }
                         } else {
                             copyFile(path: filePath + fileNames[0], newPath: newFilePath + newFileName)
@@ -59,8 +56,6 @@ struct CopyFileView: View {
                     } else {
                         copyFile(path: filePath + fileNames[0], newPath: newFilePath + newFileName)
                     }
-                
-                    print("File copied successfully")
                     fileNames[0] = ""
                     multiSelect = false
                     isPresented = false

@@ -64,7 +64,7 @@ struct TextView: View {
 								try stringArrayToString(inputArray: fileContents).write(to: URL(fileURLWithPath: fullPath), atomically: true, encoding: encoding)
                             }
                         } catch {
-                            print("Failed to save file: \(error.localizedDescription)")
+                            print("Failed to save file: \(error)")
                         }
                     }) {
                         Image(systemName: "square.and.arrow.down")
@@ -118,7 +118,6 @@ struct TextView: View {
                         }
                     Button(action: {
                         fileContents[textEditorIndex] = textEditorString
-                        print(fileContents)
                         withAnimation {
                             textEditorShow = false
                         }

@@ -90,7 +90,7 @@ struct ZipFileView: View {
                     }
                 
                 if(showProgress) {
-                    UIKitProgressView(value: $actionProgress, total: 100)
+                    UIKitProgressView(value: $actionProgress, total: 1)
                 }
         
                 Button(action: {
@@ -120,22 +120,20 @@ struct ZipFileView: View {
         if filePathIsNotMobileWritable(destination) {
 			do {
 				try Zip.unzipFile(URL(fileURLWithPath: pathToZip), destination: URL(fileURLWithPath: tempPath), overwrite: overwrite, password: password, progress: { (progress) -> () in
-					print(progress)
 					actionProgress = progress * 0.96
 				})
             } catch {
-				print("Failed to extract file: \(error.localizedDescription)")
+				print("Failed to extract file: \(error)")
             }
             RootHelperActs.mv(tempPath, destination)
             actionProgress = 1
 		} else {
 			do {
 				try Zip.unzipFile(URL(fileURLWithPath: pathToZip), destination: URL(fileURLWithPath: destination), overwrite: overwrite, password: password, progress: { (progress) -> () in
-					print(progress)
 					actionProgress = progress
 				})
             } catch {
-				print("Failed to extract file: \(error.localizedDescription)")
+				print("Failed to extract file: \(error)")
             }
 		}
 	}
@@ -144,22 +142,20 @@ struct ZipFileView: View {
 		if filePathIsNotMobileWritable(destination) {
 			do {
 				try Zip.zipFiles(paths: stringPathToURLPath(filePaths: pathsToFiles), zipFilePath: URL(fileURLWithPath: tempPath), password: password, progress: { (progress) -> () in
-					print(progress)
 					actionProgress = progress * 0.96
 				})
             } catch {
-				print("Failed to extract file: \(error.localizedDescription)")
+				print("Failed to extract file: \(error)")
             }
             RootHelperActs.mv(tempPath, destination)
             actionProgress = 1
 		} else {
 			do {
 				try Zip.zipFiles(paths: stringPathToURLPath(filePaths: pathsToFiles), zipFilePath: URL(fileURLWithPath: destination), password: password, progress: { (progress) -> () in
-					print(progress)
 					actionProgress = progress
 				})
 			} catch {
-				print("Failed to compress files: \(error.localizedDescription)")
+				print("Failed to compress files: \(error)")
 			}
 		}
     }

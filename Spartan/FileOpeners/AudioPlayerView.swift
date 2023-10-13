@@ -126,7 +126,6 @@ struct AudioPlayerView: View {
                 
                 Button(action: {
                     loop.toggle()
-                    print("help")
                 }) {
                     if (loop) {
                         Image(systemName: "repeat.1")

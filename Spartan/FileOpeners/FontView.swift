@@ -31,7 +31,6 @@ struct FontView: View {
     
     func loadFont() -> CGFont? {
         let font = URL(fileURLWithPath: filePath + fileName)
-        print(filePath + fileName)
         
         if let dataProvider = CGDataProvider(url: font as CFURL) {
             return CGFont(dataProvider)

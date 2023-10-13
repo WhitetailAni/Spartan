@@ -40,21 +40,18 @@ struct MoveFileView: View {
             }
         
             Button(action: {
-                print(multiSelect)
-                print(fileNames)
                 if(multiSelect){
                     if(fileNames.count > 1){
                         for fileName in fileNames {
-                            print("from \(filePath + fileName) to \(newFilePath + fileName)")
-                            moveFile(path: filePath + fileName, newPath: newFilePath + fileName)
+                            RootHelperActs.mv(filePath + fileName, newFilePath + fileName)
                         }
                     } else {
-                        moveFile(path: filePath + fileNames[0], newPath: newFilePath + newFileName)
+                        RootHelperActs.mv(filePath + fileNames[0], newFilePath + newFileName)
                     }
-                } else if(newFileName == ""){
-                    moveFile(path: filePath + fileNames[0], newPath: newFilePath + fileNames[0])
+                } else if(newFileName == "") {
+                    RootHelperActs.mv(filePath + fileNames[0], newFilePath + fileNames[0])
                 } else {
-                    moveFile(path: filePath + fileNames[0], newPath: newFilePath + newFileName)
+                    RootHelperActs.mv(filePath + fileNames[0], newFilePath + newFileName)
                 }
             
                 multiSelect = false
@@ -72,9 +69,5 @@ struct MoveFileView: View {
                 newFileName = fileNames[0]
             }
         }
-    }
-    
-    func moveFile(path: String, newPath: String) {
-        spawn(command: helperPath, args: ["mv", path, newPath], env: [], root: true)
     }
 }

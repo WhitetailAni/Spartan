@@ -106,7 +106,6 @@ class PlistFormatter {
 				array.append(PlistKey(key: key, value: value, type: type))
 			}
 		}
-		
 		array.sort { $0.key < $1.key }
 		
 		return array

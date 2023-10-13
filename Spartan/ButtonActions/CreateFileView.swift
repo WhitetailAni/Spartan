@@ -25,7 +25,7 @@ struct CreateFileView: View {
                 }
                 
             Button(action: {
-                spawn(command: helperPath, args: ["tf", filePath + fileName], env: [], root: true)
+                RootHelperActs.touch(filePath + fileName)
                 fileName = ""
                 isPresented = false
             }) {

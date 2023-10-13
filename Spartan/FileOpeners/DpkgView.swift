@@ -27,7 +27,6 @@ struct DpkgView: View {
     
     @State var isTapped = false
     
-    let fileManager = FileManager.default
     let env = [""]
 
     var body: some View {
@@ -124,7 +123,6 @@ struct DpkgBuilderView: View {
     
     @State var isTapped = false
     
-    let fileManager = FileManager.default
     let env = [""]
     
     var body: some View {
@@ -151,7 +149,6 @@ struct DpkgBuilderView: View {
             .disabled(isTapped)
         
             TextField(NSLocalizedString("DPKGDEB_OUTNAME", comment: "I WAS TOO [Trusting] TOO [Honest]") + NSLocalizedString("OPTIONAL", comment: ""), text: $debOutputName, onCommit: {
-                print(debOutputName)
                 updateLog()
             })
             .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in

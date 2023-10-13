@@ -36,7 +36,7 @@ struct CreateSymlinkView: View {
             }
             
             Button(action: {
-                spawn(command: helperPath, args: ["ts", symlinkPath + symlinkName, symlinkDest], env: [], root: true)
+                RootHelperActs.ln(symlinkPath + symlinkName, symlinkDest)
                 isPresented = false
                 symlinkName = ""
             }) {

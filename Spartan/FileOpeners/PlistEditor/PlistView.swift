@@ -20,8 +20,6 @@ struct PlistView: View {
 	
 	@State var addKeyToPlist = false
 	
-	let fileManager = FileManager.default
-	
 	init(filePath: String, fileName: String) {
         _filePath = State(initialValue: filePath)
         _fileName = State(initialValue: fileName)
@@ -50,10 +48,6 @@ struct PlistView: View {
 		//I FORGOT TO INITIALIZE IT AND **I DIDNT NOTICE**, THATS WHY IT WASNT WORKING
 		//I WAS SENDING THE DATA TO NOWHERE
 		//KILL ME
-		let testDict = PlistFormatter.plistKeyArrayToSwiftDict(PlistFormatter.swiftDictToPlistKeyArray(tempDict))
-		print(tempDict)
-		print(testDict)
-		print(tempDict as NSDictionary == testDict as NSDictionary)
 	}
 	
 	var body: some View {
@@ -85,7 +79,6 @@ struct PlistView: View {
 			}
 			List(plistDict.indices, id: \.self) { index in
 				Button(action: {
-					print("before: \(plistDict[index])")
 					if(plistDict[index].type == .bool) {
 						let bool = plistDict[index].value as! Bool
 						if bool {
@@ -94,7 +87,6 @@ struct PlistView: View {
 							plistDict[index].value = true
 						}
 					} else {
-						print("the value: \(plistDict[index])")
 						editingSubView = true
 					}
 				}) {

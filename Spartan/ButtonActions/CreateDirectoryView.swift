@@ -24,7 +24,7 @@ struct CreateDirectoryView: View {
                 }
                 
             Button(action: {
-                spawn(command: helperPath, args: ["td", directoryPath + directoryName], env: [], root: true)
+                RootHelperActs.mkdir(directoryPath + directoryName)
                 isPresented = false
                 directoryName = ""
             }) {

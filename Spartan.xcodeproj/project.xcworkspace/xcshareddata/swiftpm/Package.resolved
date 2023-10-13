@@ -9,15 +9,6 @@
       }
     },
     {
-      "identity" : "yams",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/jpsim/Yams",
-      "state" : {
-        "revision" : "0d9ee7ea8c4ebd4a489ad7a73d5c6cad55d6fed3",
-        "version" : "5.0.6"
-      }
-    },
-    {
       "identity" : "zip",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/marmelroy/Zip",

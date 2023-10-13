@@ -23,21 +23,8 @@ struct RenameFileView: View {
                 view.scaledFont(name: "BotW Sheikah Regular", size: 40)
             }
         Button(NSLocalizedString("CONFIRM", comment: "Well, Adam, today we are men.")) {
-            print(fileName)
-            print(newFileName)
-            print(filePath)
-            renameFile(path: filePath + fileName, fileName: filePath + newFileName)
+            RootHelperActs.mv(filePath + fileName, filePath + newFileName)
             isPresented = false
-        }
-    }
-    
-    func renameFile(path: String, fileName: String) {
-        do {
-            print(path)
-            print(fileName)
-            try FileManager.default.moveItem(atPath: path, toPath: fileName)
-        } catch {
-            print("Failed to rename file: \(error.localizedDescription)")
         }
     }
 }

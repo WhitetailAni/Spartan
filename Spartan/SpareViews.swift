@@ -8,11 +8,15 @@
 import SwiftUI
 import UIKit
 import Foundation
+import ApplicationsWrapper
 
 //this is for various global stuff that doesn't belong to a specific view. frameworks, view modifiers, view elements, UIViewRepresentables, etc
 
 let fileManager = FileManager.default
+let appsManager = ApplicationsManager(allApps: LSApplicationWorkspace.default().allApplications())
 let tempPath = "/var/mobile/Media/temp"
+let paddingInt: CGFloat = -7
+let opacityInt: CGFloat = 1.0
 
 struct SpareView: View {
     var body: some View {
@@ -326,6 +330,22 @@ class RootHelperActs {
 	
 	class func mv(_ filePath: String, _ fileDest: String) {
 		spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["mv", filePath, fileDest], env: [], root: true)
+	}
+	
+	class func cp(_ filePath: String, _ fileDest: String) {
+		spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["cp", filePath, fileDest], env: [], root: true)
+	}
+	
+	class func touch(_ filePath: String) {
+		spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["tf", filePath], env: [], root: true)
+	}
+	
+	class func mkdir(_ filePath: String) {
+		spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["td", filePath], env: [], root: true)
+	}
+	
+	class func ln(_ filePath: String, _ fileDest: String) {
+		spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["ts", filePath, fileDest], env: [], root: true)
 	}
 	
 	class func chmod(_ filePath: String, _ perms: Int) {

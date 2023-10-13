@@ -29,7 +29,7 @@ struct CarView: View {
                 Text(errorMsg)
             }
             Button(action: {
-                print("lol")
+
             }) {
                 Text(rendition.name)
             }
