@@ -213,11 +213,16 @@ struct IconView: View {
 					view.scaledFont(name: "BotW Sheikah Regular", size: 60)
 				}
 				.font(.system(size: 60))
-			HStack {
-				IconButton(iconName: "Alpha", creator: "WhitetailAni")
-				IconButton(iconName: "Megamind", creator: "WhitetailAni")
-				IconButton(iconName: "Summit", creator: "Noel Berry? Unsure")
-				IconButton(iconName: "Core", creator: "Noel Berry? Unsure")
+			VStack {
+				HStack {
+					IconButton(iconName: "Alpha", creator: "WhitetailAni")
+					IconButton(iconName: "Megamind", creator: "WhitetailAni")
+					IconButton(iconName: "Terabyte", creator: "WhitetailAni")
+				}
+				HStack {
+					IconButton(iconName: "Summit", creator: "Noel Berry? Unsure")
+					IconButton(iconName: "Core", creator: "Noel Berry? Unsure")
+				}
 			}
 		}
 	}
