@@ -23,7 +23,6 @@
 "EXTRACT" = "Extract";
 "BUILD" = "Build";
 "ERR_NOJAILBREAK" = "You need to be jailbroken for this function";
-"APPICON" = "Change App Icon To ";
 "LOADING" = "Loading...";
 
 "YES" = "Yes";
@@ -179,6 +178,10 @@
 "SETTINGS_DATEFORMATDESC2" = "Visit https://www.advancedswift.com/date-formatter-cheatsheet-formulas-swift/ for a guide.";
 "CREDITS" = "Credits";
 "SETTINGS_WEBSERVERSTART" = "Configure Web Server";
+
+//app icon
+"APPICON" = "Change App Icon";
+"APPICON_TITLE" = "Available Icons";
 
 
 //search

@@ -11,14 +11,13 @@ struct SettingsView: View {
 
     @Binding var buttonWidth: CGFloat
 
-    @State private var showView: [Bool] = [Bool](repeating: false, count: 2)
+    @State private var showView: [Bool] = [Bool](repeating: false, count: 3)
     @State private var descriptiveTitlesPre = UserDefaults.settings.bool(forKey: "descriptiveTitles")
     @State private var descriptiveTimestampsPre = UserDefaults.settings.bool(forKey: "verboseTimestamps")
     @State private var autoCompletePre = UserDefaults.settings.bool(forKey: "autoComplete")
     @State private var logWindowFontSizePre = UserDefaults.settings.integer(forKey: "logWindowFontSize")
     @State private var sheikahFontApplyPre = UserDefaults.settings.bool(forKey: "sheikahFontApply")
     @State private var dateFormatPre: String = UserDefaults.settings.string(forKey: "dateFormat") ?? ""
-    @State private var appIconPre = UserDefaults.settings.bool(forKey: "appIcon")
 
     var body: some View {
 		ScrollView {
@@ -72,44 +71,16 @@ struct SettingsView: View {
 			Text(" ")
 			
 			Button(action: {
-				if appIconPre {
-					UIApplication.shared.setAlternateIconName("Megamind") { error in
-						if let error = error {
-							print(error.localizedDescription)
-						}
-					}
-				} else {
-					UIApplication.shared.setAlternateIconName("Alpha") { error in
-						if let error = error {
-							print(error.localizedDescription)
-						}
-					}
-				}
-				DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-					withAnimation {
-						appIconPre.toggle()
-					}
-				}
-				UserDefaults.settings.set(appIconPre, forKey: "appIcon")
+				showView[2] = true
 			}) {
 				HStack {
+					Image(systemName: "applepencil")
 					Text(NSLocalizedString("APPICON", comment: """
 					LET'S GO BABY LOVE THE [[METS]] HIT A HOME RUN BABY
 					1987 *CAN* HAPPEN AGAIN
 					"""))
 					.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
 						view.scaledFont(name: "BotW Sheikah Regular", size: 25)
-					}
-					if appIconPre {
-						Image(uiImage: UIImage(named: "Megamind")!)
-							.resizable()
-							.cornerRadius(10)
-							.frame(width: 300, height: 180)
-					} else {
-						Image(uiImage: UIImage(named: "Alpha")!)
-							.resizable()
-							.cornerRadius(10)
-							.frame(width: 300, height: 180)
 					}
 				}
 			}
@@ -140,6 +111,9 @@ struct SettingsView: View {
 		})
 		.sheet(isPresented: $showView[1], content: {
 			WebServerView()
+		})
+		.sheet(isPresented: $showView[2], content: {
+			IconView()
 		})
     }
     
@@ -229,4 +203,53 @@ struct SettingsView: View {
             Image(systemName: sheikahFontApplyPre ? "checkmark.square" : "square")
         }
     }
+}
+
+struct IconView: View {
+	var body: some View {
+		VStack {
+			Text(NSLocalizedString("APPICON_TITLE", comment: "But choose carefully because you'll stay in the job you pick for the rest of your life."))
+				.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+					view.scaledFont(name: "BotW Sheikah Regular", size: 60)
+				}
+				.font(.system(size: 60))
+			HStack {
+				IconButton(iconName: "Alpha", creator: "WhitetailAni")
+				IconButton(iconName: "Megamind", creator: "WhitetailAni")
+				IconButton(iconName: "Summit", creator: "Noel Berry? Unsure")
+				IconButton(iconName: "Core", creator: "Noel Berry? Unsure")
+			}
+		}
+	}
+}
+
+struct IconButton: View {
+	@State var iconName: String
+	@State var creator: String
+
+	var body: some View {
+		Button(action: { //celeste icon
+			UIApplication.shared.setAlternateIconName(iconName) { error in
+				if let error = error {
+					print(error.localizedDescription)
+				}
+			}
+		}) {
+			VStack {
+				Image(uiImage: UIImage(named: iconName)!)
+					.resizable()
+					.cornerRadius(10)
+					.frame(width: 300, height: 180)
+				Text(iconName)
+						.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+							view.scaledFont(name: "BotW Sheikah Regular", size: 30)
+						}
+					Text(creator)
+						.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+							view.scaledFont(name: "BotW Sheikah Regular", size: 25).foregroundColor(.gray)
+						}
+						.foregroundColor(.gray)
+				}
+		}
+	}
 }

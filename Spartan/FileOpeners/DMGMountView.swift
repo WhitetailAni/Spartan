@@ -34,10 +34,10 @@ struct DMGMountView: View {
 			TextField(LocalizedString("DMG_MOUNTPATH"), text: $dmgFilesAreAvailableAt)
 			
 			HStack {
-				Picker(NSLocalizedString("DMG_FSTYPE", comment: "Phantom R"), selection: $filesystem) {
+				/*Picker(NSLocalizedString("DMG_FSTYPE", comment: "Phantom R"), selection: $filesystem) {
 					Text(LocalizedString("HFS")).tag(0)
 					Text(LocalizedString("APFS")).tag(1)
-				}
+				}*/
 				Checkbox(value: $mountAsReadOnly, label: LocalizedString("DMG_READONLY")) { }
 			}
 			
@@ -48,17 +48,7 @@ struct DMGMountView: View {
 					guard devPath != nil else {
 						throw LocalizedString("DMG_FAILTOATTACH")
 					}
-					var fileSystemType = ""
-					switch filesystem {
-					case 0:
-						fileSystemType = "hfs"
-					case 1:
-						fileSystemType = "apfs"
-					default:
-						throw LocalizedString("DMG_NOFSTYPE")
-					}
-					print(mount(devPath!, dmgFilesAreAvailableAt, fileSystemType, nil))
-					
+					print(mount(devPath!, dmgFilesAreAvailableAt, 0, nil))
 				} catch {
 					errorOccurred = true
 					errorDesc = error.localizedDescription
