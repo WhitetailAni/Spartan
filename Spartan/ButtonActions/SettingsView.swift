@@ -105,6 +105,10 @@ struct SettingsView: View {
 					}
 				}
 			}
+			
+			Text("Spartan v\((Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "Don't edit") (\((Bundle.main.infoDictionary?["CFBundleVersion"] as? String) ?? "Info.plists"))")
+				.font(.footnote)
+                .foregroundColor(.secondary)
         }
         .sheet(isPresented: $showView[0], content: {
 			CreditsView()

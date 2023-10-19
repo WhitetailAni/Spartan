@@ -1143,7 +1143,7 @@ struct ContentView: View {
                         for (index, selected) in selected.enumerated() {
                             self.masterFiles[index].isSelected = selected
                         }
-                    }), showSubView: $showSubView, yandereDevFileTypeDebugTransfer: yandereDevFileType)
+                    }), showSubView: $showSubView)
                 }
                 .navigationBarHidden(true)
                 .onAppear {

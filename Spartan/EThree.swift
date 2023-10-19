@@ -15,7 +15,6 @@ struct EThree: View {
     @Binding var multiSelectFiles: [String]
     @Binding var fileWasSelected: [Bool]
     @Binding var showSubView: [Bool]
-    var yandereDevFileTypeDebugTransfer: ((String) -> Double)? = nil
 
     @State private var EList: [Int] = [0,0,0,0]
     @State private var show = false
@@ -24,8 +23,8 @@ struct EThree: View {
         HStack {
             ForEach(0..<4, id: \.self) { index in
                 StepperTV(value: $EList[index], isHorizontal: false) {
-                    if(calculateSHA384Hash(value: ListToInt(list: EList))! == "1fa9b6aefebdca925f7fb0d4774b42b4e2a68e82c327df5d8d6da14511e174384efe8489d3e890127720974d01ede8ea") {
-                        show = true //no i dont know what this is either
+                    if(calculateSHA384Hash(value: ListToInt(list: EList))! == "c830ed4b587fef666dcc43461afe5e1d9d56d2e42f619608635a016cfda268284c0bf40d94cb216a3b91ebbea17f5a19") {
+                        show = true //i know what it is now
                     }
                 }
             }
@@ -34,7 +33,7 @@ struct EThree: View {
             }
         }
         .sheet(isPresented: $show, content: {
-            EThreePro(directory: $directory, files: $files, multiSelectFiles: $multiSelectFiles, fileWasSelected: $fileWasSelected, showSubView: $showSubView, yandereDevFileTypeDebugTransfer: yandereDevFileTypeDebugTransfer)
+            EThreePro(directory: $directory, files: $files, multiSelectFiles: $multiSelectFiles, fileWasSelected: $fileWasSelected, showSubView: $showSubView)
         })
     }
     
@@ -78,7 +77,6 @@ struct EThreePro: View {
     @State private var deviceInfo: [String] = []
     @State private var deviceInfoShow = false
     
-    var yandereDevFileTypeDebugTransfer: ((String) -> Double)? = nil
     let paddingInt: CGFloat = -7
     let opacityInt: CGFloat = 1.0
     
@@ -121,92 +119,6 @@ struct EThreePro: View {
                     buttonHeight = 30
                 }
             }
-        
-        Button(action: {
-            print(directory)
-        }) {
-            Text("Print 'directory'")
-                .frame(width: buttonWidth, height: buttonHeight)
-                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                }
-        }
-        .padding(paddingInt)
-        .opacity(opacityInt)
-        
-        
-        Button(action: {
-            for file in files {
-                print(file, ": ", String(Int((yandereDevFileTypeDebugTransfer?(file))!)), terminator: " ")
-                if(Int((yandereDevFileTypeDebugTransfer?(file))!) == 0) {
-                    print("directory")
-                } else if(Int((yandereDevFileTypeDebugTransfer?(file))!) == 1) {
-                    print("audio file")
-                } else if(Int((yandereDevFileTypeDebugTransfer?(file))!) == 2) {
-                    print("video file")
-                } else if(Int((yandereDevFileTypeDebugTransfer?(file))!) == 3) {
-                    print("image")
-                } else if(Int((yandereDevFileTypeDebugTransfer?(file))!) == 4) {
-                    print("text file")
-                } else if(Int((yandereDevFileTypeDebugTransfer?(file))!) == 5) {
-                    print("plist")
-                } else if(Int((yandereDevFileTypeDebugTransfer?(file))!) == 6) {
-                    print("archive (currently zip only)")
-                } else if(Int((yandereDevFileTypeDebugTransfer?(file))!) == 7) {
-                    print("executable")
-                } else if(Int((yandereDevFileTypeDebugTransfer?(file))!) == 8) {
-                    print("symlink")
-                    print("how did we get here?")
-                } //as you can see I don't use this often. it's a relic of the past
-            }
-        }) {
-            Text("Print 'files'")
-                .frame(width: buttonWidth, height: buttonHeight)
-                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                }
-        }
-        .padding(paddingInt)
-        .opacity(opacityInt)
-        
-        
-        Button(action: {
-            print("\(multiSelectFiles) \(multiSelectFiles.count)")
-        }) {
-            Text("Print 'multiSelectFiles'")
-                .frame(width: buttonWidth, height: buttonHeight)
-                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                }
-        }
-        .padding(paddingInt)
-        .opacity(opacityInt)
-        
-        
-        Button(action: {
-            print("\(fileWasSelected) \(fileWasSelected.count)")
-        }) {
-            Text("Print 'fileWasSelected'")
-                .frame(width: buttonWidth, height: buttonHeight)
-                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                }
-        }
-        .padding(paddingInt)
-        .opacity(opacityInt)
-        
-        
-        Button(action: {
-            print("\(showSubView) \(showSubView.count)")
-        }) {
-            Text("Print 'showSubView'")
-                .frame(width: buttonWidth, height: buttonHeight)
-                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                }
-        }
-        .padding(paddingInt)
-        .opacity(opacityInt)
         
         Button(action: {
             deviceInfoShow = true
