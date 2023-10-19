@@ -16,6 +16,7 @@ import MobileCoreServices
 import ApplicationsWrapper
 import AssetCatalogWrapper
 import DiskImages2Bridge
+import SVGWrapper
 //import GCDWebServer
 
 struct ContentView: View {
@@ -86,7 +87,7 @@ struct ContentView: View {
     //carView = 28
     //tvOS13serverShow = 29  # some things are like this due to tvOS 13 (no context menu) limitations. I would drop 13 if I could but I'm not abandoning 13.4.8 people.
     //fontViewShow = 30
-    //unknown = 31
+    //choosing between opening an image as an SVG or not an SVG = 31
     //dmgMountViewShow = 32
     
     @Binding var globalAVPlayer: AVPlayer //this is because Spartan has the ability to play music without the AudioPlayerView being shown. It took about a week to get working properly and I'm proud of it
@@ -99,6 +100,8 @@ struct ContentView: View {
     @State private var isLoadingView = false
     @State var blankString: [String] = [""] //dont question it
     @State private var nonexistentFile = "" //REALLY dont question it
+    
+    @State private var isImageSVG = false
     
     var body: some View {
         VStack {
@@ -399,8 +402,8 @@ struct ContentView: View {
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
 											case 12:
-												Image(systemName: "questionmark")
-												Text(masterFiles[index].name)
+												Image(systemName: "photo.fill")
+                                                Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
@@ -702,7 +705,7 @@ struct ContentView: View {
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                                                     }
 											case 12:
-												Image(systemName: "questionmark")
+												Image(systemName: "photo.fill")
 												Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
@@ -956,7 +959,7 @@ struct ContentView: View {
                             .padding(paddingInt)
                             .opacity(opacityInt)
                             
-                            AVFileOpener
+                            AVFileOpener //3 rows
                             
                             Button(action: {
                                 newViewFilePath = masterFiles[newViewFileIndex].fullPath
@@ -1026,107 +1029,107 @@ struct ContentView: View {
                             .opacity(opacityInt)
                         }
                     
-                    VStack {
-                        Button(action: {
-                            newViewFilePath = masterFiles[newViewFileIndex].fullPath
-                            newViewFileName = masterFiles[newViewFileIndex].name
-                            showSubView[2] = false
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                showSubView[13] = true
-                            }
-                        }) {
-                            Text(NSLocalizedString("OPEN_PLIST", comment: "Looking sharp."))
-                                .frame(width: buttonWidth, height: buttonHeight)
-                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                                }
-                        }
-                        .padding(paddingInt)
-                        .opacity(opacityInt)
-                        
-                        Button(action: {
-                            newViewFilePath = directory
-                            newViewFileName = masterFiles[newViewFileIndex].name
-                            showSubView[2] = false
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                showSubView[30] = true
-                            }
-                        }) {
-                            Text(NSLocalizedString("OPEN_FONT", comment: ""))
-                                .frame(width: buttonWidth, height: buttonHeight)
-                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                                }
-                        }
-                        .padding(paddingInt)
-                        .opacity(opacityInt)
-                        
-                        DpkgFileOpener
-                        
-                        Button(action: {
-							newViewFilePath = directory
-							newViewFileName = masterFiles[newViewFileIndex].name
-							showSubView[2] = false
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                showSubView[32] = true
-                            }
-						}) {
-                            Text(NSLocalizedString("OPEN_DMG", comment: ""))
-                                .frame(width: buttonWidth, height: buttonHeight)
-                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                                }
-                        }
-                        .padding(paddingInt)
-                        .opacity(opacityInt)
-                        
-                        Button(action: {
-                            newViewFilePath = directory
-                            newViewFileName = masterFiles[newViewFileIndex].name
-                            uncompressZip = true
-                            showSubView[2] = false
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                showSubView[14] = true
-                            }
-                        }) {
-                            Text(NSLocalizedString("OPEN_CAR", comment: ""))
-                                .frame(width: buttonWidth, height: buttonHeight)
-                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                                }
-                        }
-                        .padding(paddingInt)
-                        .opacity(opacityInt)
-                        
-                        Button(action: {
-                            newViewFileName = masterFiles[newViewFileIndex].name
-                            newViewFilePath = directory
-                            showSubView[2] = false
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                showSubView[15] = true
-                            }
-                        }) {
-                            Text(NSLocalizedString("OPEN_SPAWN", comment: "Use the stairs. Your father paid good money for those."))
-                                .frame(width: buttonWidth, height: buttonHeight)
-                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                                }
-                        }
-                        .padding(paddingInt)
-                        .opacity(opacityInt)
-                        
-                        
-                        Button(action: {
-                            showSubView[2] = false
-                        }) {
-                            Text(NSLocalizedString("DISMISS", comment: "Sorry. I'm excited."))
-                                .frame(width: buttonWidth, height: buttonHeight)
-                                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                                    view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                                }
-                        }
-                        .padding(paddingInt)
-                        .opacity(opacityInt)
+						VStack {
+							Button(action: {
+								newViewFilePath = masterFiles[newViewFileIndex].fullPath
+								newViewFileName = masterFiles[newViewFileIndex].name
+								showSubView[2] = false
+								DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+									showSubView[13] = true
+								}
+							}) {
+								Text(NSLocalizedString("OPEN_PLIST", comment: "Looking sharp."))
+									.frame(width: buttonWidth, height: buttonHeight)
+									.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+										view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+									}
+							}
+							.padding(paddingInt)
+							.opacity(opacityInt)
+							
+							Button(action: {
+								newViewFilePath = directory
+								newViewFileName = masterFiles[newViewFileIndex].name
+								showSubView[2] = false
+								DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+									showSubView[30] = true
+								}
+							}) {
+								Text(NSLocalizedString("OPEN_FONT", comment: ""))
+									.frame(width: buttonWidth, height: buttonHeight)
+									.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+										view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+									}
+							}
+							.padding(paddingInt)
+							.opacity(opacityInt)
+							
+							DpkgFileOpener //2 rows
+							
+							Button(action: {
+								newViewFilePath = directory
+								newViewFileName = masterFiles[newViewFileIndex].name
+								showSubView[2] = false
+								DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+									showSubView[32] = true
+								}
+							}) {
+								Text(NSLocalizedString("OPEN_DMG", comment: ""))
+									.frame(width: buttonWidth, height: buttonHeight)
+									.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+										view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+									}
+							}
+							.padding(paddingInt)
+							.opacity(opacityInt)
+							
+							Button(action: {
+								newViewFilePath = directory
+								newViewFileName = masterFiles[newViewFileIndex].name
+								uncompressZip = true
+								showSubView[2] = false
+								DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+									showSubView[14] = true
+								}
+							}) {
+								Text(NSLocalizedString("OPEN_CAR", comment: ""))
+									.frame(width: buttonWidth, height: buttonHeight)
+									.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+										view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+									}
+							}
+							.padding(paddingInt)
+							.opacity(opacityInt)
+							
+							Button(action: {
+								newViewFileName = masterFiles[newViewFileIndex].name
+								newViewFilePath = directory
+								showSubView[2] = false
+								DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+									showSubView[15] = true
+								}
+							}) {
+								Text(NSLocalizedString("OPEN_SPAWN", comment: "Use the stairs. Your father paid good money for those."))
+									.frame(width: buttonWidth, height: buttonHeight)
+									.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+										view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+									}
+							}
+							.padding(paddingInt)
+							.opacity(opacityInt)
+							
+							
+							Button(action: {
+								showSubView[2] = false
+							}) {
+								Text(NSLocalizedString("DISMISS", comment: "Sorry. I'm excited."))
+									.frame(width: buttonWidth, height: buttonHeight)
+									.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+										view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+									}
+							}
+							.padding(paddingInt)
+							.opacity(opacityInt)
                         }
                     }
                     
@@ -1317,8 +1320,10 @@ struct ContentView: View {
                         AudioPlayerView(callback: callback, audioPath: $blankString[0], audioName: $blankString[0], player: globalAVPlayer, isPresented: $showSubView[10])
                     }
                 })
-                .sheet(isPresented: $showSubView[12], content: {
-                    ImageView(imagePath: $newViewFilePath, imageName: $newViewFileName)
+                .sheet(isPresented: $showSubView[12], onDismiss: {
+					isImageSVG = false
+                }, content: {
+                    ImageView(imagePath: newViewFilePath, imageName: newViewFileName, isSVG: isImageSVG)
                 })
                 .sheet(isPresented: $showSubView[13], content: {
                     PlistView(filePath: newViewFilePath, fileName: newViewFileName)
@@ -1361,9 +1366,6 @@ struct ContentView: View {
                 .sheet(isPresented: $showSubView[30], content: {
                     FontView(filePath: $newViewFilePath, fileName: $newViewFileName) //i was bored i think
                 })
-                .sheet(isPresented: $showSubView[31], content: {
-					Text("lmao")
-				})
 				.sheet(isPresented: $showSubView[32], content: {
 					DMGMountView(filePath: newViewFilePath, fileName: newViewFileName, directory: $directory, isPresented: $showSubView[32])
 				})
@@ -1686,9 +1688,9 @@ struct ContentView: View {
         
         Button(action: {
             newViewFilePath = masterFiles[newViewFileIndex].fullPath
-            showSubView[2] = false
+            showSubView[31] = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                showSubView[12] = true
+                showSubView[2] = false
             }
         }) {
             Text(NSLocalizedString("OPEN_IMAGE", comment: "- Can you believe this is happening?"))
@@ -1699,6 +1701,23 @@ struct ContentView: View {
         }
         .padding(paddingInt)
         .opacity(opacityInt)
+        .alert(isPresented: $showSubView[31], content: {
+			Alert(
+				title: Text(""),
+				message: Text(NSLocalizedString("INFO_DENIED", comment: "You're monsters!")),
+				primaryButton: .default(Text(LocalizedString("OPEN_IMAGERGBA")), action: {
+					isImageSVG = false
+				}),
+				secondaryButton: .default(Text(LocalizedString("OPEN_IMAGESVG")), action: {
+					isImageSVG = true
+				})
+			)
+		})
+		.onDisappear {
+			DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                showSubView[12] = true
+            }
+		}
     }
     
     @ViewBuilder
@@ -1807,7 +1826,8 @@ struct ContentView: View {
             case 11:
                 showSubView[30] = true
 			case 12:
-				showSubView[31] = true
+				isImageSVG = true
+				showSubView[12] = true
 			case 13:
 				showSubView[32] = true
             default:
@@ -1966,8 +1986,8 @@ struct ContentView: View {
             //5.9 = bplist
 		} else if (isDMG(filePath: file)) {
 			return 13 //dmg
-		} else if (isUnknown(filePath: file)) {
-			return 12 //tbd
+		} else if (isSVG(filePath: file)) {
+			return 12 //svg
         } else if (fontTypes.contains(where: file.hasSuffix)) {
             return 11 //a font (badly)
         } else if(isCar(filePath: file)) {
@@ -2073,10 +2093,8 @@ struct ContentView: View {
 		}
 		return false
     }
-    func isUnknown(filePath: String) -> Bool {
-		/*guard let data = fileManager.contents(atPath: filePath) else {
-            return false
-		*/
+    func isSVG(filePath: String) -> Bool {
+		
         return false
 	}
 	func isDMG(filePath: String) -> Bool {

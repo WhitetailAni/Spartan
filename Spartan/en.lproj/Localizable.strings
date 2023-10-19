@@ -51,6 +51,8 @@
 "OPEN_AUDIO" = "Audio Player";
 "OPEN_VIDEO" = "Video Player";
 "OPEN_IMAGE" = "Image Viewer";
+"OPEN_IMAGERGBA" = "Open As RGBA";
+"OPEN_IMAGESVG" = "Open As SVG";
 "OPEN_TEXT" = "Text Editor";
 "OPEN_HEX" = "Hex Editor";
 "OPEN_PLIST" = "Plist Editor";

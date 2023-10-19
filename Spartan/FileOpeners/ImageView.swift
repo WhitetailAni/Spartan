@@ -7,18 +7,42 @@
 
 import SwiftUI
 import UIKit
+import SVGWrapper
 
 struct ImageView: View {
-    @Binding var imagePath: String
-    @Binding var imageName: String
+    @State var imagePath: String
+    @State var imageName: String
+    @State var isSVG: Bool
+    
+    @State private var imageToDisplay: UIImage?
     
     @State private var infoShow = false
     
+    init(imagePath: String, imageName: String, isSVG: Bool) {
+		_imagePath = State(initialValue: imagePath)
+		_imageName = State(initialValue: imageName)
+		_isSVG = State(initialValue: isSVG)
+		
+		if isSVG {
+			do {
+				let svgImage = try SVGDocument(fileURL: URL(fileURLWithPath: imagePath + imageName))
+				let config = SVGDocument.ImageCreationConfiguration(scale: 1.0, orientation: .up)
+				_imageToDisplay = State(initialValue: svgImage.uiImage(configuration: config))
+			} catch {
+				print("Could not init an svg from file")
+			}
+		} else {
+			if let image = UIImage(contentsOfFile: imagePath + imageName) {
+				_imageToDisplay = State(initialValue: image)
+			}
+		}
+	}
+    
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
-            if let image = UIImage(contentsOfFile: imagePath + imageName) {
+            if imageToDisplay != nil {
                 GeometryReader { geo in
-                    Image(uiImage: image)
+					Image(uiImage: imageToDisplay!)
                         .resizable()
                         .scaledToFit()
                         .frame(width: geo.size.width+50, height: geo.size.height+50)
@@ -32,7 +56,7 @@ struct ImageView: View {
             }
         }
         .sheet(isPresented: $infoShow) {
-            let (width, height, fileSize, encoder) = getImageInfo(from: imagePath + imageName) ?? (0, 0, 0, "?")
+            let (width, height, size) = getImageInfo(filePath: imagePath + imageName) ?? (0, 0, 0)
             VStack{
                 Text(imagePath + imageName)
                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
@@ -44,11 +68,7 @@ struct ImageView: View {
                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                     }
-                Text(NSLocalizedString("INFO_SIZE", comment: "is automatically color-corrected, scent-adjusted and bubble-contoured") + String(fileSize) + " " + NSLocalizedString("BYTES", comment: "into this soothing sweet syrup"))
-                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                    }
-                Text(NSLocalizedString("IMAGE_ENCODING", comment: "with its distinctive golden glow you know as...") + encoder)
+                Text(NSLocalizedString("INFO_SIZE", comment: "is automatically color-corrected, scent-adjusted and bubble-contoured") + String(size) + " " + NSLocalizedString("BYTES", comment: "into this soothing sweet syrup"))
                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                     }
@@ -65,21 +85,29 @@ struct ImageView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
-    func getImageInfo(from filePath: String) -> (width: Int, height: Int, size: Int, encoding: String)? {
-        guard let imageSource = CGImageSourceCreateWithURL(URL(fileURLWithPath: filePath) as CFURL, nil) else {
-            return nil
-        }
-
-        let propertiesOptions = [kCGImageSourceShouldCache: false] as CFDictionary
-        guard let properties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, propertiesOptions) as? [CFString: Any] else {
-            return nil
-        }
+    func getImageInfo(filePath: String) -> (width: Int, height: Int, size: Int)? {
+		guard let cgImageToRead = getCGImage(filePath: filePath) else {
+			return nil
+		}
 
         let fileSize = (try? FileManager.default.attributesOfItem(atPath: filePath)[.size] as? Int) ?? 0
-        let width = properties[kCGImagePropertyPixelWidth] as? Int ?? 0
-        let height = properties[kCGImagePropertyPixelHeight] as? Int ?? 0
-        let encoding = properties[kCGImagePropertyColorModel] as? String ?? NSLocalizedString("UNKNOWN", comment: "- That girl was hot.")
-
-        return (width, height, fileSize, encoding)
+        
+		return (cgImageToRead.width, cgImageToRead.height, fileSize)
     }
+    
+    func getCGImage(filePath: String) -> CGImage? {
+		if isSVG {
+			do {
+				let svg = try SVGDocument(fileURL: URL(fileURLWithPath: filePath))
+				return svg.cgImage(withSize: svg.uiImage(configuration: SVGDocument.ImageCreationConfiguration(scale: 1.0, orientation: .up)).size)!
+			} catch {
+				return nil
+			}
+		} else {
+			if let cgImageSource = CGImageSourceCreateWithURL(URL(fileURLWithPath: filePath) as CFURL, nil) {
+				return CGImageSourceCreateImageAtIndex(cgImageSource, 0, nil)
+			}
+		}
+		return nil
+	}
 }
