@@ -163,7 +163,6 @@
 		F8CC214729EFA164008C7B88 /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
 		F8CE8CC62AE9DA4200862703 /* HTMLView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLView.swift; sourceTree = "<group>"; };
 		F8CE8D172AEA054800862703 /* Spartan_Jailed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spartan_Jailed.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F8CE8D182AEA054900862703 /* Spartan copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Spartan copy-Info.plist"; path = "/Users/realkgb/Documents/Spartan/Spartan copy-Info.plist"; sourceTree = "<absolute>"; };
 		F8D5795D2A0F2D2D00FDA526 /* DpkgView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DpkgView.swift; sourceTree = "<group>"; };
 		F8D579652A11D1D100FDA526 /* Spartan-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Spartan-Bridging-Header.h"; sourceTree = "<group>"; };
 		F8D579932A15D17F00FDA526 /* SwiftTryCatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SwiftTryCatch.m; sourceTree = "<group>"; };
@@ -238,7 +237,6 @@
 				F853AB2C29DBCB1A006EA2D5 /* Products */,
 				F83F47D02A43781000A4C47F /* External */,
 				F853AB2D29DBCB1A006EA2D5 /* Spartan */,
-				F8CE8D182AEA054900862703 /* Spartan copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
