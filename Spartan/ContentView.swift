@@ -55,7 +55,7 @@ struct ContentView: View {
     
     @State var lol: [String: Any] = [:]
     
-    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 33)
+    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 34)
     //createFileSelectShow = 0
     //contextMenuShow = 1
     //openInMenu = 2
@@ -89,6 +89,7 @@ struct ContentView: View {
     //fontViewShow = 30
     //choosing between opening an image as an SVG or not an SVG = 31
     //dmgMountViewShow = 32
+    //htmlViewShow = 33
     
     @Binding var globalAVPlayer: AVPlayer //this is because Spartan has the ability to play music without the AudioPlayerView being shown. It took about a week to get working properly and I'm proud of it
     @State var isGlobalAVPlayerPlaying = false
@@ -131,8 +132,6 @@ struct ContentView: View {
                             }
                             buttonCalc = true
                         }
-
-                        directory = varFixup(directory) //varFixup changes all /var paths to /private/var. this fixes an issue with symlinks that I couldn't find a better way to do. FileManager can't see symlinks properly (at least on 15.0) - they're simultaenously nonexistent files and transparent files, so I just have to work around them. Clicking on a symlink uses an old objc api to ask for its destination, and then sets the symlink to that - that way you can't get stuck in a symlink loop (which I did, and I can't get rid of the loop on my filesystem)
                     }
                     
                     Button(action: {
@@ -409,6 +408,12 @@ struct ContentView: View {
                                                     }
 											case 13:
 												Image(systemName: "externaldrive")
+												Text(masterFiles[index].name)
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
+											case 14:
+												Image(systemName: "safari")
 												Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
@@ -712,6 +717,12 @@ struct ContentView: View {
                                                     }
 											case 13:
 												Image(systemName: "externaldrive")
+												Text(masterFiles[index].name)
+                                                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                                        view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                                                    }
+											case 14:
+												Image(systemName: "safari")
 												Text(masterFiles[index].name)
                                                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
@@ -1369,6 +1380,9 @@ struct ContentView: View {
 				.sheet(isPresented: $showSubView[32], content: {
 					DMGMountView(filePath: newViewFilePath, fileName: newViewFileName, directory: $directory, isPresented: $showSubView[32])
 				})
+				.sheet(isPresented: $showSubView[33], content: {
+					HTMLView(filePath: newViewFilePath, fileName: newViewFileName)
+				})
                 .alert(isPresented: $showSubView[26]) {
                     Alert(
                         title: Text(NSLocalizedString("SHOW_NOTFOUND", comment: "")),
@@ -1830,6 +1844,8 @@ struct ContentView: View {
 				showSubView[12] = true
 			case 13:
 				showSubView[32] = true
+			case 14:
+				showSubView[33] = true
             default:
                 masterFiles[index].isLoadingFile = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -1843,6 +1859,9 @@ struct ContentView: View {
         if UserDefaults.settings.bool(forKey: "autoComplete") && !directory.hasSuffix("/") && isDirectory(filePath: directory) {
             directory = directory + "/"
         }
+        if directory == "//" {
+			directory = "/"
+		}
         do {
             let contents = try FileManager.default.contentsOfDirectory(atPath: directory)
             var files: [String]
@@ -1950,7 +1969,8 @@ struct ContentView: View {
         }
     }
     func convertBytes(bytes: Double) -> (Double, String) {
-        let units = ["bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB", "BB"] //i added support for brontobytes because i could. deal with it
+        let units = ["bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB", "BB"] //i added support for anything > gigabytes because i could. deal with it. maybe someday i'll add support for mounting external storage, so it could come in handy. you never know
+        //or maybe dosdude1 will just chuck a bunch of storage in an atv
         var remainingBytes = Double(bytes)
         var i = 0
         
@@ -1967,9 +1987,6 @@ struct ContentView: View {
         
         //FUTURE ME WANTS YOU TO KNOW I AM TALKING ABOUT THE IF ELSE STACK POST NOT THE PEDO STUFF
         
-        let archiveTypes: [String] = ["zip", "cbz"]
-        let fontTypes: [String] = ["ttf", "otf", "ttc", "pfb", "pfa"]
-        
         if (isSymlink(filePath: file)) {
             return 8 //symlink
         } else if (isDirectory(filePath: file)) {
@@ -1984,21 +2001,23 @@ struct ContentView: View {
             return isPlist(filePath: file)
             //5.1 = xml plist
             //5.9 = bplist
-		} else if (isDMG(filePath: file)) {
+		} else if (isHTML(filePath: file)) {
+			return 14 //html
+		} else if (doesFileHaveFileExtension(filePath: file, extensions: [".dmg"])) {
 			return 13 //dmg
-		} else if (isSVG(filePath: file)) {
+		} else if (doesFileHaveFileExtension(filePath: file, extensions: [".svg"])) {
 			return 12 //svg
-        } else if (fontTypes.contains(where: file.hasSuffix)) {
+        } else if (doesFileHaveFileExtension(filePath: file, extensions: [".ttf", ".otf", ".ttc", ".pfb", ".pfa"])) {
             return 11 //a font (badly)
         } else if(isCar(filePath: file)) {
             return 10 //asset catalog
+		} else if (fileManager.isExecutableFile(atPath: file)) { //executables detect as utf32 lol
+            return 7 //executable
         } else if (isText(filePath: file)) { //these must be flipped because otherwise xml plist detects as text
             return 4 //text file
-        } else if (archiveTypes.contains(where: file.hasSuffix)){
+        } else if (doesFileHaveFileExtension(filePath: file, extensions: [".zip", ".cbz"])) {
             return 6 //archive
-        } else if (fileManager.isExecutableFile(atPath: file)) {
-            return 7 //executable
-        } else if (file.hasSuffix(".deb")) {
+        } else if (doesFileHaveFileExtension(filePath: file, extensions: [".deb"])) {
             return 9 //deb
         } else {
             return 69 //unknown
@@ -2044,12 +2063,7 @@ struct ContentView: View {
             return false
         }
     
-        let isASCII = data.allSatisfy {
-            Character(UnicodeScalar($0)).isASCII
-        }
-        let isUTF8 = String(data: data, encoding: .utf8) != nil
-    
-        return isASCII || isUTF8
+        return data.allSatisfy { Character(UnicodeScalar($0)).isASCII } || String(data: data, encoding: .utf8) != nil || String(data: data, encoding: .utf16) != nil || String(data: data, encoding: .utf32) != nil
     }
     func isPlist(filePath: String) -> Double {
         guard let data = fileManager.contents(atPath: filePath) else {
@@ -2093,29 +2107,38 @@ struct ContentView: View {
 		}
 		return false
     }
-    func isSVG(filePath: String) -> Bool {
-		
-        return false
+	func isHTML(filePath: String) -> Bool {
+		guard let data = fileManager.contents(atPath: filePath) else {
+            return false
+        }
+        if data.count > 15 {
+			if let header = String(data: data.subdata(in: 0..<15), encoding: .utf8) {
+				return header == "<!DOCTYPE html>"
+			}
+		}
+		return false
 	}
-	func isDMG(filePath: String) -> Bool {
-		return String(substring(str: filePath, startIndex: filePath.index(filePath.endIndex, offsetBy: -4), endIndex: filePath.index(filePath.endIndex, offsetBy: 0))) == ".dmg"
-			
+	func doesFileHaveFileExtension(filePath: String, extensions: [String]) -> Bool {
+		for x in extensions {
+			return String(substring(str: filePath, startIndex: filePath.index(filePath.endIndex, offsetBy: -4), endIndex: filePath.index(filePath.endIndex, offsetBy: 0))) == x
+		}
+		return false
 	}
     
     func readSymlinkDestination(path: String) -> String {
-        let url = URL(fileURLWithPath: path)
-        var dest = url.resolvingSymlinksInPath().path
+		var rawPath = "/"
+		do {
+			 rawPath += try Spartan.fileManager.destinationOfSymbolicLink(atPath: removeLastChar(path))
+		} catch {
+			return "Make a valid symlink please. (Error ID 167)"
+		}
         
-        if(isDirectory(filePath: dest)) {
-            dest += "/"
-        }
+        let rawPathType = yandereDevFileType(file: rawPath)
+        if rawPathType == 0 || rawPathType == 8 {
+			rawPath += "/"
+		}
         
-        dest = varFixup(dest)
-        
-        if(dest == "//") {
-            dest = "/" + path
-        }
-        return dest
+        return rawPath
     }
     func resetMultiSelectArrays(){
         iterateOverFileWasSelected(boolToIterate: false)
@@ -2165,13 +2188,6 @@ struct ContentView: View {
             return nil
         }
         return components.suffix(3).joined(separator: ".")
-    }
-    
-    func varFixup(_ path: String) -> String {
-        if (path.count >= 5 && substring(str: path, startIndex: path.index(path.startIndex, offsetBy: 0), endIndex: path.index(path.startIndex, offsetBy: 5)) == "/var/") {
-            return "/private/var/" + substring(str: path, startIndex: path.index(path.startIndex, offsetBy: 5), endIndex: path.index(path.endIndex, offsetBy: 0))
-        } //i dont have a way to check if every part of a filepath is a symlink but that doesn't matter. all that matters is that /var/ always becomes /private/var/
-        return path
     }
 }
 

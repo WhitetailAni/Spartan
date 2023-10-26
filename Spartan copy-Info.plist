@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>BuildMachineOSBuild</key>
+	<string>22F66</string>
+	<key>CFBundleIcons</key>
+	<dict>
+		<key>CFBundlePrimaryIcon</key>
+		<string>App Icon</string>
+	</dict>
+	<key>CFBundleSupportedPlatforms</key>
+	<array>
+		<string>AppleTVOS</string>
+	</array>
+	<key>DTCompiler</key>
+	<string>com.apple.compilers.llvm.clang.1_0</string>
+	<key>DTPlatformBuild</key>
+	<string>21J5293g</string>
+	<key>DTPlatformName</key>
+	<string>appletvos</string>
+	<key>DTPlatformVersion</key>
+	<string>17.0</string>
+	<key>DTSDKBuild</key>
+	<string>21J5293g</string>
+	<key>DTSDKName</key>
+	<string>appletvos17.0</string>
+	<key>DTXcode</key>
+	<string>1500</string>
+	<key>DTXcodeBuild</key>
+	<string>15A5161b</string>
+	<key>MinimumOSVersion</key>
+	<string>13.0</string>
+	<key>NSAccentColorName</key>
+	<string>AccentColor</string>
+	<key>TVTopShelfImage</key>
+	<dict>
+		<key>TVTopShelfPrimaryImage</key>
+		<string>Top Shelf Image</string>
+	</dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Sheikah.ttf</string>
+		<string>SF Mono.otf</string>
+	</array>
+</dict>
+</plist>

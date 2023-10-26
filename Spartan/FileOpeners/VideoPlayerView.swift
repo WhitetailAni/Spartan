@@ -268,7 +268,6 @@ struct VideoPlayerView: View {
         let fileURL = URL(fileURLWithPath: filePath)
         let asset = AVURLAsset(url: fileURL)
         let duration = String(format: "%.2f", asset.duration.seconds)
-        let metadata = asset.metadata
         
         guard let videoTrack = asset.tracks(withMediaType: .video).first else {
             return NSLocalizedString("VIDEO_ERROR", comment: "Will we pick ourjob today?")

@@ -26,12 +26,17 @@ struct DMGMountView: View {
 	@State var goToMountedFiles = false
 
     var body: some View {
-		VStack {
+		/*VStack {
 			Text(UserDefaults.settings.bool(forKey: "descriptiveTitles") ? filePath + fileName : fileName)
 				.font(Font.system(size: 40))
 				.multilineTextAlignment(.center)
 			
 			TextField(LocalizedString("DMG_MOUNTPATH"), text: $dmgFilesAreAvailableAt)
+			Text(NSLocalizedString("DMG_MOUNTPATH_CREATE", comment: "Wow! That blew my mind!"))
+				.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+					view.scaledFont(name: "BotW Sheikah Regular", size: 25)
+				}
+				.font(.system(size: 25))
 			
 			HStack {
 				/*Picker(NSLocalizedString("DMG_FSTYPE", comment: "Phantom R"), selection: $filesystem) {
@@ -42,6 +47,19 @@ struct DMGMountView: View {
 			}
 			
 			Button(action: {
+				var isDir: ObjCBool = false
+				if Spartan.fileManager.fileExists(atPath: dmgFilesAreAvailableAt, isDirectory: &isDir) {
+					do {
+						try Spartan.fileManager.createDirectory(atPath: dmgFilesAreAvailableAt, withIntermediateDirectories: true, attributes: nil)
+					} catch {
+						errorDesc = LocalizedString("DMG_COULDNTCREATE")
+						errorOccurred = true
+					}
+				}
+				if !isDir.boolValue {
+					errorDesc = LocalizedString("DMG_NOTDIR")
+					errorOccurred = true
+				}
 				do {
 					try dmgHandle = DiskImages.shared.attachDiskImage(with: AttachParameters(itemURL: URL(fileURLWithPath: filePath + fileName)))
 					let devPath = dmgHandle?.deviceHandlePath.relativePath
@@ -76,6 +94,7 @@ struct DMGMountView: View {
 					})
 				)
 			}
-		}
+		}*/
+		Text("Support is coming soon.")
     }
 }

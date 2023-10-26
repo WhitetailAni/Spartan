@@ -242,7 +242,7 @@
 "PLISTARR_REMOVE" = "Remove item ";
 
 //dmg
-"DMG_MOUNTPATH" = "Input a path for the DMG's contents to be mounted";
+"DMG_MOUNTPATH" = "Input a directory for the DMG's contents to be mounted";
 "DMG_FSTYPE" = "Select the DMG's filesystem";
 "HFS" = "HFS";
 "APFS" = "APFS";
@@ -251,3 +251,6 @@
 "DMG_FAILTOATTACH" = "The DMG was not found at its reported attach point";
 "DMG_SUCCESS" = "The DMG was mounted at";
 "DMG_GOTOFILES" = "Would you like to go to the mounted location?";
+"DMG_MOUNTPATH_CREATE" = "If this directory does not exist, it will be created.";
+"DMG_NOTDIR" = "The inputted file is not a directory. Ensure it is a directory, and then try again.";
+"DMG_COULDNTCREATE" = "An error occurred while attempting to create the mount path directory for the DMG";

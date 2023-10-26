@@ -50,11 +50,6 @@ struct SpartanApp: App {
             UserDefaults.settings.synchronize()
         }
         
-        #if DEBUG
-            spawn(command: "/bin/RootHelper", args: ["ch", helperPath, String(755)], env: [], root: true)
-        #endif
-        spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["ch", helperPath, String(755)], env: [], root: true)
-        
 		if(Spartan.fileManager.isReadableFile(atPath: "/private/var/mobile/")){ //shows app data directory if sandbox exists
             //displayView(pathToLoad: "/private/var/mobile/Documents/")
             //displayView(pathToLoad: Bundle.main.bundlePath)

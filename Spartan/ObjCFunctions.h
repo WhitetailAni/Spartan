@@ -13,6 +13,7 @@
 @interface ObjCFunctions: NSObject
 
 + (void)suspendNow;
++ (id)initWebView:(CGRect)bounds file:(NSURL *)file;
 
 @end
 

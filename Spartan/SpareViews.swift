@@ -294,7 +294,7 @@ func substring(str: String, startIndex: String.Index, endIndex: String.Index) ->
     return str[range]
 }
 
-var helperPath: String = Bundle.main.bundlePath + "/RootHelper"
+var helperPath: String = "/bin/RootHelper"
 
 func LocalizedString(_ key: String) -> String {
 	return NSLocalizedString(key, comment: "")
@@ -325,31 +325,31 @@ extension Data {
 
 class RootHelperActs {
 	class func rm(_ filePath: String) {
-		spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["rm", filePath], env: [], root: true)
+		spawn(command: helperPath, args: ["rm", filePath], env: [], root: true)
 	}
 	
 	class func mv(_ filePath: String, _ fileDest: String) {
-		spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["mv", filePath, fileDest], env: [], root: true)
+		spawn(command: helperPath, args: ["mv", filePath, fileDest], env: [], root: true)
 	}
 	
 	class func cp(_ filePath: String, _ fileDest: String) {
-		spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["cp", filePath, fileDest], env: [], root: true)
+		spawn(command: helperPath, args: ["cp", filePath, fileDest], env: [], root: true)
 	}
 	
 	class func touch(_ filePath: String) {
-		spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["tf", filePath], env: [], root: true)
+		spawn(command: helperPath, args: ["tf", filePath], env: [], root: true)
 	}
 	
 	class func mkdir(_ filePath: String) {
-		spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["td", filePath], env: [], root: true)
+		spawn(command: helperPath, args: ["td", filePath], env: [], root: true)
 	}
 	
 	class func ln(_ filePath: String, _ fileDest: String) {
-		spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["ts", filePath, fileDest], env: [], root: true)
+		spawn(command: helperPath, args: ["ts", filePath, fileDest], env: [], root: true)
 	}
 	
 	class func chmod(_ filePath: String, _ perms: Int) {
-		spawn(command: "/private/var/containers/Bundle/Application/RootHelper", args: ["ch", filePath, String(perms)], env: [], root: true)
+		spawn(command: helperPath, args: ["ch", filePath, String(perms)], env: [], root: true)
 	}
 }
 
@@ -357,4 +357,16 @@ extension String: Error { }
 
 func filePathIsNotMobileWritable(_ fullPath: String) -> Bool {
 	return ((fullPath.count < 19) || (String(substring(str: fullPath, startIndex: fullPath.index(fullPath.startIndex, offsetBy: 0), endIndex: fullPath.index(fullPath.startIndex, offsetBy: 19))) != "/private/var/mobile"))
+}
+
+
+struct UIWebViewTV: UIViewRepresentable {
+    let bounds: CGRect
+    let file: String
+
+    func makeUIView(context: Context) -> UIView {
+		return ObjCFunctions.initWebView(bounds, file: URL(fileURLWithPath: file)) as! UIView
+    }
+
+    func updateUIView(_ uiView: UIView, context: Context) { }
 }
