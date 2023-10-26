@@ -17,6 +17,8 @@ let appsManager = ApplicationsManager(allApps: LSApplicationWorkspace.default().
 let tempPath = "/var/mobile/Media/temp"
 let paddingInt: CGFloat = -7
 let opacityInt: CGFloat = 1.0
+var buttonWidth: CGFloat = 500
+var buttonHeight: CGFloat = 30
 
 struct SpareView: View {
     var body: some View {

@@ -63,6 +63,7 @@
 "OPEN_FONT" = "Font Viewer";
 "OPEN_TBD" = "TBD Editor";
 "OPEN_DMG" = "Mount As DMG";
+"OPEN_HTML" = "Open In Web View";
 
 "SHOW_DENIED" = "Permission Denied";
 "SHOW_INFO" = "File Info";

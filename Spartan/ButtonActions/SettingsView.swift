@@ -8,9 +8,6 @@
 import SwiftUI
 
 struct SettingsView: View {
-
-    @Binding var buttonWidth: CGFloat
-
     @State private var showView: [Bool] = [Bool](repeating: false, count: 3)
     @State private var descriptiveTitlesPre = UserDefaults.settings.bool(forKey: "descriptiveTitles")
     @State private var descriptiveTimestampsPre = UserDefaults.settings.bool(forKey: "verboseTimestamps")
