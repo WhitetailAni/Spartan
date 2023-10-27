@@ -99,7 +99,7 @@ struct ContentView: View {
     @State var blankString: [String] = [""] //dont question it
     @State private var nonexistentFile = "" //REALLY dont question it
     
-    @State private var isImageSVG = false
+    @State private var isImageSVG: [Bool] = [false, false]
     
     var body: some View {
         VStack {
@@ -880,14 +880,17 @@ struct ContentView: View {
 							
 							ContextMenuButtonTV(stringKey: "OPEN_IMAGE", action: {
 								newViewFilePath = masterFiles[newViewFileIndex].fullPath
+								isImageSVG[1] = true
 								showSubView[31] = true
 								DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
 									showSubView[2] = false
 								}
 							})
 							.onDisappear {
-								DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-									showSubView[12] = true
+								if isImageSVG[1] {
+									DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+										showSubView[12] = true
+									}
 								}
 							}
 							.alert(isPresented: $showSubView[31], content: {
@@ -895,10 +898,10 @@ struct ContentView: View {
 									title: Text(""),
 									message: Text(NSLocalizedString("INFO_DENIED", comment: "You're monsters!")),
 									primaryButton: .default(Text(LocalizedString("OPEN_IMAGERGBA")), action: {
-										isImageSVG = false
+										isImageSVG[0] = false
 									}),
 									secondaryButton: .default(Text(LocalizedString("OPEN_IMAGESVG")), action: {
-										isImageSVG = true
+										isImageSVG[0] = true
 									})
 								)
 							})
@@ -1200,9 +1203,9 @@ struct ContentView: View {
                     }
                 })
                 .sheet(isPresented: $showSubView[12], onDismiss: {
-					isImageSVG = false
+					isImageSVG[0] = false
                 }, content: {
-                    ImageView(imagePath: newViewFilePath, imageName: newViewFileName, isSVG: isImageSVG)
+                    ImageView(imagePath: newViewFilePath, imageName: newViewFileName, isSVG: isImageSVG[0])
                 })
                 .sheet(isPresented: $showSubView[13], content: {
                     PlistView(filePath: newViewFilePath, fileName: newViewFileName)
@@ -1599,7 +1602,7 @@ struct ContentView: View {
             case 11:
                 showSubView[30] = true
 			case 12:
-				isImageSVG = true
+				isImageSVG[0] = true
 				showSubView[12] = true
 			case 13:
 				showSubView[32] = true
