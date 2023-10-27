@@ -223,6 +223,7 @@ struct IconView: View {
 				HStack {
 					IconButton(iconName: "Summit", creator: "Noel Berry? Unsure")
 					IconButton(iconName: "Core", creator: "Noel Berry? Unsure")
+					IconButton(iconName: "Finda", creator: "JamesnLollify")
 				}
 			}
 		}
@@ -234,7 +235,7 @@ struct IconButton: View {
 	@State var creator: String
 
 	var body: some View {
-		Button(action: { //celeste icon
+		Button(action: {
 			UIApplication.shared.setAlternateIconName(iconName) { error in
 				if let error = error {
 					print(error.localizedDescription)
