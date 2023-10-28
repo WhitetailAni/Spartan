@@ -82,11 +82,11 @@ struct SettingsView: View {
 				}
 			}
 			
-			Button(action: {
+			/*Button(action: {
 				showView[1] = true
 			}) {
 				Text(LocalizedString("SETTINGS_WEBSERVERSTART"))
-			}
+			}*/
 			
 			Button(action: { //info
 				showView[0] = true
@@ -103,9 +103,14 @@ struct SettingsView: View {
 				}
 			}
 			
+			Text(" ")
+				.font(.system(size: 25))
 			Text("Spartan v\((Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "Don't edit") (\((Bundle.main.infoDictionary?["CFBundleVersion"] as? String) ?? "Info.plists"))")
-				.font(.footnote)
                 .foregroundColor(.secondary)
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+					view.scaledFont(name: "BotW Sheikah Regular", size: 20)
+				}
+				.font(.footnote)
         }
         .sheet(isPresented: $showView[0], content: {
 			CreditsView()
@@ -251,12 +256,13 @@ struct IconButton: View {
 						.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
 							view.scaledFont(name: "BotW Sheikah Regular", size: 30)
 						}
-					Text(creator)
-						.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-							view.scaledFont(name: "BotW Sheikah Regular", size: 25).foregroundColor(.gray)
-						}
-						.foregroundColor(.gray)
-				}
+				Text(creator)
+					.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+						view.scaledFont(name: "BotW Sheikah Regular", size: 25).foregroundColor(.gray)
+					}
+					.foregroundColor(.gray)
+			}
+			.frame(width: 350, height: 250)
 		}
 	}
 }

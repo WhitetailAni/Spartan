@@ -32,15 +32,18 @@ struct PlistView: View {
 					tempDict = dictionary
 				} else {
 					print("1288")
-					tempDict = ["The plist file specified does not have a dictionary as its root.":"While these are valid plist files, they are not yet supported by Spartan.", "Check for an update to Spartan. If you're already up-to-date, wait for an update and then try again later.":"Error ID 1288"]
+					_plistDict = State(initialValue: [PlistKey(key: "The plist file specified does not have a dictionary as its root", value: "While these are valid plist files, they are not yet supported by Spartan.", type: .dict), PlistKey(key: "Check for an update to Spartan. If you're already up-to-date, wait for an update that lists support for these types of plist files", value: "Error ID 1288", type: .dict)])
+					return
 				}
 			} catch {
 				print("1394")
-				tempDict = ["The file specified is cannot be read.": "It may be corrupted, or be the wrong file.", "Select the proper file and then try again.":"Error ID 1394"]
+				_plistDict = State(initialValue: [PlistKey(key: "The file specified is cannot be read", value: "It may be corrupted, or be the wrong file.", type: .dict), PlistKey(key: "Select the proper file and then try again", value: "Error ID 1394", type: .dict)])
+			return
 			}
 		} else {
 			print("1395")
-				tempDict = ["The file specified is cannot be read.": "It may be corrupted, or be the wrong file.", "Select the proper file and then try again.":"Error ID 1395"]
+			_plistDict = State(initialValue: [PlistKey(key: "The file specified is cannot be read", value: "It may be corrupted, or be the wrong file.", type: .dict), PlistKey(key: "Select the proper file and then try again", value: "Error ID 1395", type: .dict)])
+			return
 		}
 		
 		let temp = PlistFormatter.swiftDictToPlistKeyArray(tempDict)

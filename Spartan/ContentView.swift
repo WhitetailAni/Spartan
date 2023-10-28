@@ -450,10 +450,10 @@ struct ContentView: View {
                                     }
                                     
                                     Button(action: {
-                                        showSubView[2] = true
                                         newViewFilePath = directory
                                         newViewArrayNames = [masterFiles[index].name]
                                         newViewFileIndex = index
+                                        showSubView[2] = true
                                     }) {
                                         Text(NSLocalizedString("OPENIN", comment: "The bee, of course, flies anyway"))
                                             .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
@@ -556,10 +556,10 @@ struct ContentView: View {
                             
                             //most of the code is actually just copy and pasted, so older comments are duplicated as well. i just changed how it's handled slightly
                                 Button(action: {
-                                    showSubView[1] = true
                                     newViewFilePath = directory
                                     newViewFileName = masterFiles[index].name
                                     newViewFileIndex = index
+                                    showSubView[1] = true
                                 }) {
                                     HStack {
                                         if (multiSelect) {
@@ -815,8 +815,8 @@ struct ContentView: View {
                     }
                     
                     ContextMenuButtonTV(stringKey: "FAVORITESADD", action: {
-                        newViewFilePath = masterFiles[newViewFileIndex].fullPath
-                        newViewFileName = masterFiles[newViewFileIndex].name
+                        newViewFilePath = directory
+						newViewFileName = masterFiles[newViewFileIndex].name
                         showSubView[1] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             showSubView[17] = true
@@ -858,7 +858,7 @@ struct ContentView: View {
                             })
                             
                             ContextMenuButtonTV(stringKey: "OPEN_AUDIO", action: {
-								newViewFilePath = masterFiles[newViewFileIndex].fullPath
+								newViewFilePath = directory
 								newViewFileName = masterFiles[newViewFileIndex].name
 								showSubView[2] = false
 								DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -879,7 +879,8 @@ struct ContentView: View {
 							
 							
 							ContextMenuButtonTV(stringKey: "OPEN_IMAGE", action: {
-								newViewFilePath = masterFiles[newViewFileIndex].fullPath
+								newViewFilePath = directory
+								newViewFileName = masterFiles[newViewFileIndex].name
 								isImageSVG[1] = true
 								showSubView[31] = true
 								DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -907,7 +908,8 @@ struct ContentView: View {
 							})
                             
                             ContextMenuButtonTV(stringKey: "OPEN_TEXT", action: {
-                                newViewFilePath = masterFiles[newViewFileIndex].fullPath
+                                newViewFilePath = directory
+								newViewFileName = masterFiles[newViewFileIndex].name
                                 showSubView[2] = false
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                     showSubView[4] = true
@@ -944,7 +946,7 @@ struct ContentView: View {
                     
 						VStack {
 							ContextMenuButtonTV(stringKey: "OPEN_PLIST", action: {
-								newViewFilePath = masterFiles[newViewFileIndex].fullPath
+								newViewFilePath = directory
 								newViewFileName = masterFiles[newViewFileIndex].name
 								showSubView[2] = false
 								DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -999,21 +1001,22 @@ struct ContentView: View {
 							})
 							
 							ContextMenuButtonTV(stringKey: "OPEN_SPAWN", action: {
-								newViewFileName = masterFiles[newViewFileIndex].name
 								newViewFilePath = directory
+								newViewFileName = masterFiles[newViewFileIndex].name
 								showSubView[2] = false
 								DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
 									showSubView[15] = true
 								}
 							})
 							
-							
-							ContextMenuButtonTV(stringKey: "OPEN_DISMISS", action: {
+							ContextMenuButtonTV(stringKey: "DISMISS", action: {
 								showSubView[2] = false
 							})
                         }
                     }
-                    
+                    .onAppear {
+						print(masterFiles[newViewFileIndex])
+					}
                 }
                 .sheet(isPresented: $E2) {
                     EThree(directory: $directory, files: Binding<[String]>(get: { self.masterFiles.map { $0.name } }, set: { newNames in
@@ -1227,7 +1230,7 @@ struct ContentView: View {
                     MountPointsView(directory: $directory, isPresented: $showSubView[21])
                 })
                 .sheet(isPresented: $showSubView[22], content: {
-                    HexView(filePath: $newViewFilePath, fileName: $newViewFileName)
+                    HexView(filePath: newViewFilePath, fileName: newViewFileName)
                         .onAppear {
                             isLoadingView = false
                         } //it can take a long time for my current hex editor implementation to load everything, so a loading circle is displayed. i typically avoid it for this reason.

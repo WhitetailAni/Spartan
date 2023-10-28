@@ -11,16 +11,53 @@ import SwiftUI
 //it increments by 4 bytes each row. to edit, use the provided TextFields and type your hex manually like a REAL programmer
 //seriously though, why are you expecting anything better? i'm severely limited with what I can create because you have to navigate with a circle pad on a remote
 
+//im updating it to be more like the text editor so you can select lines and add/remove at specific lines, its just a headache and i dont have the mental space rn
+
 struct HexView: View {
-    @Binding var filePath: String
-    @Binding var fileName: String
+    @State var filePath: String
+    @State var fileName: String
     
     @State private var hexString: String = ""
     @State private var hexArray: [String] = []
+    
+    init(filePath: String, fileName: String) {
+		_filePath = State(initialValue: filePath)
+		_fileName = State(initialValue: fileName)
+		var data: Data
+		var tempArray: [String] = []
+		var tempString = ""
+		do {
+			data = try Data(contentsOf: URL(fileURLWithPath: filePath + fileName))
+			tempString = data.map { String(format: "%02hhx", $0) }.joined(separator: "")
+			if tempString == "" {
+				tempArray = [""]
+			} else {
+				for index in stride(from: 0, to: tempString.count, by: 8) {
+					let startIndex = tempString.index(tempString.startIndex, offsetBy: index)
+					let endIndex = tempString.index(startIndex, offsetBy: 8, limitedBy: tempString.endIndex) ?? tempString.endIndex
+					let chunk = String(tempString[startIndex..<endIndex])
+					let one = chunk.prefix(2)
+					let two = chunk.dropFirst(2).prefix(2)
+					let three = chunk.dropFirst(4).prefix(2)
+					let four = chunk.dropFirst(6).prefix(2)
+					tempArray.append("\(one) \(two) \(three) \(four)")
+					//hacky but no out of bounds
+				}
+			}
+		} catch {
+			tempArray = ["The file is invalid or not supported. Please make sure the file is not corrupted and then try again.", "(Error ID 1.2)"]
+		}
+		_hexString = State(initialValue: tempString)
+		_hexArray = State(initialValue: tempArray)
+	}
 
     var body: some View {
-        
         HStack {
+			Button(action: {
+				hexArray.append("")
+			}) {
+				Image(systemName: "plus")
+			}
             Spacer()
             Text(UserDefaults.settings.bool(forKey: "verboseTimestamps") ? filePath + fileName : fileName)
                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
@@ -54,7 +91,7 @@ struct HexView: View {
         }
         
         List(hexArray.indices, id: \.self) { index in
-            if hexArray == ["The file is invalid or not supported. Please make sure the file is not corrupted and then try again."] {
+            if hexArray == ["The file is invalid or not supported. Please make sure the file is not corrupted and then try again. (Error ID 2)"] {
                 Text(hexArray[0])
             } else {
                 let hexValue = 0x0 + index * 4
@@ -69,38 +106,31 @@ struct HexView: View {
                         .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                             view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                         }
-                    TextField(NSLocalizedString("HEX_DATA", comment: ""), text: $hexArray[index])
-                        .frame(width: UIScreen.main.nativeBounds.width - 500)
-                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                        }
-                    let cleanedHexString = hexArray[index].replacingOccurrences(of: " ", with: "")
-                    let hexData = Data(fromHexEncodedString: cleanedHexString)
-                    Text(String(data: hexData!, encoding: .utf8) ?? "Unable to read data")
+                        
+					TextField(NSLocalizedString("HEX_DATA", comment: ""), text: $hexArray[index], onCommit: {
+						if hexArray[index].count > 11 {
+							let string = hexArray[index].replacingOccurrences(of: " ", with: "")
+							var substring = String(string.prefix(8))
+								//aabbccdd
+							substring.insert(contentsOf: " ", at: substring.index(substring.startIndex, offsetBy: 2))
+								//aa bbccdd
+							substring.insert(contentsOf: " ", at: substring.index(substring.startIndex, offsetBy: 5))
+								//aa bb ccdd
+							substring.insert(contentsOf: " ", at: substring.index(substring.startIndex, offsetBy: 8))
+								//aa bb cc dd
+							hexArray[index] = substring
+						}
+					})
+					.frame(width: UIScreen.main.nativeBounds.width - 500)
+					.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+						view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+					}
+					
+                    Text(String(data: Data(fromHexEncodedString: hexArray[index].replacingOccurrences(of: " ", with: ""))!, encoding: .utf8) ?? "Unable to read data")
                         .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                             view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                         }
                 }
-            }
-        }
-        .onAppear {
-            var data: Data
-            do {
-                data = try Data(contentsOf: URL(fileURLWithPath: filePath + fileName))
-                hexString = data.map { String(format: "%02hhx", $0) }.joined(separator: "")
-                for index in stride(from: 0, to: hexString.count, by: 8) {
-                    let startIndex = hexString.index(hexString.startIndex, offsetBy: index)
-                    let endIndex = hexString.index(startIndex, offsetBy: 8, limitedBy: hexString.endIndex) ?? hexString.endIndex
-                    let chunk = String(hexString[startIndex..<endIndex])
-                    let one = chunk.prefix(2)
-                    let two = chunk.dropFirst(2).prefix(2)
-                    let three = chunk.dropFirst(4).prefix(2)
-                    let four = chunk.dropFirst(6).prefix(2)
-                    hexArray.append("\(one) \(two) \(three) \(four)")
-                    //hacky but no out of bounds
-                }
-            } catch {
-                hexArray = ["The file is invalid or not supported. Please make sure the file is not corrupted and then try again."]
             }
         }
     }
