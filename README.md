@@ -32,10 +32,11 @@ What it currently lets you do:
 - Asset catalog name
 - Display app icons/names/bundle IDs in container directories and /Applications
 - Perform FS actions outside of /var/mobile (yes we have root helper!!!!)
+- View HTML files
+- Edit plist files
 There's probably more, I lost track.
 
 TODO:
-- Plist editor //everything done but dictionary which is behaving weirdly
 - fix asset catalog viewer
 - SFTP server
 
