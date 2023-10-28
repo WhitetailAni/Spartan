@@ -262,7 +262,7 @@ struct IconButton: View {
 					}
 					.foregroundColor(.gray)
 			}
-			.frame(width: 350, height: 250)
+			.frame(width: 350, height: 300)
 		}
 	}
 }
