@@ -30,6 +30,9 @@ struct ZipFileView: View {
     @State private var actionProgress: Double = 0
     @State private var showProgress = false
     
+    @State private var errorShow = false
+    @State private var errorString = ""
+    
     var body: some View {
         VStack{
             if(unzip){
@@ -102,7 +105,13 @@ struct ZipFileView: View {
                             view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                         }
                 }
-                
+                .alert(isPresented: $errorShow, content: {
+					Alert(
+						title: Text(NSLocalizedString("ERROR", comment: "")),
+						message: Text(errorString),
+						dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "")))
+					)
+				})
             }
         }
         .onAppear {
@@ -124,6 +133,8 @@ struct ZipFileView: View {
 				})
             } catch {
 				print("Failed to extract file: \(error)")
+				errorString = "Failed to extract file: \(error.localizedDescription)"
+				errorShow = true
             }
             RootHelperActs.mv(tempPath, destination)
             actionProgress = 1
@@ -134,6 +145,8 @@ struct ZipFileView: View {
 				})
             } catch {
 				print("Failed to extract file: \(error)")
+				errorString = "Failed to extract file: \(error.localizedDescription)"
+				errorShow = true
             }
 		}
 	}
@@ -145,8 +158,11 @@ struct ZipFileView: View {
 					actionProgress = progress * 0.96
 				})
             } catch {
-				print("Failed to extract file: \(error)")
+				print("Failed to compress files: \(error)")
+				errorString = "Failed to compress files: \(error.localizedDescription)"
+				errorShow = true
             }
+            RootHelperActs.rm(destination)
             RootHelperActs.mv(tempPath, destination)
             actionProgress = 1
 		} else {
@@ -156,6 +172,8 @@ struct ZipFileView: View {
 				})
 			} catch {
 				print("Failed to compress files: \(error)")
+				errorString = "Failed to compress files: \(error.localizedDescription)"
+				errorShow = true
 			}
 		}
     }

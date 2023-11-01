@@ -97,8 +97,8 @@
 "SECONDS" = "seconds";
 
 //text editor
-"LINEADD" = "Add Line After";
-"LINEREMOVE" = "Remove Line at";
+"LINEADD" = "Insert Line After";
+"LINEREMOVE" = "Remove Line";
 "LINESELECTED" = "Selected Line";
 "LINEADD_DESCRIPTION" = "Enter new text line";
 

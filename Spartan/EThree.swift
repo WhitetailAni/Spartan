@@ -24,7 +24,7 @@ struct EThree: View {
             ForEach(0..<4, id: \.self) { index in
                 StepperTV(value: $EList[index], isHorizontal: false) {
                     if(calculateSHA384Hash(value: ListToInt(list: EList))! == "c830ed4b587fef666dcc43461afe5e1d9d56d2e42f619608635a016cfda268284c0bf40d94cb216a3b91ebbea17f5a19") {
-                        show = true //i know what it is now
+                        show = true //i dont know what it is now
                     }
                 }
             }

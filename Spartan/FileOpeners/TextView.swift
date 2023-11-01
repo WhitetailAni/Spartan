@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct TextView: View {
-    @Binding var filePath: String
-    @Binding var fileName: String
+    @State var filePath: String
+    @State var fileName: String
     @Binding var isPresented: Bool
+    
     @State private var fileContents: [String] = []
     @State private var fileContentsToWrite: String = ""
     @State private var textEditorShow = false
@@ -20,9 +21,37 @@ struct TextView: View {
     @State private var encoding: String.Encoding = .utf8
     @State private var index: Int = 0
     
+    @State private var errorShow = false
+    @State private var errorString = ""
+    
+    init(filePath: String, fileName: String, isPresented: Binding<Bool>) {
+		_filePath = State(initialValue: filePath)
+		_fileName = State(initialValue: fileName)
+		_isPresented = isPresented
+		
+		do {
+            let url = URL(fileURLWithPath: filePath + fileName)
+            let fileData = try Data(contentsOf: url)
+            let detectedEncoding = NSString.stringEncoding(for: fileData, encodingOptions: nil, convertedString: nil, usedLossyConversion: nil)
+            if detectedEncoding != 0 {
+                _encoding = State(initialValue: String.Encoding(rawValue: detectedEncoding))
+            }
+            let fileString = String(data: fileData, encoding: encoding)
+            _fileContents = State(initialValue: fileString?.components(separatedBy: "\n") ?? ["An error occurred while trying to read the text file."])
+        } catch {
+            print("Error loading file: \(error.localizedDescription)")
+        }
+    }
+    
     var body: some View {
         VStack {
             if(!textEditorShow) {
+				Text(UserDefaults.settings.bool(forKey: "verboseTimestamps") ? filePath + fileName : fileName)
+					.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+						view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+					}
+					.font(.system(size: 40))
+					.multilineTextAlignment(.center)
                 HStack {
                     Button(action: {
                         if(index == 0) {
@@ -59,16 +88,28 @@ struct TextView: View {
 							let fullPath = filePath + fileName
 							if filePathIsNotMobileWritable(fullPath) {
 								try stringArrayToString(inputArray: fileContents).write(to: URL(fileURLWithPath: tempPath), atomically: true, encoding: encoding)
+								RootHelperActs.rm(fullPath)
 								RootHelperActs.mv(tempPath, fullPath)
 							} else {
 								try stringArrayToString(inputArray: fileContents).write(to: URL(fileURLWithPath: fullPath), atomically: true, encoding: encoding)
                             }
+                            isPresented = false
                         } catch {
-                            print("Failed to save file: \(error)")
+                            print("Failed to save file: \(error.localizedDescription)")
+							errorString = "Failed to save file: \(error.localizedDescription)"
+							errorShow = true
                         }
                     }) {
                         Image(systemName: "square.and.arrow.down")
                     }
+					.alert(isPresented: $errorShow, content: {
+						Alert(
+							title: Text(NSLocalizedString("ERROR", comment: "")),
+							message: Text(errorString),
+							dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "")))
+						)
+					})
+                    
                 }
                 List(fileContents.indices, id: \.self) { indexB in
                     HStack {
@@ -131,9 +172,6 @@ struct TextView: View {
                 .transition(.opacity)
             }
         }
-        .onAppear {
-            readFile()
-        }
         .onExitCommand {
             if(textEditorShow){
                 withAnimation {
@@ -142,21 +180,6 @@ struct TextView: View {
             } else {
                 isPresented = false
             }
-        }
-    }
-    
-    func readFile() {
-        do {
-            let url = URL(fileURLWithPath: filePath + fileName)
-            let fileData = try Data(contentsOf: url)
-            let detectedEncoding = NSString.stringEncoding(for: fileData, encodingOptions: nil, convertedString: nil, usedLossyConversion: nil)
-            if detectedEncoding != 0 {
-                encoding = String.Encoding(rawValue: detectedEncoding)
-            }
-            let fileString = String(data: fileData, encoding: encoding)
-            fileContents = fileString?.components(separatedBy: "\n") ?? ["An error occurred while trying to read the text file."]
-        } catch {
-            print("Error loading file: \(error.localizedDescription)")
         }
     }
     

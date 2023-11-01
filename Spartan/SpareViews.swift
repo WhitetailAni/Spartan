@@ -69,6 +69,7 @@ struct Checkbox: View {
 struct StepperTV: View {
     @Binding var value: Int
     @State var isHorizontal: Bool
+    @State var valueToIncrementBy = -1
     let onCommit: () -> Void
     
     var body: some View {
@@ -89,7 +90,11 @@ struct StepperTV: View {
     
     var minus: some View {
         Button(action: {
-            value -= 1
+			if valueToIncrementBy != -1 {
+				value -= valueToIncrementBy
+			} else {
+				value -= 1
+            }
             onCommit()
         }) {
             Image(systemName: "minus")
@@ -108,7 +113,11 @@ struct StepperTV: View {
     
     var plus: some View {
         Button(action: {
-            value += 1
+            if valueToIncrementBy != -1 {
+				value += valueToIncrementBy
+			} else {
+				value += 1
+            }
             onCommit()
         }) {
             Image(systemName: "plus")
@@ -288,12 +297,7 @@ extension Image {
 }
 
 func removeLastChar(_ string: String) -> String {
-    return String(substring(str: string, startIndex: string.index(string.startIndex, offsetBy: 0), endIndex: string.index(string.endIndex, offsetBy: -1)))
-}
-
-func substring(str: String, startIndex: String.Index, endIndex: String.Index) -> Substring {
-    let range: Range = startIndex..<endIndex
-    return str[range]
+    return string.substring(toIndex: string.count - 1)
 }
 
 var helperPath: String = "/bin/RootHelper"
@@ -358,7 +362,7 @@ class RootHelperActs {
 extension String: Error { }
 
 func filePathIsNotMobileWritable(_ fullPath: String) -> Bool {
-	return ((fullPath.count < 19) || (String(substring(str: fullPath, startIndex: fullPath.index(fullPath.startIndex, offsetBy: 0), endIndex: fullPath.index(fullPath.startIndex, offsetBy: 19))) != "/private/var/mobile"))
+	return ((fullPath.count < 19) || (fullPath.substring(toIndex: 19) != "/private/var/mobile"))
 }
 
 
@@ -372,3 +376,29 @@ struct UIWebViewTV: UIViewRepresentable {
 
     func updateUIView(_ uiView: UIView, context: Context) { }
 }
+
+extension String {
+	var length: Int {
+		return count
+	}
+	
+	subscript (i: Int) -> String {
+		return self[i ..< i + 1]
+	}
+	
+	func substring(fromIndex: Int) -> String {
+		return self[min(fromIndex, length) ..< length]
+	}
+	
+	func substring(toIndex: Int) -> String {
+		return self[0 ..< max(0, toIndex)]
+	}
+	
+	subscript (r: Range<Int>) -> String {
+		let range = Range(uncheckedBounds: (lower: max(0, min(length, r.lowerBound)), upper: min(length, max(0, r.upperBound))))
+		let start = index(startIndex, offsetBy: range.lowerBound)
+		let end = index(start, offsetBy: range.upperBound - range.lowerBound)
+		return String(self[start ..< end])
+	}
+}
+//https://stackoverflow.com/a/26775912

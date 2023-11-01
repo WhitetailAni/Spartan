@@ -16,13 +16,20 @@ import SwiftUI
 struct HexView: View {
     @State var filePath: String
     @State var fileName: String
+    @Binding var isPresented: Bool
     
     @State private var hexString: String = ""
     @State private var hexArray: [String] = []
+    @State private var index: Int = 0
     
-    init(filePath: String, fileName: String) {
+    @State private var errorShow = false
+    @State private var errorString = ""
+    
+    init(filePath: String, fileName: String, isPresented: Binding<Bool>) {
 		_filePath = State(initialValue: filePath)
 		_fileName = State(initialValue: fileName)
+		_isPresented = isPresented
+		
 		var data: Data
 		var tempArray: [String] = []
 		var tempString = ""
@@ -40,7 +47,7 @@ struct HexView: View {
 					let two = chunk.dropFirst(2).prefix(2)
 					let three = chunk.dropFirst(4).prefix(2)
 					let four = chunk.dropFirst(6).prefix(2)
-					tempArray.append("\(one) \(two) \(three) \(four)")
+					tempArray.append("\(one)\(two)\(three)\(four)")
 					//hacky but no out of bounds
 				}
 			}
@@ -52,86 +59,173 @@ struct HexView: View {
 	}
 
     var body: some View {
-        HStack {
-			Button(action: {
-				hexArray.append("")
-			}) {
-				Image(systemName: "plus")
-			}
-            Spacer()
-            Text(UserDefaults.settings.bool(forKey: "verboseTimestamps") ? filePath + fileName : fileName)
+		VStack {
+			Text(UserDefaults.settings.bool(forKey: "verboseTimestamps") ? filePath + fileName : fileName)
                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                     view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                 }
                 .font(.system(size: 40))
                 .multilineTextAlignment(.center)
-                .padding(-10)
-                .focusable(true) //makes it so you can access the save button
-            Spacer()
-            Button(action: {
-                var cleanedHexString: String = ""
-                for i in 0..<hexArray.count {
-                    cleanedHexString += hexArray[i].replacingOccurrences(of: " ", with: "")
-                }
-                let newData = Data(fromHexEncodedString: cleanedHexString) // convert hex string to data object
-                do {
-					let fullPath = filePath + fileName
-					if filePathIsNotMobileWritable(fullPath) {
-								try newData?.write(to: URL(fileURLWithPath: tempPath)) // write data to file
-								RootHelperActs.mv(tempPath, fullPath)
-					} else {
-						try newData?.write(to: URL(fileURLWithPath: fullPath)) // write data to file
-                    }
-                } catch {
-                    print("Error writing data to file: \(error.localizedDescription)")
-                }
-            }) {
-                Image(systemName: "square.and.arrow.down")
-            }
-        }
-        
-        List(hexArray.indices, id: \.self) { index in
-            if hexArray == ["The file is invalid or not supported. Please make sure the file is not corrupted and then try again. (Error ID 2)"] {
-                Text(hexArray[0])
-            } else {
-                let hexValue = 0x0 + index * 4
-                var hexString = String(hexValue, radix: 16)
-                HStack {
-                    Text("0x\(hexString)")
-                        .onAppear {
-                            while(hexString.count < 8) {
-                                hexString = hexString + " "
+			HStack {
+				Button(action: {
+                        if(index == 0) {
+                            hexArray.insert("", at: 1)
+                        } else {
+                            hexArray.insert("", at: index)
+                        }
+                    }) {
+                        Text("\(NSLocalizedString("LINEADD", comment: "- Hear about Frankie?")) \(index)")
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                             }
-                        }
-                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                        }
-                        
-					TextField(NSLocalizedString("HEX_DATA", comment: ""), text: $hexArray[index], onCommit: {
-						if hexArray[index].count > 11 {
-							let string = hexArray[index].replacingOccurrences(of: " ", with: "")
-							var substring = String(string.prefix(8))
-								//aabbccdd
-							substring.insert(contentsOf: " ", at: substring.index(substring.startIndex, offsetBy: 2))
-								//aa bbccdd
-							substring.insert(contentsOf: " ", at: substring.index(substring.startIndex, offsetBy: 5))
-								//aa bb ccdd
-							substring.insert(contentsOf: " ", at: substring.index(substring.startIndex, offsetBy: 8))
-								//aa bb cc dd
-							hexArray[index] = substring
+                    }
+                    Button(action: {
+						hexArray.remove(at: index)
+                    }) {
+                        Text("\(NSLocalizedString("LINEREMOVE", comment: "- Yeah.")) \(index)")
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
+                    }
+                    VStack {
+						Text(LocalizedString("LINESELECTED"))
+							.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+								view.scaledFont(name: "BotW Sheikah Regular", size: 25)
+							}
+							.font(.system(size: 25))
+							.multilineTextAlignment(.center)
+						StepperTV(value: $index, isHorizontal: true) {
+							if index < 0 {
+								index = 0
+							}
+							if index >= hexArray.count {
+								index = hexArray.count - 1
+							}
+							print(hexArray.count)
 						}
-					})
-					.frame(width: UIScreen.main.nativeBounds.width - 500)
-					.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-						view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                    }
+				
+				Spacer()
+				Button(action: {
+					var cleanedHexString: String = ""
+					let newData = Data(fromHexEncodedString: cleanedHexString) // convert hex string to data object
+					do {
+						let fullPath = filePath + fileName
+						if filePathIsNotMobileWritable(fullPath) {
+							try newData?.write(to: URL(fileURLWithPath: tempPath)) // write data to file
+							RootHelperActs.rm(fullPath)
+							RootHelperActs.mv(tempPath, fullPath)
+						} else {
+							try newData?.write(to: URL(fileURLWithPath: fullPath)) // write data to file
+						}
+						isPresented = false
+					} catch {
+						print("Failed to save file: \(error.localizedDescription)")
+						errorString = "Failed to save file: \(error.localizedDescription)"
+						errorShow = true
 					}
-					
-                    Text(String(data: Data(fromHexEncodedString: hexArray[index].replacingOccurrences(of: " ", with: ""))!, encoding: .utf8) ?? "Unable to read data")
-                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                        }
-                }
-            }
+				}) {
+					Image(systemName: "square.and.arrow.down")
+				}
+				.alert(isPresented: $errorShow, content: {
+					Alert(
+						title: Text(NSLocalizedString("ERROR", comment: "")),
+						message: Text(errorString),
+						dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "")))
+					)
+				})
+			}
+			
+			List(hexArray.indices, id: \.self) { indexB in
+				if hexArray == ["The file is invalid or not supported. Please make sure the file is not corrupted and then try again. (Error ID 2)"] {
+					Text(hexArray[0])
+				} else {
+					let hexValue = 0x0 + indexB * 4
+					var hexString = String(hexValue, radix: 16)
+					HStack {
+						if(indexB == index) {
+							Text("0x\(hexString)")
+								.foregroundColor(.blue)
+								.font(.custom("SF Mono Regular", size: 30))
+								.onAppear {
+									while (hexString.count < 8) {
+										hexString = hexString + " "
+									}
+								}
+								.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+									view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+								}
+							
+							TextField(NSLocalizedString("HEX_DATA", comment: ""), text: $hexArray[indexB], onCommit: {
+								sanitizeHex(indexB)
+							})
+							.frame(width: UIScreen.main.nativeBounds.width - 500)
+							.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+								view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+							}
+							
+							Text(String(data: Data(fromHexEncodedString: hexArray[indexB]) ?? Data(), encoding: .utf8) ?? "Unable to read data")
+								.foregroundColor(.blue)
+								.font(.custom("SF Mono Regular", size: 30))
+								.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+									view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+								}
+								
+						} else {
+							Text("0x\(hexString)")
+								.font(.custom("SF Mono Regular", size: 30))
+								.onAppear {
+									while (hexString.count < 8) {
+										hexString = hexString + " "
+									}
+								}
+								.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+									view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+								}
+								
+							TextField(NSLocalizedString("HEX_DATA", comment: ""), text: $hexArray[indexB], onCommit: {
+								sanitizeHex(indexB)
+							})
+							.frame(width: UIScreen.main.nativeBounds.width - 500)
+							.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+								view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+							}
+							
+							Text(String(data: Data(fromHexEncodedString: hexArray[indexB]) ?? Data(), encoding: .utf8) ?? "Unable to read data")
+								.font(.custom("SF Mono Regular", size: 30))
+								.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+									view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+								}
+						}
+					}
+				}
+			}
         }
     }
+    
+    func sanitizeHex(_ indexB: Int) {
+		if hexArray[indexB].count > 8 {
+			hexArray[indexB] = String(hexArray[indexB].prefix(8))
+		}
+		
+		hexArray[indexB] = hexArray[indexB].replacingOccurrences(of: "a", with: "A")
+		hexArray[indexB] = hexArray[indexB].replacingOccurrences(of: "b", with: "B")
+		hexArray[indexB] = hexArray[indexB].replacingOccurrences(of: "c", with: "C")
+		hexArray[indexB] = hexArray[indexB].replacingOccurrences(of: "d", with: "D")
+		hexArray[indexB] = hexArray[indexB].replacingOccurrences(of: "e", with: "E")
+		hexArray[indexB] = hexArray[indexB].replacingOccurrences(of: "f", with: "F")
+		//how do i make this less bad. there is *definitely* a better way to do this but i dont know it
+		
+		for i in 0..<hexArray[indexB].count {
+			let char = hexArray[indexB][i]
+			if ((char < "0" || char > "9") && (char < "A" || char > "F")) {
+				let index = hexArray[indexB].index(hexArray[indexB].startIndex, offsetBy: i)
+				hexArray[indexB].replaceSubrange(index...index, with: "")
+			}
+		}
+		
+		while hexArray[indexB].count < 8 {
+			hexArray[indexB].append("0")
+		}
+	}
 }

@@ -13,12 +13,13 @@ struct PlistView: View {
 	
 	@State var plistDict: [PlistKey] = []
 	
-	@State var failedToWrite = false
-	
 	@State var editingSubView = false
 	@State var subViewToShow: PlistKeyType = .bool
 	
 	@State var addKeyToPlist = false
+	
+	@State private var errorShow = false
+	@State private var errorString = ""
 	
 	init(filePath: String, fileName: String) {
         _filePath = State(initialValue: filePath)
@@ -76,8 +77,12 @@ struct PlistView: View {
 				}) {
 					Image(systemName: "square.and.arrow.down")
 				}
-				.alert(isPresented: $failedToWrite, content: {
-					Alert(title: Text(NSLocalizedString("PLIST_FAILEDTOSAVE", comment: "9999999")), message: Text(NSLocalizedString("PLIST_FAILEDTOSAVEINFO", comment: "I Saw A Deer Today")), dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "Your Not A Good Person"))))
+				.alert(isPresented: $errorShow, content: {
+					Alert(
+						title: Text(NSLocalizedString("ERROR", comment: "")),
+						message: Text(errorString),
+						dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "")))
+					)
 				})
 			}
 			List(plistDict.indices, id: \.self) { index in
@@ -117,18 +122,19 @@ struct PlistView: View {
 			do {
 				try nsdict.write(to: URL(fileURLWithPath: tempPath))
 			} catch {
-				failedToWrite = true
-				print("epic fail")
-				print(error)
+				print("Failed to save file: \(error.localizedDescription)")
+				errorString = "Failed to save file: \(error.localizedDescription)"
+				errorShow = true
 			}
+			RootHelperActs.rm(fullPath)
 			RootHelperActs.mv(tempPath, fullPath)
 		} else {
 			do {
 				try nsdict.write(to: URL(fileURLWithPath: fullPath))
 			} catch {
-				failedToWrite = true
-				print("epic fail")
-				print(error)
+				print("Failed to save file: \(error.localizedDescription)")
+				errorString = "Failed to save file: \(error.localizedDescription)"
+				errorShow = true
 			}
 		}
 	}

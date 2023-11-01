@@ -1149,7 +1149,7 @@ struct ContentView: View {
                     .opacity(opacityInt)
                 })
                 .sheet(isPresented: $showSubView[4], content: {
-                    TextView(filePath: $newViewFilePath, fileName: $newViewFileName, isPresented: $showSubView[4])
+                    TextView(filePath: newViewFilePath, fileName: newViewFileName, isPresented: $showSubView[4])
                 })
                 .sheet(isPresented: $showSubView[19], onDismiss: {
                     if(didSearch) {
@@ -1230,7 +1230,7 @@ struct ContentView: View {
                     MountPointsView(directory: $directory, isPresented: $showSubView[21])
                 })
                 .sheet(isPresented: $showSubView[22], content: {
-                    HexView(filePath: newViewFilePath, fileName: newViewFileName)
+                    HexView(filePath: newViewFilePath, fileName: newViewFileName, isPresented: $showSubView[22])
                         .onAppear {
                             isLoadingView = false
                         } //it can take a long time for my current hex editor implementation to load everything, so a loading circle is displayed. i typically avoid it for this reason.
@@ -1561,7 +1561,9 @@ struct ContentView: View {
                 do {
                     try fileManager.contentsOfDirectory(atPath: directory + fileToCheck[index])
                 } catch {
-                    if(substring(str: error.localizedDescription, startIndex: error.localizedDescription.index(error.localizedDescription.endIndex, offsetBy: -33), endIndex: error.localizedDescription.index(error.localizedDescription.endIndex, offsetBy: 0)) == "don’t have permission to view it.") { //substrings are horrible parts of swift
+					let err = error.localizedDescription
+					if err.substring(fromIndex: err.count - 33) == "don’t have permission to view it." { //substrings are horrible parts of swift
+						//switched to using the String extension. so much nicerf
                         permissionDenied = true
                     }
                 }
@@ -1835,12 +1837,14 @@ struct ContentView: View {
             return 0
         }
         
-        if let header = String(data: data.subdata(in: 0..<5), encoding: .utf8) {
-            if header == "<?xml" {
-                return 5.1
-            } else if header == "bplis" {
-                return 5.9
-            }
+        if data.count > 5 {
+			if let header = String(data: data.subdata(in: 0..<5), encoding: .utf8) {
+				if header == "<?xml" {
+					return 5.1
+				} else if header == "bplis" {
+					return 5.9
+				}
+			}
         }
         return 0
     }
@@ -1885,7 +1889,7 @@ struct ContentView: View {
 	}
 	func doesFileHaveFileExtension(filePath: String, extensions: [String]) -> Bool {
 		for x in extensions {
-			return String(substring(str: filePath, startIndex: filePath.index(filePath.endIndex, offsetBy: -4), endIndex: filePath.index(filePath.endIndex, offsetBy: 0))) == x
+			return filePath.substring(fromIndex: filePath.count - 4) == x
 		}
 		return false
 	}
