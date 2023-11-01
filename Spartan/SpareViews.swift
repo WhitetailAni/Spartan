@@ -402,3 +402,7 @@ extension String {
 	}
 }
 //https://stackoverflow.com/a/26775912
+
+func stringArrayToString(inputArray: [String]) -> String {
+	return inputArray.joined(separator: "\n")
+}

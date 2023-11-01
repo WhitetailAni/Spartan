@@ -13,7 +13,6 @@ struct TextView: View {
     @Binding var isPresented: Bool
     
     @State private var fileContents: [String] = []
-    @State private var fileContentsToWrite: String = ""
     @State private var textEditorShow = false
     @State private var textEditorString = ""
     @State private var textEditorIndex = 0
@@ -181,10 +180,5 @@ struct TextView: View {
                 isPresented = false
             }
         }
-    }
-    
-    func stringArrayToString(inputArray: [String]) -> String {
-        fileContentsToWrite = inputArray.joined(separator: "\n")
-        return fileContentsToWrite
     }
 }

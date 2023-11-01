@@ -37,6 +37,7 @@ struct SpartanApp: App {
     
     @State var player = AVPlayer()
 	//let server = GCDWebUploader(uploadDirectory: [URL(fileURLWithPath: "/private/var/mobile/Documents/")])
+	//someday... over the rainbow...
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
@@ -50,6 +51,12 @@ struct SpartanApp: App {
             UserDefaults.settings.synchronize()
         }
         
+        if(!(Spartan.fileManager.fileExists(atPath: "/private/var/mobile/Media/.Trash"))){
+            RootHelperActs.mkdir("/private/var/mobile/Media/.Trash")
+        } else {
+            print("Trash already exists")
+        }
+        
 		if(Spartan.fileManager.isReadableFile(atPath: "/private/var/mobile/")){ //shows app data directory if sandbox exists
             //displayView(pathToLoad: "/private/var/mobile/Documents/")
             //displayView(pathToLoad: Bundle.main.bundlePath)
@@ -58,8 +65,6 @@ struct SpartanApp: App {
         } else {
             displayView(pathToLoad: "/Developer/")
         }
-        
-        createTrash()
         
         return true
     }
@@ -76,41 +81,6 @@ struct SpartanApp: App {
             window?.rootViewController = hostingController
             window?.makeKeyAndVisible()
     }
-    
-    func createTrash() {
-		if(!(Spartan.fileManager.fileExists(atPath: "/private/var/mobile/Media/.Trash"))){
-            do {
-                try createDirectoryAtPath(path: "/private/var/mobile/Media", directoryName: ".Trash")
-                print("Created trash directory")
-            } catch {
-                print("Failed to create trash")
-            }
-        } else {
-            print("Trash already exists")
-        }
-    }
-    
-    func createDirectoryAtPath(path: String, directoryName: String) throws {
-		guard Spartan.fileManager.fileExists(atPath: "/private/var/mobile/Media/.Trash/") else {
-            print("Trash already exists")
-            return
-        }
-        let directoryPath = (path as NSString).appendingPathComponent(directoryName)
-		try Spartan.fileManager.createDirectory(atPath: directoryPath, withIntermediateDirectories: true, attributes: nil)
-    }
-    
-    func markExecutable(_ filePath: String) {
-        do {
-			var attributes = try Spartan.fileManager.attributesOfItem(atPath: filePath)
-            
-            let currentPermissions = attributes[.posixPermissions] as? UInt16 ?? 0
-            let newPermissions = currentPermissions | UInt16(0o111)
-            attributes[.posixPermissions] = NSNumber(value: newPermissions)
-			try Spartan.fileManager.setAttributes(attributes, ofItemAtPath: filePath)
-        } catch {
-            print("Error: \(error)")
-        }
-    }
 }
 
 extension UserDefaults {
@@ -119,5 +89,6 @@ extension UserDefaults {
     }
     static var settings: UserDefaults {
         return UserDefaults(suiteName: "com.whitetailani.Spartan.settings") ?? UserDefaults.standard
-    } // so it turns out it did NOT need its own userdefaults. i never used it. no idea why i created it.
+    }
+    // so it turns out the text editor did NOT need its own userdefaults. i never used it. no idea why i created it.
 }

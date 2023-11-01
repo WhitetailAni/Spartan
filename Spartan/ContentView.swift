@@ -248,11 +248,13 @@ struct ContentView: View {
                                                         //in every container folder (whether it's the bundle container, data container, or group container) is a file that contains the app's bundle ID. santander macros do support determining an LSApplicationProxy? from bundle/container/data container folder on **iOS** but not tvOS since sandboxing system is different. Reading from bundle ID ensures that the app definitely exists and someone didn't just create a folder in here, so no issues with nil LSApplicationProxy? elements
                                                         //then the rest of this just reads properties from the LSApplicationProxy.
                                                         
+                                                        //viewing app icons broke at some point though. not sure why
+                                                        
                                                         let app = LSApplicationProxy(forIdentifier: bundleID)
                                                         HStack {
                                                             let image: UIImage? = appsManager.icon(forApplication: app)
                                                             if(image != nil) {
-                                                                Image(uiImage: image!)
+                                                                Image(uiImage: image ?? UIImage(named: "DefaultIcon"))
                                                                     .resizable()
                                                                     .clipShape(RoundedRectangle(cornerRadius: 8))
                                                                     .frame(width: 280 * scaleFactor, height: 168 * scaleFactor)

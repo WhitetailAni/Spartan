@@ -107,8 +107,7 @@ struct HexView: View {
 				
 				Spacer()
 				Button(action: {
-					var cleanedHexString: String = ""
-					let newData = Data(fromHexEncodedString: cleanedHexString) // convert hex string to data object
+					let newData = Data(fromHexEncodedString: stringArrayToString(inputArray: hexArray)) // convert hex string to data object
 					do {
 						let fullPath = filePath + fileName
 						if filePathIsNotMobileWritable(fullPath) {
