@@ -254,7 +254,7 @@ struct ContentView: View {
                                                         HStack {
                                                             let image: UIImage? = appsManager.icon(forApplication: app)
                                                             if(image != nil) {
-                                                                Image(uiImage: image ?? UIImage(named: "DefaultIcon"))
+																Image(uiImage: (image ?? UIImage(named: "DefaultIcon"))!)
                                                                     .resizable()
                                                                     .clipShape(RoundedRectangle(cornerRadius: 8))
                                                                     .frame(width: 280 * scaleFactor, height: 168 * scaleFactor)

@@ -101,7 +101,6 @@ struct HexView: View {
 							if index >= hexArray.count {
 								index = hexArray.count - 1
 							}
-							print(hexArray.count)
 						}
                     }
 				
@@ -135,7 +134,10 @@ struct HexView: View {
 				})
 			}
 			
-			List(hexArray.indices, id: \.self) { indexB in
+			List(0..<hexArray.count, id: \.self) { indexB in
+				/*
+				this is a manual range because if I use indices, the view does not update in time if I call remove(at). doing this, it *does*. i love swiftui
+				 */
 				if hexArray == ["The file is invalid or not supported. Please make sure the file is not corrupted and then try again. (Error ID 2)"] {
 					Text(hexArray[0])
 				} else {
