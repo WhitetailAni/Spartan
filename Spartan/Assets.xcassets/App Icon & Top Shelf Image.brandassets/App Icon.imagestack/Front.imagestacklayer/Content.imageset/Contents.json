@@ -1,12 +1,12 @@
 {
   "images" : [
     {
-      "filename" : "smol text 3.1.png",
+      "filename" : "bottom default.png",
       "idiom" : "tv",
       "scale" : "1x"
     },
     {
-      "filename" : "spartan text 3.1.png",
+      "filename" : "bottom in 4k.png",
       "idiom" : "tv",
       "scale" : "2x"
     }

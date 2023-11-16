@@ -37,18 +37,19 @@ What it currently lets you do:
 There's probably more, I lost track.
 
 TODO:
+- Fix tvOS 13 - waiting for my second TV HD to arrived.
 - fix asset catalog viewer
 - SFTP server
 
 It requires an Apple TV that is either jailbroken or has a kpf applied and 
 is compatible with MDC to build and run, *currently*. Work is being done 
-to add support for different schemes - jailbroken, tipa, jailed, etc.
+to add support for different schemes - jailbroken, jailed, etc.
 
 How to use:
 1. Clone the repository and open it in Xcode (15.0+ required).
-2. Get the patched tvOS 17.0 sdk from 
-[https://github.com/RealKGB/sdks-tvos](sdks-tvos).
-3. Build and run to your Apple TV.
+2. Replace spawn.h in the tvOS SDK in Xcode.app with the spawn.h included in this repo.
+3. [https://www.python.org/downloads/release/python-2718/?ref=blog.tericcabrel.com](Install python2 if you don't have it natively)
+4. Build and run to your Apple TV.
 
 Good luck have fun. Hopefully this isn't the only tvOS file browser ever.
 

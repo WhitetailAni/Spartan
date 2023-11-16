@@ -227,7 +227,7 @@ struct IconView: View {
 				}
 				HStack {
 					IconButton(iconName: "Summit", creator: "Noel Berry? Unsure")
-					IconButton(iconName: "Core", creator: "Noel Berry? Unsure")
+					IconButton(iconName: "Beta", creator: "WhitetailAni")
 					IconButton(iconName: "Finda", creator: "JamesnLollify")
 				}
 			}

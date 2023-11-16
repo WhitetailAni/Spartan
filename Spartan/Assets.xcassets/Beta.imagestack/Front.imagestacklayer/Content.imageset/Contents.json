@@ -1,12 +1,12 @@
 {
   "images" : [
     {
-      "filename" : "core upper small.png",
+      "filename" : "bottom default.png",
       "idiom" : "tv",
       "scale" : "1x"
     },
     {
-      "filename" : "core upper 1.png",
+      "filename" : "bottom in 4k.png",
       "idiom" : "tv",
       "scale" : "2x"
     }
