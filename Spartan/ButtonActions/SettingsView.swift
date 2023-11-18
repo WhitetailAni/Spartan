@@ -71,7 +71,7 @@ struct SettingsView: View {
 				showView[2] = true
 			}) {
 				HStack {
-					Image(systemName: "applepencil")
+					Image(systemName: "pencil")
 					Text(NSLocalizedString("APPICON", comment: """
 					LET'S GO BABY LOVE THE [[METS]] HIT A HOME RUN BABY
 					1987 *CAN* HAPPEN AGAIN
@@ -226,8 +226,8 @@ struct IconView: View {
 					IconButton(iconName: "Terabyte", creator: "WhitetailAni")
 				}
 				HStack {
+                    IconButton(iconName: "Beta", creator: "WhitetailAni")
 					IconButton(iconName: "Summit", creator: "Noel Berry? Unsure")
-					IconButton(iconName: "Beta", creator: "WhitetailAni")
 					IconButton(iconName: "Finda", creator: "JamesnLollify")
 				}
 			}

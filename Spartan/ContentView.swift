@@ -900,10 +900,10 @@ struct ContentView: View {
 								Alert(
 									title: Text(""),
 									message: Text(NSLocalizedString("INFO_DENIED", comment: "You're monsters!")),
-									primaryButton: .default(Text(LocalizedString("OPEN_IMAGERGBA")), action: {
+                                    primaryButton: .default(Text(localizedString: "OPEN_IMAGERGBA"), action: {
 										isImageSVG[0] = false
 									}),
-									secondaryButton: .default(Text(LocalizedString("OPEN_IMAGESVG")), action: {
+                                    secondaryButton: .default(Text(localizedString: "OPEN_IMAGESVG"), action: {
 										isImageSVG[0] = true
 									})
 								)
@@ -1105,50 +1105,26 @@ struct ContentView: View {
 				//welcome to the SheetStack. how anything and everything is presented: a bool in showSubView, and a sheet.
 				//there's a lot. most of them are pretty easy to comprehend, if there's anything out of the ordinary I'll explain it
                 .sheet(isPresented: $showSubView[0], content: {
-                    Button(action: {
+                    ContextMenuButtonTV(stringKey: "CREATE_FILE") {
                         showSubView[0] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             showSubView[5] = true
                         }
-                    }) {
-                        Text(NSLocalizedString("CREATE_FILE", comment: "Please clear the gate."))
-                            .frame(width: buttonWidth, height: buttonHeight)
-                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                            }
                     }
-                    .padding(paddingInt)
-                    .opacity(opacityInt)
                     
-                    Button(action: {
+                    ContextMenuButtonTV(stringKey: "CREATE_DIR") {
                         showSubView[0] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             showSubView[6] = true
                         }
-                    }) {
-                        Text(NSLocalizedString("CREATE_DIR", comment: "Royal Nectar Force on approach."))
-                            .frame(width: buttonWidth, height: buttonHeight)
-                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                            }
                     }
-                    .padding(paddingInt)
-                    .opacity(opacityInt)
                     
-                    Button(action: {
+                    ContextMenuButtonTV(stringKey: "CREATE_SYM") {
                         showSubView[0] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             showSubView[20] = true
                         }
-                    }) {
-                        Text(NSLocalizedString("CREATE_SYM", comment: "Wait a second. Check it out."))
-                            .frame(width: buttonWidth, height: buttonHeight)
-                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-                            }
                     }
-                    .padding(paddingInt)
-                    .opacity(opacityInt)
                 })
                 .sheet(isPresented: $showSubView[4], content: {
                     TextView(filePath: newViewFilePath, fileName: newViewFileName, isPresented: $showSubView[4])
@@ -1283,6 +1259,7 @@ struct ContentView: View {
         } //this handles going back directories with the menu button.
     }
     
+    @ViewBuilder
     var topBar: some View {
         HStack {
             Button(action: {
@@ -1305,14 +1282,14 @@ struct ContentView: View {
                 //i gave up on that, and I just reset it to [] and then the length of masterFiles. it works.
                     if (allWereSelected) {
                         Image(systemName: "checkmark.circle")
-                        .frame(width:50, height:50)
+                            .frame(width: 50, height: 50)
                     } else {
                         Image(systemName: "circle")
-                        .frame(width:50, height:50)
+                            .frame(width: 50, height: 50)
                     }
                 } else {
                     Image(systemName: "checkmark.circle")
-                        .frame(width:50, height:50)
+                        .frame(width: 50, height: 50)
                 }
             }
             
@@ -1510,11 +1487,11 @@ struct ContentView: View {
         .opacity(opacityInt)
     }
     
+    @ViewBuilder
     var freeSpace: some View { //this is hardcoded for now, returning mount points wasnt working
 		//future me wants you to know it works now but im not changing it.
         let (doubleValue, stringValue) = freeSpace(path: "/")
-        return
-            Text(NSLocalizedString("FREE_SPACE", comment: "E") + String(format: "%.2f", doubleValue) + " " + stringValue)
+        Text(NSLocalizedString("FREE_SPACE", comment: "E") + String(format: "%.2f", doubleValue) + " " + stringValue)
                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                     view.scaledFont(name: "BotW Sheikah Regular", size: 32)
                 }
@@ -1524,8 +1501,9 @@ struct ContentView: View {
         .frame(maxWidth: .infinity, alignment: .trailing)
     }
     
+    @ViewBuilder
     var debugMenu: some View {
-        return VStack {
+        VStack {
 			if E { //i need e
 				Button(action: {
 					E2 = true
@@ -1983,6 +1961,9 @@ struct ContextMenuButtonTV: View {
 				.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
 					view.scaledFont(name: "BotW Sheikah Regular", size: 40)
 				}
+                .if(sw_vers <= .archer) { view in
+                    view.font(.system(size: 40))
+                }
 		}
 		.padding(paddingInt)
 		.opacity(opacityInt)

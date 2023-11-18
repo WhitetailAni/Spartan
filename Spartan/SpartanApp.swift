@@ -41,14 +41,24 @@ struct SpartanApp: App {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        UserDefaults.settings.set(true, forKey: "haveLaunchedBefore")
-    
-        if(!UserDefaults.settings.bool(forKey: "haveLaunchedBefore")) {
+        if !(UserDefaults.settings.bool(forKey: "haveLaunchedBefore")) {
             UserDefaults.settings.set(25, forKey: "logWindowFontSize")
             UserDefaults.settings.set(true, forKey: "autoComplete")
             UserDefaults.settings.set(true, forKey: "haveLaunchedBefore")
             UserDefaults.settings.set("MM-dd-yyyy HH:mm", forKey: "dateFormat")
+            
+            UserDefaults.settings.set(true, forKey: "haveLaunchedBefore")
             UserDefaults.settings.synchronize()
+        }
+        
+        if #available(tvOS 17.0, *) {
+            sw_vers = .dawn
+        } else if #available(tvOS 16.0, *) {
+            sw_vers = .sydney
+        } else if #available(tvOS 15.0, *) {
+            sw_vers = .satellite
+        } else if #available(tvOS 14.0, *) {
+            sw_vers = .archer
         }
         
         if(!(Spartan.fileManager.fileExists(atPath: "/private/var/mobile/Media/.Trash"))){

@@ -406,3 +406,20 @@ extension String {
 func stringArrayToString(inputArray: [String]) -> String {
 	return inputArray.joined(separator: "\n")
 }
+
+extension Text {
+    init(localizedString: String) {
+        self = Text(LocalizedString(localizedString))
+        return
+    }
+}
+//taken from Hemlock
+
+enum tvOS: Comparable {
+    case yager
+    case archer
+    case satellite
+    case sydney
+    case dawn
+}
+var sw_vers: tvOS = .yager
