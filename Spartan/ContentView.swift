@@ -31,8 +31,6 @@ struct ContentView: View {
     @State var masterFiles: [SpartanFile] = []
     @State var isRootless: Bool
     
-    let metadataName = UserDefaults.settings.string(forKey: "tvapothecary")
-    
     @State var scaleFactor: CGFloat
     @State var buttonCalc = false
     
@@ -168,6 +166,12 @@ struct ContentView: View {
                                     Text("Toggle Debug")
                                 }
                                 
+                                Button(action: {
+                                    RootHelperActs.rm(directory + metadataName!)
+                                }) {
+                                    Text(localizedString: "CACHE_CLEAR")
+                                }
+                                
                                 Button("Dismiss", action: { } ) //the only way to exit a tvOS context menu is to press a button. nothing else
                             }
                         } else {
@@ -231,9 +235,9 @@ struct ContentView: View {
                                                             }
                                                         }
                                                     } else {
-                                                        if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 1) {
+                                                        if (FileInfo.isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 1) {
                                                             Image(systemName: "folder")
-                                                        } else if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 0) {
+                                                        } else if (FileInfo.isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 0) {
                                                             Image(systemName: "folder.fill")
                                                         } else {
                                                             Image(systemName: "folder.badge.questionmark")
@@ -247,8 +251,8 @@ struct ContentView: View {
                                                     let plistPath: String = masterFiles[index].fullPath + ".com.apple.mobile_container_manager.metadata.plist"
                                                     if fileManager.fileExists(atPath: plistPath) {
                                                         let plistDict = NSDictionary(contentsOfFile: plistPath)
-                                                        let bundleID = defineBundleID(plistDict ?? NSDictionary(dictionaryLiteral: ("MCMMetadataIdentifier", "lol.whitetailani.Spartan"))) //these optionals are literally never used but otherwise it crashes when you try and open from favorites so L
-                                                        let groupBundleID = plistDict?["MCMMetadataIdentifier"] as? String ?? "lol.whitetailani.Spartan"
+                                                        let bundleID = defineBundleID(plistDict ?? NSDictionary(dictionaryLiteral: ("MCMMetadataIdentifier", "com.whitetailani.Spartan"))) //these optionals are literally never used but otherwise it crashes when you try and open from favorites so L
+                                                        let groupBundleID = plistDict?["MCMMetadataIdentifier"] as? String ?? "com.whitetailani.Spartan"
                                                         //in every container folder (whether it's the bundle container, data container, or group container) is a file that contains the app's bundle ID. santander macros do support determining an LSApplicationProxy? from bundle/container/data container folder on **iOS** but not tvOS since sandboxing system is different. Reading from bundle ID ensures that the app definitely exists and someone didn't just create a folder in here, so no issues with nil LSApplicationProxy? elements
                                                         //then the rest of this just reads properties from the LSApplicationProxy.
                                                         
@@ -293,9 +297,9 @@ struct ContentView: View {
                                                             }
                                                         }
                                                     } else {
-                                                        if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 1) {
+                                                        if (FileInfo.isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 1) {
                                                             Image(systemName: "folder")
-                                                        } else if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 0) {
+                                                        } else if (FileInfo.isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 0) {
                                                             Image(systemName: "folder.fill")
                                                         } else {
                                                             Image(systemName: "folder.badge.questionmark")
@@ -306,9 +310,9 @@ struct ContentView: View {
                                                             }
                                                     }
                                                 } else {
-                                                    if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 1) {
+                                                    if (FileInfo.isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 1) {
                                                         Image(systemName: "folder")
-                                                    } else if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 0) {
+                                                    } else if (FileInfo.isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 0) {
                                                         Image(systemName: "folder.fill")
                                                     } else {
                                                         Image(systemName: "folder.badge.questionmark")
@@ -372,7 +376,7 @@ struct ContentView: View {
                                                     }
                                             case 8:
                                                 Image(systemName: "link")
-                                                if(isDirectory(filePath: masterFiles[index].fullPath)) {
+                                                if(FileInfo.isDirectory(filePath: masterFiles[index].fullPath)) {
                                                     Text(removeLastChar(masterFiles[index].name))
                                                         .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                             view.scaledFont(name: "BotW Sheikah Regular", size: 40)
@@ -553,8 +557,7 @@ struct ContentView: View {
                                 }
                             } else { //this is the tvOS 13 code. Tapping on an object opens up a select menu since there's no context menus on tvOS 13. You can do the default action, which is the Open button. Then the rest of the context menu is shown in a Sheet
                             
-                            //future me wants you to know that i don't really test this. i need to buy another HD for 13 testing but i am more interested in putting 18tb in an xserve
-                            //if it's broken, please let me know and i'll try to fix it with the 13.4 sim i downloaded once
+                            //future me wants you to know that i *still* don't really test this. i bought a TV HD to put on 13.4.8 but it came on 14.7 and signed into hulu and prime video so im not downgrading it since i also need a 14 test device (my 14.3 tv 4k 1st gen doesn't work since it won't enter dfu and thus won't jb)
                             
                             //most of the code is actually just copy and pasted, so older comments are duplicated as well. i just changed how it's handled slightly
                                 Button(action: {
@@ -572,8 +575,8 @@ struct ContentView: View {
                                             Text(app!.localizedName())
                                         } else if (directory == "/private/var/containers/Bundle/Application/" || directory == "/private/var/mobile/Containers/Data/Application/" || directory == "/private/var/mobile/Containers/Shared/AppGroup/") {
                                             let plistDict = NSDictionary(contentsOfFile: masterFiles[index].fullPath + ".com.apple.mobile_container_manager.metadata.plist")
-                                            let bundleID = defineBundleID(plistDict ?? NSDictionary(dictionaryLiteral: ("MCMMetadatIdentifier", "lol.whitetailani.Spartan"))) //these default values are literally never used but otherwise it crashes when you try and open from favorites for some stupid reason
-                                            let groupBundleID = plistDict?["MCMMetadataIdentifier"] as? String ?? "lol.whitetailani.Spartan"
+                                            let bundleID = defineBundleID(plistDict ?? NSDictionary(dictionaryLiteral: ("MCMMetadataIdentifier", "com.whitetailani.Spartan"))) //these default values are literally never used but otherwise it crashes when you try and open from favorites for some stupid reason
+                                            let groupBundleID = plistDict?["MCMMetadataIdentifier"] as? String ?? "com.whitetailani.Spartan"
                                             //in every container folder (whether it's the bundle container, data container, or group container) is a file that contains the app's bundle ID. santander macros do support determining an LSApplicationProxy? from bundle/container/data container folder on **iOS** but not tvOS since sandboxing system is different. Reading from bundle ID ensures that the app definitely exists and someone didn't just create a folder in here, so no issues with nil LSApplicationProxy? elements
                                             //then the rest of this just reads properties from the LSApplicationProxy.
                                             
@@ -618,9 +621,9 @@ struct ContentView: View {
                                         } else {
                                             switch masterFiles[index].fileType {
                                             case 0:
-                                                if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 1) {
+                                                if (FileInfo.isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 1) {
                                                     Image(systemName: "folder")
-                                                } else if (isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 0) {
+                                                } else if (FileInfo.isDirectoryEmpty(atPath: masterFiles[index].fullPath) == 0) {
                                                     Image(systemName: "folder.fill")
                                                 } else {
                                                     Image(systemName: "folder.badge.minus")
@@ -679,7 +682,7 @@ struct ContentView: View {
                                                     }
                                             case 8:
                                                 Image(systemName: "link")
-                                                if(isDirectory(filePath: masterFiles[index].fullPath)) {
+                                                if(FileInfo.isDirectory(filePath: masterFiles[index].fullPath)) {
                                                     Text(removeLastChar(masterFiles[index].name))
                                                         .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                                                             view.scaledFont(name: "BotW Sheikah Regular", size: 40)
@@ -754,7 +757,7 @@ struct ContentView: View {
 					})
 					
 					ContextMenuButtonTV(stringKey: "INFO", action: {
-						fileInfo = getFileInfo(forFileAtPath: masterFiles[newViewFileIndex].fullPath)
+                        fileInfo = FileInfo.getFileInfo(filePath: masterFiles[newViewFileIndex].fullPath)
                         showSubView[1] = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             newViewFileName = masterFiles[newViewFileIndex].name
@@ -803,7 +806,7 @@ struct ContentView: View {
                         })
                     } else {
                         ContextMenuButtonTV(stringKey: "GOTOTRASH", action: {
-                            moveFile(path: masterFiles[newViewFileIndex].fullPath, newPath: ("/private/var/mobile/Media/.Trash/" + masterFiles[newViewFileIndex].name))
+                            RootHelperActs.mv(masterFiles[newViewFileIndex].fullPath, ("/private/var/mobile/Media/.Trash/" + masterFiles[newViewFileIndex].name))
                             masterFiles.remove(at: newViewFileIndex)
                             showSubView[1] = false
                         })
@@ -1035,7 +1038,7 @@ struct ContentView: View {
                 .onAppear {
                     resetShowSubView()
                     updateFiles()
-                    if(yandereDevFileType(file: directory) != 0) {
+                    if(FileInfo.yandereDevFileType(file: directory) != 0) {
                         directPathTypeCheckNewViewFileVariableSetter()
                         multiSelect = false
                         defaultAction(index: 0, isDirectPath: true)
@@ -1077,7 +1080,7 @@ struct ContentView: View {
                                 }
                         }
                         .onAppear {
-                            fileInfo = getFileInfo(forFileAtPath: directory + newViewFileName) //this is more early mystery code. how does it work? i dunno. is it bad? probably. am i going to mess with it? no, because it works.
+                            fileInfo = FileInfo.getFileInfo(filePath: directory + newViewFileName) //this is more early mystery code. how does it work? i dunno. is it bad? probably. am i going to mess with it? no, because it works.
                         }
                     }
                 }
@@ -1085,7 +1088,7 @@ struct ContentView: View {
                     showSubView[3] = true
                 }, content: {
                     TextField(NSLocalizedString("PERMSEDIT", comment: "This should have been added a long time ago"), value: $filePerms, formatter: NumberFormatter(), onCommit: {
-                        changeFilePerms(filePath: masterFiles[newViewFileIndex].fullPath, permValue: filePerms)
+                        RootHelperActs.chmod(masterFiles[newViewFileIndex].fullPath, filePerms)
                         showSubView[27] = false
                     })
                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
@@ -1131,11 +1134,11 @@ struct ContentView: View {
                 })
                 .sheet(isPresented: $showSubView[19], onDismiss: {
                     if(didSearch) {
-                        if(isDirectory(filePath: newViewFilePath)) {
+                        if(FileInfo.isDirectory(filePath: newViewFilePath)) {
                             directory = newViewFilePath
                         } else {
                             directory = URL(fileURLWithPath: newViewFilePath).deletingLastPathComponent().path + "/"
-							masterFiles.append(SpartanFile(name: URL(fileURLWithPath: newViewFilePath).lastPathComponent, fullPath: newViewFilePath, isSelected: false, fileType: yandereDevFileType(file: newViewFilePath), isLoadingFile: false))
+                            masterFiles.append(SpartanFile(name: URL(fileURLWithPath: newViewFilePath).lastPathComponent, fullPath: newViewFilePath, isSelected: false, fileType: FileInfo.yandereDevFileType(file: newViewFilePath), isLoadingFile: false))
                             defaultAction(index: masterFiles.count-1, isDirectPath: false)
                         }
                         didSearch = false
@@ -1411,7 +1414,7 @@ struct ContentView: View {
                         }
                     } else {
                         for file in multiSelectFiles {
-                            moveFile(path: directory + file, newPath: "/private/var/mobile/Media/.Trash/" + file)
+                            RootHelperActs.mv(directory + file, "/private/var/mobile/Media/.Trash/" + file)
                             updateFiles()
                         }
                     }
@@ -1575,14 +1578,14 @@ struct ContentView: View {
             case 7:
                 showSubView[15] = true
             case 8:
-                let dest = readSymlinkDestination(path: directory + fileToCheck[index])
-                if(isDirectory(filePath: dest)) {
+                let dest = FileInfo.readSymlinkDestination(path: directory + fileToCheck[index])
+                if(FileInfo.isDirectory(filePath: dest)) {
                     directory = dest
+                    updateFiles()
                 } else {
-					masterFiles.append(SpartanFile(name: URL(fileURLWithPath: dest).lastPathComponent, fullPath: dest, isSelected: false, fileType: Double(fileType), isLoadingFile: false))
+                    masterFiles.append(SpartanFile(name: URL(fileURLWithPath: dest).lastPathComponent, fullPath: dest, isSelected: false, fileType: FileInfo.yandereDevFileType(file: dest), isLoadingFile: false))
                     defaultAction(index: masterFiles.count-1, isDirectPath: false)
                 }
-                updateFiles()
             case 9:
                 showSubView[23] = true
             case 10:
@@ -1634,7 +1637,7 @@ struct ContentView: View {
                         masterFiles.append(decoded[j])
                     }
                 }
-                masterFiles.append(SpartanFile(name: files[i], fullPath: directory + files[i], isSelected: false, fileType: yandereDevFileType(file: directory + files[i]), isLoadingFile: false))
+                masterFiles.append(SpartanFile(name: files[i], fullPath: directory + files[i], isSelected: false, fileType: FileInfo.yandereDevFileType(file: directory + files[i]), isLoadingFile: false))
             }
         } catch {
             masterFiles = oldUpdate()
@@ -1656,7 +1659,7 @@ struct ContentView: View {
             RootHelperActs.mvtemp(directory + metadataName!)
         }
         resetMultiSelectArrays()
-        if UserDefaults.settings.bool(forKey: "autoComplete") && !directory.hasSuffix("/") && isDirectory(filePath: directory) {
+        if UserDefaults.settings.bool(forKey: "autoComplete") && !directory.hasSuffix("/") && FileInfo.isDirectory(filePath: directory) {
             directory = directory + "/"
         }
         if directory == "//" {
@@ -1676,7 +1679,7 @@ struct ContentView: View {
                 return isDirectory.boolValue ? "\(file)/" : file
             }
             for i in 0..<contents.count {
-                new.append(SpartanFile(name: files[i], fullPath: directory + files[i], isSelected: false, fileType: yandereDevFileType(file: directory + files[i]), isLoadingFile: false))
+                new.append(SpartanFile(name: files[i], fullPath: directory + files[i], isSelected: false, fileType: FileInfo.yandereDevFileType(file: directory + files[i]), isLoadingFile: false))
             }
             let encoder = JSONEncoder()
             let encoded = try encoder.encode(new)
@@ -1707,56 +1710,6 @@ struct ContentView: View {
         updateFiles()
     }
     
-    func getFileInfo(forFileAtPath: String) -> [String] {
-        do {
-            let attributes = try fileManager.attributesOfItem(atPath: forFileAtPath)
-    
-            let creationDate = attributes[.creationDate] as? Date ?? Date.distantPast
-            let modificationDate = attributes[.modificationDate] as? Date ?? Date.distantPast
-            
-            let fileSize = attributes[.size] as? Int ?? 0
-            
-            @State var fileOwner: String = ((attributes[.ownerAccountName] as? String)!)
-            
-            let fileOwnerID = attributes[.groupOwnerAccountID] as? Int ?? 0
-            let filePerms = String(format: "%03d", attributes[.posixPermissions] as? Int ?? "000")
-            
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateStyle = .medium
-            dateFormatter.timeStyle = .medium
-            
-            var fileInfoString: [String] = []
-            fileInfoString.append(NSLocalizedString("INFO_PATH", comment: "Ma! I got a thing going here.") + forFileAtPath)
-            fileInfoString.append(NSLocalizedString("INFO_SIZE", comment: "- You got lint on your fuzz.") + ByteCountFormatter().string(fromByteCount: Int64(fileSize)))
-            fileInfoString.append(NSLocalizedString("INFO_CREATION", comment: "- Ow! That's me!") + dateFormatter.string(from: creationDate))
-            fileInfoString.append(NSLocalizedString("INFO_MODIFICATION", comment: "- Wave to us! We'll be in row 118,000.") + dateFormatter.string(from: modificationDate))
-            fileInfoString.append(NSLocalizedString("INFO_OWNER", comment: "- Bye!") + fileOwner)
-            fileInfoString.append(NSLocalizedString("INFO_OWNERID", comment: "Barry, I told you, stop flying in the house!") + String(fileOwnerID))
-            fileInfoString.append(NSLocalizedString("INFO_PERMISSIONS", comment: "- Hey, Adam.") + filePerms)
-            
-            return fileInfoString
-        } catch {
-            return ["Error: \(error.localizedDescription)"]
-        }
-    }
-    
-    func isDirectoryEmpty(atPath: String) -> Int {
-        do {
-            let files = try fileManager.contentsOfDirectory(atPath: atPath)
-            if(files.isEmpty){
-                return 1
-            } else {
-                return 0
-            }
-        } catch {
-            return 2
-        }
-    }
-    
-    func moveFile(path: String, newPath: String) {
-        spawn(command: helperPath, args: ["mv", path, newPath], env: [], root: true)
-    }
-    
     func freeSpace(path: String) -> (Double, String) {
         do {
             let systemAttributes = try fileManager.attributesOfFileSystem(forPath: path)
@@ -1785,184 +1738,6 @@ struct ContentView: View {
         return (remainingBytes, units[i])
     }
 
-    func yandereDevFileType(file: String) -> Double { //I tried using unified file types but they all returned nil so I have to use this awful yandere dev shit
-        //im sorry
-        
-        //FUTURE ME WANTS YOU TO KNOW I AM TALKING ABOUT THE IF ELSE STACK POST NOT THE PEDO STUFF
-        
-        //also apparently i look like yandere dev. thanks ethan
-        
-        
-        //anyway, this has been greatly sped up by separating it out into four async tasks. after each one finishes it updates checkingComplete. once all four have finished, the while loop at the end knows to exit
-        var filetype: Double = 69
-        var checkingComplete = [false, false, false, false]
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-            if (isSymlink(filePath: file)) {
-                filetype = 8 //symlink
-            } else if (isDirectory(filePath: file)) {
-                filetype = 0 //directory
-            } //symlinks detect as directories so symlink check first
-            checkingComplete[0] = true
-        } //they're split out into groups where order matters. symlink has to come before directory, video has to come before audio, etc.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) {
-            if (isVideo(filePath: file)) { //video has to come first as otherwise video files detect as audio (since they are audio files as well)
-                filetype = 2 //video file
-            } else if (isAudio(filePath: file)) {
-                filetype = 1 //audio file
-            } else if (isImage(filePath: file)) {
-                filetype = 3 //image
-            }
-            checkingComplete[1] = true
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.03) {
-            if (doesFileHaveFileExtension(filePath: file, extensions: [".dmg"])) {
-                filetype = 13 //dmg
-            } else if (doesFileHaveFileExtension(filePath: file, extensions: [".svg"])) {
-                filetype = 12 //svg
-            } else if (doesFileHaveFileExtension(filePath: file, extensions: [".ttf", ".otf", ".ttc", ".pfb", ".pfa"])) {
-                filetype = 11 //a font (badly)
-            } else if (doesFileHaveFileExtension(filePath: file, extensions: [".zip", ".cbz"])) {
-                filetype = 6 //archive
-            } else if (doesFileHaveFileExtension(filePath: file, extensions: [".deb"])) {
-                filetype = 9 //deb
-            }
-            checkingComplete[2] = true
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.04) {
-            if (isPlist(filePath: file) != 0) {
-                filetype = isPlist(filePath: file)
-                //5.1 = xml plist
-                //5.9 = bplist
-            } else if (isHTML(filePath: file)) {
-                filetype = 14 //html
-            } else if(isCar(filePath: file)) {
-                filetype = 10 //asset catalog
-            } else if (fileManager.isExecutableFile(atPath: file)) { //executables detect as utf32 lol
-                filetype = 7 //executable
-            } else if (isText(filePath: file)) { //these must be flipped because otherwise xml plist detects as text
-                filetype = 4 //text file
-            }
-            checkingComplete[3] = true
-        }
-        while checkingComplete.contains(false) { } //wait for checking to finish
-        return filetype
-    }
-    func isDirectory(filePath: String) -> Bool {
-        var isDirectory: ObjCBool = false
-        FileManager.default.fileExists(atPath: filePath, isDirectory: &isDirectory)
-        return isDirectory.boolValue
-    }
-    func isAudio(filePath: String) -> Bool {
-        let fileURL = URL(fileURLWithPath: filePath)
-        let asset = AVAsset(url: fileURL)
-        let playableKey = "playable"
-
-        let playablePredicate = NSPredicate(format: "%K == %@", playableKey, NSNumber(value: true))
-        let playableItems = asset.tracks(withMediaCharacteristic: .audible).filter { playablePredicate.evaluate(with: $0) }
-
-        return playableItems.count > 0
-    }
-    func isVideo(filePath: String) -> Bool {
-        let fileURL = URL(fileURLWithPath: filePath)
-        let asset = AVAsset(url: fileURL)
-        let playableKey = "playable"
-
-        let playablePredicate = NSPredicate(format: "%K == %@", playableKey, NSNumber(value: true))
-        let playableItems = asset.tracks(withMediaCharacteristic: .visual).filter { playablePredicate.evaluate(with: $0) }
-
-        return playableItems.count > 0
-    }
-    func isImage(filePath: String) -> Bool {
-        guard fileManager.fileExists(atPath: filePath) else {
-            return false
-        }
-    
-        if let image = UIImage(contentsOfFile: filePath) {
-            return image.size.width > 0 && image.size.height > 0
-        }
-        return false
-    }
-    func isText(filePath: String) -> Bool {
-        guard let data = fileManager.contents(atPath: filePath) else {
-            return false
-        }
-    
-        return data.allSatisfy { Character(UnicodeScalar($0)).isASCII } || String(data: data, encoding: .utf8) != nil || String(data: data, encoding: .utf16) != nil || String(data: data, encoding: .utf32) != nil
-    }
-    func isPlist(filePath: String) -> Double {
-        guard let data = fileManager.contents(atPath: filePath) else {
-            return 0
-        }
-        
-        if data.count > 5 {
-			if let header = String(data: data.subdata(in: 0..<5), encoding: .utf8) {
-				if header == "<?xml" {
-					return 5.1
-				} else if header == "bplis" {
-					return 5.9
-				}
-			}
-        }
-        return 0
-    }
-    func isSymlink(filePath: String) -> Bool {
-        let fileURL = URL(fileURLWithPath: filePath)
-        
-        do {
-            let resourceValues = try fileURL.resourceValues(forKeys: [.isSymbolicLinkKey])
-            if let isSymbolicLink = resourceValues.isSymbolicLink {
-                return isSymbolicLink
-            }
-        } catch {
-            print("Error: \(error)")
-        }
-        return false
-    }
-    func isCar(filePath: String) -> Bool {
-        guard let data = fileManager.contents(atPath: filePath) else {
-            return false
-        }
-        if data.count > 8 {
-			if let header = String(data: data.subdata(in: 0..<8), encoding: .utf8) {
-				return header == "BOMStore"
-			}
-		}
-		return false
-    }
-	func isHTML(filePath: String) -> Bool {
-		guard let data = fileManager.contents(atPath: filePath) else {
-            return false
-        }
-        if data.count > 15 {
-			if let header = String(data: data.subdata(in: 0..<15), encoding: .utf8) {
-				return header == "<!DOCTYPE html>"
-			}
-		}
-		return false
-	}
-	func doesFileHaveFileExtension(filePath: String, extensions: [String]) -> Bool {
-		for x in extensions {
-			return filePath.substring(fromIndex: filePath.count - 4) == x
-		}
-		return false
-	}
-    
-    func readSymlinkDestination(path: String) -> String {
-		var rawPath = "/"
-		do {
-			 rawPath += try Spartan.fileManager.destinationOfSymbolicLink(atPath: removeLastChar(path))
-		} catch {
-			return "Make a valid symlink please. (Error ID 167)"
-		}
-        
-        let rawPathType = yandereDevFileType(file: rawPath)
-        if rawPathType == 0 || rawPathType == 8 {
-			rawPath += "/"
-		}
-        
-        return rawPath
-    }
     func resetMultiSelectArrays(){
         iterateOverFileWasSelected(boolToIterate: false)
         for i in 0..<multiSelectFiles.count {
@@ -1976,7 +1751,7 @@ struct ContentView: View {
     }
     
     func directPathTypeCheckNewViewFileVariableSetter() { //this function name is very very silly and im leaving it. I think it's used once and it doesn't even work properly. but it uses a feature that literally no one should be using
-        if(yandereDevFileType(file: directory) != 0){
+        if(FileInfo.yandereDevFileType(file: directory) != 0){
             newViewFilePath = String(directory.prefix(through: directory.lastIndex(of: "/")!))
             let inProgressFileName = directory.split(separator: "/")
             newViewFileName = String(inProgressFileName.last ?? "")
@@ -1986,15 +1761,6 @@ struct ContentView: View {
         for i in 0..<showSubView.count {
             showSubView[i] = false
         }
-    }
-    
-    func changeFilePerms(filePath: String, permValue: Int) {
-        guard fileManager.fileExists(atPath: filePath) else {
-            print("File does not exist at path: \(filePath)")
-            return
-        }
-        
-        spawn(command: helperPath, args: ["ch", filePath, String(permValue)], env: [], root: true)
     }
     
     func defineBundleID(_ plistDict: NSDictionary) -> String {
@@ -2021,25 +1787,3 @@ struct SpartanFile: Hashable, Encodable, Decodable {
     var fileType: Double
     var isLoadingFile: Bool
 } // i am so glad I switched to this instead of having like five different arrays
-
-struct ContextMenuButtonTV: View {
-	@State var stringKey: String
-	let action: () -> Void
-	
-	var body: some View {
-		Button(action: {
-			action()
-		}) {
-			Text(LocalizedString(stringKey))
-				.frame(width: buttonWidth, height: buttonHeight)
-				.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-					view.scaledFont(name: "BotW Sheikah Regular", size: 40)
-				}
-                .if(sw_vers <= .archer) { view in
-                    view.font(.system(size: 40))
-                }
-		}
-		.padding(paddingInt)
-		.opacity(opacityInt)
-	}
-}

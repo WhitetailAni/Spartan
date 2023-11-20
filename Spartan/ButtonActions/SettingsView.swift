@@ -66,6 +66,18 @@ struct SettingsView: View {
 				}
 				.font(.system(size: 25))
 			Text(" ")
+            
+            Button(action: {
+                cacheFolder("/")
+            }) {
+                Text(localizedString: "SETTINGS_CACHEALL")
+            }
+            Text(NSLocalizedString("SETTINGS_CACHEALLDESC", comment: "Halls Of Science... 5?"))
+                .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                    view.scaledFont(name: "BotW Sheikah Regular", size: 25)
+                }
+                .font(.system(size: 25))
+            Text(" ")
 			
 			Button(action: {
 				showView[2] = true
@@ -265,4 +277,48 @@ struct IconButton: View {
 			.frame(width: 350, height: 300)
 		}
 	}
+}
+
+func cacheFolder(_ path: String) {
+    do {
+        let fileManager = FileManager.default
+        let contents = try fileManager.contentsOfDirectory(atPath: path)
+        var tempFiles: [SpartanFile] = []
+        
+        do {
+            let contents = try FileManager.default.contentsOfDirectory(atPath: path)
+            var files: [String]
+            files = contents.map { file in
+                let filePath = "/" + path + "/" + file
+                var isDirectory: ObjCBool = false
+                FileManager.default.fileExists(atPath: filePath, isDirectory: &isDirectory)
+                return isDirectory.boolValue ? "\(file)/" : file
+            }
+            for i in 0..<contents.count {
+                tempFiles.append(SpartanFile(name: files[i], fullPath: path + files[i], isSelected: false, fileType: FileInfo.yandereDevFileType(file: path + files[i]), isLoadingFile: false))
+            }
+        } catch {
+            print("failed to cache folder \(path): \(error)")
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) { //removes files that no longer exist from the cache (so the filesize doesn't grow until you run out of disk space)
+            let encoder = JSONEncoder()
+            do {
+                let encoded = try encoder.encode(tempFiles)
+                try encoded.write(to: URL(fileURLWithPath: tempPath))
+            } catch {
+                print("failed to update and/or save cached metadata: \(error)")
+            }
+            RootHelperActs.mvtemp(path + metadataName!)
+        }
+        
+        for item in contents {
+            let itemPath = (path as NSString).appendingPathComponent(item)
+
+            if FileInfo.isDirectory(filePath: itemPath) {
+                cacheFolder(itemPath)
+            }
+        }
+    } catch {
+        print("Error caching: \(path)")
+    }
 }

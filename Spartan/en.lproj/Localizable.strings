@@ -68,6 +68,7 @@
 "SHOW_DENIED" = "Permission Denied";
 "SHOW_INFO" = "File Info";
 "INFO_DENIED" = "You don't have permission for that.";
+"CACHE_CLEAR" = "Clear Metadata Cache";
 
 
 //file info
@@ -181,6 +182,8 @@
 "SETTINGS_DATEFORMATDESC2" = "Visit https://www.advancedswift.com/date-formatter-cheatsheet-formulas-swift/ for a guide.";
 "CREDITS" = "Credits";
 "SETTINGS_WEBSERVERSTART" = "Configure Web Server";
+"SETTINGS_CACHEALL" = "Cache Metadata For All Folders";
+"SETTINGS_CACHEALLDESC" = "Precaches metadata for files in every directory (improves load times). This will take a long time to complete.";
 
 //app icon
 "APPICON" = "Change App Icon";
