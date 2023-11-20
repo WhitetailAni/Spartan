@@ -127,7 +127,7 @@ struct PlistView: View {
 				errorShow = true
 			}
 			RootHelperActs.rm(fullPath)
-			RootHelperActs.mv(tempPath, fullPath)
+			RootHelperActs.mvtemp(fullPath)
 		} else {
 			do {
 				try nsdict.write(to: URL(fileURLWithPath: fullPath))

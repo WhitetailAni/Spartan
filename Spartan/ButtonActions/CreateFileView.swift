@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import RootHelper
 
 struct CreateFileView: View {
     @State var fileName: String = ""

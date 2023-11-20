@@ -63,7 +63,7 @@ import Darwin.POSIX
     var stderrStr = ""
 
     let mutex = DispatchSemaphore(value: 0)
-    let readQueue = DispatchQueue(label: "lol.whitetailani.Spartan.command",
+    let readQueue = DispatchQueue(label: "com.whitetailani.Spartan.command",
                                   qos: .userInitiated,
                                   attributes: .concurrent,
                                   autoreleaseFrequency: .inherit,

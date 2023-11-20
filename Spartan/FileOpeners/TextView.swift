@@ -87,7 +87,7 @@ struct TextView: View {
 						if filePathIsNotMobileWritable(fullPath) {
 							try stringArrayToString(inputArray: fileContents).write(to: URL(fileURLWithPath: tempPath), atomically: true, encoding: encoding)
 							RootHelperActs.rm(fullPath)
-							RootHelperActs.mv(tempPath, fullPath)
+							RootHelperActs.mvtemp(fullPath)
 						} else {
 							try stringArrayToString(inputArray: fileContents).write(to: URL(fileURLWithPath: fullPath), atomically: true, encoding: encoding)
 						}

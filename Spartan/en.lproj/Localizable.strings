@@ -214,6 +214,7 @@
 "STDERR" = "stderr";
 
 //dpkg
+"EXTRACT_CURRENTDIR" = "Extract to current directory";
 "DPKGDEB_OUTDIR" = "Specify the destination directory";
 "DPKGDEB_OUTNAME" = "Specify the deb's filename";
 "DPKGDEB_COMPTYPE" = "Specify the compression type to use";

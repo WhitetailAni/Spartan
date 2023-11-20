@@ -46,6 +46,7 @@ struct SpartanApp: App {
             UserDefaults.settings.set(true, forKey: "autoComplete")
             UserDefaults.settings.set(true, forKey: "haveLaunchedBefore")
             UserDefaults.settings.set("MM-dd-yyyy HH:mm", forKey: "dateFormat")
+            UserDefaults.settings.set(randomString(length: 24), forKey: "tvapothecary")
             
             UserDefaults.settings.set(true, forKey: "haveLaunchedBefore")
             UserDefaults.settings.synchronize()

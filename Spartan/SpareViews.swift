@@ -357,6 +357,11 @@ class RootHelperActs {
 	class func chmod(_ filePath: String, _ perms: Int) {
 		spawn(command: helperPath, args: ["ch", filePath, String(perms)], env: [], root: true)
 	}
+    
+    class func mvtemp(_ filePath: String) {
+        self.mv(tempPath, filePath)
+        self.rm(tempPath)
+    }
 }
 
 extension String: Error { }
@@ -423,3 +428,8 @@ enum tvOS: Comparable {
     case dawn
 }
 var sw_vers: tvOS = .yager
+
+func randomString(length: Int) -> String {
+    let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    return String((0..<length).map{ _ in letters.randomElement()! })
+}

@@ -112,7 +112,7 @@ struct HexView: View {
 						if filePathIsNotMobileWritable(fullPath) {
 							try newData?.write(to: URL(fileURLWithPath: tempPath)) // write data to file
 							RootHelperActs.rm(fullPath)
-							RootHelperActs.mv(tempPath, fullPath)
+							RootHelperActs.mvtemp(fullPath)
 						} else {
 							try newData?.write(to: URL(fileURLWithPath: fullPath)) // write data to file
 						}

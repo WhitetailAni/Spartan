@@ -136,7 +136,7 @@ struct ZipFileView: View {
 				errorString = "Failed to extract file: \(error.localizedDescription)"
 				errorShow = true
             }
-            RootHelperActs.mv(tempPath, destination)
+            RootHelperActs.mvtemp(destination)
             actionProgress = 1
 		} else {
 			do {
@@ -163,7 +163,7 @@ struct ZipFileView: View {
 				errorShow = true
             }
             RootHelperActs.rm(destination)
-            RootHelperActs.mv(tempPath, destination)
+            RootHelperActs.mvtemp(destination)
             actionProgress = 1
 		} else {
 			do {

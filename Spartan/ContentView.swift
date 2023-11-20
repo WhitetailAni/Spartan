@@ -31,6 +31,8 @@ struct ContentView: View {
     @State var masterFiles: [SpartanFile] = []
     @State var isRootless: Bool
     
+    let metadataName = UserDefaults.settings.string(forKey: "tvapothecary")
+    
     @State var scaleFactor: CGFloat
     @State var buttonCalc = false
     
@@ -51,6 +53,8 @@ struct ContentView: View {
     @State var filePerms = 420
     
     @State var lol: [String: Any] = [:]
+    
+    @State var didChangeDir = false
     
     @State private var showSubView: [Bool] = [Bool](repeating: false, count: 34)
     //createFileSelectShow = 0
@@ -465,8 +469,8 @@ struct ContentView: View {
                                     
                                     if(directory == "/private/var/mobile/Media/.Trash/"){
                                         Button(action: {
-                                            deleteFile(atPath: masterFiles[index].fullPath)
-                                            updateFiles()
+                                            RootHelperActs.rm(masterFiles[index].fullPath)
+                                            masterFiles.remove(at: index)
                                         }) {
                                             Text(NSLocalizedString("DELETE", comment: "because bees don't care what humans think is impossible."))
                                                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
@@ -475,12 +479,8 @@ struct ContentView: View {
                                         }
                                     } else if (directory == "/private/var/mobile/Media/" && masterFiles[index].name == ".Trash/") {
                                         Button(action: {
-                                            do {
-                                                try fileManager.removeItem(atPath: "/private/var/mobile/Media/.Trash/")
-                                                try fileManager.createDirectory(atPath: "/private/var/mobile/Media/.Trash/", withIntermediateDirectories: true, attributes: nil)
-                                            } catch {
-                                                print("Error emptying Trash: \(error)")
-                                            }
+                                            RootHelperActs.rm("/private/var/mobile/Media/.Trash/")
+                                            RootHelperActs.mkdir("/private/var/mobile/Media/.Trash/")
                                             updateFiles()
                                         }) {
                                             Text(NSLocalizedString("TRASHYEET", comment: "Yellow, black. Yellow, black."))
@@ -490,8 +490,8 @@ struct ContentView: View {
                                         }
                                     } else {
                                         Button(action: {
-                                            moveFile(path: masterFiles[index].fullPath, newPath: ("/private/var/mobile/Media/.Trash/" + masterFiles[index].name))
-                                            updateFiles()
+                                            RootHelperActs.mv(masterFiles[index].fullPath, ("/private/var/mobile/Media/.Trash/" + masterFiles[index].name))
+                                            masterFiles.remove(at: index)
                                         }) {
                                             Text(NSLocalizedString("GOTOTRASH", comment: "Yellow, black. Yellow, black."))
                                                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
@@ -501,8 +501,8 @@ struct ContentView: View {
                                     }
                                     if(deleteOverride) { //this never activates, but I leave it in just in case I ever change how this works
                                         Button(action: {
-                                            deleteFile(atPath: masterFiles[index].fullPath)
-                                            updateFiles()
+                                            RootHelperActs.rm(masterFiles[index].fullPath)
+                                            masterFiles.remove(at: index)
                                         }) {
                                             Text(NSLocalizedString("DELETE", comment: "Ooh, black and yellow!"))
                                                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
@@ -783,8 +783,8 @@ struct ContentView: View {
                     
                     if(directory == "/private/var/mobile/Media/.Trash/"){
                         ContextMenuButtonTV(stringKey: "DELETE", action: {
-                            deleteFile(atPath: masterFiles[newViewFileIndex].fullPath)
-                            updateFiles()
+                            RootHelperActs.rm(masterFiles[newViewFileIndex].fullPath)
+                            masterFiles.remove(at: newViewFileIndex)
                             showSubView[1] = false
                         })
                     } else if(directory == "/private/var/mobile/Media/" && masterFiles[newViewFileIndex].name == ".Trash/"){
@@ -804,14 +804,14 @@ struct ContentView: View {
                     } else {
                         ContextMenuButtonTV(stringKey: "GOTOTRASH", action: {
                             moveFile(path: masterFiles[newViewFileIndex].fullPath, newPath: ("/private/var/mobile/Media/.Trash/" + masterFiles[newViewFileIndex].name))
-                            updateFiles()
+                            masterFiles.remove(at: newViewFileIndex)
                             showSubView[1] = false
                         })
                     }
                     if(deleteOverride) { //i dont think this can display but it's HERE ANYWAY
                         ContextMenuButtonTV(stringKey: "DELETE", action: {
-                            deleteFile(atPath: masterFiles[newViewFileIndex].fullPath)
-                            updateFiles()
+                            RootHelperActs.rm(masterFiles[newViewFileIndex].fullPath)
+                            masterFiles.remove(at: newViewFileIndex)
                             showSubView[1] = false
                         })
                     }
@@ -1202,10 +1202,13 @@ struct ContentView: View {
                     SpawnView(filePath: $newViewFilePath, fileName: $newViewFileName)
                 })
                 .sheet(isPresented: $showSubView[21], onDismiss: {
-                    updateFiles()
-                    resetShowSubView()
+                    if didChangeDir {
+                        updateFiles()
+                        resetShowSubView()
+                        didChangeDir = false
+                    }
                 }, content: {
-                    MountPointsView(directory: $directory, isPresented: $showSubView[21])
+                    MountPointsView(directory: $directory, isPresented: $showSubView[21], didChangeDir: $didChangeDir)
                 })
                 .sheet(isPresented: $showSubView[22], content: {
                     HexView(filePath: newViewFilePath, fileName: newViewFileName, isPresented: $showSubView[22])
@@ -1403,7 +1406,7 @@ struct ContentView: View {
                 Button(action: {
                     if(directory == "/private/var/mobile/Media/.Trash/"){
                         for file in multiSelectFiles {
-                            deleteFile(atPath: directory + file)
+                            RootHelperActs.rm(directory + file)
                             updateFiles()
                         }
                     } else {
@@ -1516,7 +1519,7 @@ struct ContentView: View {
 		.frame(maxWidth: .infinity, alignment: .leading)
     }
     
-    func defaultAction(index: Int, isDirectPath: Bool) { //this function was created to allow tvOS 13 support. it is probably the most important function in this entire file manager. without it, nothing works
+    func defaultAction(index: Int, isDirectPath: Bool) { //this function was created to allow tvOS 13 support. it is probably the most important function in this entire file manager. without it, nothing aside from directory listing works
         var fileToCheck: [String] = masterFiles.map { $0.name }
         if(isDirectPath) {
             fileToCheck = [""]
@@ -1535,7 +1538,7 @@ struct ContentView: View {
             multiSelect = false
             newViewFilePath = directory
             newViewFileName = fileToCheck[index]
-            let fileType = Int(yandereDevFileType(file: (directory + fileToCheck[index])))
+            let fileType = masterFiles[index].fileType
             switch fileType {
             case 0:
                 do {
@@ -1543,7 +1546,7 @@ struct ContentView: View {
                 } catch {
 					let err = error.localizedDescription
 					if err.substring(fromIndex: err.count - 33) == "don’t have permission to view it." { //substrings are horrible parts of swift
-						//switched to using the String extension. so much nicerf
+						//switched to using the String extension. so much nicer.
                         permissionDenied = true
                     }
                 }
@@ -1602,13 +1605,67 @@ struct ContentView: View {
         }
     }
 
-    func updateFiles() {
+    func updateFiles() { //credit to ethanrdoesmc for the updates to this. now we have a ds_store clone!
+        guard fileManager.fileExists(atPath: directory + metadataName!) else {
+            masterFiles = oldUpdate()
+            return
+        }
+        guard let encoded = fileManager.contents(atPath: directory + metadataName!) else {
+            masterFiles = oldUpdate()
+            return
+        } //two guards. one to make sure the file exists, and one to make sure it has data. if it doesn't exist (directory hasn't been cached yet) or is empty (no files in the folder, would be a waste of time to check it), fallback to the old method (which when a directory is empty, is extremely fast).
+        let decoder = JSONDecoder()
+        var decoded: [SpartanFile] = []
+        do {
+            masterFiles = []
+            decoded = try decoder.decode([SpartanFile].self, from: encoded) //this gets a [SpartanFile] from the encoded metadata. however,
+            print(decoded)
+            let contents = try FileManager.default.contentsOfDirectory(atPath: directory)
+            var files: [String]
+            files = contents.map { file in
+                let filePath = "/" + directory + "/" + file
+                var isDirectory: ObjCBool = false
+                FileManager.default.fileExists(atPath: filePath, isDirectory: &isDirectory)
+                return isDirectory.boolValue ? "\(file)/" : file
+            }
+            for i in 0..<contents.count {
+                for j in 0..<decoded.count { //this checks the cache for if the file has already been checked.
+                    if files[i] == decoded[j].name {
+                        masterFiles.append(decoded[j])
+                    }
+                }
+                masterFiles.append(SpartanFile(name: files[i], fullPath: directory + files[i], isSelected: false, fileType: yandereDevFileType(file: directory + files[i]), isLoadingFile: false))
+            }
+        } catch {
+            masterFiles = oldUpdate()
+            print(error)
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) { //removes files that no longer exist from the cache (so the filesize doesn't grow until you run out of disk space)
+            for i in 0..<decoded.count {
+                if !(masterFiles.contains(decoded[i])) {
+                    decoded.remove(at: i)
+                }
+            }
+            let encoder = JSONEncoder()
+            do {
+                let encoded = try encoder.encode(decoded)
+                try encoded.write(to: URL(fileURLWithPath: tempPath))
+            } catch {
+                print("failed to update and/or save cached metadata: \(error)")
+            }
+            RootHelperActs.mvtemp(directory + metadataName!)
+        }
+        resetMultiSelectArrays()
         if UserDefaults.settings.bool(forKey: "autoComplete") && !directory.hasSuffix("/") && isDirectory(filePath: directory) {
             directory = directory + "/"
         }
         if directory == "//" {
 			directory = "/"
 		}
+    }
+    
+    func oldUpdate() -> [SpartanFile] {
+        var new: [SpartanFile] = []
         do {
             let contents = try FileManager.default.contentsOfDirectory(atPath: directory)
             var files: [String]
@@ -1618,14 +1675,17 @@ struct ContentView: View {
                 FileManager.default.fileExists(atPath: filePath, isDirectory: &isDirectory)
                 return isDirectory.boolValue ? "\(file)/" : file
             }
-            masterFiles = []
             for i in 0..<contents.count {
-                masterFiles.append(SpartanFile(name: files[i], fullPath: directory + files[i], isSelected: false, fileType: yandereDevFileType(file: directory + files[i]), isLoadingFile: false))
+                new.append(SpartanFile(name: files[i], fullPath: directory + files[i], isSelected: false, fileType: yandereDevFileType(file: directory + files[i]), isLoadingFile: false))
             }
-            resetMultiSelectArrays()
+            let encoder = JSONEncoder()
+            let encoded = try encoder.encode(new)
+            try encoded.write(to: URL(fileURLWithPath: tempPath))
+            RootHelperActs.mvtemp(directory + metadataName!)
         } catch {
             print(error.localizedDescription)
         }
+        return new
     }
     
     func goBack() {
@@ -1645,10 +1705,6 @@ struct ContentView: View {
         }
         multiSelect = false
         updateFiles()
-    }
-    
-    func deleteFile(atPath: String) {
-        spawn(command: helperPath, args: ["rm", atPath], env: [], root: true) // yee
     }
     
     func getFileInfo(forFileAtPath: String) -> [String] {
@@ -1734,41 +1790,63 @@ struct ContentView: View {
         
         //FUTURE ME WANTS YOU TO KNOW I AM TALKING ABOUT THE IF ELSE STACK POST NOT THE PEDO STUFF
         
-        if (isSymlink(filePath: file)) {
-            return 8 //symlink
-        } else if (isDirectory(filePath: file)) {
-            return 0 //directory
-        } else if (isVideo(filePath: file)) { //video has to come first as otherwise video files detect as audio (since they are audio files as well)
-            return 2 //video file
-        } else if (isAudio(filePath: file)) {
-            return 1 //audio file
-        } else if (isImage(filePath: file)) {
-            return 3 //image
-        } else if (isPlist(filePath: file) != 0) {
-            return isPlist(filePath: file)
-            //5.1 = xml plist
-            //5.9 = bplist
-		} else if (isHTML(filePath: file)) {
-			return 14 //html
-		} else if (doesFileHaveFileExtension(filePath: file, extensions: [".dmg"])) {
-			return 13 //dmg
-		} else if (doesFileHaveFileExtension(filePath: file, extensions: [".svg"])) {
-			return 12 //svg
-        } else if (doesFileHaveFileExtension(filePath: file, extensions: [".ttf", ".otf", ".ttc", ".pfb", ".pfa"])) {
-            return 11 //a font (badly)
-        } else if(isCar(filePath: file)) {
-            return 10 //asset catalog
-		} else if (fileManager.isExecutableFile(atPath: file)) { //executables detect as utf32 lol
-            return 7 //executable
-        } else if (isText(filePath: file)) { //these must be flipped because otherwise xml plist detects as text
-            return 4 //text file
-        } else if (doesFileHaveFileExtension(filePath: file, extensions: [".zip", ".cbz"])) {
-            return 6 //archive
-        } else if (doesFileHaveFileExtension(filePath: file, extensions: [".deb"])) {
-            return 9 //deb
-        } else {
-            return 69 //unknown
+        //also apparently i look like yandere dev. thanks ethan
+        
+        
+        //anyway, this has been greatly sped up by separating it out into four async tasks. after each one finishes it updates checkingComplete. once all four have finished, the while loop at the end knows to exit
+        var filetype: Double = 69
+        var checkingComplete = [false, false, false, false]
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+            if (isSymlink(filePath: file)) {
+                filetype = 8 //symlink
+            } else if (isDirectory(filePath: file)) {
+                filetype = 0 //directory
+            } //symlinks detect as directories so symlink check first
+            checkingComplete[0] = true
+        } //they're split out into groups where order matters. symlink has to come before directory, video has to come before audio, etc.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) {
+            if (isVideo(filePath: file)) { //video has to come first as otherwise video files detect as audio (since they are audio files as well)
+                filetype = 2 //video file
+            } else if (isAudio(filePath: file)) {
+                filetype = 1 //audio file
+            } else if (isImage(filePath: file)) {
+                filetype = 3 //image
+            }
+            checkingComplete[1] = true
         }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.03) {
+            if (doesFileHaveFileExtension(filePath: file, extensions: [".dmg"])) {
+                filetype = 13 //dmg
+            } else if (doesFileHaveFileExtension(filePath: file, extensions: [".svg"])) {
+                filetype = 12 //svg
+            } else if (doesFileHaveFileExtension(filePath: file, extensions: [".ttf", ".otf", ".ttc", ".pfb", ".pfa"])) {
+                filetype = 11 //a font (badly)
+            } else if (doesFileHaveFileExtension(filePath: file, extensions: [".zip", ".cbz"])) {
+                filetype = 6 //archive
+            } else if (doesFileHaveFileExtension(filePath: file, extensions: [".deb"])) {
+                filetype = 9 //deb
+            }
+            checkingComplete[2] = true
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.04) {
+            if (isPlist(filePath: file) != 0) {
+                filetype = isPlist(filePath: file)
+                //5.1 = xml plist
+                //5.9 = bplist
+            } else if (isHTML(filePath: file)) {
+                filetype = 14 //html
+            } else if(isCar(filePath: file)) {
+                filetype = 10 //asset catalog
+            } else if (fileManager.isExecutableFile(atPath: file)) { //executables detect as utf32 lol
+                filetype = 7 //executable
+            } else if (isText(filePath: file)) { //these must be flipped because otherwise xml plist detects as text
+                filetype = 4 //text file
+            }
+            checkingComplete[3] = true
+        }
+        while checkingComplete.contains(false) { } //wait for checking to finish
+        return filetype
     }
     func isDirectory(filePath: String) -> Bool {
         var isDirectory: ObjCBool = false
@@ -1831,17 +1909,13 @@ struct ContentView: View {
     func isSymlink(filePath: String) -> Bool {
         let fileURL = URL(fileURLWithPath: filePath)
         
-        if directory == "/sbin/" {
-            return readSymlinkDestination(path: filePath) == filePath ? true : false
-        } else {
-            do {
-                let resourceValues = try fileURL.resourceValues(forKeys: [.isSymbolicLinkKey])
-                if let isSymbolicLink = resourceValues.isSymbolicLink {
-                    return isSymbolicLink
-                }
-            } catch {
-                print("Error: \(error)")
+        do {
+            let resourceValues = try fileURL.resourceValues(forKeys: [.isSymbolicLinkKey])
+            if let isSymbolicLink = resourceValues.isSymbolicLink {
+                return isSymbolicLink
             }
+        } catch {
+            print("Error: \(error)")
         }
         return false
     }
@@ -1940,7 +2014,7 @@ struct ContentView: View {
     }
 }
 
-struct SpartanFile {
+struct SpartanFile: Hashable, Encodable, Decodable {
     var name: String
     var fullPath: String
     var isSelected: Bool

@@ -12,6 +12,7 @@ import DiskImagesWrapper
 struct MountPointsView: View {
     @Binding var directory: String
     @Binding var isPresented: Bool
+    @Binding var didChangeDir: Bool
     
     @State private var mountDevices: [Mount] = []
     let null32: Int32 = 0
@@ -57,6 +58,7 @@ struct MountPointsView: View {
 					if directory == "//" {
 						directory = "/"
 					}
+                    didChangeDir = true
 					isPresented = false
 				}) {
 					Text("\(mount.device) \(NSLocalizedString("MOUNT_DESC", comment: "Their day's not planned.")) \(mount.mountPoint)")
