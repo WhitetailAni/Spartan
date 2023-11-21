@@ -54,7 +54,6 @@ struct SettingsView: View {
 			}
 			Text(" ")
 				.font(.system(size: 15))
-			Text(" ")
 			Text(NSLocalizedString("SETTINGS_DATEFORMATDESC1", comment: "Halls Of Science 4"))
 				.if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
 					view.scaledFont(name: "BotW Sheikah Regular", size: 25)

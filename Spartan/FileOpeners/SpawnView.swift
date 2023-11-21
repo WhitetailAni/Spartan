@@ -10,6 +10,7 @@ import SwiftUI
 struct SpawnView: View {
     @Binding var filePath: String
     @Binding var fileName: String
+    @Binding var isPresented: Bool
     @State var programArguments: String = ""
     @State var envVars: String = ""
     @State var spawnAsRoot = false
@@ -42,7 +43,11 @@ struct SpawnView: View {
             
             UIKitTextView(text: $stdLog, fontSize: CGFloat(UserDefaults.settings.integer(forKey: "logWindowFontSize")), isTapped: $isTapped)
                 .onExitCommand {
-                    isTapped = false
+                    if isTapped {
+                        isTapped = false
+                    } else {
+                        isPresented = false
+                    }
                 }
             
             HStack {

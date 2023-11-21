@@ -15,13 +15,58 @@ class FileInfo {
         //FUTURE ME WANTS YOU TO KNOW I AM TALKING ABOUT THE IF ELSE STACK POST NOT THE PEDO STUFF
         
         //also apparently i look like yandere dev. thanks ethan
+        //i tried to update this to be faster using async dispatch, but it was like 50 times slower and locked up half the time. you can see the attempt below, maybe someday i'll fix it
+        
+        if (isSymlink(filePath: file)) {
+            return 8 //symlink
+        } else if (isDirectory(filePath: file)) {
+            return 0 //directory
+        } else if (isVideo(filePath: file)) { //video has to come first as otherwise video files detect as audio (since they are audio files as well)
+            return 2 //video file
+        } else if (isAudio(filePath: file)) {
+            return 1 //audio file
+        } else if (isImage(filePath: file)) {
+            return 3 //image
+        } else if (isPlist(filePath: file) != 0) {
+            return isPlist(filePath: file)
+            //5.1 = xml plist
+            //5.9 = bplist
+        } else if (isHTML(filePath: file)) {
+            return 14 //html
+        } else if (doesFileHaveFileExtension(filePath: file, extensions: [".dmg"])) {
+            return 13 //dmg
+        } else if (doesFileHaveFileExtension(filePath: file, extensions: [".svg"])) {
+            return 12 //svg
+        } else if (doesFileHaveFileExtension(filePath: file, extensions: [".ttf", ".otf", ".ttc", ".pfb", ".pfa"])) {
+            return 11 //a font (badly)
+        } else if(isCar(filePath: file)) {
+            return 10 //asset catalog
+        } else if (fileManager.isExecutableFile(atPath: file)) { //executables detect as utf32 lol
+            return 7 //executable
+        } else if (isText(filePath: file)) { //these must be flipped because otherwise xml plist detects as text
+            return 4 //text file
+        } else if (doesFileHaveFileExtension(filePath: file, extensions: [".zip", ".cbz"])) {
+            return 6 //archive
+        } else if (doesFileHaveFileExtension(filePath: file, extensions: [".deb"])) {
+            return 9 //deb
+        } else {
+            return 69 //unknown
+        }
+    }
+    
+    class func yandereDevFileType2(file: String) -> Double { //I tried using unified file types but they all returned nil so I have to use this awful yandere dev shit
+        //im sorry
+        
+        //FUTURE ME WANTS YOU TO KNOW I AM TALKING ABOUT THE IF ELSE STACK POST NOT THE PEDO STUFF
+        
+        //also apparently i look like yandere dev. thanks ethan
         
         
         //anyway, this has been greatly sped up by separating it out into four async tasks. after each one finishes it updates checkingComplete. once all four have finished, the while loop at the end knows to exit
         var filetype: Double = 69
         var checkingComplete = [false, false, false, false]
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + 0.01) {
             if (isSymlink(filePath: file)) {
                 filetype = 8 //symlink
             } else if (isDirectory(filePath: file)) {
@@ -29,7 +74,7 @@ class FileInfo {
             } //symlinks detect as directories so symlink check first
             checkingComplete[0] = true
         } //they're split out into groups where order matters. symlink has to come before directory, video has to come before audio, etc.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + 0.02) {
             if (isVideo(filePath: file)) { //video has to come first as otherwise video files detect as audio (since they are audio files as well)
                 filetype = 2 //video file
             } else if (isAudio(filePath: file)) {
@@ -39,7 +84,7 @@ class FileInfo {
             }
             checkingComplete[1] = true
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.03) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + 0.03) {
             if (doesFileHaveFileExtension(filePath: file, extensions: [".dmg"])) {
                 filetype = 13 //dmg
             } else if (doesFileHaveFileExtension(filePath: file, extensions: [".svg"])) {
@@ -53,7 +98,7 @@ class FileInfo {
             }
             checkingComplete[2] = true
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.04) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + 0.04) {
             if (isPlist(filePath: file) != 0) {
                 filetype = isPlist(filePath: file)
                 //5.1 = xml plist
@@ -69,7 +114,7 @@ class FileInfo {
             }
             checkingComplete[3] = true
         }
-        while checkingComplete.contains(false) { } //wait for checking to finish
+        while filetype == 69 { } //wait for checking to finish
         return filetype
     }
     class func isDirectory(filePath: String) -> Bool {

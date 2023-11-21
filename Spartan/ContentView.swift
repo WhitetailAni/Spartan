@@ -1019,9 +1019,6 @@ struct ContentView: View {
 							})
                         }
                     }
-                    .onAppear {
-						print(masterFiles[newViewFileIndex])
-					}
                 }
                 .sheet(isPresented: $E2) {
                     EThree(directory: $directory, files: Binding<[String]>(get: { self.masterFiles.map { $0.name } }, set: { newNames in
@@ -1202,7 +1199,7 @@ struct ContentView: View {
                     }
                 })
                 .sheet(isPresented: $showSubView[15], content: {
-                    SpawnView(filePath: $newViewFilePath, fileName: $newViewFileName)
+                    SpawnView(filePath: $newViewFilePath, fileName: $newViewFileName, isPresented: $showSubView[15])
                 })
                 .sheet(isPresented: $showSubView[21], onDismiss: {
                     if didChangeDir {
@@ -1611,18 +1608,20 @@ struct ContentView: View {
     func updateFiles() { //credit to ethanrdoesmc for the updates to this. now we have a ds_store clone!
         guard fileManager.fileExists(atPath: directory + metadataName!) else {
             masterFiles = oldUpdate()
+            print("file didnt exist")
             return
         }
         guard let encoded = fileManager.contents(atPath: directory + metadataName!) else {
             masterFiles = oldUpdate()
+            print("file was broke")
             return
         } //two guards. one to make sure the file exists, and one to make sure it has data. if it doesn't exist (directory hasn't been cached yet) or is empty (no files in the folder, would be a waste of time to check it), fallback to the old method (which when a directory is empty, is extremely fast).
         let decoder = JSONDecoder()
         var decoded: [SpartanFile] = []
         do {
             masterFiles = []
-            decoded = try decoder.decode([SpartanFile].self, from: encoded) //this gets a [SpartanFile] from the encoded metadata. however,
-            print(decoded)
+            print(metadataName!)
+            decoded = try decoder.decode([SpartanFile].self, from: encoded)
             let contents = try FileManager.default.contentsOfDirectory(atPath: directory)
             var files: [String]
             files = contents.map { file in
@@ -1631,34 +1630,35 @@ struct ContentView: View {
                 FileManager.default.fileExists(atPath: filePath, isDirectory: &isDirectory)
                 return isDirectory.boolValue ? "\(file)/" : file
             }
-            for i in 0..<contents.count {
-                for j in 0..<decoded.count { //this checks the cache for if the file has already been checked.
-                    if files[i] == decoded[j].name {
-                        masterFiles.append(decoded[j])
-                    }
+            files.remove(at: files.firstIndex(of: metadataName!)!) //hide the metadata file from view
+            for i in 0..<files.count {
+                if let j = decoded.map({ $0.name }).firstIndex(of: files[i]) {
+                    masterFiles.append(decoded[j])
+                } else {
+                    masterFiles.append(SpartanFile(name: files[i], fullPath: directory + files[i], isSelected: false, fileType: FileInfo.yandereDevFileType(file: directory + files[i]), isLoadingFile: false))
                 }
-                masterFiles.append(SpartanFile(name: files[i], fullPath: directory + files[i], isSelected: false, fileType: FileInfo.yandereDevFileType(file: directory + files[i]), isLoadingFile: false))
             }
         } catch {
             masterFiles = oldUpdate()
             print(error)
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) { //removes files that no longer exist from the cache (so the filesize doesn't grow until you run out of disk space)
+        DispatchQueue.global().asyncAfter(deadline: .now() + 0.01) { //removes files that no longer exist from the cache (so the filesize doesn't grow until you run out of disk space)
+            var decoded2 = decoded
             for i in 0..<decoded.count {
                 if !(masterFiles.contains(decoded[i])) {
-                    decoded.remove(at: i)
+                    decoded2.remove(at: i)
                 }
             }
             let encoder = JSONEncoder()
             do {
-                let encoded = try encoder.encode(decoded)
+                let encoded = try encoder.encode(decoded2)
                 try encoded.write(to: URL(fileURLWithPath: tempPath))
             } catch {
                 print("failed to update and/or save cached metadata: \(error)")
             }
             RootHelperActs.mvtemp(directory + metadataName!)
+            resetMultiSelectArrays()
         }
-        resetMultiSelectArrays()
         if UserDefaults.settings.bool(forKey: "autoComplete") && !directory.hasSuffix("/") && FileInfo.isDirectory(filePath: directory) {
             directory = directory + "/"
         }

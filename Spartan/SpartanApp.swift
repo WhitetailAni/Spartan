@@ -41,12 +41,15 @@ struct SpartanApp: App {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
+        if UserDefaults.settings.string(forKey: "tvapothecary") == nil {
+            UserDefaults.settings.set(randomString(length: 24), forKey: "tvapothecary")
+        }
+        
         if !(UserDefaults.settings.bool(forKey: "haveLaunchedBefore")) {
             UserDefaults.settings.set(25, forKey: "logWindowFontSize")
             UserDefaults.settings.set(true, forKey: "autoComplete")
             UserDefaults.settings.set(true, forKey: "haveLaunchedBefore")
             UserDefaults.settings.set("MM-dd-yyyy HH:mm", forKey: "dateFormat")
-            UserDefaults.settings.set(randomString(length: 24), forKey: "tvapothecary")
             
             UserDefaults.settings.set(true, forKey: "haveLaunchedBefore")
             UserDefaults.settings.synchronize()
