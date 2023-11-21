@@ -278,46 +278,44 @@ struct IconButton: View {
 	}
 }
 
-func cacheFolder(_ path: String) {
+func cacheFolder(_ directory: String) {
+    let decoder = JSONDecoder()
+    var decoded: [SpartanFile] = []
+    var masterFiles: [SpartanFile] = []
     do {
-        let fileManager = FileManager.default
-        let contents = try fileManager.contentsOfDirectory(atPath: path)
-        var tempFiles: [SpartanFile] = []
-        
-        do {
-            let contents = try FileManager.default.contentsOfDirectory(atPath: path)
-            var files: [String]
-            files = contents.map { file in
-                let filePath = "/" + path + "/" + file
-                var isDirectory: ObjCBool = false
-                FileManager.default.fileExists(atPath: filePath, isDirectory: &isDirectory)
-                return isDirectory.boolValue ? "\(file)/" : file
-            }
-            for i in 0..<contents.count {
-                tempFiles.append(SpartanFile(name: files[i], fullPath: path + files[i], isSelected: false, fileType: FileInfo.yandereDevFileType(file: path + files[i]), isLoadingFile: false))
-            }
-        } catch {
-            print("failed to cache folder \(path): \(error)")
+        let contents = try FileManager.default.contentsOfDirectory(atPath: directory)
+        var files: [String]
+        files = contents.map { file in
+            let filePath = "/" + directory + "/" + file
+            var isDirectory: ObjCBool = false
+            FileManager.default.fileExists(atPath: filePath, isDirectory: &isDirectory)
+            return isDirectory.boolValue ? "\(file)/" : file
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) { //removes files that no longer exist from the cache (so the filesize doesn't grow until you run out of disk space)
-            let encoder = JSONEncoder()
-            do {
-                let encoded = try encoder.encode(tempFiles)
-                try encoded.write(to: URL(fileURLWithPath: tempPath))
-            } catch {
-                print("failed to update and/or save cached metadata: \(error)")
-            }
-            RootHelperActs.mvtemp(path + metadataName!)
-        }
-        
-        for item in contents {
-            let itemPath = (path as NSString).appendingPathComponent(item)
-
-            if FileInfo.isDirectory(filePath: itemPath) {
-                cacheFolder(itemPath)
+        files.remove(at: files.firstIndex(of: metadataName!)!) //hide the metadata file from view
+        for i in 0..<files.count {
+            if let j = decoded.map({ $0.name }).firstIndex(of: files[i]) {
+                masterFiles.append(decoded[j])
+            } else {
+                masterFiles.append(SpartanFile(name: files[i], fullPath: directory + files[i], isSelected: false, fileType: FileInfo.yandereDevFileType(file: directory + files[i]), isLoadingFile: false))
             }
         }
     } catch {
-        print("Error caching: \(path)")
+        print(error)
+    }
+    DispatchQueue.global().asyncAfter(deadline: .now() + 0.01) { //removes files that no longer exist from the cache (so the filesize doesn't grow until you run out of disk space)
+        var decoded2 = decoded
+        for i in 0..<decoded.count {
+            if !(masterFiles.contains(decoded[i])) {
+                decoded2.remove(at: i)
+            }
+        }
+        let encoder = JSONEncoder()
+        do {
+            let encoded = try encoder.encode(decoded2)
+            try encoded.write(to: URL(fileURLWithPath: tempPath))
+        } catch {
+            print("failed to update and/or save cached metadata: \(error)")
+        }
+        RootHelperActs.mvtemp(directory + metadataName!)
     }
 }
