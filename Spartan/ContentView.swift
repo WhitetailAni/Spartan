@@ -1576,12 +1576,14 @@ struct ContentView: View {
                 showSubView[15] = true
             case 8:
                 let dest = FileInfo.readSymlinkDestination(path: directory + fileToCheck[index])
-                if(FileInfo.isDirectory(filePath: dest)) {
-                    directory = dest
-                    updateFiles()
-                } else {
-                    masterFiles.append(SpartanFile(name: URL(fileURLWithPath: dest).lastPathComponent, fullPath: dest, isSelected: false, fileType: FileInfo.yandereDevFileType(file: dest), isLoadingFile: false))
-                    defaultAction(index: masterFiles.count-1, isDirectPath: false)
+                if directory != dest { //1.74/2gb memory used if you have a symlink that resolves to itself. spartan continually tries to resolve to it and it infinite loops until jetsam kills it due to too much memory usage
+                    if FileInfo.isDirectory(filePath: dest) {
+                        directory = dest
+                        updateFiles()
+                    } else {
+                        masterFiles.append(SpartanFile(name: URL(fileURLWithPath: dest).lastPathComponent, fullPath: dest, isSelected: false, fileType: FileInfo.yandereDevFileType(file: dest), isLoadingFile: false))
+                        defaultAction(index: masterFiles.count-1, isDirectPath: false)
+                    }
                 }
             case 9:
                 showSubView[23] = true
