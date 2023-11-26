@@ -15,17 +15,13 @@ import AVFoundation
 import MobileCoreServices
 import ApplicationsWrapper
 import AssetCatalogWrapper
-import DiskImages2Bridge
 import SVGWrapper
 
 struct ContentView: View {
-    @State var test = false
-    @State var testTwo = false
     @State var directory: String
     @State private var fileInfo: [String] = []
     @State var permissionDenied = false
     @State var deleteOverride = false
-    @State var isFocused: Bool = false
     @State var E = false
     @State var E2 = false
     @State var masterFiles: [SpartanFile] = []
@@ -49,8 +45,6 @@ struct ContentView: View {
     @State var renameFileNewName: String = ""
     
     @State var filePerms = 420
-    
-    @State var lol: [String: Any] = [:]
     
     @State var didChangeDir = false
     
@@ -138,14 +132,301 @@ struct ContentView: View {
                     }) {
                         Image(systemName: "arrow.clockwise")
                     }
+                    .sheet(isPresented: $showSubView[6], content: {
+                        CreateDirectoryView(directoryPath: $directory, isPresented: $showSubView[6])
+                    })
+                    .sheet(isPresented: $showSubView[5], content: {
+                        CreateFileView(filePath: $directory, isPresented: $showSubView[5])
+                    })
+                    .sheet(isPresented: $showSubView[20], content: {
+                        CreateSymlinkView(symlinkPath: $directory, isPresented: $showSubView[20])
+                    })
                 }
                 HStack {
                     debugMenu
                         .frame(alignment: .leading)
-                    topBar
-                        .frame(alignment: .center)
+                    HStack {
+                        Button(action: {
+                            if(multiSelect) {
+                                multiSelectFiles = masterFiles.map { $0.name }
+                                allWereSelected.toggle()
+                                if(allWereSelected) {
+                                    iterateOverFileWasSelected(boolToIterate: true)
+                                } else {
+                                    iterateOverFileWasSelected(boolToIterate: false)
+                                }
+                            } else {
+                                resetMultiSelectArrays()
+                                withAnimation {
+                                    multiSelect = true
+                                }
+                            }
+                        }) {
+                            if (multiSelect) { //multiselect is a robust feature. the issue I had the most trouble with was with updateFiles, since the number of files would change but my multiselect array was too long. so I had to work out resizing the array.
+                            //i gave up on that, and I just reset it to [] and then the length of masterFiles. it works.
+                                if (allWereSelected) {
+                                    Image(systemName: "checkmark.circle")
+                                        .frame(width: 50, height: 50)
+                                } else {
+                                    Image(systemName: "circle")
+                                        .frame(width: 50, height: 50)
+                                }
+                            } else {
+                                Image(systemName: "checkmark.circle")
+                                    .frame(width: 50, height: 50)
+                            }
+                        }
+                        
+                        if (!multiSelect) {
+                            Button(action: {
+                                showSubView[19] = true
+                                newViewFilePath = directory
+                            }) {
+                                Image(systemName: "magnifyingglass")
+                                    .frame(width:50, height:50)
+                            }
+                            .sheet(isPresented: $showSubView[19], onDismiss: {
+                                if(didSearch) {
+                                    if(FileInfo.isDirectory(filePath: newViewFilePath)) {
+                                        directory = newViewFilePath
+                                    } else {
+                                        directory = URL(fileURLWithPath: newViewFilePath).deletingLastPathComponent().path + "/"
+                                        masterFiles.append(SpartanFile(name: URL(fileURLWithPath: newViewFilePath).lastPathComponent, fullPath: newViewFilePath, isSelected: false, fileType: FileInfo.yandereDevFileType(file: newViewFilePath), isLoadingFile: false))
+                                        defaultAction(index: masterFiles.count-1, isDirectPath: false)
+                                    }
+                                    didSearch = false
+                                }
+                            }, content: {
+                                SearchView(directory: $directory, isPresenting: $showSubView[19], selectedFile: $newViewFilePath, didSearch: $didSearch)
+                            }) //my search function is very complex and i'm not sure how I wrote it. i don't fully understand it now and i didn't understand it then, either. I know it works and so im happy
+                            //someday I'll figure it out. It's surprisingly good
+                    
+                            Button(action: { //new file/directory/symlink
+                                showSubView[0] = true
+                            }) {
+                                if #available(tvOS 14.0, *){
+                                    Image(systemName: "doc.badge.plus")
+                                        .frame(width:50, height:50)
+                                } else {
+                                    Image(systemName: "doc")
+                                        .frame(width:50, height:50)
+                                }
+                            }
+                            
+                            Button(action: {
+                                showSubView[21] = true
+                            }) {
+                                Image(systemName: "externaldrive")
+                                    .frame(width:50, height:50)
+                            }
+                            .sheet(isPresented: $showSubView[21], onDismiss: {
+                                if didChangeDir {
+                                    updateFiles()
+                                    resetShowSubView()
+                                    didChangeDir = false
+                                }
+                            }, content: {
+                                MountPointsView(directory: $directory, isPresented: $showSubView[21], didChangeDir: $didChangeDir)
+                            })
+                            
+                            /*if #available(tvOS 14.0, *) {
+                                Button(action: {
+                                    showSubView[25] = true
+                                }) {
+                                    Image(systemName: "server.rack")
+                                        .frame(width:50, height:50)
+                                }
+                                .contextMenu {
+                                    serverButton
+                                }
+                            } else {
+                                Button(action: {
+                                    showSubView[29] = true
+                                }) {
+                                    Image(systemName: "server.rack")
+                                        .frame(width:50, height:50)
+                                }
+                                .sheet(isPresented: $showSubView[29], content: {
+                                    serverButton
+                                })
+                            }*/
+                            //this is the webserver button
+                            
+                            Button(action: { //favorites
+                                showSubView[16] = true
+                            }) {
+                                Image(systemName: "star")
+                                    .frame(width:50, height:50)
+                            }
+                            .sheet(isPresented: $showSubView[16], onDismiss: {
+                                updateFiles() //FavoritesView *can* change directory, but without an updateFiles the changes won't be reflected. it took me awhile to figure this bug out.
+                            }, content: {
+                                FavoritesView(directory: $directory, showView: $showSubView[16])
+                            })
+                            .sheet(isPresented: $showSubView[17], content: {
+                                AddToFavoritesView(filePath: newViewFilePath, displayName: newViewFileName, showView: $showSubView[17])
+                            })
+                        
+                            Button(action: { //settings
+                                showSubView[18] = true
+                            }) {
+                                Image(systemName: "gear")
+                                    .frame(width:50, height:50)
+                            }
+                            .sheet(isPresented: $showSubView[18], content: {
+                                SettingsView()
+                            })
+                        } else {
+                            Button(action: {
+                                showSubView[8] = true
+                                newViewFilePath = directory
+                                newViewArrayNames = multiSelectFiles
+                                resetMultiSelectArrays()
+                            }) {
+                                ZStack {
+                                    Image(systemName: "doc.on.doc")
+                                        .frame(width: 50, height: 50)
+                                    Image(systemName: "arrow.right")
+                                        .resizable()
+                                        .frame(width: 15, height: 13)
+                                        .offset(x: -4, y: 11.75) //i do not know how i came up with these values. i am not going to touch them. hopefully it doesn't break on non-1080p (i don't have this)
+                                }
+                            }
+                    
+                            Button(action: {
+                                showSubView[9] = true
+                                newViewFilePath = directory
+                                newViewArrayNames = multiSelectFiles
+                                resetMultiSelectArrays()
+                            }) {
+                                ZStack {
+                                    Image(systemName: "doc.on.clipboard")
+                                        .frame(width:50, height:50)
+                                    Image(systemName: "arrow.right")
+                                        .resizable()
+                                        .frame(width:15, height:13)
+                                        .offset(x:-3.75, y:11.75)
+                                }
+                            }
+                        
+                            Button(action: {
+                                showSubView[14] = true
+                                uncompressZip = false
+                                newViewFilePath = directory
+                                newViewArrayNames = multiSelectFiles
+                            }) {
+                                Image(systemName: "doc.zipper")
+                                    .frame(width:50, height:50)
+                            }
+                        
+                            Button(action: {
+                                if(directory == "/private/var/mobile/Media/.Trash/"){
+                                    for file in multiSelectFiles {
+                                        RootHelperActs.rm(directory + file)
+                                        updateFiles()
+                                    }
+                                } else {
+                                    for file in multiSelectFiles {
+                                        RootHelperActs.mv(directory + file, "/private/var/mobile/Media/.Trash/" + file)
+                                        updateFiles()
+                                    }
+                                }
+                            }) {
+                                ZStack {
+                                    if(directory == "/private/var/mobile/Media/.Trash/"){
+                                        Image(systemName: "trash")
+                                            .frame(width:50, height:50)
+                                            .foregroundColor(.red)
+                                    } else {
+                                        Image(systemName: "trash")
+                                            .frame(width:50, height:50)
+                                    }
+                                }
+                            }
+                        
+                            Button(action: {
+                                withAnimation {
+                                    multiSelect = false
+                                }
+                                allWereSelected = false
+                            }) {
+                                Image(systemName: "xmark")
+                                    .frame(width:50, height:50)
+                            }
+                        }
+                    }
+                    .frame(alignment: .center)
+                    
                     freeSpace
                         .frame(alignment: .trailing)
+                        .sheet(isPresented: $showSubView[15], content: {
+                            SpawnView(filePath: $newViewFilePath, fileName: $newViewFileName, isPresented: $showSubView[15])
+                        })
+                        .sheet(isPresented: $showSubView[4], content: {
+                            TextView(filePath: newViewFilePath, fileName: newViewFileName, isPresented: $showSubView[4])
+                        })
+                        .sheet(isPresented: $showSubView[7], content: {
+                            RenameFileView(fileName: $renameFileCurrentName, newFileName: $renameFileNewName, filePath: $newViewFilePath, isPresented: $showSubView[7])
+                        })
+                        .sheet(isPresented: $showSubView[8], content: {
+                            MoveFileView(fileNames: $newViewArrayNames, filePath: $newViewFilePath, multiSelect: $multiSelect, isPresented: $showSubView[8])
+                        })
+                        .sheet(isPresented: $showSubView[9], content: {
+                            CopyFileView(fileNames: $newViewArrayNames, filePath: $newViewFilePath, multiSelect: $multiSelect, isPresented: $showSubView[9])
+                        })
+                        .sheet(isPresented: $showSubView[11], content: {
+                            VideoPlayerView(videoPath: $newViewFilePath, videoName: $newViewFileName, isPresented: $showSubView[11], player: globalAVPlayer)
+                        })
+                        .sheet(isPresented: $showSubView[10], content: {
+                            if(callback){
+                                AudioPlayerView(callback: callback, audioPath: $newViewFilePath, audioName: $newViewFileName, player: globalAVPlayer, isPresented: $showSubView[10])
+                            } else {
+                                AudioPlayerView(callback: callback, audioPath: $blankString[0], audioName: $blankString[0], player: globalAVPlayer, isPresented: $showSubView[10])
+                            }
+                        })
+                        .sheet(isPresented: $showSubView[12], onDismiss: {
+                            isImageSVG[0] = false
+                        }, content: {
+                            ImageView(imagePath: newViewFilePath, imageName: newViewFileName, isSVG: isImageSVG[0])
+                        })
+                        .sheet(isPresented: $showSubView[13], content: {
+                            PlistView(filePath: newViewFilePath, fileName: newViewFileName)
+                        })
+                        .sheet(isPresented: $showSubView[14], content: {
+                            if(uncompressZip){
+                                ZipFileView(unzip: uncompressZip, isPresented: $showSubView[14], fileNames: blankString, filePath: $directory, zipFileName: $newViewFileName)
+                            } else {
+                                ZipFileView(unzip: uncompressZip, isPresented: $showSubView[14], fileNames: multiSelectFiles, filePath: $directory, zipFileName: $blankString[0])
+                            }
+                        })
+                        .sheet(isPresented: $showSubView[22], content: {
+                            HexView(filePath: newViewFilePath, fileName: newViewFileName, isPresented: $showSubView[22])
+                                .onAppear {
+                                    isLoadingView = false
+                                } //it can take a long time for my current hex editor implementation to load everything, so a loading circle is displayed. i typically avoid it for this reason.
+                                //i will later improve it, I just don't like working with Data
+                        })
+                        .sheet(isPresented: $showSubView[23], content: {
+                            DpkgView(debPath: $newViewFilePath, debName: $newViewFileName, isPresented: $showSubView[23], isRootless: $isRootless)
+                        })
+                        .sheet(isPresented: $showSubView[24], content: {
+                            DpkgBuilderView(debInputDir: $newViewFilePath, debInputName: $newViewFileName, isPresented: $showSubView[24], isRootless: $isRootless)
+                        }) //i created these in case anything with nitoTV breaks. having filza deb installer has saved my butt more times than I can count
+                        .sheet(isPresented: $showSubView[25], content: {
+                            WebServerView() //this will probably never work
+                        })
+                        .sheet(isPresented: $showSubView[28], content: {
+                            CarView(filePath: $newViewFilePath, fileName: $newViewFileName)
+                        })
+                        .sheet(isPresented: $showSubView[30], content: {
+                            FontView(filePath: $newViewFilePath, fileName: $newViewFileName) //i was bored i think
+                        })
+                        .sheet(isPresented: $showSubView[32], content: {
+                            DMGMountView(filePath: newViewFilePath, fileName: newViewFileName, directory: $directory, isPresented: $showSubView[32])
+                        })
+                        .sheet(isPresented: $showSubView[33], content: {
+                            HTMLView(filePath: newViewFilePath, fileName: newViewFileName)
+                        })
                 }
                 HStack {
                     List { //directory contents view
@@ -1105,139 +1386,29 @@ struct ContentView: View {
 				//welcome to the SheetStack. how anything and everything is presented: a bool in showSubView, and a sheet.
 				//there's a lot. most of them are pretty easy to comprehend, if there's anything out of the ordinary I'll explain it
                 .sheet(isPresented: $showSubView[0], content: {
-                    ContextMenuButtonTV(stringKey: "CREATE_FILE") {
-                        showSubView[0] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            showSubView[5] = true
+                    VStack {
+                        ContextMenuButtonTV(stringKey: "CREATE_FILE") {
+                            showSubView[0] = false
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                showSubView[5] = true
+                            }
+                        }
+                        
+                        ContextMenuButtonTV(stringKey: "CREATE_DIR") {
+                            showSubView[0] = false
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                showSubView[6] = true
+                            }
+                        }
+                        
+                        ContextMenuButtonTV(stringKey: "CREATE_SYM") {
+                            showSubView[0] = false
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                showSubView[20] = true
+                            }
                         }
                     }
-                    
-                    ContextMenuButtonTV(stringKey: "CREATE_DIR") {
-                        showSubView[0] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            showSubView[6] = true
-                        }
-                    }
-                    
-                    ContextMenuButtonTV(stringKey: "CREATE_SYM") {
-                        showSubView[0] = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            showSubView[20] = true
-                        }
-                    }
                 })
-                .sheet(isPresented: $showSubView[4], content: {
-                    TextView(filePath: newViewFilePath, fileName: newViewFileName, isPresented: $showSubView[4])
-                })
-                .sheet(isPresented: $showSubView[19], onDismiss: {
-                    if(didSearch) {
-                        if(FileInfo.isDirectory(filePath: newViewFilePath)) {
-                            directory = newViewFilePath
-                        } else {
-                            directory = URL(fileURLWithPath: newViewFilePath).deletingLastPathComponent().path + "/"
-                            masterFiles.append(SpartanFile(name: URL(fileURLWithPath: newViewFilePath).lastPathComponent, fullPath: newViewFilePath, isSelected: false, fileType: FileInfo.yandereDevFileType(file: newViewFilePath), isLoadingFile: false))
-                            defaultAction(index: masterFiles.count-1, isDirectPath: false)
-                        }
-                        didSearch = false
-                    }
-                }, content: {
-                    SearchView(directory: $directory, isPresenting: $showSubView[19], selectedFile: $newViewFilePath, didSearch: $didSearch)
-                }) //my search function is very complex and i'm not sure how I wrote it. i don't fully understand it now and i didn't understand it then, either. I know it works and so im happy
-                //someday I'll figure it out. It's surprisingly good
-                .sheet(isPresented: $showSubView[6], content: {
-                    CreateDirectoryView(directoryPath: $directory, isPresented: $showSubView[6])
-                })
-                .sheet(isPresented: $showSubView[5], content: {
-                    CreateFileView(filePath: $directory, isPresented: $showSubView[5])
-                })
-                .sheet(isPresented: $showSubView[20], content: {
-                    CreateSymlinkView(symlinkPath: $directory, isPresented: $showSubView[20])
-                })
-                .sheet(isPresented: $showSubView[16], onDismiss: {
-                    updateFiles() //FavoritesView *can* change directory, but without an updateFiles the changes won't be reflected. it took me awhile to figure this bug out.
-                }, content: {
-                    FavoritesView(directory: $directory, showView: $showSubView[16])
-                })
-                .sheet(isPresented: $showSubView[17], content: {
-                    AddToFavoritesView(filePath: newViewFilePath, displayName: newViewFileName, showView: $showSubView[17])
-                })
-                .sheet(isPresented: $showSubView[18], content: {
-                    SettingsView()
-                })
-                .sheet(isPresented: $showSubView[7], content: {
-                    RenameFileView(fileName: $renameFileCurrentName, newFileName: $renameFileNewName, filePath: $newViewFilePath, isPresented: $showSubView[7])
-                })
-                .sheet(isPresented: $showSubView[8], content: {
-                    MoveFileView(fileNames: $newViewArrayNames, filePath: $newViewFilePath, multiSelect: $multiSelect, isPresented: $showSubView[8])
-                })
-                .sheet(isPresented: $showSubView[9], content: {
-                    CopyFileView(fileNames: $newViewArrayNames, filePath: $newViewFilePath, multiSelect: $multiSelect, isPresented: $showSubView[9])
-                })
-                .sheet(isPresented: $showSubView[11], content: {
-                    VideoPlayerView(videoPath: $newViewFilePath, videoName: $newViewFileName, isPresented: $showSubView[11], player: globalAVPlayer)
-                })
-                .sheet(isPresented: $showSubView[10], content: {
-                    if(callback){
-                        AudioPlayerView(callback: callback, audioPath: $newViewFilePath, audioName: $newViewFileName, player: globalAVPlayer, isPresented: $showSubView[10])
-                    } else {
-                        AudioPlayerView(callback: callback, audioPath: $blankString[0], audioName: $blankString[0], player: globalAVPlayer, isPresented: $showSubView[10])
-                    }
-                })
-                .sheet(isPresented: $showSubView[12], onDismiss: {
-					isImageSVG[0] = false
-                }, content: {
-                    ImageView(imagePath: newViewFilePath, imageName: newViewFileName, isSVG: isImageSVG[0])
-                })
-                .sheet(isPresented: $showSubView[13], content: {
-                    PlistView(filePath: newViewFilePath, fileName: newViewFileName)
-                })
-                .sheet(isPresented: $showSubView[14], content: {
-                    if(uncompressZip){
-                        ZipFileView(unzip: uncompressZip, isPresented: $showSubView[14], fileNames: blankString, filePath: $directory, zipFileName: $newViewFileName)
-                    } else {
-                        ZipFileView(unzip: uncompressZip, isPresented: $showSubView[14], fileNames: multiSelectFiles, filePath: $directory, zipFileName: $blankString[0])
-                    }
-                })
-                .sheet(isPresented: $showSubView[15], content: {
-                    SpawnView(filePath: $newViewFilePath, fileName: $newViewFileName, isPresented: $showSubView[15])
-                })
-                .sheet(isPresented: $showSubView[21], onDismiss: {
-                    if didChangeDir {
-                        updateFiles()
-                        resetShowSubView()
-                        didChangeDir = false
-                    }
-                }, content: {
-                    MountPointsView(directory: $directory, isPresented: $showSubView[21], didChangeDir: $didChangeDir)
-                })
-                .sheet(isPresented: $showSubView[22], content: {
-                    HexView(filePath: newViewFilePath, fileName: newViewFileName, isPresented: $showSubView[22])
-                        .onAppear {
-                            isLoadingView = false
-                        } //it can take a long time for my current hex editor implementation to load everything, so a loading circle is displayed. i typically avoid it for this reason.
-                        //i will later improve it, I just don't like working with Data
-                })
-                .sheet(isPresented: $showSubView[23], content: {
-                    DpkgView(debPath: $newViewFilePath, debName: $newViewFileName, isPresented: $showSubView[23], isRootless: $isRootless)
-                })
-                .sheet(isPresented: $showSubView[24], content: {
-                    DpkgBuilderView(debInputDir: $newViewFilePath, debInputName: $newViewFileName, isPresented: $showSubView[24], isRootless: $isRootless)
-                }) //i created these in case anything with nitoTV breaks. having filza deb installer has saved my butt more times than I can count
-                .sheet(isPresented: $showSubView[25], content: {
-                    WebServerView() //this will probably never work
-                })
-                .sheet(isPresented: $showSubView[28], content: {
-                    CarView(filePath: $newViewFilePath, fileName: $newViewFileName)
-                })
-                .sheet(isPresented: $showSubView[30], content: {
-                    FontView(filePath: $newViewFilePath, fileName: $newViewFileName) //i was bored i think
-                })
-				.sheet(isPresented: $showSubView[32], content: {
-					DMGMountView(filePath: newViewFilePath, fileName: newViewFileName, directory: $directory, isPresented: $showSubView[32])
-				})
-				.sheet(isPresented: $showSubView[33], content: {
-					HTMLView(filePath: newViewFilePath, fileName: newViewFileName)
-				})
                 .alert(isPresented: $showSubView[26]) {
                     Alert(
                         title: Text(NSLocalizedString("SHOW_NOTFOUND", comment: "")),
@@ -1263,192 +1434,9 @@ struct ContentView: View {
     }
     
     @ViewBuilder
-    var topBar: some View {
-        HStack {
-            Button(action: {
-                if(multiSelect) {
-                    multiSelectFiles = masterFiles.map { $0.name }
-                    allWereSelected.toggle()
-                    if(allWereSelected) {
-                        iterateOverFileWasSelected(boolToIterate: true)
-                    } else {
-                        iterateOverFileWasSelected(boolToIterate: false)
-                    }
-                } else {
-                    resetMultiSelectArrays()
-                    withAnimation {
-                        multiSelect = true
-                    }
-                }
-            }) {
-                if (multiSelect) { //multiselect is a robust feature. the issue I had the most trouble with was with updateFiles, since the number of files would change but my multiselect array was too long. so I had to work out resizing the array.
-                //i gave up on that, and I just reset it to [] and then the length of masterFiles. it works.
-                    if (allWereSelected) {
-                        Image(systemName: "checkmark.circle")
-                            .frame(width: 50, height: 50)
-                    } else {
-                        Image(systemName: "circle")
-                            .frame(width: 50, height: 50)
-                    }
-                } else {
-                    Image(systemName: "checkmark.circle")
-                        .frame(width: 50, height: 50)
-                }
-            }
-            
-            if (!multiSelect) {
-                Button(action: {
-                    showSubView[19] = true
-                    newViewFilePath = directory
-                }) {
-                    Image(systemName: "magnifyingglass")
-                        .frame(width:50, height:50)
-                }
-        
-                Button(action: { //new file/directory/symlink
-                    showSubView[0] = true
-                }) {
-                    if #available(tvOS 14.0, *){
-                        Image(systemName: "doc.badge.plus")
-                            .frame(width:50, height:50)
-                    } else {
-                        Image(systemName: "doc")
-                            .frame(width:50, height:50)
-                    }
-                }
-                
-                Button(action: {
-					showSubView[21] = true
-				}) {
-					Image(systemName: "externaldrive")
-						.frame(width:50, height:50)
-				}
-                
-                /*if #available(tvOS 14.0, *) {
-                    Button(action: {
-                        showSubView[25] = true
-                    }) {
-                        Image(systemName: "server.rack")
-                            .frame(width:50, height:50)
-                    }
-                    .contextMenu {
-                        serverButton
-                    }
-                } else {
-                    Button(action: {
-                        showSubView[29] = true
-                    }) {
-                        Image(systemName: "server.rack")
-                            .frame(width:50, height:50)
-                    }
-                    .sheet(isPresented: $showSubView[29], content: {
-                        serverButton
-                    })
-                }*/
-                //this is the webserver button
-                
-                Button(action: { //favorites
-                    showSubView[16] = true
-                }) {
-                    Image(systemName: "star")
-                        .frame(width:50, height:50)
-                }
-            
-                Button(action: { //settings
-                    showSubView[18] = true
-                }) {
-                    Image(systemName: "gear")
-                        .frame(width:50, height:50)
-                }
-            } else {
-                Button(action: {
-                    showSubView[8] = true
-                    newViewFilePath = directory
-                    newViewArrayNames = multiSelectFiles
-                    resetMultiSelectArrays()
-                }) {
-                    ZStack {
-                        Image(systemName: "doc.on.doc")
-                            .frame(width: 50, height: 50)
-                        Image(systemName: "arrow.right")
-                            .resizable()
-                            .frame(width: 15, height: 13)
-                            .offset(x: -4, y: 11.75) //i do not know how i came up with these values. i am not going to touch them. hopefully it doesn't break on non-1080p (i don't have this)
-                    }
-                }
-        
-                Button(action: {
-                    showSubView[9] = true
-                    newViewFilePath = directory
-                    newViewArrayNames = multiSelectFiles
-                    resetMultiSelectArrays()
-                }) {
-                    ZStack {
-                        Image(systemName: "doc.on.clipboard")
-                            .frame(width:50, height:50)
-                        Image(systemName: "arrow.right")
-                            .resizable()
-                            .frame(width:15, height:13)
-                            .offset(x:-3.75, y:11.75)
-                    }
-                }
-            
-                Button(action: {
-                    showSubView[14] = true
-                    uncompressZip = false
-                    newViewFilePath = directory
-                    newViewArrayNames = multiSelectFiles
-                }) {
-                    Image(systemName: "doc.zipper")
-                        .frame(width:50, height:50)
-                }
-            
-                Button(action: {
-                    if(directory == "/private/var/mobile/Media/.Trash/"){
-                        for file in multiSelectFiles {
-                            RootHelperActs.rm(directory + file)
-                            updateFiles()
-                        }
-                    } else {
-                        for file in multiSelectFiles {
-                            RootHelperActs.mv(directory + file, "/private/var/mobile/Media/.Trash/" + file)
-                            updateFiles()
-                        }
-                    }
-                }) {
-                    ZStack {
-                        if(directory == "/private/var/mobile/Media/.Trash/"){
-                            Image(systemName: "trash")
-                                .frame(width:50, height:50)
-                                .foregroundColor(.red)
-                        } else {
-                            Image(systemName: "trash")
-                                .frame(width:50, height:50)
-                        }
-                    }
-                }
-            
-                Button(action: {
-                    withAnimation {
-                        multiSelect = false
-                    }
-                    allWereSelected = false
-                }) {
-                    Image(systemName: "xmark")
-                        .frame(width:50, height:50)
-                }
-            }
-        }
-        .alignmentGuide(HorizontalAlignment.center) {
-            $0[HorizontalAlignment.center] //i do not know what this is doing, i'm not messing with it. it most likely has a purpose
-        }
-        .frame(maxWidth: .infinity, alignment: .center)
-    }
-    
-    @ViewBuilder
     var serverButton: some View {
         if #unavailable(tvOS 16.0) { //i... don't know why this is here? the webserver stuff can't be loaded by the UI, so i'm ignoring it for now. i'm curious what this was done for
-        //I REMEMBER WHY I WAS USING A DIFFERENT SF SYMBOL
+        //I REMEMBER WHY I WAS USING A DIFFERENT SF SYMBOL THAT DOESNT EXIST ON >=16.0
             Button(action: {
                 showSubView[29] = false
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -1498,10 +1486,6 @@ struct ContentView: View {
                 .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                     view.scaledFont(name: "BotW Sheikah Regular", size: 32)
                 }
-        .alignmentGuide(.trailing) {
-            $0[HorizontalAlignment.trailing]
-        }
-        .frame(maxWidth: .infinity, alignment: .trailing)
     }
     
     @ViewBuilder
@@ -1632,7 +1616,9 @@ struct ContentView: View {
                 FileManager.default.fileExists(atPath: filePath, isDirectory: &isDirectory)
                 return isDirectory.boolValue ? "\(file)/" : file
             }
-            files.remove(at: files.firstIndex(of: metadataName!)!) //hide the metadata file from view
+            if let metadataIndex = files.firstIndex(of: metadataName!) {
+                files.remove(at: metadataIndex)
+            } //hide the metadata file from view
             for i in 0..<files.count {
                 if let j = decoded.map({ $0.name }).firstIndex(of: files[i]) {
                     masterFiles.append(decoded[j])
@@ -1680,6 +1666,9 @@ struct ContentView: View {
                 FileManager.default.fileExists(atPath: filePath, isDirectory: &isDirectory)
                 return isDirectory.boolValue ? "\(file)/" : file
             }
+            if let metadataIndex = files.firstIndex(of: metadataName!) {
+                files.remove(at: metadataIndex)
+            } //hide the metadata file from view
             for i in 0..<contents.count {
                 new.append(SpartanFile(name: files[i], fullPath: directory + files[i], isSelected: false, fileType: FileInfo.yandereDevFileType(file: directory + files[i]), isLoadingFile: false))
             }
@@ -1712,7 +1701,7 @@ struct ContentView: View {
         updateFiles()
     }
     
-    func freeSpace(path: String) -> (Double, String) {
+    func freeSpace(path: String) -> (double: Double, string: String) {
         do {
             let systemAttributes = try fileManager.attributesOfFileSystem(forPath: path)
             let freeSpace = systemAttributes[.systemFreeSize] as? NSNumber

@@ -54,15 +54,10 @@ class FileInfo {
         }
     }
     
-    class func yandereDevFileType2(file: String) -> Double { //I tried using unified file types but they all returned nil so I have to use this awful yandere dev shit
-        //im sorry
-        
-        //FUTURE ME WANTS YOU TO KNOW I AM TALKING ABOUT THE IF ELSE STACK POST NOT THE PEDO STUFF
-        
-        //also apparently i look like yandere dev. thanks ethan
-        
-        
-        //anyway, this has been greatly sped up by separating it out into four async tasks. after each one finishes it updates checkingComplete. once all four have finished, the while loop at the end knows to exit
+    class func yandereDevFileType2(file: String) -> Double {
+        //this is my attempt to make filetypes faster.
+        //however, it's slower!
+        //how wonderful
         var filetype: Double = 69
         var checkingComplete = [false, false, false, false]
         

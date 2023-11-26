@@ -23,6 +23,9 @@ struct SettingsView: View {
 					view.scaledFont(name: "BotW Sheikah Regular", size: 60)
 				}
 				.font(.system(size: 60))
+                .sheet(isPresented: $showView[0], content: {
+                    CreditsView()
+                })
 			
 			StepperTV(value: $logWindowFontSizePre, isHorizontal: true) {
 				UserDefaults.settings.set(logWindowFontSizePre, forKey: "logWindowFontSize")
@@ -123,9 +126,6 @@ struct SettingsView: View {
 				}
 				.font(.footnote)
         }
-        .sheet(isPresented: $showView[0], content: {
-			CreditsView()
-		})
 		.sheet(isPresented: $showView[1], content: {
 			WebServerView()
 		})
@@ -279,8 +279,6 @@ struct IconButton: View {
 }
 
 func cacheFolder(_ directory: String) {
-    let decoder = JSONDecoder()
-    var decoded: [SpartanFile] = []
     var masterFiles: [SpartanFile] = []
     do {
         let contents = try FileManager.default.contentsOfDirectory(atPath: directory)
@@ -293,29 +291,17 @@ func cacheFolder(_ directory: String) {
         }
         files.remove(at: files.firstIndex(of: metadataName!)!) //hide the metadata file from view
         for i in 0..<files.count {
-            if let j = decoded.map({ $0.name }).firstIndex(of: files[i]) {
-                masterFiles.append(decoded[j])
-            } else {
-                masterFiles.append(SpartanFile(name: files[i], fullPath: directory + files[i], isSelected: false, fileType: FileInfo.yandereDevFileType(file: directory + files[i]), isLoadingFile: false))
-            }
+            masterFiles.append(SpartanFile(name: files[i], fullPath: directory + files[i], isSelected: false, fileType: FileInfo.yandereDevFileType(file: directory + files[i]), isLoadingFile: false))
         }
     } catch {
         print(error)
     }
-    DispatchQueue.global().asyncAfter(deadline: .now() + 0.01) { //removes files that no longer exist from the cache (so the filesize doesn't grow until you run out of disk space)
-        var decoded2 = decoded
-        for i in 0..<decoded.count {
-            if !(masterFiles.contains(decoded[i])) {
-                decoded2.remove(at: i)
-            }
-        }
-        let encoder = JSONEncoder()
-        do {
-            let encoded = try encoder.encode(decoded2)
-            try encoded.write(to: URL(fileURLWithPath: tempPath))
-        } catch {
-            print("failed to update and/or save cached metadata: \(error)")
-        }
-        RootHelperActs.mvtemp(directory + metadataName!)
+    let encoder = JSONEncoder()
+    do {
+        let encoded = try encoder.encode(masterFiles)
+        try encoded.write(to: URL(fileURLWithPath: tempPath))
+    } catch {
+        print("failed to save cached metadata: \(error)")
     }
+    RootHelperActs.mvtemp(directory + metadataName!)
 }

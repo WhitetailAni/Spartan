@@ -43,7 +43,7 @@ struct SpartanApp: App {
         
         if UserDefaults.settings.string(forKey: "tvapothecary") == nil {
             UserDefaults.settings.set(randomString(length: 24), forKey: "tvapothecary")
-        }
+        } //because migration from old spartan!
         
         if !(UserDefaults.settings.bool(forKey: "haveLaunchedBefore")) {
             UserDefaults.settings.set(25, forKey: "logWindowFontSize")

@@ -3,7 +3,7 @@
     {
       "identity" : "privatekits-tvos",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/RealKGB/PrivateKits-tvOS",
+      "location" : "https://github.com/WhitetailAni/PrivateKits-tvOS",
       "state" : {
         "revision" : "0fa05d7707004bd10bf3f153f0c8d6781bc462f9"
       }
