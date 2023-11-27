@@ -215,11 +215,7 @@ class FileInfo {
     class func isDirectoryEmpty(atPath: String) -> Int {
         do {
             let files = try fileManager.contentsOfDirectory(atPath: atPath)
-            if(files.isEmpty){
-                return 1
-            } else {
-                return 0
-            }
+            return files.isEmpty ? 1 : 0
         } catch {
             return 2
         }
@@ -234,7 +230,7 @@ class FileInfo {
             
             let fileSize = attributes[.size] as? Int ?? 0
             
-            let fileOwner: String = ((attributes[.ownerAccountName] as? String)!)
+            let fileOwner: String = ((attributes[.ownerAccountName] as? String) ?? "")
             
             let fileOwnerID = attributes[.groupOwnerAccountID] as? Int ?? 0
             let filePerms = String(format: "%03d", attributes[.posixPermissions] as? Int ?? "000")
@@ -258,12 +254,13 @@ class FileInfo {
         }
     }
     
-    class func readSymlinkDestination(path: String) -> String {
+    class func readSymlinkDestination(path: String) throws -> String {
         var rawPath = "/"
         do {
              rawPath += try Spartan.fileManager.destinationOfSymbolicLink(atPath: removeLastChar(path))
         } catch {
-            return "Make a valid symlink please. (Error ID 167)"
+            print("Make a valid symlink please. (Error ID 167)")
+            throw "167"
         }
         
         let rawPathType = FileInfo.yandereDevFileType(file: rawPath)

@@ -20,7 +20,6 @@ import SVGWrapper
 struct ContentView: View {
     @State var directory: String
     @State private var fileInfo: [String] = []
-    @State var permissionDenied = false
     @State var deleteOverride = false
     @State var E = false
     @State var E2 = false
@@ -31,6 +30,10 @@ struct ContentView: View {
     @State var buttonCalc = false
     
     @State var didSearch = false
+    
+    @State var showAlert = false
+    @State var alertTitle = ""
+    @State var alertMsg = ""
     
     @State var multiSelect = false
     @State var allWereSelected = false
@@ -1022,10 +1025,10 @@ struct ContentView: View {
                                 }
                             }
                         }
-                        .alert(isPresented: $permissionDenied) {
+                        .alert(isPresented: $showAlert) {
                             Alert(
-                                title: Text(NSLocalizedString("SHOW_DENIED", comment: "Here's the graduate.")),
-                                message: Text(NSLocalizedString("INFO_DENIED", comment: "You're monsters!")),
+                                title: Text(alertTitle),
+                                message: Text(alertMsg),
                                 dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "You're sky freaks! I love it! I love it!")))
                             )
                         }
@@ -1035,7 +1038,7 @@ struct ContentView: View {
 					ContextMenuButtonTV(stringKey: "OPEN", action: {
 						defaultAction(index: newViewFileIndex, isDirectPath: false)
                         showSubView[1] = false
-					})
+					}) //i got tired of having the same copy pasted button thing so I made it a wrapper struct with only the parameters I need. cut down on filesize a lot
 					
 					ContextMenuButtonTV(stringKey: "INFO", action: {
                         fileInfo = FileInfo.getFileInfo(filePath: masterFiles[newViewFileIndex].fullPath)
@@ -1358,7 +1361,7 @@ struct ContentView: View {
                                 }
                         }
                         .onAppear {
-                            fileInfo = FileInfo.getFileInfo(filePath: directory + newViewFileName) //this is more early mystery code. how does it work? i dunno. is it bad? probably. am i going to mess with it? no, because it works.
+                            fileInfo = FileInfo.getFileInfo(filePath: directory + newViewFileName) //turns out this is pretty simple. it just asks FileManager for file attributes and formats them
                         }
                     }
                 }
@@ -1373,7 +1376,7 @@ struct ContentView: View {
                         view.scaledFont(name: "BotW Sheikah Regular", size: 40)
                     }
                     .keyboardType(.numberPad)
-                    .textContentType(.oneTimeCode) //it does some number filtering i think?
+                    .textContentType(.oneTimeCode) //0-9 only!
                     .onAppear {
 						do {
 							filePerms = try fileManager.attributesOfItem(atPath: masterFiles[newViewFileIndex].fullPath)[.posixPermissions] as? Int ?? 000 //this used to be a 000 for some reason??????? i changed it to 640 like other files on the tvOS filesystem. truly amazing.
@@ -1383,8 +1386,14 @@ struct ContentView: View {
 						}//it also used a try! for some reason, so that's changed as well.
                     }
                 })
-				//welcome to the SheetStack. how anything and everything is presented: a bool in showSubView, and a sheet.
-				//there's a lot. most of them are pretty easy to comprehend, if there's anything out of the ordinary I'll explain it
+				/*
+                welcome to the SheetStack. how anything and everything is presented: a bool in showSubView, and a sheet.
+				there's a lot. most of them are pretty easy to comprehend, if there's anything out of the ordinary I'll explain it
+                
+                 they were split apart due to a silly tvOS 14.1-14.4(?) bug. you can find them attached to:
+                 1. the button they're called by
+                 2. freeSpace by the top of the file
+                */
                 .sheet(isPresented: $showSubView[0], content: {
                     VStack {
                         ContextMenuButtonTV(stringKey: "CREATE_FILE") {
@@ -1531,10 +1540,12 @@ struct ContentView: View {
 					let err = error.localizedDescription
 					if err.substring(fromIndex: err.count - 33) == "don’t have permission to view it." { //substrings are horrible parts of swift
 						//switched to using the String extension. so much nicer.
-                        permissionDenied = true
+                        alertTitle = NSLocalizedString("SHOW_DENIED", comment: "Here's the graduate.")
+                        alertMsg = NSLocalizedString("INFO_DENIED", comment: "You're monsters!")
+                        showAlert = true
                     }
                 }
-                if(!permissionDenied){
+                if(!showAlert){
                     if(isDirectPath) {
                         updateFiles()
                     } else {
@@ -1559,15 +1570,22 @@ struct ContentView: View {
             case 7:
                 showSubView[15] = true
             case 8:
-                let dest = FileInfo.readSymlinkDestination(path: directory + fileToCheck[index])
-                if directory != dest { //1.74/2gb memory used if you have a symlink that resolves to itself. spartan continually tries to resolve to it and it infinite loops until jetsam kills it due to too much memory usage
-                    if FileInfo.isDirectory(filePath: dest) {
-                        directory = dest
-                        updateFiles()
-                    } else {
-                        masterFiles.append(SpartanFile(name: URL(fileURLWithPath: dest).lastPathComponent, fullPath: dest, isSelected: false, fileType: FileInfo.yandereDevFileType(file: dest), isLoadingFile: false))
-                        defaultAction(index: masterFiles.count-1, isDirectPath: false)
+                do {
+                    let dest = try FileInfo.readSymlinkDestination(path: directory + fileToCheck[index])
+                    if directory != dest { //1.74/2gb memory used if you have a symlink that resolves to itself. spartan continually tries to resolve to it and it infinite loops until jetsam kills it due to too much memory usage
+                        if FileInfo.isDirectory(filePath: dest) {
+                            directory = dest
+                            updateFiles()
+                        } else {
+                            masterFiles.append(SpartanFile(name: URL(fileURLWithPath: dest).lastPathComponent, fullPath: dest, isSelected: false, fileType: FileInfo.yandereDevFileType(file: dest), isLoadingFile: false))
+                            defaultAction(index: masterFiles.count-1, isDirectPath: false)
+                        }
                     }
+                } catch {
+                    alertTitle = LocalizedString("BADSYMLINK")
+                    alertMsg = LocalizedString("BADSYMLINK_MSG")
+                    showAlert = true
+                    print("Please create a valid symlink. (Error ID 167)")
                 }
             case 9:
                 showSubView[23] = true
@@ -1758,7 +1776,7 @@ struct ContentView: View {
         if (directory == "/private/var/mobile/Containers/Shared/AppGroup/") {
             return trimGroupBundleID(plistDict["MCMMetadataIdentifier"] as? String ?? "group.com.apple.mail") ?? "com.whitetailani.Spartan"
         } else {
-            return plistDict["MCMMetadataIdentifier"] as? String ?? "lol.whitetailani.Spartan"
+            return plistDict["MCMMetadataIdentifier"] as? String ?? "com.whitetailani.Spartan"
         }
     }
     

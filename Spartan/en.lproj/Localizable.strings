@@ -65,11 +65,13 @@
 "OPEN_DMG" = "Mount As DMG";
 "OPEN_HTML" = "Open In Web View";
 
+//generic
 "SHOW_DENIED" = "Permission Denied";
 "SHOW_INFO" = "File Info";
 "INFO_DENIED" = "You don't have permission for that.";
 "CACHE_CLEAR" = "Clear Metadata Cache";
-
+"BADSYMLINK" = "Invalid Symlink";
+"BADSYMLINK_MSG" = "Please create a valid symlink. (Error ID 167)";
 
 //file info
 "INFO_PATH" = "File path: ";
@@ -232,7 +234,6 @@
 "PLIST_UNKNOWNTYPE" = "Unknown data type";
 "PLIST_FAILEDTOSAVE" = "The file could not be saved";
 "PLIST_FAILEDTOSAVEINFO" = "Make sure you have permission to save the file.";
-
 "PLIST_STRINGDATA" = "Input new String value";
 
 "PLIST_YEAR" = "Year";
