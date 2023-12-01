@@ -397,9 +397,9 @@ struct ContentView: View {
                         })
                         .sheet(isPresented: $showSubView[14], content: {
                             if(uncompressZip){
-                                ZipFileView(unzip: uncompressZip, isPresented: $showSubView[14], fileNames: blankString, filePath: $directory, zipFileName: $newViewFileName)
+                                //UncompressFileView
                             } else {
-                                ZipFileView(unzip: uncompressZip, isPresented: $showSubView[14], fileNames: multiSelectFiles, filePath: $directory, zipFileName: $blankString[0])
+                                CompressFileView(isPresented: $showSubView[14], directory: directory, fileNames: multiSelectFiles, multipleFiles: (multiSelectFiles.count > 1))
                             }
                         })
                         .sheet(isPresented: $showSubView[22], content: {

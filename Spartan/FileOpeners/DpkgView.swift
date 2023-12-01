@@ -34,6 +34,9 @@ struct DpkgView: View {
             VStack {
                 Text(debName)
                     .font(.system(size: 60))
+                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                        view.scaledFont(name: "BotW Sheikah Regular", size: 60)
+                    }
                 
                 UIKitTextView(text: $dpkgLog, fontSize: CGFloat(UserDefaults.settings.integer(forKey: "logWindowFontSize")), isTapped: $isTapped)
                     .onAppear {
@@ -53,6 +56,9 @@ struct DpkgView: View {
                         spawn(command: dpkgPath, args: args, env: env, root: true)
                     }) {
                         Text(NSLocalizedString("INSTALL", comment: "THERE WILL BE NO MORE [Miracles] NO MORE [Magic]."))
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     .disabled(isTapped)
                     
@@ -62,6 +68,9 @@ struct DpkgView: View {
                         }
                     }) {
                         Text(NSLocalizedString("EXTRACT", comment: "YOU MAKE ME [Sick]!"))
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     .disabled(isTapped)
                     
@@ -69,6 +78,9 @@ struct DpkgView: View {
                         isPresented = false
                     }) {
                         Text(NSLocalizedString("DISMISS", comment: "I REMEMBER WHEN YOU WERE JUST A LOST [Little Sponge]"))
+                            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                            }
                     }
                     .disabled(isTapped)
                 }
@@ -82,6 +94,9 @@ struct DpkgView: View {
                     extractToCurrentDir.toggle()
                 }) {
                     Text(localizedString: "EXTRACT_CURRENTDIR")
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                        }
                     Image(systemName: extractToCurrentDir ? "checkmark.square" : "square")
                 }
                 Button(action: {
@@ -93,6 +108,9 @@ struct DpkgView: View {
                     dpkgLog = spawn(command: dpkgPath + "-deb", args: args, env: env, root: true)
                 }) {
                     Text(NSLocalizedString("EXTRACT", comment: "I GAVE YOU MY [Commemorative Ring] FOR THE PRICE OF [My Favorite Year]!"))
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                        }
                 }
             }
             .transition(.opacity)
@@ -123,9 +141,9 @@ struct DpkgBuilderView: View {
     var body: some View {
         Text(debInputDir)
             .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                view.scaledFont(name: "BotW Sheikah Regular", size: 40)
+                view.scaledFont(name: "BotW Sheikah Regular", size: 60)
             }
-            .font(.system(size: 40))
+            .font(.system(size: 60))
             
         TextField(NSLocalizedString("DPKGDEB_OUTDIR", comment: "NO, I GET IT! IT'S YOU AND THAT [Hochi Mama]!") + NSLocalizedString("OPTIONAL", comment: "YOU'VE BEEN MAKING [Hyperlink Blocked]!"), text: $debOutputDir, onCommit: {
             updateLog()

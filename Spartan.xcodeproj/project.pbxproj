@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		42B3C5612B13F8D300125CA7 /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = 42B3C5602B13F8D300125CA7 /* Zip */; };
 		42B3C5642B13F91200125CA7 /* ApplicationsWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42B3C5632B13F91200125CA7 /* ApplicationsWrapper */; };
 		42B3C5662B13F91200125CA7 /* AssetCatalogWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42B3C5652B13F91200125CA7 /* AssetCatalogWrapper */; };
 		42B3C5682B13F91200125CA7 /* CompressionWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42B3C5672B13F91200125CA7 /* CompressionWrapper */; };
@@ -46,7 +45,7 @@
 		F8CC212329E4FFC5008C7B88 /* PlistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC212229E4FFC5008C7B88 /* PlistView.swift */; };
 		F8CC212729E5206B008C7B88 /* SpareViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC212629E5206B008C7B88 /* SpareViews.swift */; };
 		F8CC212F29E74DF4008C7B88 /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC212E29E74DF4008C7B88 /* VideoPlayerView.swift */; };
-		F8CC214429EB9503008C7B88 /* ZipFileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214329EB9503008C7B88 /* ZipFileView.swift */; };
+		F8CC214429EB9503008C7B88 /* CompressFileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214329EB9503008C7B88 /* CompressFileView.swift */; };
 		F8CC214629EF5838008C7B88 /* SpawnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214529EF5838008C7B88 /* SpawnView.swift */; };
 		F8CC214829EFA165008C7B88 /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CC214729EFA164008C7B88 /* TextView.swift */; };
 		F8CE8CC72AE9DA4200862703 /* HTMLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CE8CC62AE9DA4200862703 /* HTMLView.swift */; };
@@ -105,7 +104,7 @@
 		F8CC212229E4FFC5008C7B88 /* PlistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistView.swift; sourceTree = "<group>"; };
 		F8CC212629E5206B008C7B88 /* SpareViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpareViews.swift; sourceTree = "<group>"; };
 		F8CC212E29E74DF4008C7B88 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
-		F8CC214329EB9503008C7B88 /* ZipFileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipFileView.swift; sourceTree = "<group>"; };
+		F8CC214329EB9503008C7B88 /* CompressFileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompressFileView.swift; sourceTree = "<group>"; };
 		F8CC214529EF5838008C7B88 /* SpawnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpawnView.swift; sourceTree = "<group>"; };
 		F8CC214729EFA164008C7B88 /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
 		F8CE8CC62AE9DA4200862703 /* HTMLView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLView.swift; sourceTree = "<group>"; };
@@ -135,7 +134,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				42B3C5612B13F8D300125CA7 /* Zip in Frameworks */,
 				42B3C56A2B13F91200125CA7 /* DiskImagesWrapper in Frameworks */,
 				42B3C5682B13F91200125CA7 /* CompressionWrapper in Frameworks */,
 				42B3C56C2B13F91200125CA7 /* FSOperations in Frameworks */,
@@ -215,7 +213,7 @@
 				F8E9A9782A00B4A400706179 /* HexView.swift */,
 				F8FEB87A2A93A1930093B631 /* PlistEditor */,
 				F8D5795D2A0F2D2D00FDA526 /* DpkgView.swift */,
-				F8CC214329EB9503008C7B88 /* ZipFileView.swift */,
+				F8CC214329EB9503008C7B88 /* CompressFileView.swift */,
 				F8CC214529EF5838008C7B88 /* SpawnView.swift */,
 				F820951F2A2622D100DC6D79 /* CarView.swift */,
 				F83CB3BF2A41170F005BF95A /* FontView.swift */,
@@ -301,7 +299,6 @@
 			);
 			name = Spartan;
 			packageProductDependencies = (
-				42B3C5602B13F8D300125CA7 /* Zip */,
 				42B3C5632B13F91200125CA7 /* ApplicationsWrapper */,
 				42B3C5652B13F91200125CA7 /* AssetCatalogWrapper */,
 				42B3C5672B13F91200125CA7 /* CompressionWrapper */,
@@ -360,7 +357,6 @@
 			);
 			mainGroup = F853AB2229DBCB1A006EA2D5;
 			packageReferences = (
-				42B3C55F2B13F8D300125CA7 /* XCRemoteSwiftPackageReference "Zip" */,
 				42B3C5622B13F91200125CA7 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */,
 			);
 			productRefGroup = F853AB2C29DBCB1A006EA2D5 /* Products */;
@@ -425,7 +421,7 @@
 				F8FEB8822A93A1D50093B631 /* PlistArrayView.swift in Sources */,
 				F853AB4929DE1D12006EA2D5 /* MoveFileView.swift in Sources */,
 				F8E9A9792A00B4A400706179 /* HexView.swift in Sources */,
-				F8CC214429EB9503008C7B88 /* ZipFileView.swift in Sources */,
+				F8CC214429EB9503008C7B88 /* CompressFileView.swift in Sources */,
 				F853AB4329DE1C41006EA2D5 /* CreateFileView.swift in Sources */,
 				F853AB4729DE1CEC006EA2D5 /* CreateDirectoryView.swift in Sources */,
 				F853AB5329DE8AA1006EA2D5 /* SettingsView.swift in Sources */,
@@ -806,14 +802,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		42B3C55F2B13F8D300125CA7 /* XCRemoteSwiftPackageReference "Zip" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/marmelroy/Zip";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.1.2;
-			};
-		};
 		42B3C5622B13F91200125CA7 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/WhitetailAni/PrivateKits-tvOS";
@@ -825,11 +813,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		42B3C5602B13F8D300125CA7 /* Zip */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 42B3C55F2B13F8D300125CA7 /* XCRemoteSwiftPackageReference "Zip" */;
-			productName = Zip;
-		};
 		42B3C5632B13F91200125CA7 /* ApplicationsWrapper */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42B3C5622B13F91200125CA7 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;

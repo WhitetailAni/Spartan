@@ -157,15 +157,16 @@
 "FAVORITESADD_FILEPATH" = "Enter the item's filepath";
 
 
-//zip view
-"UNZIP_TITLE" = "Uncompress Archive";
-"UNZIP_PASSWORD" = "Enter archive password";
-"UNZIP_OVERWRITE" = "Overwrite Existing Files";
-"UNZIP_DIR" = "Destination directory";
+//compression view
+"UNCOMP_TITLE" = "Uncompress Archive";
+"UNCOMP_DIR" = "Destination Directory";
 
-"ZIP_TITLE" = "Compress Archive";
-"ZIP_PASSWORD" = "Enter password to apply";
-"ZIP_FILENAME" = "Enter archive name";
+"COMP_TITLE" = "Compress Archive";
+"COMP_PASSWORD" = "Enter password to apply";
+"COMP_FILENAME" = "Enter archive name";
+"COMP_TYPE" = "Select Compression Type";
+"COMP_TARTYPE" = "Select Tarball Compression Type";
+"COMP_DESTNAME" = "Output Filename";
 
 //settings
 "SETTINGS" = "Settings";

@@ -45,7 +45,7 @@ class FileInfo {
             return 7 //executable
         } else if (isText(filePath: file)) { //these must be flipped because otherwise xml plist detects as text
             return 4 //text file
-        } else if (doesFileHaveFileExtension(filePath: file, extensions: [".zip", ".cbz"])) {
+        } else if (doesFileHaveFileExtension(filePath: file, extensions: [".zip", ".gz", ".bz2", ".xz", ".zst", ".lzma", ".lz4", ".tar"])) {
             return 6 //archive
         } else if (doesFileHaveFileExtension(filePath: file, extensions: [".deb"])) {
             return 9 //deb
@@ -207,7 +207,7 @@ class FileInfo {
     }
     class func doesFileHaveFileExtension(filePath: String, extensions: [String]) -> Bool {
         for x in extensions {
-            return filePath.substring(fromIndex: filePath.count - 4) == x
+            return filePath.substring(fromIndex: filePath.count - x.count) == x
         }
         return false
     }
