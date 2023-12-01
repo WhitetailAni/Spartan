@@ -7,6 +7,7 @@
 
 import Foundation
 import AVFoundation
+import libarchiveBridge
 
 class FileInfo {
     class func yandereDevFileType(file: String) -> Double { //I tried using unified file types but they all returned nil so I have to use this awful yandere dev shit
@@ -269,5 +270,29 @@ class FileInfo {
         }
         
         return rawPath
+    }    
+    
+    class func isTar(filePath: String) -> Bool {
+        guard let archive = archive_read_new() else {
+            return false
+        }
+        defer { archive_read_free(archive) }
+        
+        var name = ""
+
+        archive_read_support_format_all(archive)
+        archive_read_support_filter_all(archive)
+
+        if archive_read_open_filename(archive, filePath, 10240) == ARCHIVE_OK {
+            var entry: OpaquePointer? = archive_entry_new()
+            defer { archive_entry_free(entry) }
+
+            if archive_read_next_header(archive, &entry) == ARCHIVE_OK {
+                name = String(cString: archive_format_name(archive))
+            }
+        }
+
+        return name == "tar"
     }
+
 }

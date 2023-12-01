@@ -51,7 +51,7 @@ struct ContentView: View {
     
     @State var didChangeDir = false
     
-    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 34)
+    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 35)
     //createFileSelectShow = 0
     //contextMenuShow = 1
     //openInMenu = 2
@@ -66,7 +66,7 @@ struct ContentView: View {
     //videoPlayerShow = 11
     //imageShow = 12
     //plistShow = 13
-    //zipFileShow = 14
+    //compFileShow = 14
     //spawnShow = 15
     //favoritesShow = 16
     //addToFavoritesShow = 17
@@ -86,6 +86,7 @@ struct ContentView: View {
     //choosing between opening an image as an SVG or not an SVG = 31
     //dmgMountViewShow = 32
     //htmlViewShow = 33
+    //uncompFileShow = 34
     
     @Binding var globalAVPlayer: AVPlayer //this is because Spartan has the ability to play music without the AudioPlayerView being shown. It took about a week to get working properly and I'm proud of it
     @State var isGlobalAVPlayerPlaying = false
@@ -93,7 +94,6 @@ struct ContentView: View {
     
     //@Binding var webServer: GCDWebUploader
     
-    @State private var uncompressZip = false
     @State private var isLoadingView = false
     @State var blankString: [String] = [""] //dont question it
     @State private var nonexistentFile = "" //REALLY dont question it
@@ -314,7 +314,6 @@ struct ContentView: View {
                         
                             Button(action: {
                                 showSubView[14] = true
-                                uncompressZip = false
                                 newViewFilePath = directory
                                 newViewArrayNames = multiSelectFiles
                             }) {
@@ -395,12 +394,15 @@ struct ContentView: View {
                         .sheet(isPresented: $showSubView[13], content: {
                             PlistView(filePath: newViewFilePath, fileName: newViewFileName)
                         })
-                        .sheet(isPresented: $showSubView[14], content: {
-                            if(uncompressZip){
-                                //UncompressFileView
-                            } else {
-                                CompressFileView(isPresented: $showSubView[14], directory: directory, fileNames: multiSelectFiles, multipleFiles: (multiSelectFiles.count > 1))
-                            }
+                        .sheet(isPresented: $showSubView[14], onDismiss: {
+                            updateFiles()
+                        }, content: {
+                            CompressFileView(isPresented: $showSubView[14], directory: directory, fileNames: multiSelectFiles, multipleFiles: (multiSelectFiles.count > 1))
+                        })
+                        .sheet(isPresented: $showSubView[34], onDismiss: {
+                            updateFiles()
+                        }, content: {
+                            UncompressFileView(filePath: newViewFilePath, fileName: newViewFilePath)
                         })
                         .sheet(isPresented: $showSubView[22], content: {
                             HexView(filePath: newViewFilePath, fileName: newViewFileName, isPresented: $showSubView[22])
@@ -1282,10 +1284,9 @@ struct ContentView: View {
 							ContextMenuButtonTV(stringKey: "OPEN_CAR", action: {
 								newViewFilePath = directory
 								newViewFileName = masterFiles[newViewFileIndex].name
-								uncompressZip = true
 								showSubView[2] = false
 								DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-									showSubView[14] = true
+									showSubView[34] = true
 								}
 							})
 							
@@ -1565,8 +1566,7 @@ struct ContentView: View {
             case 5:
                 showSubView[13] = true
             case 6:
-                showSubView[14] = true
-                uncompressZip = true
+                showSubView[34] = true
             case 7:
                 showSubView[15] = true
             case 8:
@@ -1671,6 +1671,9 @@ struct ContentView: View {
         if directory == "//" {
 			directory = "/"
 		}
+        DispatchQueue.global().asyncAfter(deadline: .now() + 0.05) {
+            backgroundUpdate()
+        }
     }
     
     func oldUpdate() -> [SpartanFile] {
@@ -1698,6 +1701,13 @@ struct ContentView: View {
             print(error.localizedDescription)
         }
         return new
+    }
+    
+    func backgroundUpdate() {
+        for i in 0..<masterFiles.count {
+            masterFiles[i].fileType = FileInfo.yandereDevFileType(file: masterFiles[i].fullPath)
+        } //prevents an edge case when someone removes a file with name X, and puts a new file (of different type) with name X in the same directory. spartan would see that file of name X is there and assume that it's the same type, since spartan never did anything with the file that would cause it to update. but when trying to deal with it... things would break.
+        //this will run in the background to recompute filetypes!
     }
     
     func goBack() {
