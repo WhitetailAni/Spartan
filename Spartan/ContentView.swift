@@ -402,7 +402,7 @@ struct ContentView: View {
                         .sheet(isPresented: $showSubView[34], onDismiss: {
                             updateFiles()
                         }, content: {
-                            UncompressFileView(filePath: newViewFilePath, fileName: newViewFilePath)
+                            UncompressFileView(isPresented: $showSubView[34], filePath: newViewFilePath, fileName: newViewFileName)
                         })
                         .sheet(isPresented: $showSubView[22], content: {
                             HexView(filePath: newViewFilePath, fileName: newViewFileName, isPresented: $showSubView[22])
@@ -1225,6 +1225,26 @@ struct ContentView: View {
 								}
 							})
                             
+                            ContextMenuButtonTV(stringKey: "OPEN_COMP", action: {
+                                newViewFilePath = directory
+                                newViewArrayNames = [masterFiles[newViewFileIndex].name]
+                                showSubView[2] = false
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                    showSubView[14] = true
+                                }
+                            })
+                            
+                            ContextMenuButtonTV(stringKey: "OPEN_UNCOMP", action: {
+                                newViewFilePath = directory
+                                newViewFileName = masterFiles[newViewFileIndex].name
+                                showSubView[2] = false
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                    showSubView[34] = true
+                                }
+                            })
+                        }
+                    
+						VStack {
                             ContextMenuButtonTV(stringKey: "FAVORITESADD", action: {
                                 newViewFilePath = directory
                                 newViewFileName = masterFiles[newViewFileIndex].name
@@ -1233,9 +1253,7 @@ struct ContentView: View {
                                     showSubView[17] = true
                                 }
                             })
-                        }
-                    
-						VStack {
+                            
 							ContextMenuButtonTV(stringKey: "OPEN_PLIST", action: {
 								newViewFilePath = directory
 								newViewFileName = masterFiles[newViewFileIndex].name
@@ -1671,8 +1689,8 @@ struct ContentView: View {
         if directory == "//" {
 			directory = "/"
 		}
-        DispatchQueue.global().asyncAfter(deadline: .now() + 0.05) {
-            backgroundUpdate()
+        DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
+            cacheFolder(directory)
         }
     }
     
@@ -1701,13 +1719,6 @@ struct ContentView: View {
             print(error.localizedDescription)
         }
         return new
-    }
-    
-    func backgroundUpdate() {
-        for i in 0..<masterFiles.count {
-            masterFiles[i].fileType = FileInfo.yandereDevFileType(file: masterFiles[i].fullPath)
-        } //prevents an edge case when someone removes a file with name X, and puts a new file (of different type) with name X in the same directory. spartan would see that file of name X is there and assume that it's the same type, since spartan never did anything with the file that would cause it to update. but when trying to deal with it... things would break.
-        //this will run in the background to recompute filetypes!
     }
     
     func goBack() {

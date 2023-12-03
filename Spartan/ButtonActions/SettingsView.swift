@@ -69,7 +69,7 @@ struct SettingsView: View {
 				.font(.system(size: 25))
 			Text(" ")
             
-            Button(action: {
+            /*Button(action: {
                 cacheFolder("/")
             }) {
                 Text(localizedString: "SETTINGS_CACHEALL")
@@ -79,7 +79,7 @@ struct SettingsView: View {
                     view.scaledFont(name: "BotW Sheikah Regular", size: 25)
                 }
                 .font(.system(size: 25))
-            Text(" ")
+            Text(" ")*/
 			
 			Button(action: {
 				showView[2] = true

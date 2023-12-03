@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		420F3A892B1A90A300185EFD /* libarchive.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 420F3A882B1A908200185EFD /* libarchive.tbd */; };
 		420F3A8C2B1A9C7D00185EFD /* Compression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F3A8B2B1A9C7D00185EFD /* Compression.swift */; };
+		420F3A902B1BF7CA00185EFD /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = 420F3A8F2B1BF7CA00185EFD /* Zip */; };
 		42B3C5642B13F91200125CA7 /* ApplicationsWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42B3C5632B13F91200125CA7 /* ApplicationsWrapper */; };
 		42B3C5662B13F91200125CA7 /* AssetCatalogWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42B3C5652B13F91200125CA7 /* AssetCatalogWrapper */; };
 		42B3C5682B13F91200125CA7 /* CompressionWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42B3C5672B13F91200125CA7 /* CompressionWrapper */; };
@@ -138,6 +139,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				420F3A902B1BF7CA00185EFD /* Zip in Frameworks */,
 				42B3C56A2B13F91200125CA7 /* DiskImagesWrapper in Frameworks */,
 				42B3C5682B13F91200125CA7 /* CompressionWrapper in Frameworks */,
 				42B3C56C2B13F91200125CA7 /* FSOperations in Frameworks */,
@@ -327,6 +329,7 @@
 				42B3C5672B13F91200125CA7 /* CompressionWrapper */,
 				42B3C5692B13F91200125CA7 /* DiskImagesWrapper */,
 				42B3C56B2B13F91200125CA7 /* FSOperations */,
+				420F3A8F2B1BF7CA00185EFD /* Zip */,
 			);
 			productName = Spartan;
 			productReference = F853AB2B29DBCB1A006EA2D5 /* Spartan.app */;
@@ -381,6 +384,7 @@
 			mainGroup = F853AB2229DBCB1A006EA2D5;
 			packageReferences = (
 				42B3C5622B13F91200125CA7 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */,
+				420F3A8E2B1BF7CA00185EFD /* XCRemoteSwiftPackageReference "Zip" */,
 			);
 			productRefGroup = F853AB2C29DBCB1A006EA2D5 /* Products */;
 			projectDirPath = "";
@@ -826,6 +830,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		420F3A8E2B1BF7CA00185EFD /* XCRemoteSwiftPackageReference "Zip" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/marmelroy/Zip";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.2;
+			};
+		};
 		42B3C5622B13F91200125CA7 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/WhitetailAni/PrivateKits-tvOS";
@@ -837,6 +849,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		420F3A8F2B1BF7CA00185EFD /* Zip */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 420F3A8E2B1BF7CA00185EFD /* XCRemoteSwiftPackageReference "Zip" */;
+			productName = Zip;
+		};
 		42B3C5632B13F91200125CA7 /* ApplicationsWrapper */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 42B3C5622B13F91200125CA7 /* XCRemoteSwiftPackageReference "PrivateKits-tvOS" */;

@@ -15,7 +15,7 @@ let tarCompTypes = ["gzip", "bzip2", "xz", "lzma"]
 struct CompressFileView: View {
     @Binding var isPresented: Bool
     @State var directory: String
-    @State var fileNames: [String] //files to be archived
+    @State var fileNames: [String]
     @State var multipleFiles: Bool
     
     @State private var selectedCompType: CompressionType = .zip
@@ -25,6 +25,9 @@ struct CompressFileView: View {
     @State var tarCompShow = false
     
     @State private var destPath = ""
+    
+    @State var error2: CompressionError?
+    @State var errorShow = false
     
     var body: some View {
         VStack {
@@ -39,26 +42,28 @@ struct CompressFileView: View {
                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                         view.scaledFont(name: "BotW Sheikah Regular", size: 35)
                     }
-                Text("gzip").tag(CompressionType.gz).disabled(multipleFiles)
-                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                        view.scaledFont(name: "BotW Sheikah Regular", size: 35)
-                    }
-                Text("bzip2").tag(CompressionType.bz2).disabled(multipleFiles)
-                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                        view.scaledFont(name: "BotW Sheikah Regular", size: 35)
-                    }
-                Text("xz").tag(CompressionType.xz).disabled(multipleFiles)
-                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                        view.scaledFont(name: "BotW Sheikah Regular", size: 35)
-                    }
-                Text("lzma").tag(CompressionType.lzma).disabled(multipleFiles)
-                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                        view.scaledFont(name: "BotW Sheikah Regular", size: 35)
-                    }
-                Text("lz4").tag(CompressionType.lz4).disabled(multipleFiles)
-                    .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
-                        view.scaledFont(name: "BotW Sheikah Regular", size: 35)
-                    }
+                if !multipleFiles {
+                    Text("gzip").tag(CompressionType.gz).disabled(multipleFiles)
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 35)
+                        }
+                    Text("bzip2").tag(CompressionType.bz2).disabled(multipleFiles)
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 35)
+                        }
+                    Text("xz").tag(CompressionType.xz).disabled(multipleFiles)
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 35)
+                        }
+                    Text("lzma").tag(CompressionType.lzma).disabled(multipleFiles)
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 35)
+                        }
+                    Text("lz4").tag(CompressionType.lz4).disabled(multipleFiles)
+                        .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                            view.scaledFont(name: "BotW Sheikah Regular", size: 35)
+                        }
+                }
                 Text("zstd").tag(CompressionType.zstd)
                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                         view.scaledFont(name: "BotW Sheikah Regular", size: 35)
@@ -66,15 +71,6 @@ struct CompressFileView: View {
                 Text("tar").tag(CompressionType.tar)
                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
                         view.scaledFont(name: "BotW Sheikah Regular", size: 35)
-                    }
-            }
-            
-            if selectedCompType == .tar {
-                Text("")
-                    .onAppear {
-                        withAnimation {
-                            tarCompShow = true
-                        }
                     }
             }
             
@@ -103,25 +99,69 @@ struct CompressFileView: View {
                 }
             }
             
-            TextField("COMP_DESTNAME", text: $destPath)
+            TextField("COMP_DESTNAME", text: $destPath, onCommit: {
+                let ext = selectedCompType.stringRepresentation() + selectedTarCompType.stringRepresentation()
+                if destPath.suffix(ext.count) != ext {
+                    destPath += ext
+                }
+            })
+            
+            if error2 != nil {
+                Text("")
+                    .onAppear {
+                        errorShow = true
+                    }
+                    .alert(isPresented: $errorShow, content: {
+                        Alert(
+                            title: Text(NSLocalizedString("ERROR", comment: "")),
+                            message: Text(error2?.explanation() ?? LocalizedString("ERROR_EXPLANATION")),
+                            dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "")))
+                        )
+                    })
+            }
             
             Button(action: {
-                if multipleFiles {
-                    Compression.compressFiles(listOfFiles: fileNames, destination: directory + destPath, compType: selectedCompType, tarCompType: selectedTarCompType)
-                } else {
-                    Compression.compressFile(pathToFile: fileNames[0], destination: directory + destPath, compType: selectedCompType, tarCompType: selectedTarCompType)
+                do {
+                    if multipleFiles {
+                        try Compression.compressFiles(listOfFiles: fileNames, destination: directory + destPath, compType: selectedCompType, tarCompType: selectedTarCompType)
+                    } else {
+                        try Compression.compressFile(filePath: fileNames[0], destination: directory + destPath, compType: selectedCompType, tarCompType: selectedTarCompType)
+                    }
+                } catch {
+                    error2 = error as? CompressionError
                 }
+                isPresented = false
             }) {
                 Text(localizedString: "CONFIRM")
+            }
+            
+            if selectedCompType == .tar {
+                Text("")
+                    .onAppear {
+                        withAnimation {
+                            tarCompShow = true
+                        }
+                    }
+            } else {
+                Text("")
+                    .onAppear {
+                        withAnimation {
+                            tarCompShow = false
+                        }
+                    }
             }
         }
     }
 }
 
 struct UncompressFileView: View {
+    @Binding var isPresented: Bool
     @State var filePath: String
     @State var fileName: String
     @State private var extractFilePath: String = ""
+    
+    @State var errorShow = false
+    @State var error2: CompressionError?
     
     var body: some View {
         VStack {
@@ -135,9 +175,27 @@ struct UncompressFileView: View {
                     extractFilePath = filePath
                 }
             
+            if error2 != nil {
+                Text("")
+                    .onAppear {
+                        errorShow = true
+                    }
+                    .alert(isPresented: $errorShow, content: {
+                        Alert(
+                            title: Text(NSLocalizedString("ERROR", comment: "")),
+                            message: Text(error2?.explanation() ?? LocalizedString("ERROR_EXPLANATION")),
+                            dismissButton: .default(Text(NSLocalizedString("DISMISS", comment: "")))
+                        )
+                    })
+            }
+            
             Button(action: {
-                let compTypes = Compression.archiveType(filePath: filePath + fileName)
-                Compression.uncompressFile(pathToFile: filePath + fileName, compType: compTypes.0, tarCompType: compTypes.1)
+                do {
+                    try Compression.uncompressFile(filePath: filePath + fileName, destination: extractFilePath, compType: Compression.archiveType(filePath: filePath + fileName))
+                    isPresented = false
+                } catch {
+                    error2 = error as? CompressionError
+                }
             }) {
                 Text("CONFIRM")
                     .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in

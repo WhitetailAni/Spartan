@@ -19,6 +19,7 @@
 "UNKNOWN" = "Unknown";
 "OPEN" = "Open";
 "ERROR" = "An error occurred";
+"ERROR_EXPLANATION" = "An unknown error occurred.";
 "INSTALL" = "Install";
 "EXTRACT" = "Extract";
 "BUILD" = "Build";
@@ -64,6 +65,8 @@
 "OPEN_TBD" = "TBD Editor";
 "OPEN_DMG" = "Mount As DMG";
 "OPEN_HTML" = "Open In Web View";
+"OPEN_COMP" = "Compress File";
+"OPEN_UNCOMP" = "Uncompress File";
 
 //generic
 "SHOW_DENIED" = "Permission Denied";
@@ -167,6 +170,16 @@
 "COMP_TYPE" = "Select Compression Type";
 "COMP_TARTYPE" = "Select Tarball Compression Type";
 "COMP_DESTNAME" = "Output Filename";
+
+"COMPERROR_INCORRECTCOMPRESSIONTYPE" = "The specified data compression type was invalid";
+"COMPERROR_ARCHIVECREATIONFAILED" = "An interim variable type could not be created";
+"COMPERROR_INPUTFILEOPENFAILED" = "The input file could not be opened, or you do not have permission to access it.";
+"COMPERROR_OUTPUTFILEOPENFAILED" = "The output file could not be created, or it already exists.";
+"COMPERROR_ARCHIVEREADHEADERFAILED" = "The specified archive could not be read. It could be corrupted, or you do not have permission to access it.";
+"COMPERROR_ARCHIVEREADDATAFAILED" = "Data could not be read from the specified archive. It could be corrupted, or it may have been moved.";
+"COMPERROR_ARCHIVEWRITEHEADERFAILED" = "The archive information could not be written to the file.";
+"COMPERROR_ARCHIVEWRITEDATAFAILED" = "The compressed data could not be created. Make sure the input file(s) were not moved.";
+"COMPERROR_ARCHIVEFINISHENTRYFAILED" = "The compressed data could not be written to the output file.";
 
 //settings
 "SETTINGS" = "Settings";

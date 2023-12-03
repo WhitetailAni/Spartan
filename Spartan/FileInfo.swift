@@ -44,10 +44,10 @@ class FileInfo {
             return 10 //asset catalog
         } else if (fileManager.isExecutableFile(atPath: file)) { //executables detect as utf32 lol
             return 7 //executable
+        } else if (isArchive(filePath: file)) {
+            return 6 //archive
         } else if (isText(filePath: file)) { //these must be flipped because otherwise xml plist detects as text
             return 4 //text file
-        } else if (doesFileHaveFileExtension(filePath: file, extensions: [".zip", ".gz", ".bz2", ".xz", ".zst", ".lzma", ".lz4", ".tar"])) {
-            return 6 //archive
         } else if (doesFileHaveFileExtension(filePath: file, extensions: [".deb"])) {
             return 9 //deb
         } else {
@@ -206,6 +206,34 @@ class FileInfo {
         }
         return false
     }
+    class func isArchive(filePath: String) -> Bool {
+        guard let fileCString = filePath.cString(using: .utf8) else {
+            return false
+        }
+
+        let archive = archive_read_new()
+        var entry = archive_entry_new()
+        
+        archive_read_support_format_all(archive)
+        archive_read_support_filter_all(archive)
+        archive_read_support_filter_lzma(archive)
+
+        guard archive_read_open_filename(archive, fileCString, 10240) == ARCHIVE_OK else {
+            archive_read_close(archive)
+            archive_read_free(archive)
+            return false
+        }
+
+        if archive_read_next_header(archive, &entry) == ARCHIVE_OK {
+            archive_read_close(archive)
+            archive_read_free(archive)
+            return true
+        }
+
+        archive_read_close(archive)
+        archive_read_free(archive)
+        return false
+    }
     class func doesFileHaveFileExtension(filePath: String, extensions: [String]) -> Bool {
         for x in extensions {
             return filePath.substring(fromIndex: filePath.count - x.count) == x
@@ -273,26 +301,6 @@ class FileInfo {
     }    
     
     class func isTar(filePath: String) -> Bool {
-        guard let archive = archive_read_new() else {
-            return false
-        }
-        defer { archive_read_free(archive) }
-        
-        var name = ""
-
-        archive_read_support_format_all(archive)
-        archive_read_support_filter_all(archive)
-
-        if archive_read_open_filename(archive, filePath, 10240) == ARCHIVE_OK {
-            var entry: OpaquePointer? = archive_entry_new()
-            defer { archive_entry_free(entry) }
-
-            if archive_read_next_header(archive, &entry) == ARCHIVE_OK {
-                name = String(cString: archive_format_name(archive))
-            }
-        }
-
-        return name == "tar"
+        return false
     }
-
 }

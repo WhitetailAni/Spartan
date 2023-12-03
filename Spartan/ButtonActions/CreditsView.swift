@@ -41,6 +41,7 @@ Credits to:
 ethanrdoesmc: Advice on improving ContentView load times
                 llsc12: SwiftUI advice
                 flower: UI/UX advice
+trebrick: Testing and feature requests
                 ChatGPT: Explaining stuff better than StackOverflow™
                 ...and also writing me UIKit
                 StackOverflow: Working with Data in Swift
