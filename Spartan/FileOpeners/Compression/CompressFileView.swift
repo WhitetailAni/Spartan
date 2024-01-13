@@ -123,9 +123,9 @@ struct CompressFileView: View {
             Button(action: {
                 do {
                     if multipleFiles {
-                        try Compression.compressFiles(listOfFiles: fileNames, destination: directory + destPath, compType: selectedCompType, tarCompType: selectedTarCompType)
+                        try Compression.compressFiles(listOfFiles: fileNames, directory: directory, destination: directory + destPath, compType: selectedCompType, tarCompType: selectedTarCompType)
                     } else {
-                        try Compression.compressFile(filePath: fileNames[0], destination: directory + destPath, compType: selectedCompType, tarCompType: selectedTarCompType)
+                        try Compression.compressFile(filePath: fileNames[0], directory: directory, destination: directory + destPath, compType: selectedCompType, tarCompType: selectedTarCompType)
                     }
                 } catch {
                     error2 = error as? CompressionError

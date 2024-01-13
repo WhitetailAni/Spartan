@@ -426,7 +426,7 @@
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /usr/local/bin/python2;
+			shellPath = /Library/Frameworks/Python.framework/Versions/2.7/bin/python2;
 			shellScript = "# This adds entitlements necessary for jailbroken functions. If you don't have patched installd (whether by jailbreak or WDBRemoveThreeAppLimit) this will cause the install to fail, so comment the last 6 lines out.\n\nimport os\nfilename = '/'.join(map(os.environ.get, ('TARGET_TEMP_DIR', 'FULL_PRODUCT_NAME'))) + '.xcent'\n\nent = '''\n    <key>com.apple.private.persona-mgmt</key>\n    <true/>\n    <key>com.apple.private.security.no-container</key>\n\t<true/>\n\t<key>com.apple.private.security.no-sandbox</key>\n\t<true/>\n    <key>platform-application</key>\n    <true/>\n    <key>com.apple.private.security.system-application</key>\n\t<true/>\n    <key>com.apple.security.files.user-selected.read-write</key>\n    <true/>\n    <key>com.apple.private.skip-library-validation</key>\n\t<true/>\n\t<key>com.apple.security.iokit-user-client-class</key>\n\t<array>\n\t\t<string>IOSurfaceRootUserClient</string>\n\t\t<string>AGXDeviceUserClient</string>\n\t</array>\n\t<key>com.apple.security.exception.files.absolute-path.read-write</key>\n\t<array>\n\t\t<string>/</string>\n\t</array>\n\t<key>com.apple.AutoWake-write-access</key>\n\t<true/>\n    <key>com.apple.coremedia.allow-protected-content-playback</key>\n    <true/>\n    <key>com.apple.private.network.socket-delegate</key>\n    <true/>\n    <key>com.apple.private.security.container-manager</key>\n    <true/>\n    <key>com.apple.private.security.storage.AppDataContainers</key>\n    <true/>\n    <key>com.apple.private.security.storage.AppBundles</key>\n    <true/>\n    <key>com.apple.security.application-groups</key>\n    <true/>\n    <key>com.apple.security.network.server</key>\n    <true/>\n    <key>com.apple.security.network.client</key>\n    <true/>\n    <key>com.apple.security.automation.disk-images</key>\n    <true/>\n '''\nwith open(filename, 'r') as fp:\n    buf = fp.read()\ncursor = buf.rfind('</dict>')\noutput = buf[0:cursor] + ent + buf[cursor:]\nwith open(filename, 'w') as fp:\n    fp.write(output)\n";
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -651,7 +651,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2527;
+				CURRENT_PROJECT_VERSION = 2528;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = NO;
 				DEVELOPMENT_ASSET_PATHS = "";
@@ -676,7 +676,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = whitetailani.Spartan;
+				PRODUCT_BUNDLE_IDENTIFIER = com.whitetailani.Spartan;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "appletvos appletvsimulator";
@@ -703,7 +703,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2527;
+				CURRENT_PROJECT_VERSION = 2528;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = NO;
 				DEVELOPMENT_ASSET_PATHS = "";
@@ -728,7 +728,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = whitetailani.Spartan;
+				PRODUCT_BUNDLE_IDENTIFIER = com.whitetailani.Spartan;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "appletvos appletvsimulator";

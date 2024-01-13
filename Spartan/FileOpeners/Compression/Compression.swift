@@ -137,7 +137,7 @@ enum CompressionError: Error {
 }
 
 class Compression {
-    class func compressFile(filePath: String, destination: String, compType: CompressionType, tarCompType: TarCompressionType) throws {
+    class func compressFile(filePath: String, directory: String, destination: String, compType: CompressionType, tarCompType: TarCompressionType) throws {
         switch compType {
         case .tar:
             do {
@@ -153,39 +153,51 @@ class Compression {
             throw CompressionError.incorrectCompressionType
         default:
             do {
-                try compressFileC(filePath: filePath, destination: destination, type: compType)
+                try compressFileC(filePath: directory + filePath, destination: destination, type: compType)
             } catch {
                 throw error
             }
         }
     }
     
-    class func compressFiles(listOfFiles: [String], destination: String, compType: CompressionType, tarCompType: TarCompressionType = .none) throws {
+    class func compressFiles(listOfFiles: [String], directory: String, destination: String, compType: CompressionType, tarCompType: TarCompressionType = .none) throws {
         var stringList = ""
         for file in listOfFiles {
             stringList += "\(file) "
         }
+        
+        print(listOfFiles)
+        print(stringList)
         
         switch compType {
         case .zip:
             do {
                 var urls: [URL] = []
                 for file in listOfFiles {
-                    urls.append(URL(fileURLWithPath: file))
+                    urls.append(URL(fileURLWithPath: directory + file))
                 }
+                print(urls)
                 try Zip.zipFiles(paths: urls, zipFilePath: URL(fileURLWithPath: destination), password: nil, progress: nil)
             } catch {
                 throw CompressionError.archiveWriteHeaderFailed
             }
         case .zstd:
+            var fullPaths: [String] = []
+            for file in listOfFiles {
+                fullPaths.append(directory + file)
+            }
             do {
-                try compressZstdC(filePaths: listOfFiles, destination: destination)
+                try compressZstdC(filePaths: fullPaths, destination: destination)
             } catch {
                 throw error
             }
         case .tar:
+            var fullPaths: [String] = []
+            for file in listOfFiles {
+                fullPaths.append(directory + file)
+            }
             do {
-                try createTarC(files: listOfFiles, destination: tempPath)
+                try createTarC(files: fullPaths, destination: tempPath)
                 if tarCompType != .none {
                     try compressFileC(filePath: tempPath, destination: destination, type: CompressionType(type: tarCompType))
                     RootHelperActs.rm(tempPath)
@@ -323,6 +335,8 @@ class Compression {
     private class func compressFileC(filePath: String, destination: String, type: CompressionType) throws {
         let archive = archive_write_new()
         defer { archive_write_free(archive) }
+        
+        print(filePath)
 
         switch type {
         case .zip:

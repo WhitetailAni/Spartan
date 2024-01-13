@@ -8,6 +8,7 @@
 import Foundation
 import AVFoundation
 import libarchiveBridge
+import Zip
 
 class FileInfo {
     class func yandereDevFileType(file: String) -> Double { //I tried using unified file types but they all returned nil so I have to use this awful yandere dev shit
@@ -209,6 +210,15 @@ class FileInfo {
     class func isArchive(filePath: String) -> Bool {
         guard let fileCString = filePath.cString(using: .utf8) else {
             return false
+        }
+        
+        guard let fileData = fileManager.contents(atPath: filePath) else {
+            return false
+        }
+        if fileData.count > 2 {
+            if fileData.subdata(in: 0..<2) == Data(fromHexEncodedString: "504B") {
+                return true
+            }
         }
 
         let archive = archive_read_new()
