@@ -10,6 +10,7 @@
 		420F3A892B1A90A300185EFD /* libarchive.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 420F3A882B1A908200185EFD /* libarchive.tbd */; };
 		420F3A8C2B1A9C7D00185EFD /* Compression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420F3A8B2B1A9C7D00185EFD /* Compression.swift */; };
 		420F3A902B1BF7CA00185EFD /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = 420F3A8F2B1BF7CA00185EFD /* Zip */; };
+		42B2B5AF2B63845700E19B22 /* TSUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B2B5AE2B63845700E19B22 /* TSUtil.m */; };
 		42B3C5642B13F91200125CA7 /* ApplicationsWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42B3C5632B13F91200125CA7 /* ApplicationsWrapper */; };
 		42B3C5662B13F91200125CA7 /* AssetCatalogWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42B3C5652B13F91200125CA7 /* AssetCatalogWrapper */; };
 		42B3C5682B13F91200125CA7 /* CompressionWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 42B3C5672B13F91200125CA7 /* CompressionWrapper */; };
@@ -73,7 +74,8 @@
 /* Begin PBXFileReference section */
 		420F3A882B1A908200185EFD /* libarchive.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libarchive.tbd; path = usr/lib/libarchive.tbd; sourceTree = SDKROOT; };
 		420F3A8B2B1A9C7D00185EFD /* Compression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Compression.swift; sourceTree = "<group>"; };
-		42B2B5A92B637F3800E19B22 /* TSUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSUtil.h; sourceTree = "<group>"; };
+		42B2B5AC2B63815400E19B22 /* TSUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSUtil.h; sourceTree = "<group>"; };
+		42B2B5AE2B63845700E19B22 /* TSUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSUtil.m; sourceTree = "<group>"; };
 		42E7643F2B0BC7E9000D1330 /* FileInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileInfo.swift; sourceTree = "<group>"; };
 		F820951F2A2622D100DC6D79 /* CarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarView.swift; sourceTree = "<group>"; };
 		F83CB3BF2A41170F005BF95A /* FontView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontView.swift; sourceTree = "<group>"; };
@@ -183,7 +185,8 @@
 				F84430612A43EF290042BAB5 /* Pogo-BridgingHeader.h */,
 				F8D579942A15D17F00FDA526 /* SwiftTryCatch.h */,
 				F8D579932A15D17F00FDA526 /* SwiftTryCatch.m */,
-				42B2B5A92B637F3800E19B22 /* TSUtil.h */,
+				42B2B5AC2B63815400E19B22 /* TSUtil.h */,
+				42B2B5AE2B63845700E19B22 /* TSUtil.m */,
 				F83F47D12A43782E00A4C47F /* CommandRunner.swift */,
 			);
 			path = External;
@@ -438,6 +441,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42B2B5AF2B63845700E19B22 /* TSUtil.m in Sources */,
 				F853AB5529DE8B3B006EA2D5 /* FavoritesView.swift in Sources */,
 				F853AB3129DBCB1A006EA2D5 /* ContentView.swift in Sources */,
 				F892B5112ACDA4E500C666CA /* DMGMountView.swift in Sources */,

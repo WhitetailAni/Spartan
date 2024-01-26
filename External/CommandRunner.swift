@@ -152,6 +152,7 @@ import Darwin.POSIX
             }
         } else {
             if let errorOutput = stdErr as String? {
+                print("uh oh! couldn't spawn on trollstore. error code: \(result)")
                 return errorOutput
             }
         }
