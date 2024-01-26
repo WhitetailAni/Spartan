@@ -302,6 +302,7 @@ func removeLastChar(_ string: String) -> String {
 }
 
 var helperPath: String = "/bin/RootHelper"
+var isJB = true
 
 func LocalizedString(_ key: String) -> String {
 	return NSLocalizedString(key, comment: "")
@@ -454,5 +455,15 @@ struct ContextMenuButtonTV: View {
         }
         .padding(paddingInt)
         .opacity(opacityInt)
+    }
+}
+
+struct NotJailbrokenView: View {
+    var body: some View {
+        Text(localizedString: "NOT_JB")
+            .if(UserDefaults.settings.bool(forKey: "sheikahFontApply")) { view in
+                view.scaledFont(name: "BotW Sheikah Regular", size: 80)
+            }
+            .font(.system(size: 80))
     }
 }

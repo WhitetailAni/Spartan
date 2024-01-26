@@ -65,6 +65,14 @@ struct SpartanApp: App {
             sw_vers = .archer
         }
         
+        #if TROLLSTORE
+            isJB = false
+            helperPath = Bundle.main.path(forResource: "RootHelper", ofType: nil)
+            print("We are running on Trollstore...")
+        #else
+            print("We are jailbroken!")
+        #endif
+        
         if(!(Spartan.fileManager.fileExists(atPath: "/private/var/mobile/Media/.Trash"))){
             RootHelperActs.mkdir("/private/var/mobile/Media/.Trash")
         } else {

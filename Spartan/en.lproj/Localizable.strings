@@ -26,6 +26,8 @@
 "ERR_NOJAILBREAK" = "You need to be jailbroken for this function";
 "LOADING" = "Loading...";
 
+"NOT_JB" = "You need to be jailbroken for this function."
+
 "YES" = "Yes";
 "NO" = "No";
 

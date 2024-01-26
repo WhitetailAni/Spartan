@@ -51,7 +51,7 @@ struct ContentView: View {
     
     @State var didChangeDir = false
     
-    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 35)
+    @State private var showSubView: [Bool] = [Bool](repeating: false, count: 36)
     //createFileSelectShow = 0
     //contextMenuShow = 1
     //openInMenu = 2
@@ -67,7 +67,7 @@ struct ContentView: View {
     //imageShow = 12
     //plistShow = 13
     //compFileShow = 14
-    //spawnShow = 15
+    //spawnShow = 15 - only works jb
     //favoritesShow = 16
     //addToFavoritesShow = 17
     //settingsShow = 18
@@ -75,8 +75,8 @@ struct ContentView: View {
     //symlinkShow = 20
     //mountPointsShow = 21
     //hexShow = 22
-    //dpkgViewShow = 23
-    //dpkgDebViewShow = 24
+    //dpkgViewShow = 23 - only works jb
+    //dpkgDebViewShow = 24 - only works jb
     //webServerShow = 25
     //fileNotFoundView = 26
     //filePermsEdit = 27
@@ -84,9 +84,10 @@ struct ContentView: View {
     //tvOS13serverShow = 29  # some things are like this due to tvOS 13 (no context menu) limitations. I would drop 13 if I could but I'm not abandoning 13.4.8 people.
     //fontViewShow = 30
     //choosing between opening an image as an SVG or not an SVG = 31
-    //dmgMountViewShow = 32
+    //dmgMountViewShow = 32 - only works jb
     //htmlViewShow = 33
     //uncompFileShow = 34
+    //notJailbrokenView = 35
     
     @Binding var globalAVPlayer: AVPlayer //this is because Spartan has the ability to play music without the AudioPlayerView being shown. It took about a week to get working properly and I'm proud of it
     @State var isGlobalAVPlayerPlaying = false
@@ -1044,6 +1045,9 @@ struct ContentView: View {
                         }
                     }
                 }
+                .sheet(isPresented: $showSubView[35]) {
+                    NotJailbrokenView()
+                }
                 .sheet(isPresented: $showSubView[1]) {
 					ContextMenuButtonTV(stringKey: "OPEN", action: {
 						defaultAction(index: newViewFileIndex, isDirectPath: false)
@@ -1229,7 +1233,11 @@ struct ContentView: View {
 								newViewFileName = masterFiles[newViewFileIndex].name
 								showSubView[2] = false
 								DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-									showSubView[32] = true
+                                    if isJB {
+                                        showSubView[32] = true
+                                    } else {
+                                        showSubView[35] = true
+                                    }
 								}
 							})
                             
@@ -1285,7 +1293,11 @@ struct ContentView: View {
 								newViewFileName = masterFiles[newViewFileIndex].name
 								showSubView[2] = false
 								DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-									showSubView[23] = true
+                                    if isJB {
+                                        showSubView[23] = true
+                                    } else {
+                                        showSubView[35] = true
+                                    }
 								}
 							})
 							
@@ -1294,7 +1306,11 @@ struct ContentView: View {
 								newViewFileName = masterFiles[newViewFileIndex].name
 								showSubView[2] = false
 								DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-									showSubView[24] = true
+                                    if isJB {
+                                        showSubView[24] = true
+                                    } else {
+                                        showSubView[35] = true
+                                    }
 								}
 							})
 							
@@ -1321,7 +1337,11 @@ struct ContentView: View {
 								newViewFileName = masterFiles[newViewFileIndex].name
 								showSubView[2] = false
 								DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-									showSubView[15] = true
+                                    if isJB {
+                                        showSubView[15] = true
+                                    } else {
+                                        showSubView[35] = true
+                                    }
 								}
 							})
 							
@@ -1594,7 +1614,11 @@ struct ContentView: View {
             case 6:
                 showSubView[34] = true
             case 7:
-                showSubView[15] = true
+                if isJB {
+                    showSubView[15] = true
+                } else {
+                    showSubView[35] = true
+                }
             case 8:
                 do {
                     let dest = try FileInfo.readSymlinkDestination(path: directory + fileToCheck[index])
@@ -1614,7 +1638,11 @@ struct ContentView: View {
                     print("Please create a valid symlink. (Error ID 167)")
                 }
             case 9:
-                showSubView[23] = true
+                if isJB {
+                    showSubView[23] = true
+                } else {
+                    showSubView[35] = true
+                }
             case 10:
                 showSubView[28] = true
             case 11:
@@ -1623,7 +1651,11 @@ struct ContentView: View {
 				isImageSVG[0] = true
 				showSubView[12] = true
 			case 13:
-				showSubView[32] = true
+                if isJB {
+                    showSubView[32] = true
+                } else {
+                    showSubView[35] = true
+                }
 			case 14:
 				showSubView[33] = true
             default:
