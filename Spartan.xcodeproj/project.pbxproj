@@ -73,6 +73,7 @@
 /* Begin PBXFileReference section */
 		420F3A882B1A908200185EFD /* libarchive.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libarchive.tbd; path = usr/lib/libarchive.tbd; sourceTree = SDKROOT; };
 		420F3A8B2B1A9C7D00185EFD /* Compression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Compression.swift; sourceTree = "<group>"; };
+		42B2B5A92B637F3800E19B22 /* TSUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSUtil.h; sourceTree = "<group>"; };
 		42E7643F2B0BC7E9000D1330 /* FileInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileInfo.swift; sourceTree = "<group>"; };
 		F820951F2A2622D100DC6D79 /* CarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarView.swift; sourceTree = "<group>"; };
 		F83CB3BF2A41170F005BF95A /* FontView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontView.swift; sourceTree = "<group>"; };
@@ -182,6 +183,7 @@
 				F84430612A43EF290042BAB5 /* Pogo-BridgingHeader.h */,
 				F8D579942A15D17F00FDA526 /* SwiftTryCatch.h */,
 				F8D579932A15D17F00FDA526 /* SwiftTryCatch.m */,
+				42B2B5A92B637F3800E19B22 /* TSUtil.h */,
 				F83F47D12A43782E00A4C47F /* CommandRunner.swift */,
 			);
 			path = External;
@@ -651,7 +653,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2528;
+				CURRENT_PROJECT_VERSION = 2536;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = NO;
 				DEVELOPMENT_ASSET_PATHS = "";
@@ -704,7 +706,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2528;
+				CURRENT_PROJECT_VERSION = 2536;
 				DEPLOYMENT_LOCATION = YES;
 				DEPLOYMENT_POSTPROCESSING = NO;
 				DEVELOPMENT_ASSET_PATHS = "";
