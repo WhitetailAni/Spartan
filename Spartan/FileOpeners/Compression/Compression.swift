@@ -9,6 +9,8 @@ import Foundation
 import libarchiveBridge
 import Zip
 
+//this file features claude 3 assistance with libarchive because C makes my head hurt
+
 enum CompressionType {
     case zip
     case gz
@@ -112,6 +114,8 @@ enum CompressionError: Error {
     
     case archiveFinishEntryFailed
     
+    case archiveUnsupportedCompressionType
+    
     func explanation() -> String {
         switch self {
         case .incorrectCompressionType:
@@ -132,7 +136,34 @@ enum CompressionError: Error {
             return LocalizedString("COMPERROR_ARCHIVEWRITEDATAFAILED")
         case .archiveFinishEntryFailed:
             return LocalizedString("COMPERROR_ARCHIVEFINISHENTRYFAILED")
+        case .archiveUnsupportedCompressionType:
+            return LocalizedString("COMPERROR_ARCHIVEUNSUPPORTEDCOMPRESSIONTYPE")
         }
+    }
+}
+
+struct CompressionFileData {
+    let file: UnsafeMutablePointer<FILE>
+    let fileSize: Int
+    var currentPosition: Int
+    var buffer: UnsafeMutablePointer<UInt8>
+
+    init(file: UnsafeMutablePointer<FILE>) {
+        self.file = file
+        var stat = stat()
+        fstat(fileno(file), &stat)
+        self.fileSize = Int(stat.st_size)
+        self.currentPosition = 0
+        self.buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: 8192)
+    }
+
+    var bytesRead: Int {
+        let bytesRead = fread(buffer, 1, 8192, file)
+        return Int(bytesRead)
+    }
+
+    mutating func readNextChunk() {
+        currentPosition += bytesRead
     }
 }
 
@@ -141,7 +172,7 @@ class Compression {
         switch compType {
         case .tar:
             do {
-                try createTarC(files: [filePath], destination: tempPath)
+                try createTarC(filePaths: [filePath], destination: tempPath)
                 if tarCompType != .none {
                     try compressFileC(filePath: tempPath, destination: destination, type: CompressionType(type: tarCompType))
                     RootHelperActs.rm(tempPath)
@@ -197,7 +228,7 @@ class Compression {
                 fullPaths.append(directory + file)
             }
             do {
-                try createTarC(files: fullPaths, destination: tempPath)
+                try createTarC(filePaths: fullPaths, destination: tempPath)
                 if tarCompType != .none {
                     try compressFileC(filePath: tempPath, destination: destination, type: CompressionType(type: tarCompType))
                     RootHelperActs.rm(tempPath)
@@ -284,57 +315,48 @@ class Compression {
         return comp
     }
     
-    private class func createTarC(files: [String], destination: String) throws {
-        let archive = archive_write_new()
-        defer { archive_write_free(archive) }
+    private class func createTarC(filePaths: [String], destination: String) throws {
+        let archiveWriter = archive_write_new()
+        archive_write_set_format_pax_restricted(archiveWriter)
 
-        archive_write_add_filter_none(archive)
-        archive_write_set_format_ustar(archive)
-
-        guard archive_write_open_filename(archive, destination) == ARCHIVE_OK else {
-            throw CompressionError.outputFileOpenFailed
+        let archiveURL = URL(fileURLWithPath: destination)
+        guard archive_write_open_filename(archiveWriter, archiveURL.path) == ARCHIVE_OK else {
+            throw CompressionError.archiveCreationFailed
         }
 
-        for filePath in files {
-            let entry = archive_entry_new()
-            defer { archive_entry_free(entry) }
-
-            archive_entry_copy_pathname(entry, filePath)
-
-            archive_entry_set_filetype(entry, UInt32(AE_IFREG))
-
-            guard archive_write_header(archive, entry) == ARCHIVE_OK else {
-                throw CompressionError.archiveWriteHeaderFailed
-            }
-
-            guard let file = try? FileHandle(forReadingFrom: URL(fileURLWithPath: filePath)) else {
+        for filePath in filePaths {
+            let fileURL = URL(fileURLWithPath: filePath)
+            guard let file = fopen(fileURL.path, "rb") else {
                 throw CompressionError.inputFileOpenFailed
             }
-            defer { file.closeFile() }
 
-            var data = file.readData(ofLength: 4096)
-            while !data.isEmpty {
-                do {
-                    try data.withUnsafeBytes { bufferPointer in
-                        guard archive_write_data(archive, bufferPointer.baseAddress, data.count) == data.count else {
-                            throw CompressionError.archiveWriteDataFailed
-                        }
-                    }
-                    data = file.readData(ofLength: 4096)
-                } catch {
-                    throw CompressionError.archiveWriteDataFailed
+            let entry = archive_entry_new()
+            let fileName = fileURL.lastPathComponent.data(using: .utf8)
+            fileName?.withUnsafeBytes { (unsafeBufferPointer) in
+                if let unsafePointer = unsafeBufferPointer.baseAddress?.assumingMemoryBound(to: CChar.self) {
+                    archive_entry_set_pathname(entry, unsafePointer)
                 }
             }
 
-            guard archive_write_finish_entry(archive) == ARCHIVE_OK else {
-                throw CompressionError.archiveFinishEntryFailed
+            var fileData = CompressionFileData(file: file)
+            archive_entry_set_size(entry, la_int64_t(UInt64(fileData.fileSize)))
+            archive_write_header(archiveWriter, entry)
+
+            while archive_write_data(archiveWriter, fileData.buffer, fileData.bytesRead) == ARCHIVE_OK {
+                fileData.readNextChunk()
             }
+
+            archive_entry_free(entry)
+            fclose(file)
         }
+
+        archive_write_close(archiveWriter)
+        archive_write_free(archiveWriter)
     }
     
     private class func compressFileC(filePath: String, destination: String, type: CompressionType) throws {
-        let archive = archive_write_new()
-        defer { archive_write_free(archive) }
+        let archiveWriter = archive_write_new()
+        archive_write_set_format_pax_restricted(archiveWriter)
         
         print(filePath)
 
@@ -346,225 +368,204 @@ class Compression {
                 throw CompressionError.archiveWriteHeaderFailed
             }
         case .gz:
-            archive_write_add_filter_gzip(archive)
+            archive_write_add_filter_gzip(archiveWriter)
         case .lz4:
-            archive_write_add_filter_lz4(archive)
+            archive_write_add_filter_lz4(archiveWriter)
         case .bz2:
-            archive_write_add_filter_bzip2(archive)
+            archive_write_add_filter_bzip2(archiveWriter)
         case .xz:
-            archive_write_add_filter_xz(archive)
+            archive_write_add_filter_xz(archiveWriter)
         case .zstd:
-            archive_write_add_filter_zstd(archive)
+            archive_write_add_filter_zstd(archiveWriter)
         case .lzma:
-            archive_write_add_filter_lzma(archive)
+            archive_write_add_filter_lzma(archiveWriter)
         default:
             throw CompressionError.incorrectCompressionType
         }
 
-        guard archive_write_open_filename(archive, destination) == ARCHIVE_OK else {
-            throw CompressionError.outputFileOpenFailed
+        archive_write_add_filter_zstd(archiveWriter)
+
+        let destinationURL = URL(fileURLWithPath: destination)
+        if archive_write_open_filename(archiveWriter, destinationURL.path) != ARCHIVE_OK {
+            return
         }
+
+        let fileURL = URL(fileURLWithPath: filePath)
+        let file = fopen(fileURL.path, "rb")
 
         let entry = archive_entry_new()
-        defer { archive_entry_free(entry) }
-
-        archive_entry_copy_pathname(entry, filePath)
-
-        guard archive_write_header(archive, entry) == ARCHIVE_OK else {
-            throw CompressionError.archiveWriteHeaderFailed
+        if let fileName = fileURL.lastPathComponent.data(using: .utf8) {
+            fileName.withUnsafeBytes { (unsafeBufferPointer) in
+                if let unsafePointer = unsafeBufferPointer.baseAddress?.assumingMemoryBound(to: CChar.self) {
+                    archive_entry_set_pathname(entry, unsafePointer)
+                }
+            }
         }
 
-        guard let file = try? FileHandle(forReadingFrom: URL(fileURLWithPath: filePath)) else {
+        if let file2 = file {
+            var fileData = CompressionFileData(file: file2)
+            archive_entry_set_size(entry, la_int64_t(UInt64(fileData.fileSize)))
+            archive_write_header(archiveWriter, entry)
+            while archive_write_data(archiveWriter, fileData.buffer, fileData.bytesRead) == ARCHIVE_OK {
+                fileData.readNextChunk()
+            }
+        } else {
             throw CompressionError.inputFileOpenFailed
         }
-        defer { file.closeFile() }
+        archive_entry_free(entry)
+        fclose(file)
 
-        var data = Data(capacity: 4096)
-        while file.readData(ofLength: 4096).count > 0 {
-            do {
-                try data.withUnsafeBytes { bufferPointer in
-                    guard archive_write_data(archive, bufferPointer.baseAddress, data.count) == data.count else {
-                        throw CompressionError.archiveWriteDataFailed
-                    }
-                }
-            } catch {
-                throw CompressionError.archiveWriteDataFailed
-            }
-            data.removeAll()
-        }
-
-        file.closeFile()
-
-        guard archive_write_finish_entry(archive) == ARCHIVE_OK else {
-            throw CompressionError.archiveFinishEntryFailed
-        }
+        archive_write_close(archiveWriter)
+        archive_write_free(archiveWriter)
     }
     
     private class func decompressFileC(filePath: String, destination: String) throws {
-        let inputPathCString = filePath.cString(using: .utf8)!
-        let destinationPathCString = destination.cString(using: .utf8)!
+        let archiveReader = archive_read_new()
+        archive_read_support_filter_all(archiveReader)
+        archive_read_support_format_all(archiveReader)
 
-        let archive = archive_read_new()
-        defer { archive_write_free(archive) }
-
-        archive_read_support_filter_all(archive)
-        archive_read_support_format_all(archive)
-
-        if archive_read_open_filename(archive, inputPathCString, 10240) != ARCHIVE_OK {
-            archive_read_free(archive)
-            throw CompressionError.inputFileOpenFailed
+        let compressedFileURL = URL(fileURLWithPath: filePath)
+        guard archive_read_open_filename(archiveReader, compressedFileURL.path, Int(compressedFileURL.path.count + 1)) == ARCHIVE_OK else {
+            throw CompressionError.archiveReadHeaderFailed
         }
-
-        guard let archiveWrite = archive_write_disk_new() else {
-            archive_read_free(archive)
-            throw CompressionError.outputFileOpenFailed
-        }
-
-        archive_write_disk_set_options(archiveWrite, ARCHIVE_EXTRACT_PERM)
-        archive_write_disk_set_standard_lookup(archiveWrite)
 
         while true {
-            var entry: OpaquePointer?
-            let result = archive_read_next_header(archive, &entry)
+            var entry = archive_entry_new()
+            let readResult = archive_read_next_header(archiveReader, &entry)
 
-            if result == ARCHIVE_EOF {
+            if readResult == ARCHIVE_EOF {
                 break
-            }
-
-            if result != ARCHIVE_OK {
+            } else if readResult != ARCHIVE_OK {
                 throw CompressionError.archiveReadHeaderFailed
             }
 
-            archive_entry_set_pathname(entry, destinationPathCString)
-
-            if archive_write_header(archiveWrite, entry) != ARCHIVE_OK {
+            let destinationURL = URL(fileURLWithPath: destination)
+            guard let destinationFile = fopen(destinationURL.path, "wb") else {
                 throw CompressionError.archiveReadHeaderFailed
             }
 
-            if let entry = entry {
-                var buffer = [UInt8](repeating: 0, count: 1024)
+            var buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: 8192)
+            defer {
+                buffer.deallocate()
+            }
 
-                while true {
-                    let bytesRead = archive_read_data(archive, &buffer, buffer.count)
-                    if bytesRead == 0 {
-                        break
-                    } else if bytesRead < 0 {
-                        throw CompressionError.archiveReadDataFailed
-                    }
+            while true {
+                let bytesRead = archive_read_data(archiveReader, buffer, 8192)
 
-                    _ = buffer.withUnsafeBytes { data in
-                        archive_write_data(archiveWrite, data.baseAddress, bytesRead)
-                    }
+                if bytesRead == ARCHIVE_EOF {
+                    break
+                } else if bytesRead < 0 {
+                    throw CompressionError.archiveReadDataFailed
                 }
-            }
-        }
 
-        archive_read_close(archive)
-        archive_read_free(archive)
-        archive_write_close(archiveWrite)
-        archive_write_free(archiveWrite)
-    }
-    
-    private class func compressZstdC(filePaths: [String], destination: String) throws {
-        guard let archive = archive_write_new() else {
-            throw CompressionError.inputFileOpenFailed
-        }
-
-        archive_write_add_filter_zstd(archive)
-        archive_write_set_format_pax_restricted(archive)
-
-        let outputArchive = archive_write_open_filename(archive, destination)
-        guard outputArchive != ARCHIVE_OK else {
-            archive_write_free(archive)
-            throw CompressionError.outputFileOpenFailed
-        }
-
-        for filePath in filePaths {
-            guard let entry = archive_entry_new() else {
-                throw CompressionError.archiveWriteDataFailed
+                fwrite(buffer, 1, bytesRead, destinationFile)
             }
 
-            archive_entry_copy_pathname(entry, filePath)
-            archive_write_header(archive, entry)
-
-            if let file = fopen(filePath, "r") {
-                let bufferSize = 4096
-                var buffer = [UInt8](repeating: 0, count: bufferSize)
-                var bytesRead: Int
-
-                repeat {
-                    bytesRead = fread(&buffer, 1, bufferSize, file)
-                    if bytesRead > 0 {
-                        archive_write_data(archive, &buffer, bytesRead)
-                    }
-                } while bytesRead > 0
-
-                fclose(file)
-            }
-
+            fclose(destinationFile)
             archive_entry_free(entry)
         }
 
-        archive_write_close(archive)
-        archive_write_free(archive)
+        archive_read_close(archiveReader)
+        archive_read_free(archiveReader)
+    }
+
+    private class func compressZstdC(filePaths: [String], destination: String) throws {
+        let archiveWriter = archive_write_new()
+        archive_write_set_format_pax_restricted(archiveWriter)
+
+        archive_write_add_filter_zstd(archiveWriter)
+
+        let destinationURL = URL(fileURLWithPath: destination)
+        if archive_write_open_filename(archiveWriter, destinationURL.path) != ARCHIVE_OK {
+            return
+        }
+
+        for filePath in filePaths {
+            let fileURL = URL(fileURLWithPath: filePath)
+            guard let file = fopen(fileURL.path, "rb") else {
+                continue
+            }
+
+            let entry = archive_entry_new()
+            if let fileName = fileURL.lastPathComponent.data(using: .utf8) {
+                fileName.withUnsafeBytes { (unsafeBufferPointer) in
+                    if let unsafePointer = unsafeBufferPointer.baseAddress?.assumingMemoryBound(to: CChar.self) {
+                        archive_entry_set_pathname(entry, unsafePointer)
+                    }
+                }
+            }
+
+            var fileData = CompressionFileData(file: file)
+            archive_entry_set_size(entry, la_int64_t(UInt64(fileData.fileSize)))
+            archive_write_header(archiveWriter, entry)
+            while archive_write_data(archiveWriter, fileData.buffer, fileData.bytesRead) == ARCHIVE_OK {
+                fileData.readNextChunk()
+            }
+            archive_entry_free(entry)
+            fclose(file)
+        }
+
+        archive_write_close(archiveWriter)
+        archive_write_free(archiveWriter)
     }
     
     private class func decompressZstdC(filePath: String, destination: String) throws {
-        let archive = archive_write_new()
-        defer { archive_write_free(archive) }
+        let archiveReader = archive_read_new()
+        archive_read_support_filter_zstd(archiveReader)
+        archive_read_support_format_all(archiveReader)
 
-        defer { archive_read_free(archive) }
-
-        archive_read_support_filter_zstd(archive)
-        archive_read_support_format_all(archive)
-
-        guard archive_read_open_filename(archive, filePath, 10240) == ARCHIVE_OK else {
-            throw CompressionError.inputFileOpenFailed
+        let archiveURL = URL(fileURLWithPath: filePath)
+        guard archive_read_open_filename(archiveReader, archiveURL.path, Int(archiveURL.path.count + 1)) == ARCHIVE_OK else {
+            throw CompressionError.archiveReadHeaderFailed
         }
-
-        guard let ext = archive_write_disk_new() else {
-            throw CompressionError.outputFileOpenFailed
-        }
-
-        defer {
-            archive_write_close(ext)
-            archive_write_free(ext)
-        }
-
-        archive_write_disk_set_options(ext, ARCHIVE_EXTRACT_TIME)
 
         while true {
-            var entry: OpaquePointer?
-            let result = archive_read_next_header(archive, &entry)
+            var entry = archive_entry_new()
+            let readResult = archive_read_next_header(archiveReader, &entry)
 
-            guard result != ARCHIVE_EOF else {
+            if readResult == ARCHIVE_EOF {
                 break
-            }
-
-            guard result == ARCHIVE_OK else {
+            } else if readResult != ARCHIVE_OK {
                 throw CompressionError.archiveReadHeaderFailed
             }
 
-            guard let currentEntry = entry else {
-                throw CompressionError.archiveReadDataFailed
+            let entryPathname = String(cString: archive_entry_pathname(entry))
+            let destinationFilePath = (destination as NSString).appendingPathComponent(entryPathname)
+
+            let destinationFileURL = URL(fileURLWithPath: destinationFilePath)
+            let destinationDirectoryURL = destinationFileURL.deletingLastPathComponent()
+            do {
+                try FileManager.default.createDirectory(at: destinationDirectoryURL, withIntermediateDirectories: true)
+            } catch {
+                throw CompressionError.archiveWriteDataFailed
             }
 
-            let entryPath = String(cString: archive_entry_pathname(currentEntry))
-            let destinationFilePath = (destination as NSString).appendingPathComponent(entryPath)
-
-            let destinationDirectory = (destinationFilePath as NSString).deletingLastPathComponent
-            try FileManager.default.createDirectory(atPath: destinationDirectory, withIntermediateDirectories: true, attributes: nil)
-
-            archive_write_disk_set_standard_lookup(ext)
-            archive_write_disk_set_options(ext, ARCHIVE_EXTRACT_TIME)
-
-            guard archive_write_header(ext, currentEntry) == ARCHIVE_OK else {
-                throw CompressionError.archiveWriteHeaderFailed
+            guard let destinationFile = fopen(destinationFileURL.path, "wb") else {
+                throw CompressionError.archiveReadHeaderFailed
             }
 
-            guard archive_write_finish_entry(ext) == ARCHIVE_OK else {
-                throw CompressionError.archiveFinishEntryFailed
+            var buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: 8192)
+            defer {
+                buffer.deallocate()
             }
+
+            while true {
+                let bytesRead = archive_read_data(archiveReader, buffer, 8192)
+
+                if bytesRead == ARCHIVE_EOF {
+                    break
+                } else if bytesRead < 0 {
+                    throw CompressionError.archiveReadDataFailed
+                }
+
+                fwrite(buffer, 1, bytesRead, destinationFile)
+            }
+
+            fclose(destinationFile)
+            archive_entry_free(entry)
         }
+
+        archive_read_close(archiveReader)
+        archive_read_free(archiveReader)
     }
 }
