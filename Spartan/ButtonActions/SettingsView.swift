@@ -15,6 +15,8 @@ struct SettingsView: View {
     @State private var logWindowFontSizePre = UserDefaults.settings.integer(forKey: "logWindowFontSize")
     @State private var sheikahFontApplyPre = UserDefaults.settings.bool(forKey: "sheikahFontApply")
     @State private var dateFormatPre: String = UserDefaults.settings.string(forKey: "dateFormat") ?? ""
+    
+    @State var test = 0.0
 
     var body: some View {
 		ScrollView {

@@ -193,7 +193,7 @@ void enumerateProcessesUsingBlock(void (^enumerator)(pid_t pid, NSString* execut
 		free(info);
 		return;
 	}
-	count = length / sizeof(struct kinfo_proc);
+	count = (int)length / sizeof(struct kinfo_proc);
 	for (int i = 0; i < count; i++) {
 		@autoreleasepool {
 		pid_t pid = info[i].kp_proc.p_pid;

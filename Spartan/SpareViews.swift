@@ -366,7 +366,7 @@ class RootHelperActs {
     }
 }
 
-extension String: Error { }
+extension String: @retroactive Error { }
 
 func filePathIsNotMobileWritable(_ fullPath: String) -> Bool {
 	return ((fullPath.count < 19) || (fullPath.substring(toIndex: 19) != "/private/var/mobile"))

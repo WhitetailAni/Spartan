@@ -444,10 +444,8 @@ class Compression {
                 throw CompressionError.archiveReadHeaderFailed
             }
 
-            var buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: 8192)
-            defer {
-                buffer.deallocate()
-            }
+            let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: 8192)
+            defer { buffer.deallocate() }
 
             while true {
                 let bytesRead = archive_read_data(archiveReader, buffer, 8192)
@@ -544,10 +542,8 @@ class Compression {
                 throw CompressionError.archiveReadHeaderFailed
             }
 
-            var buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: 8192)
-            defer {
-                buffer.deallocate()
-            }
+            let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: 8192)
+            defer { buffer.deallocate() }
 
             while true {
                 let bytesRead = archive_read_data(archiveReader, buffer, 8192)
